@@ -10,8 +10,8 @@
 session_name("BanManagement");
 session_start();
 ob_start();
-ini_set('display_errors',1);
-error_reporting(1); // Disable error reports for security
+
+error_reporting(0); // Disable error reports for security
 
 if(!isset($_SESSION['initiated'])) {
 		session_regenerate_id();
@@ -243,6 +243,10 @@ function cache($query, $time, $folder = '', $server = array(), $name = '') {
 		$file = $folder.'/'.$name;
 	else if($folder == '' && !empty($name))
 		$file = $name;
+
+	echo "<pre>";
+	var_dump($query);
+	echo "</pre>";
 
 	if($settings['apc_enabled']) {
 		if(apc_exists($file))
@@ -485,6 +489,7 @@ function searchPlayers($search, $serverID, $server, $sortByCol = 'name', $sortBy
 			}
 		}
 	}
+
 
 	if(count($found) == 0)
 		return false;
