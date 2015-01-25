@@ -1,2 +1,5 @@
 # Configuration file for BanManager
 settings.php
+
+# Cache
+cache
