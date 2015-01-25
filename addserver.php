@@ -1,11 +1,11 @@
 <?php
-/*  BanManagement © 2012, a web interface for the Bukkit plugin BanManager
-    by James Mortemore of http://www.frostcast.net
-	is licenced under a Creative Commons
-	Attribution-NonCommercial-ShareAlike 2.0 UK: England & Wales.
-	Permissions beyond the scope of this licence 
-	may be available at http://creativecommons.org/licenses/by-nc-sa/2.0/uk/.
-	Additional licence terms at https://raw.github.com/confuser/Ban-Management/master/banmanagement/licence.txt
+/*  BanManagement ï¿½ 2012, a web interface for the Bukkit plugin BanManager
+		by James Mortemore of http://www.frostcast.net
+		is licenced under a Creative Commons
+		Attribution-NonCommercial-ShareAlike 2.0 UK: England & Wales.
+		Permissions beyond the scope of this licence
+		may be available at http://creativecommons.org/licenses/by-nc-sa/2.0/uk/.
+		Additional licence terms at https://raw.github.com/confuser/Ban-Management/master/banmanagement/licence.txt
 */
 
 // Disable errors to prevent invalid JSON
@@ -16,21 +16,23 @@ if(!isset($_SESSION['admin']) || (isset($_SESSION['admin']) && !$_SESSION['admin
 	die('Hacking attempt');
 else if(!isset($_GET['authid']) || (isset($_GET['authid']) && $_GET['authid'] != sha1($settings['password'])))
 	die('Hacking attempt');
-else if(!is_alphanumdash($_POST['banstable'])) 
+else if(!is_alphanumdash($_POST['playerstable']))
 	die('Hacking attempt');
-else if(!is_alphanumdash($_POST['recordtable']))
+else if(!is_alphanumdash($_POST['playerbanstable']))
 	die('Hacking attempt');
-else if(!is_alphanumdash($_POST['iptable']))
+else if(!is_alphanumdash($_POST['playerbanrecordstable']))
 	die('Hacking attempt');
-else if(!is_alphanumdash($_POST['iprecordtable']))
+else if(!is_alphanumdash($_POST['playermutestable']))
 	die('Hacking attempt');
-else if(!is_alphanumdash($_POST['mutestable']))
+else if(!is_alphanumdash($_POST['playermutesrecordstable']))
 	die('Hacking attempt');
-else if(!is_alphanumdash($_POST['mutesrecordtable']))
+else if(!is_alphanumdash($_POST['playerkickstable']))
 	die('Hacking attempt');
-else if(!is_alphanumdash($_POST['kickstable']))
+else if(!is_alphanumdash($_POST['playerwarningstable']))
 	die('Hacking attempt');
-else if(!is_alphanumdash($_POST['warningstable']))
+else if(!is_alphanumdash($_POST['ipbanstable']))
+	die('Hacking attempt');
+else if(!is_alphanumdash($_POST['ipbanrecordstable']))
 	die('Hacking attempt');
 
 function tableExists($name) {
@@ -44,22 +46,24 @@ if(!mysql_connect($_POST['host'], $_POST['username'], $_POST['password']))
 	$error = 'Unable to connect, check connection information is correct';
 else if(!mysql_select_db($_POST['database']))
 	$error = 'Unable to select database';
-else if(!tableExists($_POST['banstable'])) 
-	$error = 'Bans table not found';
-else if(!tableExists($_POST['recordtable']))
-	$error = 'Bans record table not found';
-else if(!tableExists($_POST['iptable']))
-	$error = 'IP table not found';
-else if(!tableExists($_POST['iprecordtable']))
-	$error = 'IP record table not found';
-else if(!tableExists($_POST['mutestable']))
-	$error = 'Mutes table not found';
-else if(!tableExists($_POST['mutesrecordtable']))
-	$error = 'Mutes record table not found';
-else if(!tableExists($_POST['kickstable']))
-	$error = 'Kicks table not found';
-else if(!tableExists($_POST['warningstable']))
-	$error = 'Warnings table not found';
+else if(!tableExists($_POST['playerstable']))
+	$error = 'Players table not found';
+else if(!tableExists($_POST['playerbanstable']))
+	$error = 'Player Bans table not found';
+else if(!tableExists($_POST['playerbanrecordstable']))
+	$error = 'Player Ban Records record table not found';
+else if(!tableExists($_POST['playermutestable']))
+	$error = 'Player Mutes table not found';
+else if(!tableExists($_POST['playermuterecordstable']))
+	$error = 'Player Mutes Records table not found';
+else if(!tableExists($_POST['playerkickstable']))
+	$error = 'Player Kicks table not found';
+else if(!tableExists($_POST['playerwarningstable']))
+	$error = 'Player Warnings table not found';
+else if(!tableExists($_POST['ipbanstable']))
+	$error = 'IP Bans table not found';
+else if(!tableExists($_POST['ipbanrecordstable']))
+	$error = 'IP Ban Records table not found';
 else {
 	// Success! Add it
 	$servers = $settings['servers'];
@@ -73,14 +77,15 @@ else {
 		'database' => $_POST['database'],
 		'username' => $_POST['username'],
 		'password' => $_POST['password'],
-		'bansTable' => $_POST['banstable'],
-		'recordTable' => $_POST['recordtable'],
-		'ipTable' => $_POST['iptable'],
-		'ipRecordTable' => $_POST['iprecordtable'],
-		'mutesTable' => $_POST['mutestable'],
-		'mutesRecordTable' => $_POST['mutesrecordtable'],
-		'kicksTable' => $_POST['kickstable'],
-		'warningsTable' => $_POST['warningstable']
+		'playersTable' => $_POST['playerstable'],
+		'playerBansTable' => $_POST['playerbanstable'],
+		'playerBanRecordsTable' => $_POST['playerbanrecordstable'],
+		'playerMutesTable' => $_POST['playermutestable'],
+		'playerMuteRecordsTable' => $_POST['playermuterecordstable'],
+		'playerKicksTable' => $_POST['playerkickstable'],
+		'playerWarningsTable' => $_POST['playerwarningstable'],
+		'ipBansTable' => $_POST['ipbanstable'],
+		'ipBanRecordsTable' => $_POST['ipbanrecordstable']
 	);
 
 	$settings['servers'] = $servers;
