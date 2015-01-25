@@ -354,42 +354,42 @@ function searchPlayers($search, $serverID, $server, $sortByCol = 'name', $sortBy
 	switch($sortByCol) {
 		default:
 		case 0: // Name
-			$sort['bans'] = $sort['banrecords'] = 'banned';
-			$sort['mutes'] = $sort['muterecords'] = 'muted';
-			$sort['kicks'] = 'kicked';
-			$sort['warnings'] = 'warned';
+			$sort['bans'] = $sort['banrecords'] = 'player_id';
+			$sort['mutes'] = $sort['muterecords'] = 'player_id';
+			$sort['kicks'] = 'player_id';
+			$sort['warnings'] = 'player_id';
 		break;
 		case 1: // Type
-			$sort['bans'] = $sort['banrecords'] = 'banned';
-			$sort['mutes'] = $sort['muterecords'] = 'muted';
-			$sort['kicks'] = 'kicked';
-			$sort['warnings'] = 'warned';
+			$sort['bans'] = $sort['banrecords'] = 'player_id';
+			$sort['mutes'] = $sort['muterecords'] = 'player_id';
+			$sort['kicks'] = 'player_id';
+			$sort['warnings'] = 'player_id';
 		break;
 		case 2: // By
-			$sort['bans'] = $sort['banrecords'] = 'banned_by';
-			$sort['mutes'] = $sort['muterecords'] = 'muted_by';
-			$sort['kicks'] = 'kicked_by';
-			$sort['warnings'] = 'warned_by';
+			$sort['bans'] = $sort['banrecords'] = 'actor_id';
+			$sort['mutes'] = $sort['muterecords'] = 'actor_id';
+			$sort['kicks'] = 'actor_id';
+			$sort['warnings'] = 'actor_id';
 		break;
 		case 3: // Reason
-			$sort['bans'] = $sort['banrecords'] = 'ban_reason';
-			$sort['mutes'] = $sort['muterecords'] = 'mute_reason';
-			$sort['kicks'] = 'kick_reason';
-			$sort['warnings'] = 'warn_reason';
+			$sort['bans'] = $sort['banrecords'] = 'reason';
+			$sort['mutes'] = $sort['muterecords'] = 'reason';
+			$sort['kicks'] = 'reason';
+			$sort['warnings'] = 'reason';
 		break;
 		case 4: // Expires
-			$sort['bans'] = 'ban_expires_on';
-			$sort['banrecords'] = 'ban_expired_on';
-			$sort['mutes'] = 'mute_expires_on';
-			$sort['muterecords'] = 'mute_expired_on';
-			$sort['kicks'] = 'kick_id';
-			$sort['warnings'] = 'warn_id';
+			$sort['bans'] = 'expires';
+			$sort['banrecords'] = 'expires';
+			$sort['mutes'] = 'expires';
+			$sort['muterecords'] = 'expires';
+			$sort['kicks'] = 'id';
+			$sort['warnings'] = 'id';
 		break;
 		case 5: // Date
-			$sort['bans'] = $sort['banrecords'] = 'ban_time';
-			$sort['mutes'] = $sort['muterecords'] = 'mute_time';
-			$sort['kicks'] = 'kick_time';
-			$sort['warnings'] = 'warn_time';
+			$sort['bans'] = $sort['banrecords'] = 'created';
+			$sort['mutes'] = $sort['muterecords'] = 'created';
+			$sort['kicks'] = 'created';
+			$sort['warnings'] = 'created';
 		break;
 	}
 
@@ -398,13 +398,15 @@ function searchPlayers($search, $serverID, $server, $sortByCol = 'name', $sortBy
 
 	if((isset($settings['player_current_ban']) && $settings['player_current_ban']) || !isset($settings['player_current_ban'])) {
 		// Current Bans
-		$result = cache("SELECT banned, banned_by, ban_reason, ban_time, ban_expires_on FROM ".$server['bansTable']." WHERE banned LIKE '%".$search."%' ORDER BY ".$sort['bans']." $sortBy", 300, $serverID.'/search', $server);
+		// SELECT HEX(id) AS id FROM bm_players WHERE name LIKE '%<PlayerName>%'
+		// SELECT *, HEX(player_id) AS player_id FROM bm_player_bans WHERE player_id = UNHEX('<UUID>')
+		$result = cache("SELECT player_id, actor_id, reason, created, expires FROM ".$server['playerBansTable']." WHERE player_id LIKE '%".$search."%' ORDER BY ".$sort['bans']." $sortBy", 0, $serverID.'/search', $server);
 		if(isset($result[0]) && !is_array($result[0]) && !empty($result[0]))
 			$result = array($result);
 
 		if(count($result) > 0) {
 			foreach($result as $r)
-				$found[$r['banned']] = array('by' => $r['banned_by'], 'reason' => $r['ban_reason'], 'type' => 'Ban', 'time' => $r['ban_time'], 'expires' => $r['ban_expires_on']);
+				$found[$r['player_id']] = array('by' => $r['actor_id'], 'reason' => $r['reason'], 'type' => 'Ban', 'time' => $r['created'], 'expires' => $r['expires']);
 		}
 	}
 
@@ -425,6 +427,8 @@ function searchPlayers($search, $serverID, $server, $sortByCol = 'name', $sortBy
 			}
 		}
 	}
+
+	// TODO: ipbans
 
 	if((isset($settings['player_current_mute']) && $settings['player_current_mute']) || !isset($settings['player_current_mute'])) {
 		// Current Mutes
