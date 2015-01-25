@@ -339,8 +339,6 @@ function playerNameToUUID($name, $server) {
 
 	if(isset($result[0]) && !is_array($result[0]) && !empty($result[0])){
 		$result = array($result);
-	} else {
-		return false;
 	}
 
 	$found = array();
@@ -350,6 +348,21 @@ function playerNameToUUID($name, $server) {
 	}
 
 	return $found;
+}
+
+function constructWhereWithUUIDs($uuidArray, $idColumn){
+	$whereStatement = NULL;
+
+	if (count($uuidArray) > 1) {
+		foreach ($uuidArray as $uuid) {
+			$whereStatement = $whereStatement.$idColumn." = UNHEX('".$uuid."') OR ";
+		}
+		$whereStatement = substr($whereStatement, 0, -4);
+	} else if(count($uuidArray) == 1) {
+		$whereStatement = $idColumn." = UNHEX('".$uuidArray[0]."')";
+	}
+
+	return $whereStatement;
 }
 
 function connect($server) {
@@ -413,11 +426,6 @@ function searchPlayers($search, $serverID, $server, $sortByCol = 'name', $sortBy
 
 	// Found results
 	$found = array();
-
-	/* TODO: remove this debug output */
-	echo "<pre>";
-	var_dump(playerNameToUUID($search, $server));
-	echo "</pre>";
 
 	if((isset($settings['player_current_ban']) && $settings['player_current_ban']) || !isset($settings['player_current_ban'])) {
 		// Current Bans
