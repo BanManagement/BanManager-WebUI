@@ -1,11 +1,11 @@
 <?php
 /*  BanManagement � 2012, a web interface for the Bukkit plugin BanManager
-    by James Mortemore of http://www.frostcast.net
-	is licenced under a Creative Commons
-	Attribution-NonCommercial-ShareAlike 2.0 UK: England & Wales.
-	Permissions beyond the scope of this licence 
-	may be available at http://creativecommons.org/licenses/by-nc-sa/2.0/uk/.
-	Additional licence terms at https://raw.github.com/confuser/Ban-Management/master/banmanagement/licence.txt
+		by James Mortemore of http://www.frostcast.net
+		is licenced under a Creative Commons
+		Attribution-NonCommercial-ShareAlike 2.0 UK: England & Wales.
+		Permissions beyond the scope of this licence
+		may be available at http://creativecommons.org/licenses/by-nc-sa/2.0/uk/.
+		Additional licence terms at https://raw.github.com/confuser/Ban-Management/master/banmanagement/licence.txt
 */
 if(empty($settings['password']) || $settings['password'] == 'password')
 	errors('You have not set a password. For your security, it\'s required that you set one.');
@@ -29,17 +29,17 @@ else if(isset($_SESSION['failed_attempts']) && $_SESSION['failed_attempts'] > 4)
 			<input type="password" class="form-control" name="password" placeholder="Password">
 				<span class="input-group-btn">
 				<button class="btn btn-info" type="submit">Sign In</button>
-	    		</span>
-	    	</div>
-	    </div>
-    </div>
-    </form><?php
+					</span>
+				</div>
+			</div>
+		</div>
+		</form><?php
 } else if(isset($_POST['password']) && !isset($_SESSION['admin'])) {
 	if(htmlspecialchars_decode($_POST['password'], ENT_QUOTES) != $settings['password']) {
 		//set how long we want them to have to wait after 5 wrong attempts
 		$time = 1800; //make them wait 30 mins
 		if(isset($_SESSION['failed_attempts']))
-			++$_SESSION['failed_attempts']; 
+			++$_SESSION['failed_attempts'];
 		else
 			$_SESSION['failed_attempts'] = 1;
 		$_SESSION['failed_attempt'] = time() + $time;
@@ -64,7 +64,7 @@ else if(isset($_SESSION['failed_attempts']) && $_SESSION['failed_attempts'] > 4)
 		$id = array_keys($settings['servers']);
 		$i = 0;
 		$count = count($settings['servers']) - 1;
-		
+
 		foreach($settings['servers'] as $server) {
 			echo '
 				<tr>
@@ -91,7 +91,7 @@ else if(isset($_SESSION['failed_attempts']) && $_SESSION['failed_attempts'] > 4)
 		}
 	}
 		?>
-		
+
 		</tbody>
 		<tfoot>
 			<tr>
@@ -102,7 +102,7 @@ else if(isset($_SESSION['failed_attempts']) && $_SESSION['failed_attempts'] > 4)
 	} else
 		echo '<a class="btn btn-primary btn-large" href="#addserver" data-toggle="modal">Add Server</a>';
 	?>
-	
+
 				</td>
 			</tr>
 		</tfoot>
@@ -148,51 +148,57 @@ else if(isset($_SESSION['failed_attempts']) && $_SESSION['failed_attempts'] > 4)
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="control-label" for="banstable">Bans Table:</label>
+								<label class="control-label" for="playerstable">Players Table:</label>
 								<div class="controls">
-									<input type="text" class="form-control required fixedWidth" name="banstable" id="banstable" value="bm_bans">
+									<input type="text" class="form-control required fixedWidth" name="playerstable" id="playerstable" value="bm_players">
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="control-label" for="recordtable">Bans Record Table:</label>
+								<label class="control-label" for="playerbanstable">Player Bans Table:</label>
 								<div class="controls">
-									<input type="text" class="form-control required fixedWidth" name="recordtable" id="recordtable" value="bm_ban_records">
+									<input type="text" class="form-control required fixedWidth" name="playerbanstable" id="playerbanstable" value="bm_player_bans">
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="control-label" for="iptable">IP Bans Table:</label>
+								<label class="control-label" for="playerbanrecordstable">Player Ban Records Table:</label>
 								<div class="controls">
-									<input type="text" class="form-control required fixedWidth" name="iptable" id="iptable" value="bm_ip_bans">
+									<input type="text" class="form-control required fixedWidth" name="playerbanrecordstable" id="playerbanrecordstable" value="bm_player_ban_records">
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="control-label" for="iprecordtable">IP Record Table:</label>
+								<label class="control-label" for="playermutestable">Player Mutes Table:</label>
 								<div class="controls">
-									<input type="text" class="form-control required fixedWidth" name="iprecordtable" id="iprecordtable" value="bm_ip_records">
+									<input type="text" class="form-control required fixedWidth" name="playermutestable" id="playermutestable" value="bm_player_mutes">
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="control-label" for="mutestable">Mutes Table:</label>
+								<label class="control-label" for="playermutesrecordstable">Player Mute Records Table:</label>
 								<div class="controls">
-									<input type="text" class="form-control required fixedWidth" name="mutestable" id="mutestable" value="bm_mutes">
+									<input type="text" class="form-control required fixedWidth" name="playermutesrecordstable" id="playermutesrecordstable" value="bm_player_mute_records">
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="control-label" for="mutesrecordtable">Mutes Record Table:</label>
+								<label class="control-label" for="playerkickstable">Player Kicks Table:</label>
 								<div class="controls">
-									<input type="text" class="form-control required fixedWidth" name="mutesrecordtable" id="mutesrecordtable" value="bm_mutes_records">
+									<input type="text" class="form-control required fixedWidth" name="playerkickstable" id="playerkickstable" value="bm_player_kicks">
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="control-label" for="kickstable">Kicks Table:</label>
+								<label class="control-label" for="playerwarningstable">Player Warnings Table:</label>
 								<div class="controls">
-									<input type="text" class="form-control required fixedWidth" name="kickstable" id="kickstable" value="bm_kicks">
+									<input type="text" class="form-control required fixedWidth" name="playerwarningstable" id="playerwarningstable" value="bm_player_warnings">
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="control-label" for="warningstable">Warnings Table:</label>
+								<label class="control-label" for="ipbanstable">IP Bans Table:</label>
 								<div class="controls">
-									<input type="text" class="form-control required fixedWidth" name="warningstable" id="warningstable" value="bm_warnings">
+									<input type="text" class="form-control required fixedWidth" name="ipbanstable" id="ipbanstable" value="bm_ip_bans">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="control-label" for="ipbanrecordstable">IP Ban Records Table:</label>
+								<div class="controls">
+									<input type="text" class="form-control required fixedWidth" name="ipbanrecordstable" id="ipbanrecordstable" value="bm_ip_ban_records">
 								</div>
 							</div>
 						</div>
@@ -258,7 +264,7 @@ else if(isset($_SESSION['failed_attempts']) && $_SESSION['failed_attempts'] > 4)
 					<td><input type="text" class="form-control" name="buttons_after" value="'.(isset($settings['submit_buttons_after_html']) ? $settings['submit_buttons_after_html'] : '').'" /></td>
 				</tr>';
 	} ?>
-	
+
 			</tbody>
 			<tfoot>
 				<tr>
@@ -269,7 +275,7 @@ else if(isset($_SESSION['failed_attempts']) && $_SESSION['failed_attempts'] > 4)
 	} else {
 		echo '<input type="submit" class="btn btn-primary btn-large" value="Save" />';
 	} ?>
-			
+
 					</td>
 				</tr>
 			</tfoot>
@@ -328,7 +334,7 @@ else if(isset($_SESSION['failed_attempts']) && $_SESSION['failed_attempts'] > 4)
 					<td><input type="checkbox" name="kicks"'.((isset($settings['player_kicks']) && $settings['player_kicks']) || !isset($settings['player_kicks']) ? ' checked="checked"' : '').' /></td>
 				</tr>';
 	} ?>
-	
+
 			</tbody>
 			<tfoot>
 				<tr>
@@ -339,7 +345,7 @@ else if(isset($_SESSION['failed_attempts']) && $_SESSION['failed_attempts'] > 4)
 	} else {
 		echo '<input type="submit" class="btn btn-primary btn-large" value="Save" />';
 	} ?>
-			
+
 					</td>
 				</tr>
 			</tfoot>
