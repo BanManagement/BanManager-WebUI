@@ -1,14 +1,14 @@
 <?php
 /*  BanManagement � 2012, a web interface for the Bukkit plugin BanManager
-    by James Mortemore of http://www.frostcast.net
+		by James Mortemore of http://www.frostcast.net
 	is licenced under a Creative Commons
 	Attribution-NonCommercial-ShareAlike 2.0 UK: England & Wales.
-	Permissions beyond the scope of this licence 
+	Permissions beyond the scope of this licence
 	may be available at http://creativecommons.org/licenses/by-nc-sa/2.0/uk/.
 	Additional licence terms at https://raw.github.com/confuser/Ban-Management/master/banmanagement/licence.txt
 */
 
-function latestBans($server, $serverID) {	
+function latestBans($server, $serverID) {
 	// Clear old latest bans cache's
 	clearCache($serverID.'/latestbans', 300);
 	clearCache($serverID.'/mysqlTime', 300);
@@ -42,7 +42,7 @@ function latestBans($server, $serverID) {
 	}
 }
 
-function latestMutes($server, $serverID) {	
+function latestMutes($server, $serverID) {
 	// Clear old latest mutes cache's
 	clearCache($serverID.'/latestmutes', 300);
 	clearCache($serverID.'/mysqlTime', 300);
@@ -75,7 +75,7 @@ function latestMutes($server, $serverID) {
 	}
 }
 
-function latestWarnings($server, $serverID) {		
+function latestWarnings($server, $serverID) {
 	// Clear old latest warnings cache's
 	clearCache($serverID.'/latestwarnings', 300);
 	clearCache($serverID.'/mysqlTime', 300);
@@ -105,15 +105,15 @@ function latestWarnings($server, $serverID) {
 		<div class="col-lg-6">
 			<h1><?php echo $language['header-title']; ?></h1>
 			<form action="index.php" method="get" class="form-horizontal" id="search">
-		        <div class="input-group">
-				    <div class="input-group-btn">
-				        <button id="player" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Player <span class="caret"></span></button>
+						<div class="input-group">
+						<div class="input-group-btn">
+								<button id="player" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Player <span class="caret"></span></button>
 						<ul class="dropdown-menu">
-						  <li id="ip"><a href="#">Search by IP Address</a></li>
+							<li id="ip"><a href="#">Search by IP Address</a></li>
 						</ul>
 					</div>
 					<input type="text" name="player" class="form-control" placeholder="Search by username">
-			    </div>
+					</div>
 			<?php
 			if(!empty($settings['servers']) && count($settings['servers']) > 1) {
 				echo '
@@ -155,12 +155,12 @@ function latestWarnings($server, $serverID) {
 						echo htmlspecialchars_decode($settings['submit_buttons_after_html'], ENT_QUOTES);
 					?>
 				</div>
-		    </form>
+				</form>
 		</div>
 		<div class="col-lg-6">
 			<div class="panel panel-jumbotron">
 				<div class="panel-body">
-		<?php 
+		<?php
 		if(isset($settings['bm_info']) && $settings['bm_info']) {
 		?>
 					<p>
@@ -173,7 +173,7 @@ function latestWarnings($server, $serverID) {
 
 						?>
 						<?php
-							echo $language['brand']; 
+							echo $language['brand'];
 						?>
 
 						</span><br />
@@ -182,18 +182,18 @@ function latestWarnings($server, $serverID) {
 					</p>
 		<?php
 		}
-		
+
 		if(isset($settings['pastbans']) && $settings['pastbans']) {
 		?>
 					<span>
-						<span class="glyphicon glyphicon-globe"></span> 
+						<span class="glyphicon glyphicon-globe"></span>
 						<?php echo $language['past_player_bans']; ?>
 					</span>
 					<div class="list-group pastbans">
 					<?php
 					$i = 0;
 					foreach($settings['servers'] as $server) {
-						list($pastBans) = cache("SELECT COUNT(*) FROM ".$server['recordTable'], 3600, '', $server, $server['name'].'pastBanStats');	
+						list($pastBans) = cache("SELECT COUNT(*) FROM ".$server['recordTable'], 3600, '', $server, $server['name'].'pastBanStats');
 
 						echo '
 						<a class="list-group-item" href="index.php?action=searchplayer&server='.$i.'&player=%25">
@@ -227,12 +227,12 @@ if(count($settings['servers']) > 1) {
 				echo '
 		<div class="col-lg-4">
 			<h3>'.$server['name'].'</h3>
-			<ul class="nav nav-tabs nav-stacked">';	
+			<ul class="nav nav-tabs nav-stacked">';
 				latestBans($server, $i);
 				echo '
 			</ul>
 		</div>';
-		
+
 				++$i;
 			}
 			echo '
@@ -255,12 +255,12 @@ if(count($settings['servers']) > 1) {
 				echo '
 		<div class="col-lg-4">
 			<h3>'.$server['name'].'</h3>
-			<ul class="nav nav-tabs nav-stacked">';	
+			<ul class="nav nav-tabs nav-stacked">';
 				latestMutes($server, $i);
 				echo '
 			</ul>
 		</div>';
-				
+
 				++$i;
 			}
 			echo '
@@ -283,12 +283,12 @@ if(count($settings['servers']) > 1) {
 				echo '
 		<div class="col-lg-4">
 			<h3>'.$server['name'].'</h3>
-			<ul class="nav nav-tabs nav-stacked">';	
+			<ul class="nav nav-tabs nav-stacked">';
 				latestWarnings($server, $i);
 				echo '
 			</ul>
 		</div>';
-				
+
 				++$i;
 			}
 			echo '
@@ -298,53 +298,53 @@ if(count($settings['servers']) > 1) {
 	}
 } else if(count($settings['servers']) == 1) {
 	$display = false;
-	
+
 	if((isset($settings['latest_bans']) && $settings['latest_bans']) || !isset($settings['latest_bans']))
 		$display = true;
 	if((isset($settings['latest_mutes']) && $settings['latest_mutes']))
 		$display = true;
 	if((isset($settings['latest_warnings']) && $settings['latest_warnings']))
 		$display = true;
-		
+
 	if($display) {
 		$server = $settings['servers'][0];
 		echo '
 		<h1>'.$server['name'].'</h1>
 		<div class="row">';
-		
+
 		if((isset($settings['latest_bans']) && $settings['latest_bans']) || !isset($settings['latest_bans'])) {
 			echo '
 			<div class="col-lg-4">
 				<h3>'.$language['latest_bans_title'].'</h3>
-				<ul class="nav nav-tabs nav-stacked">';	
+				<ul class="nav nav-tabs nav-stacked">';
 					latestBans($server, 0);
 				echo '
 				</ul>
 			</div>';
 		}
-		
+
 		if((isset($settings['latest_mutes']) && $settings['latest_mutes'])) {
 			echo '
 			<div class="col-lg-4">
 				<h3>'.$language['latest_mutes_title'].'</h3>
-				<ul class="nav nav-tabs nav-stacked">';	
+				<ul class="nav nav-tabs nav-stacked">';
 					latestMutes($server, 0);
 					echo '
 				</ul>
 			</div>';
 		}
-		
+
 		if((isset($settings['latest_warnings']) && $settings['latest_warnings'])) {
 			echo '
 			<div class="col-lg-4">
 				<h3>'.$language['latest_warnings_title'].'</h3>
-				<ul class="nav nav-tabs nav-stacked">';	
+				<ul class="nav nav-tabs nav-stacked">';
 					latestWarnings($server, 0);
 				echo '
 				</ul>
 			</div>';
 		}
-		
+
 		echo '
 		</div>';
 	}

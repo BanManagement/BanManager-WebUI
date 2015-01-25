@@ -1,9 +1,9 @@
 <?php
 /*  BanManagement © 2012, a web interface for the Bukkit plugin BanManager
-    by James Mortemore of http://www.frostcast.net
+		by James Mortemore of http://www.frostcast.net
 	is licenced under a Creative Commons
 	Attribution-NonCommercial-ShareAlike 2.0 UK: England & Wales.
-	Permissions beyond the scope of this licence 
+	Permissions beyond the scope of this licence
 	may be available at http://creativecommons.org/licenses/by-nc-sa/2.0/uk/.
 	Additional licence terms at https://raw.github.com/confuser/Ban-Management/master/banmanagement/licence.txt
 */
@@ -22,13 +22,13 @@ else {
 	// Clear old players
 	clearCache($_GET['server'].'/players', 300);
 	clearCache($_GET['server'].'/mysqlTime', 300);
-	
+
 	// Check if they are logged in as an admin
 	if(isset($_SESSION['admin']) && $_SESSION['admin'])
 		$admin = true;
 	else
 		$admin = false;
-	
+
 	// Check if the player exists
 	$currentBans = cache("SELECT * FROM ".$server['bansTable']." WHERE banned = '".$_GET['player']."'", 300, $_GET['server'].'/players', $server);
 	$pastBans = cache("SELECT * FROM ".$server['recordTable']." WHERE banned = '".$_GET['player']."'", 300, $_GET['server'].'/players', $server);
@@ -44,7 +44,7 @@ else {
 		// They have been banned, naughty!
 		// Now check the time differences!
 		$timeDiff = cache('SELECT ('.time().' - UNIX_TIMESTAMP(now()))/3600 AS mysqlTime', 5, $_GET['server'].'/mysqlTime', $server); // Cache it for a few seconds
-		
+
 		$mysqlTime = $timeDiff['mysqlTime'];
 		$mysqlTime = ($mysqlTime > 0)  ? floor($mysqlTime) : ceil ($mysqlTime);
 		$mysqlSecs = ($mysqlTime * 60) * 60;
@@ -74,7 +74,7 @@ else {
 			echo substr($html, 0, -2).'
 			</p>';
 		}
-		
+
 		if((isset($settings['player_current_ban']) && $settings['player_current_ban']) || !isset($settings['player_current_ban'])) {
 			?>
 			<br />
@@ -99,13 +99,13 @@ else {
 					$currentBans['ban_expires_on'] = $currentBans['ban_expires_on'] + $mysqlSecs;
 					$currentBans['ban_time'] = $currentBans['ban_time'] + $mysqlSecs;
 					$expires = $currentBans['ban_expires_on'] - time();
-					
+
 					if($expires > 0)
 						echo '<time datetime="'.date('c', $currentBans['ban_expires_on']).'">'.secs_to_h($expires).'</time>';
 					else
 						echo 'Now';
 				}
-				
+
 				echo '</td>
 					</tr>
 					<tr>
@@ -147,7 +147,7 @@ else {
 			if(isset($settings['player_current_ban_extra_html'])) {
 				$extra = htmlspecialchars_decode($settings['player_current_ban_extra_html'], ENT_QUOTES);
 				$extra = str_replace(array('{SERVER}', '{SERVERID}', '{NAME}'), array($server['name'], $_GET['server'], $_GET['player']), $extra);
-				
+
 				echo '
 			<div id="current-ban-extra">
 				'.$extra.'
@@ -180,30 +180,30 @@ else {
 									<div class="controls">
 										<div class="input-group date datetimepicker">
 										<?php
-											echo '						
+											echo '
 											<span class="input-group-btn">
 												<button class="btn btn-danger bantype" type="button">';
 											if($currentBans['ban_expires_on'] == 0)
 												echo 'Permanent';
 											else
 												echo 'Temporary';
-										
+
 											echo '</button>
 											</span>
 											<input type="text" class="form-control required';
-										
+
 											if($currentBans['ban_expires_on'] == 0)
 												echo ' disabled" disabled="disabled"';
 											else
-												echo '"'; 
-										
+												echo '"';
+
 											echo ' name="expires" data-format="DD/MM/YYYY hh:mm:ss" value="';
 
 											if($currentBans['ban_expires_on'] == 0)
 												echo '';
 											else
 												echo date('d/m/Y H:i:s', $currentBans['ban_expires_on']);
-											
+
 											echo '" id="bandatetime" />';
 										?>
 											<span class="input-group-addon">
@@ -229,7 +229,7 @@ else {
 			<?php
 			}
 		}
-		
+
 		if((isset($settings['player_current_mute']) && $settings['player_current_mute']) || !isset($settings['player_current_mute'])) {
 			?>
 			<br />
@@ -254,7 +254,7 @@ else {
 					$currentMutes['mute_expires_on'] = $currentMutes['mute_expires_on'] + $mysqlSecs;
 					$currentMutes['mute_time'] = $currentMutes['mute_time'] + $mysqlSecs;
 					$expires = $currentMutes['mute_expires_on'] - time();
-				
+
 					if($expires > 0)
 						echo '<time datetime="'.date('c', $currentMutes['mute_expires_on']).'">'.secs_to_h($expires).'</time>';
 					else
@@ -284,7 +284,7 @@ else {
 				}
 			}
 				?>
-				
+
 				</tbody>
 				<?php
 			if($admin && count($currentMutes) != 0) {
@@ -299,19 +299,19 @@ else {
 				</tfoot>';
 			}
 				?>
-			
+
 			</table><?php
 			if(isset($settings['player_current_mute_extra_html'])) {
 				$extra = htmlspecialchars_decode($settings['player_current_mute_extra_html'], ENT_QUOTES);
 				$extra = str_replace(array('{SERVER}', '{SERVERID}', '{NAME}'), array($server['name'], $_GET['server'], $_GET['player']), $extra);
-				
+
 				echo '
 			<div id="current-mute-extra">
 				'.$extra.'
 			</div>';
 			}
 			if($admin && count($currentMutes) != 0) {?>
-			
+
 			<div class="modal fade" id="editmute">
 				<div class="modal-dialog">
 					<div class="modal-content">
@@ -336,29 +336,29 @@ else {
 											<div class="input datetimepicker date">
 											<?php
 								/*
-												echo '						
+												echo '
 												<div class="input-group-addon">
 													<button class="btn btn-danger bantype" type="button">';
 											if($currentMutes['mute_expires_on'] == 0)
 												echo 'Permanent';
 											else
 												echo 'Temporary';
-										
+
 											echo '</button>
 													<input type="text" class="required';
-					
+
 											if($currentMutes['mute_expires_on'] == 0)
 												echo ' disabled" disabled="disabled"';
 											else
-												echo '"'; 
-										
+												echo '"';
+
 											echo ' name="expires" data-format="dd/MM/yyyy hh:mm:ss" value="';
 
 											if($currentMutes['mute_expires_on'] == 0)
 												echo '';
 											else
 												echo date('d/m/Y H:i:s', $currentMutes['mute_expires_on']);
-											
+
 											echo '" id="mutedatetime" />';
 
 								*/			?>
@@ -388,7 +388,7 @@ else {
 			</div><?php
 			}
 		}
-		
+
 		if((isset($settings['player_previous_bans']) && $settings['player_previous_bans']) || !isset($settings['player_previous_bans'])) {
 		?>
 			<br />
@@ -420,7 +420,7 @@ else {
 				echo '
 						<th></th>';
 				?>
-				
+
 					</tr>
 				</thead>
 				<tbody><?php
@@ -453,11 +453,11 @@ else {
 				}
 			}
 				?>
-				
+
 				</tbody>
 			</table><?php
-		} 
-		
+		}
+
 		if((isset($settings['player_previous_mutes']) && $settings['player_previous_mutes']) || !isset($settings['player_previous_mutes'])) {
 		?>
 			<br />
@@ -489,7 +489,7 @@ else {
 				echo '
 						<th></th>';
 				?>
-					
+
 					</tr>
 				</thead>
 				<tbody><?php
@@ -520,11 +520,11 @@ else {
 				}
 			}
 				?>
-				
+
 				</tbody>
 			</table><?php
 		}
-		
+
 		if((isset($settings['player_warnings']) && $settings['player_warnings']) || !isset($settings['player_warnings'])) {
 			?>
 			<br />
@@ -553,7 +553,7 @@ else {
 				echo '
 						<th></th>';
 				?>
-				
+
 					</tr>
 				</thead>
 				<tbody><?php
@@ -581,12 +581,12 @@ else {
 				}
 			}
 				?>
-				
+
 				</tbody>
 			</table><?php
 		}
-		
-		if((isset($settings['player_kicks']) && $settings['player_kicks']) || !isset($settings['player_kicks'])) {		
+
+		if((isset($settings['player_kicks']) && $settings['player_kicks']) || !isset($settings['player_kicks'])) {
 		?>
 			<br />
 			<table class="table table-striped table-bordered" id="previous-kicks">
@@ -614,7 +614,7 @@ else {
 				echo '
 						<th></th>';
 				?>
-					
+
 					</tr>
 				</thead>
 				<tbody><?php
@@ -641,7 +641,7 @@ else {
 				}
 			}
 				?>
-				
+
 				</tbody>
 			</table><?php
 		} ?>

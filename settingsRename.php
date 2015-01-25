@@ -3,7 +3,7 @@
 * This is the general configuaration file for Ban Management.
 * In here you can control your encoding for server transfers,
 * define what tables you want enabled, set your password for ACP,
-* and more. 
+* and more.
 **/
 
 $settings['utf8'] = false; // Encoding (Recommended TRUE)
@@ -26,7 +26,7 @@ $settings['player_kicks'] = true;
 $settings['player_warnings'] = true;
 $settings['player_current_ban_extra_html'] = '';
 $settings['player_current_mute_extra_html'] = '';
-	
+
 /**
 * These are the language options for Ban Management
 **/
@@ -42,9 +42,9 @@ $language['nav-home'] = 'Home'; // The text displayed in the navbar for 'Home'
 $language['nav-stats'] = 'Statistics'; // The text displayed in the navbar for 'Servers'
 $language['past_player_bans'] = 'Past Player Bans'; // The text displayed on the homepage
 $language['bm_info_text'] = // The text displayed if bm_info is set to true. Enter your text below, HTML elements supported
-' 
-	Ban Management is powerful ban and mute application that allows players to check if and why they were banned or muted and who
-	it was by. You can also see how much time is left of your ban or mute.
+'
+  Ban Management is powerful ban and mute application that allows players to check if and why they were banned or muted and who
+  it was by. You can also see how much time is left of your ban or mute.
 
 ';
 

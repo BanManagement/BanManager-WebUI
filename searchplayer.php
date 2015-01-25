@@ -1,9 +1,9 @@
 <?php
 /*  BanManagement © 2012, a web interface for the Bukkit plugin BanManager
-    by James Mortemore of http://www.frostcast.net
+		by James Mortemore of http://www.frostcast.net
 	is licenced under a Creative Commons
 	Attribution-NonCommercial-ShareAlike 2.0 UK: England & Wales.
-	Permissions beyond the scope of this licence 
+	Permissions beyond the scope of this licence
 	may be available at http://creativecommons.org/licenses/by-nc-sa/2.0/uk/.
 	Additional licence terms at https://raw.github.com/confuser/Ban-Management/master/banmanagement/licence.txt
 */
@@ -20,11 +20,11 @@ else {
 
 	// Get the server details
 	$server = $settings['servers'][$_GET['server']];
-	
+
 	// Clear old search cache's
 	clearCache($_GET['server'].'/search', 300);
 	clearCache($_GET['server'].'/mysqlTime', 300);
-	
+
 	$search = $_GET['player'];
 	$page = 0;
 	$size = 10;
@@ -32,13 +32,13 @@ else {
 	$sortBy = 'ASC';
 	$filter = '';
 	$filterCol = 0;
-	
+
 	$timeDiff = cache('SELECT ('.time().' - UNIX_TIMESTAMP(now()))/3600 AS mysqlTime', 5, $_GET['server'].'/mysqlTime', $server); // Cache it for a few seconds
-		
+
 	$mysqlTime = $timeDiff['mysqlTime'];
 	$mysqlTime = ($mysqlTime > 0)  ? floor($mysqlTime) : ceil ($mysqlTime);
 	$mysqlSecs = ($mysqlTime * 60) * 60;
-	
+
 	if(isset($_GET['ajax'])) {
 
 		if(isset($_GET['page']) && is_numeric($_GET['page']))
@@ -66,28 +66,28 @@ else {
 		$found = searchPlayers($search, $_GET['server'], $server, $sortByCol, $sortBy, $pastbans);
 		$total = count($found);
 		$timeNow = time();
-		
+
 		if(is_array($found)) {
 			$playerNames = array_keys($found);
-			
+
 			$ajaxArray = array();
 			$ajaxArray['total_rows'] = $total;
-			
+
 			$start = $page * $size;
 			$end = $start + $size;
-			
+
 			if(!empty($filter)) {
 				$start = 0;
 				$end = $total;
 			}
-			
+
 			for($i = $start; $i < $end; ++$i) {
 				if(!isset($playerNames[$i]))
 					break;
-					
+
 				$player = $found[$playerNames[$i]];
 				$expireTime = ($player['expires'] + $mysqlSecs)- $timeNow;
-				
+
 				if($player['type'] != 'Kick' && $player['type'] != 'Warning') {
 					if($player['expires'] == 0)
 						$expires = '<span class="label label-danger">Permanent</span>';
@@ -96,7 +96,7 @@ else {
 					} else
 						$expires = '<span class="label label-warning">Expired</span>';
 				}
-				
+
 				if(!empty($filter)) {
 					$skip = false;
 					switch($filterCol) {
@@ -126,14 +126,14 @@ else {
 								$skip = true;
 						break;
 					}
-					
+
 					if($skip)
 						continue;
 				}
-				
+
 				if(!isset($time))
 					$time = (!empty($player['time']) ? date('j F Y h:i:s A', $player['time']) : '');
-				
+
 				$ajaxArray['rows'][] = array(
 					'<img src="https://minotar.net/helm/'.$playerNames[$i].'/23" alt="'.$playerNames[$i].'" class="minihead" /> <a href="index.php?action=viewplayer&player='.$playerNames[$i].'&server='.$_GET['server'].'">'.$playerNames[$i].'</a>',
 					$player['type'],
@@ -144,12 +144,12 @@ else {
 				);
 				unset($time);
 			}
-			
+
 			if(!empty($filter) && isset($ajaxArray['rows'])) {
 				$ajaxArray['total_rows'] = count($ajaxArray['rows']);
 				$start = $page * $size;
-				
-				if($ajaxArray['total_rows'] >= $start) {	
+
+				if($ajaxArray['total_rows'] >= $start) {
 					$ajaxArray['rows'] = array_slice($ajaxArray['rows'], $start, $size);
 				}
 			}
@@ -157,7 +157,7 @@ else {
 			$total = 1;
 		if(!is_array($found) || !isset($ajaxArray['rows']))
 			$ajaxArray = array('total_rows' => 1, 'rows' => array(array('None Found', '', '', '', '', '')));
-		
+
 		die(json_encode($ajaxArray));
 	}
 	$found = searchPlayers($search, $_GET['server'], $server, $sortByCol, $sortBy, $pastbans);

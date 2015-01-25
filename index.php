@@ -1,20 +1,21 @@
 <?php
 /*  BanManagement © 2012, a web interface for the Bukkit plugin BanManager
-    by James Mortemore of http://www.frostcast.net
+		by James Mortemore of http://www.frostcast.net
 	is licenced under a Creative Commons
 	Attribution-NonCommercial-ShareAlike 2.0 UK: England & Wales.
-	Permissions beyond the scope of this licence 
+	Permissions beyond the scope of this licence
 	may be available at http://creativecommons.org/licenses/by-nc-sa/2.0/uk/.
 	Additional licence terms at https://raw.github.com/confuser/Ban-Management/master/banmanagement/licence.txt
 */
 session_name("BanManagement");
 session_start();
 ob_start();
-error_reporting(0); // Disable error reports for security
+ini_set('display_errors',1);
+error_reporting(1); // Disable error reports for security
 
 if(!isset($_SESSION['initiated'])) {
-    session_regenerate_id();
-    $_SESSION['initiated'] = true;
+		session_regenerate_id();
+		$_SESSION['initiated'] = true;
 }
 
 define('IN_PATH', realpath('.') . '/'); // This allows us to use absolute urls
@@ -46,16 +47,16 @@ if(!isset($_SERVER['REQUEST_URI'])) {
 
 // mysql_real_escape_string that doesn't require an active database connection
 function mysql_escape_mimic($inp) {
-    if(is_array($inp))
-        return array_map(__METHOD__, $inp);
+		if(is_array($inp))
+				return array_map(__METHOD__, $inp);
 
-    if(!empty($inp) && is_string($inp))
-        return str_replace(array('\\', "\0", "\n", "\r", "'", '"', "\x1a"), array('\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'), $inp);
- 
-    return $inp;
+		if(!empty($inp) && is_string($inp))
+				return str_replace(array('\\', "\0", "\n", "\r", "'", '"', "\x1a"), array('\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'), $inp);
+
+		return $inp;
 }
 
-/** 
+/**
  * Encodes HTML within below globals, takes into account magic quotes.
  * Note: $_SERVER is not sanitised, be aware of this when using it.
  * Why repeat it twice? Checking magic quotes everytime in a loop is slow and so is any additional if statements ;)
@@ -64,7 +65,7 @@ $in = array(&$_GET, &$_POST);
 if(get_magic_quotes_gpc()) {
 	while(list($k, $v) = each($in)) {
 		foreach($v as $key => $val) {
-			if(!is_array($val)) 
+			if(!is_array($val))
 				$in[$k][mysql_escape_mimic(htmlspecialchars(stripslashes($key), ENT_QUOTES))] = mysql_escape_mimic(htmlspecialchars(stripslashes($val), ENT_QUOTES));
 			else
 				$in[] =& $in[$k][$key];
@@ -84,20 +85,20 @@ if(get_magic_quotes_gpc()) {
 if(!function_exists('json_encode')) {
 	function json_encode($a = false) {
 		/**
-     	* This function encodes a PHP array into JSON
+			* This function encodes a PHP array into JSON
 		* Function from php.net by Steve
-     	* Returns: @JSON
-     	*/
-    	if(is_null($a))
+			* Returns: @JSON
+			*/
+			if(is_null($a))
 			return 'null';
-    	if($a === false)
+			if($a === false)
 			return 'false';
-    	if($a === true)
+			if($a === true)
 			return 'true';
 		if(is_scalar($a)) {
 			if(is_float($a))
 				return floatval(str_replace(",", ".", strval($a))); // Always use "." for floats.
-      		if(is_string($a)) {
+					if(is_string($a)) {
 				static $jsonReplaces = array(array("\\", "/", "\n", "\t", "\r", "\b", "\f", '"'), array('\\\\', '\\/', '\\n', '\\t', '\\r', '\\b', '\\f', '\"'));
 				return '"' . str_replace($jsonReplaces[0], $jsonReplaces[1], $a) . '"';
 			} else
@@ -127,7 +128,7 @@ $apc_status = extension_loaded('apc') && ini_get('apc.enabled');
 if($apc_status) {
 	if(!function_exists('apc_exists')) {
 		if(version_compare(phpversion('apc'), '3.1.4', '<')) {
-			function apc_exists($key) { 
+			function apc_exists($key) {
 				return (bool) apc_fetch($key);
 			}
 		}
@@ -242,7 +243,7 @@ function cache($query, $time, $folder = '', $server = array(), $name = '') {
 		$file = $folder.'/'.$name;
 	else if($folder == '' && !empty($name))
 		$file = $name;
-	
+
 	if($settings['apc_enabled']) {
 		if(apc_exists($file))
 			return apc_fetch($file);
@@ -297,14 +298,14 @@ function createCache($query, $server, $file, $time = 0) {
 }
 
 function rglob($pattern='*', $flags = 0, $path='') {
-    $paths = glob($path.'*', GLOB_MARK|GLOB_ONLYDIR|GLOB_NOSORT);
-    $files = glob($path.$pattern, $flags);
+		$paths = glob($path.'*', GLOB_MARK|GLOB_ONLYDIR|GLOB_NOSORT);
+		$files = glob($path.$pattern, $flags);
 	if($path !== false && $files !== false) {
 		foreach($paths as $path)
 			$files = array_merge($files, rglob($pattern, $flags, $path));
 	} else
 		$files = array();
-    return $files;
+		return $files;
 }
 
 function clearCache($folder = '', $olderThan = 0) {
@@ -314,7 +315,7 @@ function clearCache($folder = '', $olderThan = 0) {
 		apc_delete($folder);
 		return;
 	}
-	
+
 	$timeNow = time();
 	if(empty($folder))
 		$files = rglob('*.php', null, IN_PATH.'cache');
@@ -331,16 +332,16 @@ function clearCache($folder = '', $olderThan = 0) {
 
 function connect($server) {
 	global $settings;
-	
+
 	if(!mysql_connect($server['host'], $server['username'], $server['password']))
 		return false;
 	else if(!mysql_select_db($server['database']))
 		return false;
 	$settings['last_connection'] = $server;
-	
+
 	if(isset($settings['utf8']) && $settings['utf8'])
 		mysql_query("SET NAMES 'utf8'");
-	
+
 	return true;
 }
 
@@ -396,20 +397,20 @@ function searchPlayers($search, $serverID, $server, $sortByCol = 'name', $sortBy
 		$result = cache("SELECT banned, banned_by, ban_reason, ban_time, ban_expires_on FROM ".$server['bansTable']." WHERE banned LIKE '%".$search."%' ORDER BY ".$sort['bans']." $sortBy", 300, $serverID.'/search', $server);
 		if(isset($result[0]) && !is_array($result[0]) && !empty($result[0]))
 			$result = array($result);
-		
+
 		if(count($result) > 0) {
 			foreach($result as $r)
 				$found[$r['banned']] = array('by' => $r['banned_by'], 'reason' => $r['ban_reason'], 'type' => 'Ban', 'time' => $r['ban_time'], 'expires' => $r['ban_expires_on']);
 		}
 	}
-	
+
 	if((isset($settings['player_previous_bans']) && $settings['player_previous_bans']) || !isset($settings['player_previous_bans'])) {
 		if($past) {
 			// Past Bans
 			$result = cache("SELECT banned, banned_by, ban_reason, ban_time, ban_expired_on FROM ".$server['recordTable']." WHERE banned LIKE '%".$search."%' ORDER BY ".$sort['banrecords']." $sortBy", 300, $serverID.'/search', $server);
 			if(isset($result[0]) && !is_array($result[0]) && !empty($result[0]))
 				$result = array($result);
-			
+
 			if(count($result) > 0) {
 				foreach($result as $r) {
 					if(!isset($found[$r['banned']]))
@@ -420,13 +421,13 @@ function searchPlayers($search, $serverID, $server, $sortByCol = 'name', $sortBy
 			}
 		}
 	}
-	
+
 	if((isset($settings['player_current_mute']) && $settings['player_current_mute']) || !isset($settings['player_current_mute'])) {
 		// Current Mutes
 		$result = cache("SELECT muted, muted_by, mute_reason, mute_time, mute_expires_on FROM ".$server['mutesTable']." WHERE muted LIKE '%".$search."%' ORDER BY ".$sort['mutes']." $sortBy", 300, $serverID.'/search', $server);
 		if(isset($result[0]) && !is_array($result[0]) && !empty($result[0]))
 			$result = array($result);
-		
+
 		if(count($result) > 0) {
 			foreach($result as $r) {
 				if(!isset($found[$r['muted']]))
@@ -434,14 +435,14 @@ function searchPlayers($search, $serverID, $server, $sortByCol = 'name', $sortBy
 			}
 		}
 	}
-	
+
 	if($past) {
 		if((isset($settings['player_previous_mutes']) && $settings['player_previous_mutes']) || !isset($settings['player_previous_mutes'])) {
 			// Past Mutes
 			$result = cache("SELECT muted, muted_by, mute_reason, mute_time, mute_expired_on FROM ".$server['mutesRecordTable']." WHERE muted LIKE '%".$search."%' ORDER BY ".$sort['muterecords']." $sortBy", 300, $serverID.'/search', $server);
 			if(isset($result[0]) && !is_array($result[0]) && !empty($result[0]))
 				$result = array($result);
-			
+
 			if(count($result) > 0) {
 				foreach($result as $r) {
 					if(!isset($found[$r['muted']]))
@@ -452,12 +453,12 @@ function searchPlayers($search, $serverID, $server, $sortByCol = 'name', $sortBy
 			}
 		}
 
-		if((isset($settings['player_kicks']) && $settings['player_kicks']) || !isset($settings['player_kicks'])) {		
+		if((isset($settings['player_kicks']) && $settings['player_kicks']) || !isset($settings['player_kicks'])) {
 			// Kicks
 			$result = cache("SELECT kicked, kicked_by, kick_reason, kick_time FROM ".$server['kicksTable']." WHERE kicked LIKE '%".$search."%' ORDER BY ".$sort['kicks']." $sortBy", 300, $serverID.'/search', $server);
 			if(isset($result[0]) && !is_array($result[0]) && !empty($result[0]))
 				$result = array($result);
-				
+
 			if(count($result) > 0) {
 				foreach($result as $r) {
 					if(!isset($found[$r['kicked']]))
@@ -468,13 +469,13 @@ function searchPlayers($search, $serverID, $server, $sortByCol = 'name', $sortBy
 			}
 		}
 	}
-	
+
 	if((isset($settings['player_warnings']) && $settings['player_warnings']) || !isset($settings['player_warnings'])) {
 		// Warnings
 		$result = cache("SELECT warned, warned_by, warn_reason, warn_time FROM ".$server['warningsTable']." WHERE warned LIKE '%".$search."%' ORDER BY ".$sort['warnings']." $sortBy", 300, $serverID.'/search', $server);
 		if(isset($result[0]) && !is_array($result[0]) && !empty($result[0]))
 			$result = array($result);
-		
+
 		if(count($result) > 0) {
 			foreach($result as $r) {
 				if(!isset($found[$r['warned']]))
@@ -484,7 +485,7 @@ function searchPlayers($search, $serverID, $server, $sortByCol = 'name', $sortBy
 			}
 		}
 	}
-	
+
 	if(count($found) == 0)
 		return false;
 	else if(count($found) == 1) {
@@ -531,18 +532,18 @@ function searchIps($search, $serverID, $server, $sortByCol = 'name', $sortBy = '
 	$result = cache("SELECT banned, banned_by, ban_reason, ban_time, ban_expires_on FROM ".$server['ipTable']." WHERE banned LIKE '%".$search."%' ORDER BY ".$sort['bans']." $sortBy", 300, $serverID.'/search', $server);
 	if(isset($result[0]) && !is_array($result[0]) && !empty($result[0]))
 		$result = array($result);
-	
+
 	if(count($result) > 0) {
 		foreach($result as $r)
 			$found[$r['banned']] = array('by' => $r['banned_by'], 'reason' => $r['ban_reason'], 'type' => 'Ban', 'time' => $r['ban_time'], 'expires' => $r['ban_expires_on']);
 	}
-	
+
 	if($past) {
 		// Past Bans
 		$result = cache("SELECT banned, banned_by, ban_reason, ban_time, ban_expired_on FROM ".$server['ipRecordTable']." WHERE banned LIKE '%".$search."%' ORDER BY ".$sort['banrecords']." $sortBy", 300, $serverID.'/search', $server);
 		if(isset($result[0]) && !is_array($result[0]) && !empty($result[0]))
 			$result = array($result);
-		
+
 		if(count($result) > 0) {
 			foreach($result as $r) {
 				if(!isset($found[$r['banned']]))
@@ -552,7 +553,7 @@ function searchIps($search, $serverID, $server, $sortByCol = 'name', $sortBy = '
 			}
 		}
 	}
-	
+
 	if(count($found) == 0)
 		return false;
 	else if(count($found) == 1) {
@@ -563,7 +564,7 @@ function searchIps($search, $serverID, $server, $sortByCol = 'name', $sortBy = '
 		// STUFF
 		return $found;
 	}
-	
+
 	if(count($found) == 0)
 		return false;
 	else if(count($found) == 1) {
@@ -612,7 +613,7 @@ else{
 // IE8 frame busting, well thats the only good thing it has :P (Now supported by Firefox woot)
 if((isset($settings['iframe_protection']) && $settings['iframe_protection']) || !isset($settings['iframe_protection']))
 	header('X-FRAME-OPTIONS: SAMEORIGIN');
-	
+
 $settings['servers'] = unserialize($settings['servers']);
 
 // Check if APC is enabled to use that instead of file cache

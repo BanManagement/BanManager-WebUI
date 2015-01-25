@@ -1,9 +1,9 @@
 <?php
 /*  BanManagement © 2012, a web interface for the Bukkit plugin BanManager
-    by James Mortemore of http://www.frostcast.net
+		by James Mortemore of http://www.frostcast.net
 	is licenced under a Creative Commons
 	Attribution-NonCommercial-ShareAlike 2.0 UK: England & Wales.
-	Permissions beyond the scope of this licence 
+	Permissions beyond the scope of this licence
 	may be available at http://creativecommons.org/licenses/by-nc-sa/2.0/uk/.
 	Additional licence terms at https://raw.github.com/confuser/Ban-Management/master/banmanagement/licence.txt
 */
@@ -34,7 +34,7 @@ else {
 			list($currentPermBans) = cache("SELECT COUNT(*) FROM ".$server['bansTable']." WHERE ban_expires_on = 0", 3600, '', $server, $server['name'].'currentPermStats');
 
 			list($pastBans) = cache("SELECT COUNT(*) FROM ".$server['recordTable'], 3600, '', $server, $server['name'].'pastBanStats');
-			
+
 			echo '
 			<tr>
 				<td>'.$server['name'].'</td>
@@ -44,7 +44,7 @@ else {
 			</tr>';
 		}
 		?>
-		
+
 		<?php
 	}
 	?>

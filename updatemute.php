@@ -1,9 +1,9 @@
 <?php
 /*  BanManagement © 2012, a web interface for the Bukkit plugin BanManager
-    by James Mortemore of http://www.frostcast.net
+		by James Mortemore of http://www.frostcast.net
 	is licenced under a Creative Commons
 	Attribution-NonCommercial-ShareAlike 2.0 UK: England & Wales.
-	Permissions beyond the scope of this licence 
+	Permissions beyond the scope of this licence
 	may be available at http://creativecommons.org/licenses/by-nc-sa/2.0/uk/.
 	Additional licence terms at https://raw.github.com/confuser/Ban-Management/master/banmanagement/licence.txt
 */
@@ -27,27 +27,27 @@ else {
 			$timestamp = $_POST['expiresTimestamp'];
 	} else
 		$timestamp = 0;
-		
+
 	if(!isset($_POST['reason']))
 		$_POST['reason'] = '';
-	
+
 	if(!isset($error)) {
 		// Get the server details
 		$server = $settings['servers'][$_POST['server']];
-		
+
 		if(!connect($server))
 			$error = 'Unable to connect to database';
 		else {
 			$currentMute = mysql_query("SELECT mute_id FROM ".$server['mutesTable']." WHERE mute_id = '".$_POST['id']."'");
-			
+
 			if(mysql_num_rows($currentMute) == 0)
 				$error = 'That mute does not exist';
 			else {
 				mysql_query("UPDATE ".$server['mutesTable']." SET mute_reason = '".$_POST['reason']."',  mute_expires_on = '$timestamp' WHERE mute_id = '".$_POST['id']."'");
-				
+
 				// Clear the cache
 				clearCache($_POST['server'].'/players');
-				
+
 				$array['success'] = 'true';
 			}
 		}

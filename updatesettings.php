@@ -1,9 +1,9 @@
 <?php
 /*  BanManagement © 2012, a web interface for the Bukkit plugin BanManager
-    by James Mortemore of http://www.frostcast.net
+		by James Mortemore of http://www.frostcast.net
 	is licenced under a Creative Commons
 	Attribution-NonCommercial-ShareAlike 2.0 UK: England & Wales.
-	Permissions beyond the scope of this licence 
+	Permissions beyond the scope of this licence
 	may be available at http://creativecommons.org/licenses/by-nc-sa/2.0/uk/.
 	Additional licence terms at https://raw.github.com/confuser/Ban-Management/master/banmanagement/licence.txt
 */
@@ -28,7 +28,7 @@ if($_POST['type'] == 'mainsettings') {
 	$iframe_protection = 'false';
 	$submit_buttons_before_html = '';
 	$submit_buttons_after_html = '';
-	
+
 	if(isset($_POST['latestbans']))
 		$latest_bans = 'true';
 	if(isset($_POST['latestmutes']))
@@ -47,7 +47,7 @@ if($_POST['type'] == 'mainsettings') {
 	$footer = htmlspecialchars_decode($_POST['footer'], ENT_QUOTES);
 
 	$variables = array('latest_bans', 'latest_mutes', 'latest_warnings', 'utf8', 'footer', 'iframe_protection', 'submit_buttons_before_html', 'submit_buttons_after_html');
-	
+
 } else if($_POST['type'] == 'viewplayer') {
 	// Validate the data!
 	$player_current_ban = 'false';
@@ -58,7 +58,7 @@ if($_POST['type'] == 'mainsettings') {
 	$player_warnings = 'false';
 	$player_current_ban_extra_html = '';
 	$player_current_mute_extra_html = '';
-	
+
 	if(isset($_POST['ban']))
 		$player_current_ban = 'true';
 	if(isset($_POST['mute']))

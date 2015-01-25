@@ -1,9 +1,9 @@
 <?php
 /*  BanManagement © 2012, a web interface for the Bukkit plugin BanManager
-    by James Mortemore of http://www.frostcast.net
+		by James Mortemore of http://www.frostcast.net
 	is licenced under a Creative Commons
 	Attribution-NonCommercial-ShareAlike 2.0 UK: England & Wales.
-	Permissions beyond the scope of this licence 
+	Permissions beyond the scope of this licence
 	may be available at http://creativecommons.org/licenses/by-nc-sa/2.0/uk/.
 	Additional licence terms at https://raw.github.com/confuser/Ban-Management/master/banmanagement/licence.txt
 */
@@ -22,13 +22,13 @@ else {
 	// Clear old ip
 	clearCache($_GET['server'].'/ips', 300);
 	clearCache($_GET['server'].'/mysqlTime', 300);
-	
+
 	// Check if they are logged in as an admin
 	if(isset($_SESSION['admin']) && $_SESSION['admin'])
 		$admin = true;
 	else
 		$admin = false;
-	
+
 	// Check if the player exists
 	$currentBans = cache("SELECT * FROM ".$server['ipTable']." WHERE banned = '".$_GET['ip']."'", 300, $_GET['server'].'/ips', $server);
 	$pastBans = cache("SELECT * FROM ".$server['ipRecordTable']." WHERE banned = '".$_GET['ip']."'", 300, $_GET['server'].'/ips', $server);
@@ -39,7 +39,7 @@ else {
 		// They have been banned, naughty!
 		// Now check the time differences!
 		$timeDiff = cache('SELECT ('.time().' - UNIX_TIMESTAMP(now()))/3600 AS mysqlTime', 5, $_GET['server'].'/mysqlTime', $server); // Cache it for a few seconds
-		
+
 		$mysqlTime = $timeDiff['mysqlTime'];
 		$mysqlTime = ($mysqlTime > 0)  ? floor($mysqlTime) : ceil ($mysqlTime);
 		$mysqlSecs = ($mysqlTime * 60) * 60;
@@ -155,29 +155,29 @@ else {
 								<label class="control-label" for="bandatetime">Expires Server Time:</label>
 								<div class="controls">
 									<div class="input-append datetimepicker date"><?php
-			echo '						
+			echo '
 										<div class="input-prepend">
 											<button class="btn btn-danger bantype" type="button">';
 			if($currentBans['ban_expires_on'] == 0)
 				echo 'Never';
 			else
 				echo 'Temp';
-			
+
 			echo '</button>
 											<input type="text" class="required';
-			
+
 			if($currentBans['ban_expires_on'] == 0)
 				echo ' disabled" disabled="disabled"';
 			else
-				echo '"'; 
-			
+				echo '"';
+
 			echo ' name="expires" data-format="dd/MM/yyyy hh:mm:ss" value="';
 
 			if($currentBans['ban_expires_on'] == 0)
 				echo '';
 			else
 				echo date('d/m/Y H:i:s', $currentBans['ban_expires_on']);
-				
+
 			echo '" id="bandatetime" />';
 										?>
 											<span class="add-on">
@@ -230,9 +230,9 @@ else {
 		if($serverName) {
 				echo '
 					<th>Server</th>';
-		}		
+		}
 				?>
-				
+
 					</tr>
 				</thead>
 				<tbody><?php
@@ -267,7 +267,7 @@ else {
 			}
 		}
 				?>
-				
+
 				</tbody>
 			</table>
 		</div>
