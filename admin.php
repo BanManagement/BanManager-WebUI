@@ -172,9 +172,9 @@ else if(isset($_SESSION['failed_attempts']) && $_SESSION['failed_attempts'] > 4)
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="control-label" for="playermutesrecordstable">Player Mute Records Table:</label>
+								<label class="control-label" for="playermuterecordstable">Player Mute Records Table:</label>
 								<div class="controls">
-									<input type="text" class="form-control required fixedWidth" name="playermutesrecordstable" id="playermutesrecordstable" value="bm_player_mute_records">
+									<input type="text" class="form-control required fixedWidth" name="playermuterecordstable" id="playermuterecordstable" value="bm_player_mute_records">
 								</div>
 							</div>
 							<div class="form-group">
