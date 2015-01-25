@@ -3,3 +3,6 @@ settings.php
 
 # Cache
 cache
+
+# Test dump
+.dump_*.sql
