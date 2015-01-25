@@ -3,4 +3,4 @@ BanManager-WebUI
 
 Git repo initialized with WebUI for BanManager version 4.
 
-Checkout the `refactor/v5` branch.
+This branch aims to fix the web interface for version 5 and up.
