@@ -334,6 +334,24 @@ function clearCache($folder = '', $olderThan = 0) {
 	}
 }
 
+function playerNameToUUID($name, $server) {
+	$result = cache("SELECT HEX(id) as id, name FROM ".$server['playersTable']." WHERE name LIKE '%".$name."%' ORDER BY name", 300, 'playerNameToUUID', $server);
+
+	if(isset($result[0]) && !is_array($result[0]) && !empty($result[0])){
+		$result = array($result);
+	} else {
+		return false;
+	}
+
+	$found = array();
+
+	foreach($result as $r) {
+		array_push($found, $r['id']);
+	}
+
+	return $found;
+}
+
 function connect($server) {
 	global $settings;
 
@@ -395,6 +413,11 @@ function searchPlayers($search, $serverID, $server, $sortByCol = 'name', $sortBy
 
 	// Found results
 	$found = array();
+
+	/* TODO: remove this debug output */
+	echo "<pre>";
+	var_dump(playerNameToUUID($search, $server));
+	echo "</pre>";
 
 	if((isset($settings['player_current_ban']) && $settings['player_current_ban']) || !isset($settings['player_current_ban'])) {
 		// Current Bans
