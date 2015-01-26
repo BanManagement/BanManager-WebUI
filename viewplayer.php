@@ -29,13 +29,15 @@ else {
 	else
 		$admin = false;
 
+	$UUID = playerNameToUUID($_GET['player'], $server)[0];
+
 	// Check if the player exists
-	$currentBans = cache("SELECT * FROM ".$server['bansTable']." WHERE banned = '".$_GET['player']."'", 300, $_GET['server'].'/players', $server);
-	$pastBans = cache("SELECT * FROM ".$server['recordTable']." WHERE banned = '".$_GET['player']."'", 300, $_GET['server'].'/players', $server);
-	$currentMutes = cache("SELECT * FROM ".$server['mutesTable']." WHERE muted = '".$_GET['player']."'", 300, $_GET['server'].'/players', $server);
-	$pastMutes = cache("SELECT * FROM ".$server['mutesRecordTable']." WHERE muted = '".$_GET['player']."'", 300, $_GET['server'].'/players', $server);
-	$pastKicks = cache("SELECT * FROM ".$server['kicksTable']." WHERE kicked = '".$_GET['player']."'", 300, $_GET['server'].'/players', $server);
-	$pastWarnings = cache("SELECT * FROM ".$server['warningsTable']." WHERE warned = '".$_GET['player']."'", 300, $_GET['server'].'/players', $server);
+	$currentBans = cache("SELECT *, HEX(player_id) as player_id, HEX(actor_id) as actor_id FROM ".$server['playerBansTable']." WHERE player_id = UNHEX('".$UUID."')", 0, $_GET['server'].'/players', $server);
+	$pastBans = cache("SELECT *, HEX(player_id) as player_id, HEX(actor_id) as actor_id FROM ".$server['playerBanRecordsTable']." WHERE player_id = UNHEX('".$UUID."') AND pastCreated <> 0", 0, $_GET['server'].'/players', $server);
+	$currentMutes = cache("SELECT *, HEX(player_id) as player_id, HEX(actor_id) as actor_id FROM ".$server['playerMutesTable']." WHERE player_id = UNHEX('".$UUID."')", 0, $_GET['server'].'/players', $server);
+	$pastMutes = cache("SELECT *, HEX(player_id) as player_id, HEX(actor_id) as actor_id FROM ".$server['playerMuteRecordsTable']." WHERE player_id = UNHEX('".$UUID."')", 0, $_GET['server'].'/players', $server);
+	$pastKicks = cache("SELECT *, HEX(player_id) as player_id, HEX(actor_id) as actor_id FROM ".$server['playerKicksTable']." WHERE player_id = UNHEX('".$UUID."')", 0, $_GET['server'].'/players', $server);
+	$pastWarnings = cache("SELECT *, HEX(player_id) as player_id, HEX(actor_id) as actor_id FROM ".$server['playerWarningsTable']." WHERE player_id = UNHEX('".$UUID."')", 0, $_GET['server'].'/players', $server);
 
 	if(count($currentBans) == 0 && count($pastBans) == 0 && count($currentMutes) == 0 && count($pastMutes) == 0 && count($pastKicks) == 0 && $pastWarnings == 0) {
 		errors('Player does not exist');
@@ -53,7 +55,7 @@ else {
 			<div class="col-lg-3">
 					<div class="player_information">
 							<span class="skin" data-minecraft-username="<?php echo $_GET['player'];?>"></span>
-							<span id="player_name"><?php echo $_GET['player'];?></span>
+							<span id="player_name" title="UUID: <?php echo $UUID;?>"><?php echo $_GET['player'];?></span>
 					</div>
 			</div>
 			<div class="col-lg-9" id="player_ban_info">
@@ -88,20 +90,20 @@ else {
 						<td colspan="2">None</td>
 					</tr>';
 			} else {
-				$reason = str_replace(array('&quot;', '"'), array('&#039;', '\''), $currentBans['ban_reason']);
+				$reason = str_replace(array('&quot;', '"'), array('&#039;', '\''), $currentBans['reason']);
 				echo '
 					<tr>
 						<td>Expires in:</td>
 						<td class="expires">';
-				if($currentBans['ban_expires_on'] == 0)
+				if($currentBans['expires'] == 0)
 					echo '<span class="label label-danger">Permanent</span>';
 				else {
-					$currentBans['ban_expires_on'] = $currentBans['ban_expires_on'] + $mysqlSecs;
-					$currentBans['ban_time'] = $currentBans['ban_time'] + $mysqlSecs;
-					$expires = $currentBans['ban_expires_on'] - time();
+					$currentBans['expires'] = $currentBans['expires'] + $mysqlSecs;
+					$currentBans['created'] = $currentBans['created'] + $mysqlSecs;
+					$expires = $currentBans['expires'] - time();
 
 					if($expires > 0)
-						echo '<time datetime="'.date('c', $currentBans['ban_expires_on']).'">'.secs_to_h($expires).'</time>';
+						echo '<time datetime="'.date('c', $currentBans['expires']).'">'.secs_to_h($expires).'</time>';
 					else
 						echo 'Now';
 				}
@@ -110,15 +112,15 @@ else {
 					</tr>
 					<tr>
 						<td>Banned by:</td>
-						<td>'.$currentBans['banned_by'].'</td>
+						<td>'.UUIDtoPlayerName($currentBans['actor_id'], $server).'</td>
 					</tr>
 					<tr>
 						<td>Banned at:</td>
-						<td>'.date('jS F Y h:i:s A', $currentBans['ban_time']).'</td>
+						<td>'.date('jS F Y h:i:s A', $currentBans['created']).'</td>
 					</tr>
 					<tr>
 						<td>Reason:</td>
-						<td class="reason">'.$currentBans['ban_reason'].'</td>
+						<td class="reason">'.$currentBans['reason'].'</td>
 					</tr>';
 				if(!empty($currentBans['server'])) {
 					echo '
@@ -136,7 +138,7 @@ else {
 					<tr>
 						<td colspan="2">
 							<a class="btn btn-warning edit" title="Edit" href="#editban" data-toggle="modal"><span class="glyphicon glyphicon-pencil"></span> Edit</a>
-							<a class="btn btn-danger delete" title="Unban" data-role="confirm" href="index.php?action=deleteban&ajax=true&authid='.sha1($settings['password']).'&server='.$_GET['server'].'&id='.$currentBans['ban_id'].'" data-confirm-title="Unban '.$_GET['player'].'" data-confirm-body="Are you sure you want to unban '.$_GET['player'].'?<br />This cannot be undone"><span class="glyphicon glyphicon-trash"></span> Unban</a>
+							<a class="btn btn-danger delete" title="Unban" data-role="confirm" href="index.php?action=deleteban&ajax=true&authid='.sha1($settings['password']).'&server='.$_GET['server'].'&id='.$currentBans['id'].'" data-confirm-title="Unban '.$_GET['player'].'" data-confirm-body="Are you sure you want to unban '.$_GET['player'].'?<br />This cannot be undone"><span class="glyphicon glyphicon-trash"></span> Unban</a>
 						</td>
 					</tr>
 				</tfoot>';
@@ -183,7 +185,7 @@ else {
 											echo '
 											<span class="input-group-btn">
 												<button class="btn btn-danger bantype" type="button">';
-											if($currentBans['ban_expires_on'] == 0)
+											if($currentBans['expires'] == 0)
 												echo 'Permanent';
 											else
 												echo 'Temporary';
@@ -192,17 +194,17 @@ else {
 											</span>
 											<input type="text" class="form-control required';
 
-											if($currentBans['ban_expires_on'] == 0)
+											if($currentBans['expires'] == 0)
 												echo ' disabled" disabled="disabled"';
 											else
 												echo '"';
 
 											echo ' name="expires" data-format="DD/MM/YYYY hh:mm:ss" value="';
 
-											if($currentBans['ban_expires_on'] == 0)
+											if($currentBans['expires'] == 0)
 												echo '';
 											else
-												echo date('d/m/Y H:i:s', $currentBans['ban_expires_on']);
+												echo date('d/m/Y H:i:s', $currentBans['expires']);
 
 											echo '" id="bandatetime" />';
 										?>
@@ -213,13 +215,13 @@ else {
 									</div>
 								</div>
 								<label for="banreason">Reason:</label>
-								<textarea id="banreason" name="reason" class="form-control" rows="4"><?php echo $currentBans['ban_reason']; ?></textarea>
+								<textarea id="banreason" name="reason" class="form-control" rows="4"><?php echo $currentBans['reason']; ?></textarea>
 							</div>
 							<div class="modal-footer">
 								<a href="#" class="btn" data-dismiss="modal">Close</a>
 								<input type="submit" class="btn btn-primary" value="Save" />
 							</div>
-							<input type="hidden" name="id" value="<?php echo $currentBans['ban_id']; ?>" />
+							<input type="hidden" name="id" value="<?php echo $currentBans['id']; ?>" />
 							<input type="hidden" name="server" value="<?php echo $_GET['server']; ?>" />
 							<input type="hidden" name="expiresTimestamp" value="" />
 						</form>
@@ -243,20 +245,20 @@ else {
 						<td colspan="2">None</td>
 					</tr>';
 			} else {
-				$reason = str_replace(array('&quot;', '"'), array('&#039;', '\''), $currentMutes['mute_reason']);
+				$reason = str_replace(array('&quot;', '"'), array('&#039;', '\''), $currentMutes['reason']);
 				echo '
 					<tr>
 						<td>Expires in:</td>
 						<td class="expires">';
-				if($currentMutes['mute_expires_on'] == 0)
+				if($currentMutes['expires'] == 0)
 					echo '<span class="label label-danger">Permanent</span>';
 				else {
-					$currentMutes['mute_expires_on'] = $currentMutes['mute_expires_on'] + $mysqlSecs;
-					$currentMutes['mute_time'] = $currentMutes['mute_time'] + $mysqlSecs;
-					$expires = $currentMutes['mute_expires_on'] - time();
+					$currentMutes['expires'] = $currentMutes['expires'] + $mysqlSecs;
+					$currentMutes['created'] = $currentMutes['created'] + $mysqlSecs;
+					$expires = $currentMutes['expires'] - time();
 
 					if($expires > 0)
-						echo '<time datetime="'.date('c', $currentMutes['mute_expires_on']).'">'.secs_to_h($expires).'</time>';
+						echo '<time datetime="'.date('c', $currentMutes['expires']).'">'.secs_to_h($expires).'</time>';
 					else
 						echo 'Now';
 				}
@@ -264,15 +266,15 @@ else {
 					</tr>
 					<tr>
 						<td>Muted by:</td>
-						<td>'.$currentMutes['muted_by'].'</td>
+						<td>'.$currentMutes['actor_id'].'</td>
 					</tr>
 					<tr>
 						<td>Muted at:</td>
-						<td>'.date('jS F Y h:i:s A', $currentMutes['mute_time']).'</td>
+						<td>'.date('jS F Y h:i:s A', $currentMutes['created']).'</td>
 					</tr>
 					<tr>
 						<td>Reason:</td>
-						<td class="reason">'.$currentMutes['mute_reason'].'</td>
+						<td class="reason">'.$currentMutes['reason'].'</td>
 					</tr>
 					<tr>';
 				if(!empty($currentMutes['server'])) {
@@ -293,7 +295,7 @@ else {
 					<tr>
 						<td colspan="2">
 							<a class="btn btn-warning edit" title="Edit" href="#editmute" data-toggle="modal"><span class="glyphicon glyphicon-pencil"></span> Edit</a>
-							<a class="btn btn-danger delete" title="Unban" data-role="confirm" href="index.php?action=deletemute&ajax=true&authid='.sha1($settings['password']).'&server='.$_GET['server'].'&id='.$currentMutes['mute_id'].'" data-confirm-title="Unban '.$_GET['player'].'" data-confirm-body="Are you sure you want to unmute '.$_GET['player'].'?<br />This cannot be undone"><span class="glyphicon glyphicon-trash"></span> Unmute</a>
+							<a class="btn btn-danger delete" title="Unban" data-role="confirm" href="index.php?action=deletemute&ajax=true&authid='.sha1($settings['password']).'&server='.$_GET['server'].'&id='.$currentMutes['id'].'" data-confirm-title="Unban '.$_GET['player'].'" data-confirm-body="Are you sure you want to unmute '.$_GET['player'].'?<br />This cannot be undone"><span class="glyphicon glyphicon-trash"></span> Unmute</a>
 						</td>
 					</tr>
 				</tfoot>';
@@ -339,7 +341,7 @@ else {
 												echo '
 												<div class="input-group-addon">
 													<button class="btn btn-danger bantype" type="button">';
-											if($currentMutes['mute_expires_on'] == 0)
+											if($currentMutes['expires'] == 0)
 												echo 'Permanent';
 											else
 												echo 'Temporary';
@@ -347,17 +349,17 @@ else {
 											echo '</button>
 													<input type="text" class="required';
 
-											if($currentMutes['mute_expires_on'] == 0)
+											if($currentMutes['expires'] == 0)
 												echo ' disabled" disabled="disabled"';
 											else
 												echo '"';
 
 											echo ' name="expires" data-format="dd/MM/yyyy hh:mm:ss" value="';
 
-											if($currentMutes['mute_expires_on'] == 0)
+											if($currentMutes['expires'] == 0)
 												echo '';
 											else
-												echo date('d/m/Y H:i:s', $currentMutes['mute_expires_on']);
+												echo date('d/m/Y H:i:s', $currentMutes['expires']);
 
 											echo '" id="mutedatetime" />';
 
@@ -371,7 +373,7 @@ else {
 									</div> -->
 									<div class="form-group">
 										<label class="control-label" for="mutereason">Reason:</label>
-											<textarea id="mutereason" class="form-control" name="reason" rows="4"><?php echo $currentMutes['mute_reason']; ?></textarea>
+											<textarea id="mutereason" class="form-control" name="reason" rows="4"><?php echo $currentMutes['reason']; ?></textarea>
 									</div>
 								</div>
 							</div>
@@ -379,7 +381,7 @@ else {
 								<a href="#" class="btn" data-dismiss="modal">Close</a>
 								<input type="submit" class="btn btn-primary" value="Save" />
 							</div>
-							<input type="hidden" name="id" value="<?php echo $currentMutes['mute_id']; ?>" />
+							<input type="hidden" name="id" value="<?php echo $currentMutes['id']; ?>" />
 							<input type="hidden" name="server" value="<?php echo $_GET['server']; ?>" />
 							<input type="hidden" name="expiresTimestamp" value="" />
 						</form>
@@ -432,22 +434,22 @@ else {
 			} else {
 				$i = 1;
 				foreach($pastBans as $r) {
-					$r['ban_reason'] = str_replace(array('&quot;', '"'), array('&#039;', '\''), $r['ban_reason']);
-					$r['ban_expired_on'] = ($r['ban_expired_on'] != 0 ? $r['ban_expired_on'] + $mysqlSecs : $r['ban_expired_on']);
-					$r['ban_time'] = $r['ban_time'] + $mysqlSecs;
-					$r['unbanned_time'] = $r['unbanned_time'] + $mysqlSecs;
+					$r['reason'] = str_replace(array('&quot;', '"'), array('&#039;', '\''), $r['reason']);
+					$r['expired'] = ($r['expired'] != 0 ? $r['expired'] + $mysqlSecs : $r['expired']);
+					$r['pastCreated'] = $r['pastCreated'] + $mysqlSecs;
+					$r['created'] = $r['created'] + $mysqlSecs;
 
 					echo '
 					<tr>
 						<td>'.$i.'</td>
-						<td>'.$r['ban_reason'].'</td>
-						<td>'.$r['banned_by'].'</td>
-						<td>'.date('H:i:s d/m/y', $r['ban_time']).'</td>
-						<td>'.($r['ban_expired_on'] == 0 ? 'Permanent' : secs_to_h($r['ban_expired_on'] - $r['ban_time'])).'</td>
-						<td>'.$r['unbanned_by'].'</td>
+						<td>'.$r['reason'].'</td>
+						<td>'.$r['pastActor_id'].'</td>
+						<td>'.date('H:i:s d/m/y', $r['pastCreated']).'</td>
+						<td>'.($r['expired'] == 0 ? 'Permanent' : secs_to_h($r['expired'] - $r['pastCreated'])).'</td>
+						<td>'.UUIDtoPlayerName($r['actor_id'], $server).'</td>
 						<td>'.date('H:i:s d/m/y', $r['unbanned_time']).'</td>'.($serverName ? '
 						<td>'.$r['server'].'</td>' : '').($admin ? '
-						<td class="admin-options"><a href="#" class="btn btn-danger delete" title="Remove" data-server="'.$_GET['server'].'" data-record-id="'.$r['ban_record_id'].'"><span class="glyphicon glyphicon-trash"></span></a></td>' : '').'
+						<td class="admin-options"><a href="#" class="btn btn-danger delete" title="Remove" data-server="'.$_GET['server'].'" data-record-id="'.$r['id'].'"><span class="glyphicon glyphicon-trash"></span></a></td>' : '').'
 					</tr>';
 					++$i;
 				}
@@ -501,20 +503,20 @@ else {
 			} else {
 				$i = 1;
 				foreach($pastMutes as $r) {
-					$r['mute_reason'] = str_replace(array('&quot;', '"'), array('&#039;', '\''), $r['mute_reason']);
-					$r['mute_expired_on'] = ($r['mute_expired_on'] != 0 ? $r['mute_expired_on'] + $mysqlSecs : $r['mute_expired_on']);
-					$r['mute_time'] = $r['mute_time'] + $mysqlSecs;
+					$r['reason'] = str_replace(array('&quot;', '"'), array('&#039;', '\''), $r['reason']);
+					$r['expired'] = ($r['expired'] != 0 ? $r['expired'] + $mysqlSecs : $r['expired']);
+					$r['created'] = $r['created'] + $mysqlSecs;
 					echo '
 					<tr>
 						<td>'.$i.'</td>
-						<td>'.$r['mute_reason'].'</td>
-						<td>'.$r['muted_by'].'</td>
-						<td>'.date('d/m/y', $r['mute_time']).'</td>
-						<td>'.($r['mute_expired_on'] == 0 ? 'Permanent' : secs_to_h($r['mute_expired_on'] - $r['mute_time'])).'</td>
-						<td>'.$r['unmuted_by'].'</td>
+						<td>'.$r['reason'].'</td>
+						<td>'.$r['pastActor_id'].'</td>
+						<td>'.date('d/m/y', $r['created']).'</td>
+						<td>'.($r['expired'] == 0 ? 'Permanent' : secs_to_h($r['expired'] - $r['created'])).'</td>
+						<td>'.UUIDtoPlayerName($r['actor_id'], $server).'</td>
 						<td>'.date('d/m/y', $r['unmuted_time']).'</td>'.($serverName ? '
 						<td>'.$r['server'].'</td>' : '').($admin ? '
-						<td class="admin-options"><a href="#" class="btn btn-danger delete" title="Remove" data-server="'.$_GET['server'].'" data-record-id="'.$r['mute_record_id'].'"><span class="glyphicon glyphicon-trash"></span></a></td>' : '').'
+						<td class="admin-options"><a href="#" class="btn btn-danger delete" title="Remove" data-server="'.$_GET['server'].'" data-record-id="'.$r['id'].'"><span class="glyphicon glyphicon-trash"></span></a></td>' : '').'
 					</tr>';
 					++$i;
 				}
@@ -565,17 +567,17 @@ else {
 			} else {
 				$i = 1;
 				foreach($pastWarnings as $r) {
-					$r['warn_reason'] = str_replace(array('&quot;', '"'), array('&#039;', '\''), $r['warn_reason']);
-					$r['warn_time'] = $r['warn_time'] + $mysqlSecs;
+					$r['reason'] = str_replace(array('&quot;', '"'), array('&#039;', '\''), $r['reason']);
+					$r['created'] = $r['created'] + $mysqlSecs;
 
 					echo '
 					<tr>
 						<td>'.$i.'</td>
-						<td>'.$r['warn_reason'].'</td>
-						<td>'.$r['warned_by'].'</td>
-						<td>'.date('H:i:s d/m/y', $r['warn_time']).'</td>'.($serverName ? '
+						<td>'.$r['reason'].'</td>
+						<td>'.UUIDtoPlayerName($r['actor_id'], $server).'</td>
+						<td>'.date('H:i:s d/m/y', $r['created']).'</td>'.($serverName ? '
 						<td>'.$r['server'].'</td>' : '').($admin ? '
-						<td class="admin-options"><a href="#" class="btn btn-danger delete" title="Remove" data-server="'.$_GET['server'].'" data-record-id="'.$r['warn_id'].'"><span class="glyphicon glyphicon-trash"></span></a></td>' : '').'
+						<td class="admin-options"><a href="#" class="btn btn-danger delete" title="Remove" data-server="'.$_GET['server'].'" data-record-id="'.$r['warn'].'"><span class="glyphicon glyphicon-trash"></span></a></td>' : '').'
 					</tr>';
 					++$i;
 				}
@@ -626,16 +628,16 @@ else {
 			} else {
 				$i = 1;
 				foreach($pastKicks as $r) {
-					$r['kick_reason'] = str_replace(array('&quot;', '"'), array('&#039;', '\''), $r['kick_reason']);
-					$r['kick_time'] = $r['kick_time'] + $mysqlSecs;
+					$r['reason'] = str_replace(array('&quot;', '"'), array('&#039;', '\''), $r['reason']);
+					$r['created'] = $r['created'] + $mysqlSecs;
 					echo '
 					<tr>
 						<td>'.$i.'</td>
-						<td>'.$r['kick_reason'].'</td>
-						<td>'.$r['kicked_by'].'</td>
-						<td>'.date('d/m/y', $r['kick_time']).'</td>'.($serverName ? '
+						<td>'.$r['reason'].'</td>
+						<td>'.UUIDtoPlayerName($r['actor_id'], $server).'</td>
+						<td>'.date('d/m/y', $r['created']).'</td>'.($serverName ? '
 						<td>'.$r['server'].'</td>' : '').($admin ? '
-						<td class="admin-options"><a href="#" class="btn btn-danger delete" title="Remove" data-server="'.$_GET['server'].'" data-record-id="'.$r['kick_id'].'"><span class="glyphicon glyphicon-trash"></span></a></td>' : '').'
+						<td class="admin-options"><a href="#" class="btn btn-danger delete" title="Remove" data-server="'.$_GET['server'].'" data-record-id="'.$r['id'].'"><span class="glyphicon glyphicon-trash"></span></a></td>' : '').'
 					</tr>';
 					++$i;
 				}
