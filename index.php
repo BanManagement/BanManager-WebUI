@@ -458,7 +458,7 @@ function searchPlayers($search, $serverID, $server, $sortByCol = 'name', $sortBy
 	if((isset($settings['player_previous_bans']) && $settings['player_previous_bans']) || !isset($settings['player_previous_bans'])) {
 		if($past) {
 			// Past Bans
-			$result = cache("SELECT HEX(player_id) AS player_id, HEX(actor_id) AS actor_id, reason, created, expired FROM ".$server['playerBanRecordsTable']." WHERE ".constructWhereWithUUIDs(playerNameToUUID($search, $server), 'player_id')." ORDER BY ".$sort['bans']." $sortBy", 0, $serverID.'/search', $server);
+			$result = cache("SELECT HEX(player_id) AS player_id, HEX(actor_id) AS actor_id, reason, created, expired FROM ".$server['playerBanRecordsTable']." WHERE ".constructWhereWithUUIDs(playerNameToUUID($search, $server), 'player_id')." ORDER BY ".$sort['banrecords']." $sortBy", 0, $serverID.'/search', $server);
 			if(isset($result[0]) && !is_array($result[0]) && !empty($result[0]))
 				$result = array($result);
 
@@ -555,24 +555,24 @@ function searchIps($search, $serverID, $server, $sortByCol = 'name', $sortBy = '
 	switch($sortByCol) {
 		default:
 		case 0: // Name
-			$sort['bans'] = $sort['banrecords'] = 'banned';
+			$sort['bans'] = $sort['banrecords'] = 'id';
 		break;
 		case 1: // Type
 			$sortByType = true;
-			$sort['bans'] = $sort['banrecords'] = 'banned';
+			$sort['bans'] = $sort['banrecords'] = 'id';
 		break;
 		case 2: // By
-			$sort['bans'] = $sort['banrecords'] = 'banned_by';
+			$sort['bans'] = $sort['banrecords'] = 'actor_id';
 		break;
 		case 3: // Reason
-			$sort['bans'] = $sort['banrecords'] = 'ban_reason';
+			$sort['bans'] = $sort['banrecords'] = 'reason';
 		break;
 		case 4: // Expires
-			$sort['bans'] = 'ban_expires_on';
-			$sort['banrecords'] = 'ban_expired_on';
+			$sort['bans'] = 'expires';
+			$sort['banrecords'] = 'expired';
 		break;
 		case 5: // Date
-			$sort['bans'] = $sort['banrecords'] = 'ban_time';
+			$sort['bans'] = $sort['banrecords'] = 'created';
 		break;
 	}
 
@@ -580,40 +580,30 @@ function searchIps($search, $serverID, $server, $sortByCol = 'name', $sortBy = '
 	$found = array();
 
 	// Current Bans
-	$result = cache("SELECT banned, banned_by, ban_reason, ban_time, ban_expires_on FROM ".$server['ipTable']." WHERE banned LIKE '%".$search."%' ORDER BY ".$sort['bans']." $sortBy", 300, $serverID.'/search', $server);
+	$result = cache("SELECT *, HEX(actor_id) AS actor_id, HEX(pastActor_id) AS pastActor_id FROM ".$server['ipBansTable']." WHERE ip LIKE '%".$search."%' ORDER BY ".$sort['bans']." $sortBy", 0, $serverID.'/search', $server);
 	if(isset($result[0]) && !is_array($result[0]) && !empty($result[0]))
 		$result = array($result);
 
 	if(count($result) > 0) {
-		foreach($result as $r)
-			$found[$r['banned']] = array('by' => $r['banned_by'], 'reason' => $r['ban_reason'], 'type' => 'Ban', 'time' => $r['ban_time'], 'expires' => $r['ban_expires_on']);
+		foreach($result as $r) {
+			$found[long2ip($r['ip'])] = array('by' => $r['actor_id'], 'reason' => $r['reason'], 'type' => 'Ban', 'time' => $r['created'], 'expires' => $r['expires']);
+		}
 	}
 
 	if($past) {
 		// Past Bans
-		$result = cache("SELECT banned, banned_by, ban_reason, ban_time, ban_expired_on FROM ".$server['ipRecordTable']." WHERE banned LIKE '%".$search."%' ORDER BY ".$sort['banrecords']." $sortBy", 300, $serverID.'/search', $server);
+		$result = cache("SELECT *, HEX(actor_id) AS actor_id, HEX(pastActor_id) AS pastActor_id FROM ".$server['ipBanRecordsTable']." WHERE ip LIKE '%".$search."%' ORDER BY ".$sort['banrecords']." $sortBy", 0, $serverID.'/search', $server);
 		if(isset($result[0]) && !is_array($result[0]) && !empty($result[0]))
 			$result = array($result);
 
 		if(count($result) > 0) {
 			foreach($result as $r) {
-				if(!isset($found[$r['banned']]))
-					$found[$r['banned']] = array('by' => $r['banned_by'], 'reason' => $r['ban_reason'], 'type' => 'Ban', 'time' => $r['ban_time'], 'expires' => $r['ban_expired_on'], 'past' => true);
-				else if($found[$r['banned']]['time'] < $r['ban_time'])
-					$found[$r['banned']] = array('by' => $r['banned_by'], 'reason' => $r['ban_reason'], 'type' => 'Ban', 'time' => $r['ban_time'], 'expires' => $r['ban_expired_on'], 'past' => true);
+				if(!isset($found[long2ip($r['ip'])]))
+					$found[long2ip($r['ip'])] = array('by' => $r['actor_id'], 'reason' => $r['reason'], 'type' => 'Ban', 'time' => $r['created'], 'expires' => $r['expired'], 'past' => true);
+				else if($found[long2ip($r['ip'])]['created'] < $r['created'])
+					$found[long2ip($r['ip'])] = array('by' => $r['actor_id'], 'reason' => $r['reason'], 'type' => 'Ban', 'time' => $r['created'], 'expires' => $r['expired'], 'past' => true);
 			}
 		}
-	}
-
-	if(count($found) == 0)
-		return false;
-	else if(count($found) == 1) {
-		// Redirect!
-		$p = array_keys($found);
-		redirect('index.php?action=viewip&ip='.$p[0].'&server='.$serverID);
-	} else {
-		// STUFF
-		return $found;
 	}
 
 	if(count($found) == 0)

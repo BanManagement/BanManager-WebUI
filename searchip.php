@@ -161,7 +161,7 @@ else {
 	$found = searchIps($search, $_GET['server'], $server, $sortByCol, $sortBy, $pastbans);
 
 	if(!$found) {
-		errors('No matched players found');
+		errors('No matched IP or invalid format');
 		?><a href="index.php" class="btn btn-primary">New Search</a><?php
 	} else {
 		?>
