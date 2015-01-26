@@ -11,8 +11,6 @@ session_name("BanManagement");
 session_start();
 ob_start();
 
-error_reporting(0); // Disable error reports for security
-
 if(!isset($_SESSION['initiated'])) {
 		session_regenerate_id();
 		$_SESSION['initiated'] = true;
@@ -653,6 +651,12 @@ if(file_exists('settings.php')){
 }
 else{
 	errors('Unable to located the settings.php file. If you haven\'t renamed settingsRename.php yet, please go do that now to make Ban Management functional.');
+}
+
+if (isset($settings['debug']['error_reporting']) && $settings['debug']['error_reporting'] == true) {
+	error_reporting(1); // Enable error reports
+} else {
+	error_reporting(0); // Disable error reports for security
 }
 
 // IE8 frame busting, well thats the only good thing it has :P (Now supported by Firefox woot)

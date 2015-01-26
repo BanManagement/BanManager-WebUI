@@ -7,6 +7,7 @@
 **/
 
 $settings['debug']['sqlcache'] = false; // show and var_dump any cached SQL queries
+$settings['debug']['error_reporting'] = true; // display PHP errors
 
 $settings['utf8'] = true; // Encoding (Recommended TRUE)
 $settings['latest_bans'] = true;  // Latest Bans table
