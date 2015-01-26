@@ -334,6 +334,22 @@ function clearCache($folder = '', $olderThan = 0) {
 	}
 }
 
+function UUIDtoPlayerName($uuid, $server) {
+	$result = cache("SELECT HEX(id) as id, name FROM ".$server['playersTable']." WHERE id = UNHEX('".$uuid."') ORDER BY name", 300, 'UUIDtoPlayerName', $server);
+
+	if(isset($result[0]) && !is_array($result[0]) && !empty($result[0])){
+		$result = array($result);
+	}
+
+	$found = array();
+
+	foreach($result as $r) {
+		array_push($found, $r['name']);
+	}
+
+	return $found[0];
+}
+
 function playerNameToUUID($name, $server) {
 	$result = cache("SELECT HEX(id) as id, name FROM ".$server['playersTable']." WHERE name LIKE '%".$name."%' ORDER BY name", 300, 'playerNameToUUID', $server);
 
@@ -526,7 +542,7 @@ function searchPlayers($search, $serverID, $server, $sortByCol = 'name', $sortBy
 	else if(count($found) == 1) {
 		// Redirect!
 		$p = array_keys($found);
-		redirect('index.php?action=viewplayer&player='.$p[0].'&server='.$serverID);
+		redirect('index.php?action=viewplayer&player='.UUIDtoPlayerName($p[0], $server).'&server='.$serverID);
 	} else {
 		// STUFF
 		return $found;
