@@ -10,7 +10,7 @@
 ?>
 			<hr>
 			<footer>
-				<p class="pull-left"><?php echo $settings['footer']; ?><?php if(isset($settings['admin_link']) && $settings['admin_link']){echo ' &mdash; <a href="index.php?action=admin" target="_blank" style="color:inherit;"><span class="glyphicon glyphicon-dashboard"></span></a>';} echo " &mdash; BanManager WebUI version GIT-".shell_exec("git log -1 --pretty=format:'%h' --abbrev-commit"); ?></p>
+				<p class="pull-left"><?php echo $settings['footer']; ?><?php if(isset($settings['admin_link']) && $settings['admin_link']){echo ' &mdash; <a href="index.php?action=admin" target="_blank" style="color:inherit;"><span class="glyphicon glyphicon-dashboard"></span></a>';} echo " &mdash; BanManager WebUI version ".returnVersion(); ?></p>
 				<!-- Must not be removed as per the licence terms -->
 				<p class="pull-right">Created By <a href="http://www.frostcast.net" target="_blank">
 					<img src="img/brand.png" alt="Frostcast" id="copyright_image" />

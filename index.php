@@ -152,6 +152,17 @@ function redirect($location, $code = '302') {
 	exit('<a href="'.$location.'">If you were not redirected automatically please click here</a>');
 }
 
+function returnVersion(){
+	global $settings;
+	if (file_exists(".git")) {
+		$gitref = shell_exec("git log -1 --pretty=format:'%h' --abbrev-commit");
+		if ($gitref) {
+			return "GIT-".$gitref;
+		}
+	}	else {
+		return $settings['version'];
+	}
+}
 
 function errors($message) {
 	echo '
