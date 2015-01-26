@@ -46,13 +46,15 @@ Feel free to contribute if you have any suggestions or ideas.
 * Add debug option to output any SQL query
 * Fix "Statistics"
 * CSS adjustments
+* Option to enable/disable PHP errors
+* Default timezone in settings for `date()` functions
+* Replaced `mysql_` functions with `mysqli_` ones
 
 ### Todo
 
 * Improve IP search
 * Check if admin functions still work (low prio, not in use on our server)
 * Grunt/Gulp to compile assets/libs
-* Replace `mysql_` functions with PDO/`mysqli_`
 
 ### Demo
 
