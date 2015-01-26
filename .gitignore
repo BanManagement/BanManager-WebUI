@@ -5,4 +5,4 @@ settings.php
 cache
 
 # Test dump
-.dump_*.sql
+.dump_*.sql*
