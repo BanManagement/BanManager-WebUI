@@ -276,28 +276,39 @@ function cache($query, $time, $folder = '', $server = array(), $name = '') {
 function createCache($query, $server, $file, $time = 0) {
 	global $settings;
 
-	if(!empty($server)) {
-		if(isset($settings['last_connection'])) {
-			$diff = array_diff($settings['last_connection'], $server);
-			if(!empty($diff))
-				connect($server);
-		} else
-			connect($server);
-	}
-	$sql = mysql_query($query);
+	// if(!empty($server)) {
+	// 	if(isset($settings['last_connection'])) {
+	// 		$diff = array_diff($settings['last_connection'], $server);
+	// 		if(!empty($diff)) {
+	// 			$mysqlicon = connect($server);
+	// 		}
+	// 	} else {
+			$mysqlicon = connect($server);
+	// 	}
+	// }
+	$result = mysqli_query($mysqlicon, $query);
+
 	$data = array();
-	if(mysql_num_rows($sql) > 0) {
-		while($fetch = mysql_fetch_array($sql)) // Loop through the data
-			array_push($data, $fetch);
+	if(mysqli_num_rows($result) > 0) {
+		while($row = mysqli_fetch_array($result)){
+			array_push($data, $row);
+		}
 	}
+
 	// Check if its only one row
-	if(count($data) == 1)
+	if(count($data) == 1) {
 		$data = $data[0];
+	}
+
 	// Now save it
-	if(!$settings['apc_enabled'])
+	if(!$settings['apc_enabled']){
 		file_put_contents($file, "<?php die(); ?>\n".serialize($data)); // Create the file
-	else
+	}	else {
 		apc_store($file, $data, $time);
+	}
+
+	mysqli_close($mysqlicon);
+
 	return $data; // Return the fresh data
 }
 
@@ -384,16 +395,16 @@ function constructWhereWithUUIDs($uuidArray, $idColumn){
 function connect($server) {
 	global $settings;
 
-	if(!mysql_connect($server['host'], $server['username'], $server['password']))
-		return false;
-	else if(!mysql_select_db($server['database']))
-		return false;
+	$mysqli = mysqli_connect($server['host'], $server['username'], $server['password'], $server['database'])
+		or die("Some error occurred during connection " . mysqli_error($mysqli));
+
 	$settings['last_connection'] = $server;
 
-	if(isset($settings['utf8']) && $settings['utf8'])
-		mysql_query("SET NAMES 'utf8'");
+	if(isset($settings['utf8']) && $settings['utf8']){
+		mysqli_query($mysqli, "SET NAMES 'utf8'");
+	}
 
-	return true;
+	return $mysqli;
 }
 
 function searchPlayers($search, $serverID, $server, $sortByCol = 'name', $sortBy = 'ASC', $past = true) {
@@ -654,7 +665,13 @@ else{
 }
 
 if (isset($settings['debug']['error_reporting']) && $settings['debug']['error_reporting'] == true) {
-	error_reporting(1); // Enable error reports
+	@ini_set('display_errors', '1');
+	error_reporting(1);
+
+	if ($settings['debug']['error_reporting_level']) {
+			error_reporting($settings['debug']['error_reporting_level']); // Enable error reports
+	}
+
 } else {
 	error_reporting(0); // Disable error reports for security
 }
