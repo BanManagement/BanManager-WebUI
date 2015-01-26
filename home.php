@@ -13,25 +13,31 @@ function latestBans($server, $serverID) {
 	clearCache($serverID.'/latestbans', 300);
 	clearCache($serverID.'/mysqlTime', 300);
 
-	$result = cache("SELECT banned, banned_by, ban_reason, ban_expires_on FROM ".$server['bansTable']." ORDER BY ban_time DESC LIMIT 5", 300, $serverID.'/latestbans', $server);
+	$result = cache("SELECT HEX(player_id) AS player_id, HEX(actor_id) AS actor_id, reason, created, expires FROM ".$server['playerBansTable']." ORDER BY created DESC LIMIT 5", 0, $serverID.'/search', $server);
 
-	if(isset($result[0]) && !is_array($result[0]) && !empty($result[0]))
+	if(isset($result[0]) && !is_array($result[0]) && !empty($result[0])){
 		$result = array($result);
+	}
+
 	$rows = count($result);
 
-	if($rows == 0)
+	if($rows == 0){
 		echo '<li><span class="label label-info">No Records</span></li>';
-	else {
+	}	else {
 		$timeDiff = cache('SELECT ('.time().' - UNIX_TIMESTAMP(now()))/3600 AS mysqlTime', 5, $serverID.'/mysqlTime', $server); // Cache it for a few seconds
 
 		$mysqlTime = $timeDiff['mysqlTime'];
 		$mysqlTime = ($mysqlTime > 0)  ? floor($mysqlTime) : ceil ($mysqlTime);
 		$mysqlSecs = ($mysqlTime * 60) * 60;
 		foreach($result as $r) {
-			$expires = ($r['ban_expires_on'] + $mysqlSecs)- time();
+
+			$playername = UUIDtoPlayerName($r['player_id'], $server);
+			$actorname = UUIDtoPlayerName($r['actor_id'], $server);
+
+			$expires = ($r['expires'] + $mysqlSecs)- time();
 			echo '
-					<li class="latestban"><a href="index.php?action=viewplayer&player='.$r['banned'].'&server='.$serverID.'"><img src="https://minotar.net/helm/'.$r['banned'].'/23" alt="'.$r['banned'].'" class="minihead" /> '.$r['banned'].'</a><button class="btn btn-info ban-info" rel="popover" data-html="true" data-content="'.$r['ban_reason'].'" data-original-title="'.$r['banned_by'];
-			if($r['ban_expires_on'] == 0)
+					<li class="latestban"><a href="index.php?action=viewplayer&player='.$playername.'&server='.$serverID.'"><img src="https://minotar.net/helm/'.$playername.'/23" alt="'.$playername.'" class="minihead" /> '.$playername.'</a><button class="btn btn-info ban-info" rel="popover" data-html="true" data-content="'.$r['reason'].'" data-original-title="'.$actorname;
+			if($r['expires'] == 0)
 				echo ' <span class=\'label label-danger\'>Never</span>';
 			else if($expires > 0)
 				echo ' <span class=\'label label-warning\'>'.secs_to_hmini($expires).'</span>';
