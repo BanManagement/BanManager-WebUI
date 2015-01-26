@@ -50,11 +50,12 @@ Feel free to contribute if you have any suggestions or ideas.
 * Default timezone in settings for `date()` functions
 * Replaced `mysql_` functions with `mysqli_` ones
 
-### Todo
+### Todo / Improvements
 
 * Improve IP search
 * Check if admin functions still work (low prio, not in use on our server)
 * Grunt/Gulp to compile assets/libs
+* Keep up MySQL connection
 
 ### Demo
 
