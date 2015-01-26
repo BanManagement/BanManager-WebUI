@@ -244,9 +244,11 @@ function cache($query, $time, $folder = '', $server = array(), $name = '') {
 	else if($folder == '' && !empty($name))
 		$file = $name;
 
-	// echo "<pre>";
-	// echo substr($query, 0, 1000);
-	// echo "</pre>";
+	if ($settings['debug']['sqlcache'] == true) {
+		echo "<pre>";
+		echo substr($query, 0, 1000);
+		echo "</pre>";
+	}
 
 	if($settings['apc_enabled']) {
 		if(apc_exists($file))
