@@ -60,3 +60,7 @@ Feel free to contribute if you have any suggestions or ideas.
 ### Demo
 
 You can find a working demo over here: http://bans.yeahwh.at
+
+### Version
+
+1.1

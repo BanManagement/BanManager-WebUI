@@ -70,4 +70,10 @@ $language['bm_info_text'] = // The text displayed if bm_info is set to true. Ent
 
 $theme['navbar-dark'] = false; // Enable dark theme for the navbar
 
+/**
+* Don't change the variables below!
+**/
+
+$settings['version'] = "1.1"
+
 ?>
