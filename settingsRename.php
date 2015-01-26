@@ -6,7 +6,7 @@
 * and more.
 **/
 
-$settings['debug']['sqlcache'] = true; // show and var_dump any cached SQL queries
+$settings['debug']['sqlcache'] = false; // show and var_dump any cached SQL queries
 
 $settings['utf8'] = true; // Encoding (Recommended TRUE)
 $settings['latest_bans'] = true;  // Latest Bans table
@@ -21,10 +21,8 @@ $settings['bm_info_icon'] = true; // Show the 'info' icon next to the title of b
 $settings['pastbans'] = true; // Show amount of players banned under the search
 
 $settings['player_current_ban'] = true;
-$settings['player_current_ipban'] = true;
 $settings['player_current_mute'] = true;
 $settings['player_previous_bans'] = true;
-$settings['player_previous_ipbans'] = true;
 $settings['player_previous_mutes'] = true;
 $settings['player_kicks'] = true;
 $settings['player_warnings'] = true;
