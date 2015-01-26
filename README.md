@@ -11,8 +11,11 @@ Feel free to contribute if you have any suggestions or ideas.
 
 ##### Preperation
 
+1. Clone this repository into your Nginx/Apache document root:  
+  `git clone https://github.com/yeahwhat-mc/BanManager-WebUI.git /var/www/banmanager`
 1. Make sure cache is writeable:  
-  `chmod 777 cache/`
+  `cd /var/www/banmanager`  
+  `chmod 777 cache/`  
 1. Rename settingsRename.php to settings.php:  
   `cp settingsRename.php settings.php`
 1. Make sure settings file is writeable:  
