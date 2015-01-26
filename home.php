@@ -90,22 +90,27 @@ function latestWarnings($server, $serverID) {
 	clearCache($serverID.'/latestwarnings', 300);
 	clearCache($serverID.'/mysqlTime', 300);
 
-	$result = cache("SELECT warned, warned_by, warn_reason FROM ".$server['warningsTable']." ORDER BY warn_time DESC LIMIT 5", 300, $serverID.'/latestwarnings', $server);
+	$result = cache("SELECT HEX(player_id) AS player_id, HEX(actor_id) AS actor_id, reason, created FROM ".$server['playerWarningsTable']." ORDER BY created DESC LIMIT 5", 0, $serverID.'/search', $server);
 
-	if(isset($result[0]) && !is_array($result[0]) && !empty($result[0]))
+	if(isset($result[0]) && !is_array($result[0]) && !empty($result[0])){
 		$result = array($result);
+	}
+
 	$rows = count($result);
 
-	if($rows == 0)
+	if($rows == 0) {
 		echo '<li><span class="label label-info">No Records</span></li>';
-	else {
+	} else {
 		$timeDiff = cache('SELECT ('.time().' - UNIX_TIMESTAMP(now()))/3600 AS mysqlTime', 5, $serverID.'/mysqlTime', $server); // Cache it for a few seconds
 
 		$mysqlTime = $timeDiff['mysqlTime'];
 		$mysqlTime = ($mysqlTime > 0)  ? floor($mysqlTime) : ceil ($mysqlTime);
 		$mysqlSecs = ($mysqlTime * 60) * 60;
 		foreach($result as $r) {
-			echo '<li class="latestban"><a href="index.php?action=viewplayer&player='.$r['warned'].'&server='.$serverID.'"><img src="https://minotar.net/helm/'.$r['warned'].'/23" alt="'.$r['warned'].'" class="minihead" /> '.$r['warned'].'</a><button class="btn btn-info ban-info" rel="popover" data-html="true" data-content="'.$r['warn_reason'].'" data-original-title="'.$r['warned_by'].'"><span class="glyphicon glyphicon-info-sign"></span></button></li>';
+			$playername = UUIDtoPlayerName($r['player_id'], $server);
+			$actorname = UUIDtoPlayerName($r['actor_id'], $server);
+
+			echo '<li class="latestban"><a href="index.php?action=viewplayer&player='.$playername.'&server='.$serverID.'"><img src="https://minotar.net/helm/'.$playername.'/23" alt="'.$playername.'" class="minihead" /> '.$playername.'</a><button class="btn btn-info ban-info" rel="popover" data-html="true" data-content="'.$r['reason'].'" data-original-title="'.$actorname.'"><span class="glyphicon glyphicon-info-sign"></span></button></li>';
 		}
 	}
 }
