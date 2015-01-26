@@ -34,7 +34,7 @@ Feel free to contribute if you have any suggestions or ideas.
 1. Please be aware, the mysql settings you entered are stored in settings.php in plain text, nobody else can read it unless they are able to download the file via FTP (or SSH etc) or you have an exploit in another script on your server.
 1. All done! If you have some bans, test it. Click "Home", in the search box type % and hit search. It will list all players that are currently banned or have been banned.
 
-### Changlog
+### Changelog
 
 * Convert all `.php` files to UTF-8 and add proper EOF
 * Support version 5 and up
