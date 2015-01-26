@@ -49,6 +49,7 @@ Feel free to contribute if you have any suggestions or ideas.
 * Improve IP search
 * Check if admin functions still work (low prio, not in use on our server)
 * Grunt/Gulp to compile assets/libs
+* Replace `mysql_` functions with PDO/`mysqli_`
 
 ### Demo
 
