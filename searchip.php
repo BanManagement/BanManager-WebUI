@@ -170,7 +170,7 @@ else {
 			<div class="page-header">
 				<h1>Advanced Search</h1>
 			</div>
-			<input type="hidden" name="action" value="searchplayer" />
+			<input type="hidden" name="action" value="searchip" />
 			<input type="hidden" name="server" value="<?php echo $_GET['server']; ?>" />
 			<input type="hidden" name="player" value="<?php echo $_GET['player']; ?>" />
 			<div class="checkbox" id="excludepast">
