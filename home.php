@@ -30,7 +30,6 @@ function latestBans($server, $serverID) {
 		$mysqlTime = ($mysqlTime > 0)  ? floor($mysqlTime) : ceil ($mysqlTime);
 		$mysqlSecs = ($mysqlTime * 60) * 60;
 		foreach($result as $r) {
-
 			$playername = UUIDtoPlayerName($r['player_id'], $server);
 			$actorname = UUIDtoPlayerName($r['actor_id'], $server);
 
@@ -53,24 +52,29 @@ function latestMutes($server, $serverID) {
 	clearCache($serverID.'/latestmutes', 300);
 	clearCache($serverID.'/mysqlTime', 300);
 
-	$result = cache("SELECT muted, muted_by, mute_reason, mute_expires_on FROM ".$server['mutesTable']." ORDER BY mute_time DESC LIMIT 5", 300, $serverID.'/latestmutes', $server);
+	$result = cache("SELECT HEX(player_id) AS player_id, HEX(actor_id) AS actor_id, reason, created, expires FROM ".$server['playerMutesTable']." ORDER BY created DESC LIMIT 5", 0, $serverID.'/search', $server);
 
-	if(isset($result[0]) && !is_array($result[0]) && !empty($result[0]))
+	if(isset($result[0]) && !is_array($result[0]) && !empty($result[0])) {
 		$result = array($result);
+	}
+
 	$rows = count($result);
 
-	if($rows == 0)
+	if($rows == 0){
 		echo '<li><span class="label label-info">No Records</span></li>';
-	else {
+	} else {
 		$timeDiff = cache('SELECT ('.time().' - UNIX_TIMESTAMP(now()))/3600 AS mysqlTime', 5, $serverID.'/mysqlTime', $server); // Cache it for a few seconds
 
 		$mysqlTime = $timeDiff['mysqlTime'];
 		$mysqlTime = ($mysqlTime > 0)  ? floor($mysqlTime) : ceil ($mysqlTime);
 		$mysqlSecs = ($mysqlTime * 60) * 60;
 		foreach($result as $r) {
-			$expires = ($r['mute_expires_on'] + $mysqlSecs)- time();
-			echo '<li class="latestban"><a href="index.php?action=viewplayer&player='.$r['muted'].'&server='.$serverID.'"><img src="https://minotar.net/helm/'.$r['muted'].'/23" alt="'.$r['muted'].'" class="minihead" /> '.$r['muted'].'</a><button class="btn btn-info ban-info" rel="popover" data-html="true" data-content="'.$r['mute_reason'].'" data-original-title="'.$r['muted_by'];
-			if($r['mute_expires_on'] == 0)
+			$playername = UUIDtoPlayerName($r['player_id'], $server);
+			$actorname = UUIDtoPlayerName($r['actor_id'], $server);
+
+			$expires = ($r['expires'] + $mysqlSecs)- time();
+			echo '<li class="latestban"><a href="index.php?action=viewplayer&player='.$playername.'&server='.$serverID.'"><img src="https://minotar.net/helm/'.$playername.'/23" alt="'.$playername.'" class="minihead" /> '.$playername.'</a><button class="btn btn-info ban-info" rel="popover" data-html="true" data-content="'.$r['reason'].'" data-original-title="'.$actorname;
+			if($r['expires'] == 0)
 				echo ' <span class=\'label label-danger\'>Never</span>';
 			else if($expires > 0)
 				echo ' <span class=\'label label-warning\'>'.secs_to_hmini($expires).'</span>';
