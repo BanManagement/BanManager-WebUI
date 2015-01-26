@@ -8,7 +8,7 @@
 
 $settings['debug']['sqlcache'] = true; // show and var_dump any cached SQL queries
 
-$settings['utf8'] = false; // Encoding (Recommended TRUE)
+$settings['utf8'] = true; // Encoding (Recommended TRUE)
 $settings['latest_bans'] = true;  // Latest Bans table
 $settings['latest_mutes'] = true; // Latest Mutes table
 $settings['latest_warnings'] = true; // Latest warnings table
@@ -30,6 +30,16 @@ $settings['player_kicks'] = true;
 $settings['player_warnings'] = true;
 $settings['player_current_ban_extra_html'] = '';
 $settings['player_current_mute_extra_html'] = '';
+
+$settings['widget_bans_count'] = 5;
+$settings['widget_mutes_count'] = 5;
+$settings['widget_warnings_count'] = 5;
+
+// Caching options per action, in seconds
+$settings['cache_viewplayer'] = 600;
+$settings['cache_statistics'] = 3600;
+$settings['cache_search'] = 600;
+$settings['cache_home'] = 60;
 
 /**
 * These are the language options for Ban Management
