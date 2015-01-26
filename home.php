@@ -9,11 +9,13 @@
 */
 
 function latestBans($server, $serverID) {
+	global $settings;
+
 	// Clear old latest bans cache's
 	clearCache($serverID.'/latestbans', 300);
 	clearCache($serverID.'/mysqlTime', 300);
 
-	$result = cache("SELECT HEX(player_id) AS player_id, HEX(actor_id) AS actor_id, reason, created, expires FROM ".$server['playerBansTable']." ORDER BY created DESC LIMIT 5", 0, $serverID.'/search', $server);
+	$result = cache("SELECT HEX(player_id) AS player_id, HEX(actor_id) AS actor_id, reason, created, expires FROM ".$server['playerBansTable']." ORDER BY created DESC LIMIT ".$settings['widget_bans_count'], 0, $serverID.'/search', $server);
 
 	if(isset($result[0]) && !is_array($result[0]) && !empty($result[0])){
 		$result = array($result);
@@ -48,11 +50,13 @@ function latestBans($server, $serverID) {
 }
 
 function latestMutes($server, $serverID) {
+	global $settings;
+
 	// Clear old latest mutes cache's
 	clearCache($serverID.'/latestmutes', 300);
 	clearCache($serverID.'/mysqlTime', 300);
 
-	$result = cache("SELECT HEX(player_id) AS player_id, HEX(actor_id) AS actor_id, reason, created, expires FROM ".$server['playerMutesTable']." ORDER BY created DESC LIMIT 5", 0, $serverID.'/search', $server);
+	$result = cache("SELECT HEX(player_id) AS player_id, HEX(actor_id) AS actor_id, reason, created, expires FROM ".$server['playerMutesTable']." ORDER BY created DESC LIMIT ".$settings['widget_mutes_count'], 0, $serverID.'/search', $server);
 
 	if(isset($result[0]) && !is_array($result[0]) && !empty($result[0])) {
 		$result = array($result);
@@ -86,11 +90,13 @@ function latestMutes($server, $serverID) {
 }
 
 function latestWarnings($server, $serverID) {
+	global $settings;
+
 	// Clear old latest warnings cache's
 	clearCache($serverID.'/latestwarnings', 300);
 	clearCache($serverID.'/mysqlTime', 300);
 
-	$result = cache("SELECT HEX(player_id) AS player_id, HEX(actor_id) AS actor_id, reason, created FROM ".$server['playerWarningsTable']." ORDER BY created DESC LIMIT 5", 0, $serverID.'/search', $server);
+	$result = cache("SELECT HEX(player_id) AS player_id, HEX(actor_id) AS actor_id, reason, created FROM ".$server['playerWarningsTable']." ORDER BY created DESC LIMIT ".$settings['widget_warnings_count'], 0, $serverID.'/search', $server);
 
 	if(isset($result[0]) && !is_array($result[0]) && !empty($result[0])){
 		$result = array($result);
@@ -243,7 +249,8 @@ if(count($settings['servers']) > 1) {
 		<div class="col-lg-4">
 			<h3>'.$server['name'].'</h3>
 			<ul class="nav nav-tabs nav-stacked">';
-				latestBans($server, $i);
+				var_dump($settings['widget_bans_count'].$settings['widget_bans_count']);exit;
+				latestBans($server, $i, $settings['widget_bans_count']);
 				echo '
 			</ul>
 		</div>';
@@ -271,7 +278,7 @@ if(count($settings['servers']) > 1) {
 		<div class="col-lg-4">
 			<h3>'.$server['name'].'</h3>
 			<ul class="nav nav-tabs nav-stacked">';
-				latestMutes($server, $i);
+				latestMutes($server, $i, $settings['widget_mutes_count']);
 				echo '
 			</ul>
 		</div>';
@@ -299,7 +306,7 @@ if(count($settings['servers']) > 1) {
 		<div class="col-lg-4">
 			<h3>'.$server['name'].'</h3>
 			<ul class="nav nav-tabs nav-stacked">';
-				latestWarnings($server, $i);
+				latestWarnings($server, $i, $settings['widget_warnings_count']);
 				echo '
 			</ul>
 		</div>';

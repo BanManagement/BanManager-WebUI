@@ -8,6 +8,5 @@ This branch aims to fix the web interface for version 5 and up.
 ### Todo
 
 * Improve IP search
-* Widgets
 * Configurable caching times in `settings.php`
 * Check if admin functions still work
