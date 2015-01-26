@@ -244,9 +244,9 @@ function cache($query, $time, $folder = '', $server = array(), $name = '') {
 	else if($folder == '' && !empty($name))
 		$file = $name;
 
-	echo "<pre>";
-	echo substr($query, 0, 1000);
-	echo "</pre>";
+	// echo "<pre>";
+	// echo substr($query, 0, 1000);
+	// echo "</pre>";
 
 	if($settings['apc_enabled']) {
 		if(apc_exists($file))
@@ -520,12 +520,6 @@ function searchPlayers($search, $serverID, $server, $sortByCol = 'name', $sortBy
 			}
 		}
 	}
-
-	/* TODO: remove this debug output */
-	// echo "<pre>";
-	// var_dump($found);
-	// echo "</pre>";
-	// exit;
 
 	if(count($found) == 0)
 		return false;
