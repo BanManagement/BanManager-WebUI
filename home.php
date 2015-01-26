@@ -15,7 +15,7 @@ function latestBans($server, $serverID) {
 	clearCache($serverID.'/latestbans', 300);
 	clearCache($serverID.'/mysqlTime', 300);
 
-	$result = cache("SELECT HEX(player_id) AS player_id, HEX(actor_id) AS actor_id, reason, created, expires FROM ".$server['playerBansTable']." ORDER BY created DESC LIMIT ".$settings['widget_bans_count'], 0, $serverID.'/search', $server);
+	$result = cache("SELECT HEX(player_id) AS player_id, HEX(actor_id) AS actor_id, reason, created, expires FROM ".$server['playerBansTable']." ORDER BY created DESC LIMIT ".$settings['widget_bans_count'], $settings['cache_home'], $serverID.'/search', $server);
 
 	if(isset($result[0]) && !is_array($result[0]) && !empty($result[0])){
 		$result = array($result);
@@ -56,7 +56,7 @@ function latestMutes($server, $serverID) {
 	clearCache($serverID.'/latestmutes', 300);
 	clearCache($serverID.'/mysqlTime', 300);
 
-	$result = cache("SELECT HEX(player_id) AS player_id, HEX(actor_id) AS actor_id, reason, created, expires FROM ".$server['playerMutesTable']." ORDER BY created DESC LIMIT ".$settings['widget_mutes_count'], 0, $serverID.'/search', $server);
+	$result = cache("SELECT HEX(player_id) AS player_id, HEX(actor_id) AS actor_id, reason, created, expires FROM ".$server['playerMutesTable']." ORDER BY created DESC LIMIT ".$settings['widget_mutes_count'], $settings['cache_home'], $serverID.'/search', $server);
 
 	if(isset($result[0]) && !is_array($result[0]) && !empty($result[0])) {
 		$result = array($result);
@@ -96,7 +96,7 @@ function latestWarnings($server, $serverID) {
 	clearCache($serverID.'/latestwarnings', 300);
 	clearCache($serverID.'/mysqlTime', 300);
 
-	$result = cache("SELECT HEX(player_id) AS player_id, HEX(actor_id) AS actor_id, reason, created FROM ".$server['playerWarningsTable']." ORDER BY created DESC LIMIT ".$settings['widget_warnings_count'], 0, $serverID.'/search', $server);
+	$result = cache("SELECT HEX(player_id) AS player_id, HEX(actor_id) AS actor_id, reason, created FROM ".$server['playerWarningsTable']." ORDER BY created DESC LIMIT ".$settings['widget_warnings_count'], $settings['cache_home'], $serverID.'/search', $server);
 
 	if(isset($result[0]) && !is_array($result[0]) && !empty($result[0])){
 		$result = array($result);
@@ -214,7 +214,7 @@ function latestWarnings($server, $serverID) {
 					<?php
 					$i = 0;
 					foreach($settings['servers'] as $server) {
-						list($pastBans) = cache("SELECT COUNT(*) FROM ".$server['recordTable'], 3600, '', $server, $server['name'].'pastBanStats');
+						list($pastBans) = cache("SELECT COUNT(*) FROM ".$server['playerBanRecordsTable'], $settings['cache_home'], '', $server, $server['name'].'pastBanStats');
 
 						echo '
 						<a class="list-group-item" href="index.php?action=searchplayer&server='.$i.'&player=%25">

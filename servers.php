@@ -29,11 +29,11 @@ else {
 			?><tr><td colspan="3">Unable to connect to database</td></tr>
 		<?php
 		} else {
-			list($currentTempBans) = cache("SELECT COUNT(*) FROM ".$server['playerBansTable']." WHERE expires != 0", 3600, '', $server, $server['name'].'currentTempStats');
+			list($currentTempBans) = cache("SELECT COUNT(*) FROM ".$server['playerBansTable']." WHERE expires != 0", $settings['cache_statistics'], '', $server, $server['name'].'currentTempStats');
 
-			list($currentPermBans) = cache("SELECT COUNT(*) FROM ".$server['playerBansTable']." WHERE expires = 0", 3600, '', $server, $server['name'].'currentPermStats');
+			list($currentPermBans) = cache("SELECT COUNT(*) FROM ".$server['playerBansTable']." WHERE expires = 0", $settings['cache_statistics'], '', $server, $server['name'].'currentPermStats');
 
-			list($pastBans) = cache("SELECT COUNT(*) FROM ".$server['playerBanRecordsTable'], 3600, '', $server, $server['name'].'pastBanStats');
+			list($pastBans) = cache("SELECT COUNT(*) FROM ".$server['playerBanRecordsTable'], $settings['cache_statistics'], '', $server, $server['name'].'pastBanStats');
 
 			echo '
 			<tr>
