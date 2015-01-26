@@ -15,6 +15,11 @@ else if(!isset($_GET['player']) || empty($_GET['player']))
 	redirect('index.php');
 else {
 
+	$pastbans = true;
+	if(isset($_GET['excluderecords'])){
+		$pastbans = false;
+	}
+
 	// Get the server details
 	$server = $settings['servers'][$_GET['server']];
 
