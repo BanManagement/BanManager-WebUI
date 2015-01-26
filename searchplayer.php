@@ -14,9 +14,6 @@ else if(!isset($settings['servers'][$_GET['server']]))
 else if(!isset($_GET['player']) || empty($_GET['player']))
 	redirect('index.php');
 else {
-	$pastbans = true;
-	if(isset($_GET['excluderecords']))
-		$pastbans = false;
 
 	// Get the server details
 	$server = $settings['servers'][$_GET['server']];
@@ -28,8 +25,6 @@ else {
 	$search = $_GET['player'];
 	$page = 0;
 	$size = 10;
-	$sortByCol = 0;
-	$sortBy = 'ASC';
 	$filter = '';
 	$filterCol = 0;
 
@@ -54,16 +49,8 @@ else {
 					$filter = $filters[2];
 			}
 		}
-		if(isset($_GET['sortby'])) {
-			preg_match('/column\[([0-9])\]=([0-9])/', $_GET['sortby'], $orders);
-			if(!empty($orders)) {
-				if(isset($orders[1]) && is_numeric($orders[1]))
-					$sortByCol = $orders[1];
-				if(isset($orders[2]) && is_numeric($orders[2]))
-					$sortBy = ($orders[2] == 0 ? 'ASC' : 'DESC');
-			}
-		}
-		$found = searchPlayers($search, $_GET['server'], $server, $sortByCol, $sortBy, $pastbans);
+
+		$found = searchPlayers($search, $_GET['server'], $server);
 		$total = count($found);
 		$timeNow = time();
 
@@ -160,7 +147,7 @@ else {
 
 		die(json_encode($ajaxArray));
 	}
-	$found = searchPlayers($search, $_GET['server'], $server, $sortByCol, $sortBy, $pastbans);
+	$found = searchPlayers($search, $_GET['server'], $server);
 
 	if(!$found) {
 		errors('No matched players found');
@@ -175,17 +162,6 @@ else {
 			<input type="hidden" name="action" value="searchplayer" />
 			<input type="hidden" name="server" value="<?php echo $_GET['server']; ?>" />
 			<input type="hidden" name="player" value="<?php echo $_GET['player']; ?>" />
-			<div class="checkbox" id="excludepast">
-			<label type="checkbox">
-				Exclude Past <input type="checkbox" name="excluderecords" value="1"
-				<?php
-				if(isset($_GET['excluderecords']))
-					echo 'checked="checked"';
-				?>
-				/>
-			</label>
-			</div>
-			<button type="submit" class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-search"></span> Update</button>
 		</fieldset>
 	</form>
 	<table class="table table-striped table-bordered sortable">
