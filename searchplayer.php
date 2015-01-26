@@ -25,6 +25,8 @@ else {
 	$search = $_GET['player'];
 	$page = 0;
 	$size = 10;
+	$sortByCol = 0;
+	$sortBy = 'ASC';
 	$filter = '';
 	$filterCol = 0;
 
@@ -49,8 +51,17 @@ else {
 					$filter = $filters[2];
 			}
 		}
+		if(isset($_GET['sortby'])) {
+			preg_match('/column\[([0-9])\]=([0-9])/', $_GET['sortby'], $orders);
+			if(!empty($orders)) {
+				if(isset($orders[1]) && is_numeric($orders[1]))
+					$sortByCol = $orders[1];
+				if(isset($orders[2]) && is_numeric($orders[2]))
+					$sortBy = ($orders[2] == 0 ? 'ASC' : 'DESC');
+			}
+		}
+		$found = searchPlayers($search, $_GET['server'], $server, $sortByCol, $sortBy, $pastbans);
 
-		$found = searchPlayers($search, $_GET['server'], $server);
 		$total = count($found);
 		$timeNow = time();
 
@@ -149,7 +160,7 @@ else {
 
 		die(json_encode($ajaxArray));
 	}
-	$found = searchPlayers($search, $_GET['server'], $server);
+	$found = searchPlayers($search, $_GET['server'], $server, $sortByCol, $sortBy, $pastbans);
 
 	if(!$found) {
 		errors('No matched players found');
