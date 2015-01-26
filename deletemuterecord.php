@@ -21,15 +21,17 @@ else {
 	// Get the server details
 	$server = $settings['servers'][$_GET['server']];
 
-	if(!connect($server))
+	$mysqlicon = connect($server);
+
+	if(!$mysqlicon)
 		$error = 'Unable to connect to database';
 	else {
-		$pastBans = mysql_query("SELECT mute_record_id FROM ".$server['mutesRecordTable']." WHERE mute_record_id = '".$_GET['id']."'");
+		$pastBans = mysqli_query($mysqlicon, "SELECT mute_record_id FROM ".$server['mutesRecordTable']." WHERE mute_record_id = '".$_GET['id']."'");
 
-		if(mysql_num_rows($pastBans) == 0)
+		if(mysqli_num_rows($pastBans) == 0)
 			$error = 'That record does not exist';
 		else {
-			mysql_query("DELETE FROM ".$server['mutesRecordTable']." WHERE mute_record_id = '".$_GET['id']."'");
+			mysqli_query($mysqlicon, "DELETE FROM ".$server['mutesRecordTable']." WHERE mute_record_id = '".$_GET['id']."'");
 
 			// Clear the cache
 			clearCache($_GET['server'].'/players');
@@ -38,6 +40,9 @@ else {
 		}
 	}
 }
+
+mysqli_close($mysqlicon);
+
 if(isset($error))
 	$array['error'] = $error;
 echo json_encode($array);

@@ -35,15 +35,17 @@ else {
 		// Get the server details
 		$server = $settings['servers'][$_POST['server']];
 
-		if(!connect($server))
+		$mysqlicon = connect($server);
+
+		if(!$mysqlicon)
 			$error = 'Unable to connect to database';
 		else {
-			$currentBan = mysql_query("SELECT ban_id FROM ".$server['bansTable']." WHERE ban_id = '".$_POST['id']."'");
+			$currentBan = mysqli_query($mysqlicon, "SELECT ban_id FROM ".$server['bansTable']." WHERE ban_id = '".$_POST['id']."'");
 
-			if(mysql_num_rows($currentBan) == 0)
+			if(mysqli_num_rows($currentBan) == 0)
 				$error = 'That ban does not exist';
 			else {
-				mysql_query("UPDATE ".$server['bansTable']." SET ban_reason = '".$_POST['reason']."',  ban_expires_on = '$timestamp' WHERE ban_id = '".$_POST['id']."'");
+				mysqli_query($mysqlicon, "UPDATE ".$server['bansTable']." SET ban_reason = '".$_POST['reason']."',  ban_expires_on = '$timestamp' WHERE ban_id = '".$_POST['id']."'");
 
 				// Clear the cache
 				clearCache($_POST['server'].'/players');
@@ -53,6 +55,9 @@ else {
 		}
 	}
 }
+
+mysqli_close($mysqlicon);
+
 if(isset($error))
 	$array['error'] = $error;
 echo json_encode($array);

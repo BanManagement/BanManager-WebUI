@@ -36,17 +36,20 @@ else if(!is_alphanumdash($_POST['ipbanrecordstable']))
 	die('Hacking attempt');
 
 function tableExists($name) {
-	if(!@mysql_query("SELECT * FROM $name"))
+	global $mysqli;
+
+	if(!@mysqli_query($mysqli, "SELECT * FROM $name")){
 		return false;
+	}
+
 	return true;
 }
 
+$mysqli = mysqli_connect($_POST['host'], $_POST['username'], $_POST['password'], $_POST['database'])
+	or die('Unable to connect, check connection information is correct');
+
 // Test the mysql connection
-if(!mysql_connect($_POST['host'], $_POST['username'], $_POST['password']))
-	$error = 'Unable to connect, check connection information is correct';
-else if(!mysql_select_db($_POST['database']))
-	$error = 'Unable to select database';
-else if(!tableExists($_POST['playerstable']))
+if(!tableExists($_POST['playerstable']))
 	$error = 'Players table not found';
 else if(!tableExists($_POST['playerbanstable']))
 	$error = 'Player Bans table not found';

@@ -21,18 +21,20 @@ else {
 	// Get the server details
 	$server = $settings['servers'][$_GET['server']];
 
-	if(!connect($server))
+	$mysqlicon = connect($server);
+
+	if(!$mysqlicon)
 		$error = 'Unable to connect to database';
 	else {
-		$currentBan = mysql_query("SELECT ban_id FROM ".$server['ipTable']." WHERE ban_id = '".$_GET['id']."'");
+		$currentBan = mysqli_query($mysqlicon, "SELECT ban_id FROM ".$server['ipTable']." WHERE ban_id = '".$_GET['id']."'");
 
-		if(mysql_num_rows($currentBan) == 0)
+		if(mysqli_num_rows($currentBan) == 0)
 			$error = 'That record does not exist';
 		else {
 
-			mysql_query("INSERT INTO ".$server['ipRecordTable']." (banned, banned_by, ban_reason, ban_time, ban_expired_on, unbanned_by, unbanned_time, server) SELECT b.banned, b.banned_by, b.ban_reason, b.ban_time, b.ban_expires_on, \"Web\", UNIX_TIMESTAMP(now()), b.server FROM ".$server['ipTable']." b WHERE b.ban_id = '".$_GET['id']."'");
+			mysqli_query($mysqlicon, "INSERT INTO ".$server['ipRecordTable']." (banned, banned_by, ban_reason, ban_time, ban_expired_on, unbanned_by, unbanned_time, server) SELECT b.banned, b.banned_by, b.ban_reason, b.ban_time, b.ban_expires_on, \"Web\", UNIX_TIMESTAMP(now()), b.server FROM ".$server['ipTable']." b WHERE b.ban_id = '".$_GET['id']."'");
 			// Now delete it
-			mysql_query("DELETE FROM ".$server['ipTable']." WHERE ban_id = '".$_GET['id']."'");
+			mysqli_query($mysqlicon, "DELETE FROM ".$server['ipTable']." WHERE ban_id = '".$_GET['id']."'");
 
 			// Clear the cache
 			clearCache($_GET['server'].'/ips');
@@ -41,6 +43,9 @@ else {
 		}
 	}
 }
+
+mysqli_close($mysqlicon);
+
 if(isset($error))
 	$array['error'] = $error;
 echo json_encode($array);
