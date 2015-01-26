@@ -11,3 +11,4 @@ This branch aims to fix the web interface for version 5 and up.
 * widgets
 * configurable caching times in settings
 * check if admin functions still work
+* sorting in search?
