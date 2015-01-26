@@ -9,7 +9,8 @@
 date_default_timezone_set("Europe/Berlin"); // Set default timezone for date()
 
 $settings['debug']['sqlcache'] = false; // show and var_dump any cached SQL queries
-$settings['debug']['error_reporting'] = true; // display PHP errors
+$settings['debug']['error_reporting'] = false; // display PHP errors
+$settings['debug']['error_reporting_level'] = E_ALL; // Set error level (E_ALL, E_ERROR, E_WARNING, E_NOTICE)
 
 $settings['utf8'] = true; // Encoding (Recommended TRUE)
 $settings['latest_bans'] = true;  // Latest Bans table
