@@ -429,9 +429,7 @@ function searchPlayers($search, $serverID, $server, $sortByCol = 'name', $sortBy
 
 	if((isset($settings['player_current_ban']) && $settings['player_current_ban']) || !isset($settings['player_current_ban'])) {
 		// Current Bans
-		// SELECT HEX(id) AS id FROM bm_players WHERE name LIKE '%<PlayerName>%'
-		// SELECT *, HEX(player_id) AS player_id FROM bm_player_bans WHERE player_id = UNHEX('<UUID>')
-		$result = cache("SELECT player_id, actor_id, reason, created, expires FROM ".$server['playerBansTable']." WHERE player_id LIKE '%".$search."%' ORDER BY ".$sort['bans']." $sortBy", 0, $serverID.'/search', $server);
+		$result = cache("SELECT HEX(player_id) AS player_id, HEX(actor_id) AS actor_id, reason, created, expires FROM ".$server['playerBansTable']." WHERE ".constructWhereWithUUIDs(playerNameToUUID($search, $server), 'player_id')." ORDER BY ".$sort['bans']." $sortBy", 0, $serverID.'/search', $server);
 		if(isset($result[0]) && !is_array($result[0]) && !empty($result[0]))
 			$result = array($result);
 
@@ -444,16 +442,16 @@ function searchPlayers($search, $serverID, $server, $sortByCol = 'name', $sortBy
 	if((isset($settings['player_previous_bans']) && $settings['player_previous_bans']) || !isset($settings['player_previous_bans'])) {
 		if($past) {
 			// Past Bans
-			$result = cache("SELECT banned, banned_by, ban_reason, ban_time, ban_expired_on FROM ".$server['recordTable']." WHERE banned LIKE '%".$search."%' ORDER BY ".$sort['banrecords']." $sortBy", 300, $serverID.'/search', $server);
+			$result = cache("SELECT HEX(player_id) AS player_id, HEX(actor_id) AS actor_id, reason, created, expired FROM ".$server['playerBanRecordsTable']." WHERE ".constructWhereWithUUIDs(playerNameToUUID($search, $server), 'player_id')." ORDER BY ".$sort['bans']." $sortBy", 0, $serverID.'/search', $server);
 			if(isset($result[0]) && !is_array($result[0]) && !empty($result[0]))
 				$result = array($result);
 
 			if(count($result) > 0) {
 				foreach($result as $r) {
-					if(!isset($found[$r['banned']]))
-						$found[$r['banned']] = array('by' => $r['banned_by'], 'reason' => $r['ban_reason'], 'type' => 'Ban', 'time' => $r['ban_time'], 'expires' => $r['ban_expired_on'], 'past' => true);
-					else if($found[$r['banned']]['time'] < $r['ban_time'])
-						$found[$r['banned']] = array('by' => $r['banned_by'], 'reason' => $r['ban_reason'], 'type' => 'Ban', 'time' => $r['ban_time'], 'expires' => $r['ban_expired_on'], 'past' => true);
+					if(!isset($found[$r['player_id']]))
+						$found[$r['player_id']] = array('by' => $r['actor_id'], 'reason' => $r['reason'], 'type' => 'Ban', 'time' => $r['created'], 'expires' => $r['expired'], 'past' => true);
+					else if($found[$r['player_id']]['time'] < $r['created'])
+						$found[$r['player_id']] = array('by' => $r['actor_id'], 'reason' => $r['reason'], 'type' => 'Ban', 'time' => $r['created'], 'expires' => $r['expired'], 'past' => true);
 				}
 			}
 		}
@@ -525,6 +523,12 @@ function searchPlayers($search, $serverID, $server, $sortByCol = 'name', $sortBy
 		}
 	}
 
+
+	/* TODO: remove this debug output */
+	echo "<pre>";
+	var_dump($found);
+	echo "</pre>";
+	exit;
 
 	if(count($found) == 0)
 		return false;
