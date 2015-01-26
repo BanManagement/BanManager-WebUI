@@ -13,7 +13,7 @@ button .navbar-btn  a{
 
 .panel-jumbotron .panel-body .pastbans {
 	font-size: 12px;
-    font-weight: bold;
+		font-weight: bold;
 }
 .panel-jumbotron .panel-body .pastbans .badge {
 	color: #ED381C;
@@ -53,16 +53,16 @@ td.admin-options {
 	display: inline-block;
 }
 .minecraft_head .head {
-    display:none;
+		display:none;
 }
 .minecraft_head:hover .hat {
-    display:none;
+		display:none;
 }
 .minecraft_head:hover .head {
-    display:inline-block;
+		display:inline-block;
 }
 .scratch {
-    display:none;
+		display:none;
 }
 #copyright_image{
 	width: 100px;
@@ -73,16 +73,8 @@ td.admin-options {
 	padding: 5px;
 }
 
-.jumbotron {
-	font-size: inherit;
-}
-
-.jumbotron .input-group {
-	line-height: 0px;
-}
-
 .form-control.fixedWidth {
-    width: 100%;
+		width: 100%;
 }
 
 @media screen and (min-width: 768px) {

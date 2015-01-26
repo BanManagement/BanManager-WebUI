@@ -13,8 +13,9 @@ This branch aims to fix the web interface for version 5 and up.
 * Configurable caching times 
 * Add debug option to output any SQL query
 * Fix "Statistics"
+* CSS adjustments
 
 ### Todo
 
 * Improve IP search
-* Check if admin functions still work
+* Check if admin functions still work (low prio, not in use on our server)
