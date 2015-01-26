@@ -72,6 +72,8 @@ else {
 				if(!isset($playerNames[$i]))
 					break;
 
+				$playerName = UUIDtoPlayerName($playerNames[$i], $server);
+
 				$player = $found[$playerNames[$i]];
 				$expireTime = ($player['expires'] + $mysqlSecs)- $timeNow;
 
@@ -122,9 +124,9 @@ else {
 					$time = (!empty($player['time']) ? date('j F Y h:i:s A', $player['time']) : '');
 
 				$ajaxArray['rows'][] = array(
-					'<img src="https://minotar.net/helm/'.$playerNames[$i].'/23" alt="'.$playerNames[$i].'" class="minihead" /> <a href="index.php?action=viewplayer&player='.$playerNames[$i].'&server='.$_GET['server'].'">'.$playerNames[$i].'</a>',
+					'<img src="https://minotar.net/helm/'.$playerName.'/23" alt="'.$playerName.'" class="minihead" /> <a href="index.php?action=viewplayer&player='.$playerName.'&server='.$_GET['server'].'">'.$playerName.'</a>',
 					$player['type'],
-					$player['by'],
+					UUIDtoPlayerName($player['by'], $server),
 					$player['reason'],
 					$expires,
 					$time
