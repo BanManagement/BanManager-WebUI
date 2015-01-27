@@ -299,6 +299,10 @@ function createCache($query, $server, $file, $time = 0) {
 	// }
 	$result = mysqli_query($mysqlicon, $query);
 
+	if (mysqli_error($mysqlicon)) {
+		errors(mysqli_error($mysqlicon));
+	}
+
 	$data = array();
 	if(mysqli_num_rows($result) > 0) {
 		while($row = mysqli_fetch_array($result)){
