@@ -604,32 +604,38 @@ function searchIps($search, $serverID, $server, $sortByCol = 'name', $sortBy = '
 		break;
 	}
 
+	if ($search == "%") {
+		$whereStatement = "";
+	} else {
+		$whereStatement = "WHERE ip = INET_ATON('".$search."')";
+	}
+
 	// Found results
 	$found = array();
 
 	// Current Bans
-	$result = cache("SELECT *, HEX(actor_id) AS actor_id FROM ".$server['ipBansTable']." WHERE ip = INET_ATON('".$search."') ORDER BY ".$sort['bans']." $sortBy", $settings['cache_search'], $serverID.'/search', $server);
+	$result = cache("SELECT *, HEX(actor_id) AS actor_id FROM ".$server['ipBansTable']." ".$whereStatement." ORDER BY ".$sort['bans']." $sortBy", $settings['cache_search'], $serverID.'/search', $server);
 	if(isset($result[0]) && !is_array($result[0]) && !empty($result[0]))
 		$result = array($result);
 
 	if(count($result) > 0) {
 		foreach($result as $r) {
-			$found[long2ip($r['ip'])] = array('by' => $r['actor_id'], 'reason' => $r['reason'], 'type' => 'Ban', 'time' => $r['created'], 'expires' => $r['expires']);
+			$found[long2ip($r['ip'])] = array('by' => $r['actor_id'], 'reason' => $r['reason'], 'type' => 'IP Ban', 'time' => $r['created'], 'expires' => $r['expires']);
 		}
 	}
 
 	if($past) {
 		// Past Bans
-		$result = cache("SELECT *, HEX(actor_id) AS actor_id, HEX(pastActor_id) AS pastActor_id FROM ".$server['ipBanRecordsTable']." WHERE ip = INET_ATON('".$search."') ORDER BY ".$sort['banrecords']." $sortBy", $settings['cache_search'], $serverID.'/search', $server);
+		$result = cache("SELECT *, HEX(actor_id) AS actor_id, HEX(pastActor_id) AS pastActor_id FROM ".$server['ipBanRecordsTable']." ".$whereStatement." ORDER BY ".$sort['banrecords']." $sortBy", $settings['cache_search'], $serverID.'/search', $server);
 		if(isset($result[0]) && !is_array($result[0]) && !empty($result[0]))
 			$result = array($result);
 
 		if(count($result) > 0) {
 			foreach($result as $r) {
 				if(!isset($found[long2ip($r['ip'])]))
-					$found[long2ip($r['ip'])] = array('by' => $r['actor_id'], 'reason' => $r['reason'], 'type' => 'Ban', 'time' => $r['created'], 'expires' => $r['expired'], 'past' => true);
+					$found[long2ip($r['ip'])] = array('by' => $r['actor_id'], 'reason' => $r['reason'], 'type' => 'IP Ban', 'time' => $r['created'], 'expires' => $r['expired'], 'past' => true);
 				else if($found[long2ip($r['ip'])]['created'] < $r['created'])
-					$found[long2ip($r['ip'])] = array('by' => $r['actor_id'], 'reason' => $r['reason'], 'type' => 'Ban', 'time' => $r['created'], 'expires' => $r['expired'], 'past' => true);
+					$found[long2ip($r['ip'])] = array('by' => $r['actor_id'], 'reason' => $r['reason'], 'type' => 'IP Ban', 'time' => $r['created'], 'expires' => $r['expired'], 'past' => false);
 			}
 		}
 	}
