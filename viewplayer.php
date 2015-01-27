@@ -266,7 +266,7 @@ else {
 					</tr>
 					<tr>
 						<td>Muted by:</td>
-						<td>'.$currentMutes['actor_id'].'</td>
+						<td>'.UUIDtoPlayerName($currentMutes['actor_id'], $server).'</td>
 					</tr>
 					<tr>
 						<td>Muted at:</td>
