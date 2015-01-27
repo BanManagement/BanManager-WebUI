@@ -39,6 +39,7 @@ $settings['widget_warnings_count'] = 5;
 
 // Caching options per action, in seconds
 $settings['cache_viewplayer'] = 600;
+$settings['cache_viewip'] = 600;
 $settings['cache_statistics'] = 3600;
 $settings['cache_search'] = 600;
 $settings['cache_home'] = 60;
