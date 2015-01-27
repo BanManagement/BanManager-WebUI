@@ -1,7 +1,7 @@
 BanManager-WebUI
 ================
 
-![](http://up.frd.mn/39qBp.png)
+![](http://up.frd.mn/jaCRp.png)
 
 Git repo initialized with existing WebUI project for BanManager by [confuser](https://github.com/confuser/Ban-Management). The main purpose of this repository is to to fix the WebUI for the latest major database restructure from version 4 to version 5.
 
