@@ -31,6 +31,7 @@ else {
 		$admin = false;
 
 	// Check if the player exists
+	$associatedAccounts = cache("SELECT *, HEX(id) AS id FROM ".$server['playersTable']." WHERE ip = INET_ATON('".$_GET['ip']."')", $settings['cache_viewip'], $_GET['server'].'/ips', $server);
 	$currentBans = cache("SELECT *, HEX(actor_id) AS actor_id FROM ".$server['ipBansTable']." WHERE ip = INET_ATON('".$_GET['ip']."')", $settings['cache_viewip'], $_GET['server'].'/ips', $server);
 	$pastBans = cache("SELECT *, HEX(actor_id) AS actor_id, HEX(pastActor_id) AS pastActor_id FROM ".$server['ipBanRecordsTable']." WHERE ip = INET_ATON('".$_GET['ip']."')", $settings['cache_viewip'], $_GET['server'].'/ips', $server);
 	if(count($currentBans) == 0 && count($pastBans) == 0) {
@@ -65,6 +66,40 @@ else {
 			</h5>';
 		}
 			?>
+			<br />
+			<table class="table table-striped table-bordered" id="associated-accounts">
+				<caption>Associated Accounts</caption>
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>Playername</th>
+						<th>UUID</th>
+						<th>IP</th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php
+						if(count($associatedAccounts) == 0) {
+							echo '
+				<tr>
+					<td colspan="4">None found</td>
+				</tr>';
+						} else {
+							$i = 1;
+							foreach($associatedAccounts as $r) {
+								echo '
+									<tr>
+										<td>'.$i.'</td>
+										<td>'.UUIDtoPlayerName($r['id'], $server).'</td>
+										<td>'.$r['id'].'</td>
+										<td>'.long2ip($r['ip']).'</td>
+									</tr>';
+								++$i;
+							}
+						}
+					?>
+				</tbody>
+			</table>
 			<br />
 			<table class="table table-striped table-bordered">
 				<caption>Current Ban</caption>
