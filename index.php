@@ -608,7 +608,7 @@ function searchIps($search, $serverID, $server, $sortByCol = 'name', $sortBy = '
 	$found = array();
 
 	// Current Bans
-	$result = cache("SELECT *, HEX(actor_id) AS actor_id, HEX(pastActor_id) AS pastActor_id FROM ".$server['ipBansTable']." WHERE ip LIKE '%".$search."%' ORDER BY ".$sort['bans']." $sortBy", $settings['cache_search'], $serverID.'/search', $server);
+	$result = cache("SELECT *, HEX(actor_id) AS actor_id FROM ".$server['ipBansTable']." WHERE ip = INET_ATON('".$search."') ORDER BY ".$sort['bans']." $sortBy", $settings['cache_search'], $serverID.'/search', $server);
 	if(isset($result[0]) && !is_array($result[0]) && !empty($result[0]))
 		$result = array($result);
 
@@ -620,7 +620,7 @@ function searchIps($search, $serverID, $server, $sortByCol = 'name', $sortBy = '
 
 	if($past) {
 		// Past Bans
-		$result = cache("SELECT *, HEX(actor_id) AS actor_id, HEX(pastActor_id) AS pastActor_id FROM ".$server['ipBanRecordsTable']." WHERE ip LIKE '%".$search."%' ORDER BY ".$sort['banrecords']." $sortBy", $settings['cache_search'], $serverID.'/search', $server);
+		$result = cache("SELECT *, HEX(actor_id) AS actor_id, HEX(pastActor_id) AS pastActor_id FROM ".$server['ipBanRecordsTable']." WHERE ip = INET_ATON('".$search."') ORDER BY ".$sort['banrecords']." $sortBy", $settings['cache_search'], $serverID.'/search', $server);
 		if(isset($result[0]) && !is_array($result[0]) && !empty($result[0]))
 			$result = array($result);
 
