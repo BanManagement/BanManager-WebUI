@@ -56,6 +56,7 @@ Feel free to contribute if you have any suggestions or ideas.
 * Check if admin functions still work (low prio, not in use on our server)
 * Grunt/Gulp to compile assets/libs
 * Keep up MySQL connection
+* Prepared Statements (`mysqli`)
 
 ### Demo
 
