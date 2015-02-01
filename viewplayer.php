@@ -24,10 +24,11 @@ else {
 	clearCache($_GET['server'].'/mysqlTime', 300);
 
 	// Check if they are logged in as an admin
-	if(isset($_SESSION['admin']) && $_SESSION['admin'])
+	if(isset($_SESSION['admin']) && $_SESSION['admin']){
 		$admin = true;
-	else
+	}	else {
 		$admin = false;
+	}
 
 	$UUID = playerNameToUUID($_GET['player'], $server)[0];
 
