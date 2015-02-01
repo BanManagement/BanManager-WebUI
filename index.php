@@ -373,7 +373,11 @@ function UUIDtoPlayerName($uuid, $server) {
 		array_push($found, $r['name']);
 	}
 
-	return $found[0];
+	if (isset($found[0])) {
+		return $found[0];
+	} else {
+		return false;
+	}
 }
 
 function playerNameToUUID($name, $server) {
