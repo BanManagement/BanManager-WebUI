@@ -74,6 +74,6 @@ $theme['navbar-dark'] = false; // Enable dark theme for the navbar
 * Don't change the variables below!
 **/
 
-$settings['version'] = "1.1"
+$settings['version'] = "1.2"
 
 ?>
