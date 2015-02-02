@@ -160,7 +160,10 @@ function returnVersion(){
 			return "GIT-".$gitref;
 		}
 	}	else {
-		return $settings['version'];
+		$version = file_get_contents('./VERSION');
+		if ($version) {
+			return trim($version);
+		}
 	}
 }
 
