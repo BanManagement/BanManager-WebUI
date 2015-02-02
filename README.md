@@ -49,6 +49,7 @@ Feel free to contribute if you have any suggestions or ideas.
 * Option to enable/disable PHP errors
 * Default timezone in settings for `date()` functions
 * Replaced `mysql_` functions with `mysqli_` ones
+* PHP 5.3 compatible
 
 ### Todo / Improvements
 
