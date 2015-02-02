@@ -30,7 +30,8 @@ else {
 		$admin = false;
 	}
 
-	$UUID = playerNameToUUID($_GET['player'], $server)[0];
+	$UUID = playerNameToUUID($_GET['player'], $server);
+	$UUID = $UUID[0];
 
 	// Check if the player exists
 	$currentBans = cache("SELECT *, HEX(player_id) as player_id, HEX(actor_id) as actor_id FROM ".$server['playerBansTable']." WHERE player_id = UNHEX('".$UUID."')", $settings['cache_viewplayer'], $_GET['server'].'/players', $server);
