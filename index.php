@@ -500,7 +500,7 @@ function searchPlayers($search, $serverID, $server, $sortByCol = 'name', $sortBy
 				foreach($result as $r) {
 					if(!isset($found[$r['player_id']]))
 						$found[$r['player_id']] = array('by' => $r['actor_id'], 'reason' => $r['reason'], 'type' => 'Ban', 'time' => $r['created'], 'expires' => $r['expired'], 'past' => true);
-					else if($found[$r['player_id']]['created'] < $r['created'])
+					else if(isset($found[$r['player_id']]['created']) && $found[$r['player_id']]['created'] < $r['created'])
 						$found[$r['player_id']] = array('by' => $r['actor_id'], 'reason' => $r['reason'], 'type' => 'Ban', 'time' => $r['created'], 'expires' => $r['expired'], 'past' => true);
 				}
 			}
@@ -532,7 +532,7 @@ function searchPlayers($search, $serverID, $server, $sortByCol = 'name', $sortBy
 				foreach($result as $r) {
 					if(!isset($found[$r['player_id']]))
 						$found[$r['player_id']] = array('by' => $r['actor_id'], 'reason' => $r['reason'], 'type' => 'Mute', 'time' => $r['created'], 'expires' => $r['expired'], 'past' => true);
-					else if($found[$r['player_id']]['created'] < $r['created'])
+					else if(isset($found[$r['player_id']]['created']) && $found[$r['player_id']]['created'] < $r['created'])
 						$found[$r['player_id']] = array('by' => $r['actor_id'], 'reason' => $r['reason'], 'type' => 'Mute', 'time' => $r['created'], 'expires' => $r['expired'], 'past' => true);
 				}
 			}
@@ -548,7 +548,7 @@ function searchPlayers($search, $serverID, $server, $sortByCol = 'name', $sortBy
 				foreach($result as $r) {
 					if(!isset($found[$r['player_id']]))
 						$found[$r['player_id']] = array('by' => $r['actor_id'], 'reason' => $r['reason'], 'type' => 'Kick', 'time' => $r['created'], 'expires' => 0, 'past' => true);
-					else if($found[$r['player_id']]['created'] < $r['created'])
+					else if(isset($found[$r['player_id']]['created']) && $found[$r['player_id']]['created'] < $r['created'])
 						$found[$r['player_id']] = array('by' => $r['actor_id'], 'reason' => $r['reason'], 'type' => 'Kick', 'time' => $r['created'], 'expires' => 0, 'past' => true);
 				}
 			}
@@ -557,7 +557,7 @@ function searchPlayers($search, $serverID, $server, $sortByCol = 'name', $sortBy
 
 	if((isset($settings['player_warnings']) && $settings['player_warnings']) || !isset($settings['player_warnings'])) {
 		// Warnings
-		$result = cache("SELECT warned, warned_by, warn_reason, warn_time FROM ".$server['warningsTable']." WHERE warned LIKE '%".$search."%' ORDER BY ".$sort['warnings']." $sortBy", $settings['cache_search'], $serverID.'/search', $server);
+		$result = cache("SELECT HEX(player_id) AS player_id, HEX(actor_id) AS actor_id, reason, created FROM ".$server['playerWarningsTable']." WHERE ".constructWhereWithUUIDs(playerNameToUUID($search, $server), 'player_id')." ORDER BY ".$sort['warnings']." $sortBy", $settings['cache_search'], $serverID.'/search', $server);
 		if(isset($result[0]) && !is_array($result[0]) && !empty($result[0]))
 			$result = array($result);
 
@@ -565,7 +565,7 @@ function searchPlayers($search, $serverID, $server, $sortByCol = 'name', $sortBy
 			foreach($result as $r) {
 				if(!isset($found[$r['player_id']]))
 					$found[$r['player_id']] = array('by' => $r['actor_id'], 'reason' => $r['reason'], 'type' => 'Warning', 'time' => $r['created'], 'expires' => 0, 'past' => true);
-				else if($found[$r['player_id']]['created'] < $r['created'])
+				else if(isset($found[$r['player_id']]['created']) && $found[$r['player_id']]['created'] < $r['created'])
 					$found[$r['player_id']] = array('by' => $r['actor_id'], 'reason' => $r['reason'], 'type' => 'Warning', 'time' => $r['created'], 'expires' => 0, 'past' => true);
 			}
 		}
