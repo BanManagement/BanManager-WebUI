@@ -106,7 +106,7 @@ else {
 					$skip = false;
 					switch($filterCol) {
 						case 0:
-							if(stripos($playerNames[$i], $filter) === false)
+							if(stripos(UUIDtoPlayerName($playerNames[$i], $server), $filter) === false)
 								$skip = true;
 						break;
 						case 1:
