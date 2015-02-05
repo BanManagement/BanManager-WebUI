@@ -249,7 +249,6 @@ if(count($settings['servers']) > 1) {
 		<div class="col-lg-4">
 			<h3>'.$server['name'].'</h3>
 			<ul class="nav nav-tabs nav-stacked">';
-				var_dump($settings['widget_bans_count'].$settings['widget_bans_count']);exit;
 				latestBans($server, $i, $settings['widget_bans_count']);
 				echo '
 			</ul>
