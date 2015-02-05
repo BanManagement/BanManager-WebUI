@@ -37,7 +37,7 @@ else {
 	$currentBans = cache("SELECT *, HEX(player_id) as player_id, HEX(actor_id) as actor_id FROM ".$server['playerBansTable']." WHERE player_id = UNHEX('".$UUID."')", $settings['cache_viewplayer'], $_GET['server'].'/players', $server);
 	$pastBans = cache("SELECT *, HEX(player_id) as player_id, HEX(actor_id) as actor_id, HEX(pastActor_id) as pastActor_id FROM ".$server['playerBanRecordsTable']." WHERE player_id = UNHEX('".$UUID."') AND pastCreated <> 0", $settings['cache_viewplayer'], $_GET['server'].'/players', $server);
 	$currentMutes = cache("SELECT *, HEX(player_id) as player_id, HEX(actor_id) as actor_id FROM ".$server['playerMutesTable']." WHERE player_id = UNHEX('".$UUID."')", $settings['cache_viewplayer'], $_GET['server'].'/players', $server);
-	$pastMutes = cache("SELECT *, HEX(player_id) as player_id, HEX(actor_id) as actor_id FROM ".$server['playerMuteRecordsTable']." WHERE player_id = UNHEX('".$UUID."')", $settings['cache_viewplayer'], $_GET['server'].'/players', $server);
+	$pastMutes = cache("SELECT *, HEX(player_id) as player_id, HEX(actor_id) as actor_id, HEX(pastActor_id) as pastActor_id FROM ".$server['playerMuteRecordsTable']." WHERE player_id = UNHEX('".$UUID."')", $settings['cache_viewplayer'], $_GET['server'].'/players', $server);
 	$pastKicks = cache("SELECT *, HEX(player_id) as player_id, HEX(actor_id) as actor_id FROM ".$server['playerKicksTable']." WHERE player_id = UNHEX('".$UUID."')", $settings['cache_viewplayer'], $_GET['server'].'/players', $server);
 	$pastWarnings = cache("SELECT *, HEX(player_id) as player_id, HEX(actor_id) as actor_id FROM ".$server['playerWarningsTable']." WHERE player_id = UNHEX('".$UUID."')", $settings['cache_viewplayer'], $_GET['server'].'/players', $server);
 
