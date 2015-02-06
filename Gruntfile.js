@@ -87,6 +87,7 @@ module.exports = function(grunt) {
                 src: [
                     '<%= dirs.bower %>/jquery/dist/jquery.js',
                     '<%= dirs.bower %>/bootstrap-sass-official/assets/javascripts/bootstrap.js',
+                    '<%= dirs.bower %>/jquery-mousewheel/jquery.mousewheel.js',
                     '<%= dirs.bower %>/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.js',
                     '<%= dirs.js %>/*.js',
                     '!<%= dirs.js %>/modernizr.js',
