@@ -90,6 +90,7 @@ module.exports = function(grunt) {
                     '<%= dirs.bower %>/jquery-mousewheel/jquery.mousewheel.js',
                     '<%= dirs.bower %>/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.js',
                     '<%= dirs.bower %>/eonasdan-bootstrap-datetimepicker/src/js/bootstrap-datetimepicker.js',
+                    '<%= dirs.bower %>/CanvasLoader/js/heartcode-canvasloader.js',
                     '<%= dirs.bower %>/ExplorerCanvas/excanvas.js',
                     '<%= dirs.js %>/*.js',
                     '!<%= dirs.js %>/modernizr.js',
