@@ -11,3 +11,7 @@ cache/*
 # Node and Bower
 node_modules
 bower_components
+.sass-cache
+
+# Meta files
+.DS_Store
