@@ -3,6 +3,8 @@ module.exports = function(grunt) {
 
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
+
+        // Helper variables
         dirs: {
             bower: 'bower_components',
             css: 'assets/css',
@@ -12,7 +14,12 @@ module.exports = function(grunt) {
             svg: 'assets/svg'
         },
 
-        // SASS
+        /*
+         * SASS
+         * - Compiles all *.scss files into one style.css
+         * - In dev mode there is no minifying
+         */
+
         sass: {
             dev: {
                 options: {
@@ -36,7 +43,11 @@ module.exports = function(grunt) {
             }
         },
 
-        // CSS autoprefixer
+        /*
+         * Autoprefixer
+         * - Makes sure you use the proper vendor-prefixed CSS properties
+         */
+
         autoprefixer: {
             options: {
                 browsers: ['last 2 versions']
@@ -48,7 +59,11 @@ module.exports = function(grunt) {
             }
         },
 
-        // Connect Server
+        /*
+         * Connect
+         * - Inbuilt web server
+         */
+
         connect: {
             server: {
                 options: {
@@ -58,7 +73,12 @@ module.exports = function(grunt) {
             }
         },
 
-        // Concat
+        /*
+         * Concat task
+         * - Merges all the devided JavaScript into one big one for production use
+         * - Ignores "modernizr.js", since it has to be seperate
+         */
+
         concat: {
             options: {
                 separator: ';',
@@ -75,7 +95,11 @@ module.exports = function(grunt) {
             },
         },
 
-        // JShint
+        /*
+         * JShint
+         * - Validate JavaScript
+         */
+
         jshint: {
             options: {
                 multistr: true
@@ -88,7 +112,11 @@ module.exports = function(grunt) {
             ]
         },
 
-        // HTMLhint
+        /*
+         * HTMLhint
+         * - Validate HTML
+         */
+
         htmlhint: {
             html: {
                 options: {
@@ -98,7 +126,11 @@ module.exports = function(grunt) {
             }
         },
 
-        // Uglify
+        /*
+         * Uglify
+         * - Minify JavaScript
+         */
+
         uglify: {
             all: {
                 files: {
@@ -108,7 +140,11 @@ module.exports = function(grunt) {
             }
         },
 
-        // Imagemin
+        /*
+         * Imagemin
+         * - Minify images
+         */
+
         imagemin: {
             dynamic: {
                 files: [{
@@ -120,7 +156,12 @@ module.exports = function(grunt) {
             }
         },
 
-        // Copy
+        /*
+         * Copy
+         * - Cope files via Grunt from A to B
+         * - Used for Bootstraps fonts which are included in the bower component folder
+         */
+
         copy: {
           main: {
             files: [
@@ -129,7 +170,11 @@ module.exports = function(grunt) {
           }
         },
 
-        // Watch
+        /*
+         * Watch
+         * - Watches files for changes and recompiles if neccesary
+         */
+
         watch: {
             options: {
                 livereload: true
