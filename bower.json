@@ -22,6 +22,7 @@
     "malihu-custom-scrollbar-plugin": "~3.0.7",
     "eonasdan-bootstrap-datetimepicker": "~4.0.0",
     "ExplorerCanvas": "*",
-    "CanvasLoader": "~0.9.1"
+    "CanvasLoader": "~0.9.1",
+    "jquery.countdown": "~2.0.4"
   }
 }
