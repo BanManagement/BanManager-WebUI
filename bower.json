@@ -1,0 +1,22 @@
+{
+  "name": "BanManager-WebUI",
+  "version": "1.0.0",
+  "authors": [
+    "James Mortemore",
+    "Jonas Friedmann"
+  ],
+  "description": "Web interface for BanManager",
+  "license": "CC BY-NC-SA 2.0 UK",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "1.8.3",
+    "modernizr": "~2.8.3"
+  }
+}
