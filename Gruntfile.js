@@ -66,6 +66,7 @@ module.exports = function(grunt) {
             dist: {
                 src: [
                     '<%= dirs.bower %>/jquery/dist/jquery.js',
+                    '<%= dirs.bower %>/bootstrap-sass-official/assets/javascripts/bootstrap.js',
                     '<%= dirs.js %>/*.js',
                     '!<%= dirs.js %>/modernizr.js',
                     '!<%= dirs.js %>/build.js'
@@ -120,13 +121,13 @@ module.exports = function(grunt) {
         },
 
         // Copy
-        // copy: {
-        //   main: {
-        //     files: [
-        //       {expand: true, cwd: '<%= dirs.bower %>/bootstrap-sass-official/assets/fonts/bootstrap/', src: ['**'], dest: '<%= dirs.fonts %>'}
-        //     ]
-        //   }
-        // },
+        copy: {
+          main: {
+            files: [
+              {expand: true, cwd: '<%= dirs.bower %>/bootstrap-sass-official/assets/fonts/bootstrap/', src: ['**'], dest: '<%= dirs.fonts %>'}
+            ]
+          }
+        },
 
         // Watch
         watch: {
