@@ -7,3 +7,7 @@ cache/*
 
 # Test dump
 .dump_*.sql*
+
+# Node and Bower
+node_modules
+bower_components
