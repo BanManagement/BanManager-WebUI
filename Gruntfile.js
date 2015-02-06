@@ -89,6 +89,7 @@ module.exports = function(grunt) {
                     '<%= dirs.bower %>/bootstrap-sass-official/assets/javascripts/bootstrap.js',
                     '<%= dirs.bower %>/jquery-mousewheel/jquery.mousewheel.js',
                     '<%= dirs.bower %>/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.js',
+                    '<%= dirs.bower %>/eonasdan-bootstrap-datetimepicker/src/js/bootstrap-datetimepicker.js',
                     '<%= dirs.js %>/*.js',
                     '!<%= dirs.js %>/modernizr.js',
                     '!<%= dirs.js %>/build.js'
@@ -169,6 +170,7 @@ module.exports = function(grunt) {
             files: [
               {expand: true, cwd: '<%= dirs.bower %>/bootstrap-sass-official/assets/fonts/bootstrap/', src: ['**'], dest: '<%= dirs.fonts %>'},
               {expand: true, cwd: '<%= dirs.bower %>/malihu-custom-scrollbar-plugin/', src: ['jquery.mCustomScrollbar.css'], dest: '<%= dirs.css %>', rename: function(dest, src) { return dest + '/jquery.mCustomScrollbar.scss'; }},
+              {expand: true, cwd: '<%= dirs.bower %>/eonasdan-bootstrap-datetimepicker/build/css/', src: ['bootstrap-datetimepicker.css'], dest: '<%= dirs.css %>', rename: function(dest, src) { return dest + '/bootstrap-datetimepicker.scss'; }},
             ]
           }
         },
