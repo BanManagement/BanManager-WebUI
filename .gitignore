@@ -7,3 +7,9 @@ cache/*
 
 # Test dump
 .dump_*.sql*
+
+# build specific
+node_modules
+coverage
+.coveralls.yml
+npm-debug.log
