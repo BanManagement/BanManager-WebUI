@@ -23,6 +23,7 @@
     "eonasdan-bootstrap-datetimepicker": "~4.0.0",
     "ExplorerCanvas": "*",
     "CanvasLoader": "~0.9.1",
-    "jquery.countdown": "~2.0.4"
+    "jquery.countdown": "~2.0.4",
+    "jquery.tablesorter": "~2.18.4"
   }
 }

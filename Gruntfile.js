@@ -93,6 +93,9 @@ module.exports = function(grunt) {
                     '<%= dirs.bower %>/ExplorerCanvas/excanvas.js',
                     '<%= dirs.bower %>/CanvasLoader/js/heartcode-canvasloader.js',
                     '<%= dirs.bower %>/jquery.countdown/dist/jquery.countdown.js',
+                    '<%= dirs.bower %>/jquery.tablesorter/js/jquery.tablesorter.js',
+                    '<%= dirs.bower %>/jquery.tablesorter/js/jquery.tablesorter.widgets.js',
+                    '<%= dirs.bower %>/jquery.tablesorter/js/jquery.tablesorter.widgets-dilter-formatter.js',
                     '<%= dirs.js %>/*.js',
                     '!<%= dirs.js %>/modernizr.js',
                     '!<%= dirs.js %>/build.js'
@@ -174,6 +177,7 @@ module.exports = function(grunt) {
               {expand: true, cwd: '<%= dirs.bower %>/bootstrap-sass-official/assets/fonts/bootstrap/', src: ['**'], dest: '<%= dirs.fonts %>'},
               {expand: true, cwd: '<%= dirs.bower %>/malihu-custom-scrollbar-plugin/', src: ['jquery.mCustomScrollbar.css'], dest: '<%= dirs.css %>', rename: function(dest, src) { return dest + '/jquery.mCustomScrollbar.scss'; }},
               {expand: true, cwd: '<%= dirs.bower %>/eonasdan-bootstrap-datetimepicker/build/css/', src: ['bootstrap-datetimepicker.css'], dest: '<%= dirs.css %>', rename: function(dest, src) { return dest + '/bootstrap-datetimepicker.scss'; }},
+              {expand: true, cwd: '<%= dirs.bower %>/jquery.tablesorter/css/', src: ['theme.bootstrap.css'], dest: '<%= dirs.css %>', rename: function(dest, src) { return dest + '/tablesorter-theme.bootstrap.scss'; }},
             ]
           }
         },
