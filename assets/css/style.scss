@@ -11,6 +11,9 @@ $icon-font-path: "../fonts/";
 /* Bower */
 @import 'bower_components/bootstrap-sass-official/assets/stylesheets/_bootstrap.scss';
 
+/* Bower aliases */
+@import 'jquery.mCustomScrollbar';
+
 /* Custom */
 @import 'main';
 

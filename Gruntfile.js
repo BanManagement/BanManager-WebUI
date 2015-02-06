@@ -87,6 +87,7 @@ module.exports = function(grunt) {
                 src: [
                     '<%= dirs.bower %>/jquery/dist/jquery.js',
                     '<%= dirs.bower %>/bootstrap-sass-official/assets/javascripts/bootstrap.js',
+                    '<%= dirs.bower %>/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.js',
                     '<%= dirs.js %>/*.js',
                     '!<%= dirs.js %>/modernizr.js',
                     '!<%= dirs.js %>/build.js'
@@ -165,7 +166,8 @@ module.exports = function(grunt) {
         copy: {
           main: {
             files: [
-              {expand: true, cwd: '<%= dirs.bower %>/bootstrap-sass-official/assets/fonts/bootstrap/', src: ['**'], dest: '<%= dirs.fonts %>'}
+              {expand: true, cwd: '<%= dirs.bower %>/bootstrap-sass-official/assets/fonts/bootstrap/', src: ['**'], dest: '<%= dirs.fonts %>'},
+              {expand: true, cwd: '<%= dirs.bower %>/malihu-custom-scrollbar-plugin/', src: ['jquery.mCustomScrollbar.css'], dest: '<%= dirs.css %>', rename: function(dest, src) { return dest + '/jquery.mCustomScrollbar.scss'; }},
             ]
           }
         },
