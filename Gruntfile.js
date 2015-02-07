@@ -1,5 +1,6 @@
 module.exports = function(grunt) {
     require('load-grunt-tasks')(grunt);
+    require('phplint').gruntPlugin(grunt);
 
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json')
@@ -202,6 +203,19 @@ module.exports = function(grunt) {
         }
 
         /*
+         * phplint
+         * - Check for PHP syntax errors
+         */
+
+        , phplint: {
+          options: {
+            stdout: true
+            , stderr: true
+          }
+          , files: [ '*.php' ]
+        }
+
+        /*
          * Watch
          * - Watches files for changes and recompiles if neccesary
          */
@@ -222,6 +236,10 @@ module.exports = function(grunt) {
                 files: [ '*.html' ]
                 , tasks: [ 'htmlhint' ]
             }
+            , php: {
+                files: [ '*.php' ]
+                , tasks: [ 'phplint' ]
+            }
             , scripts: {
                 files: [ 'Gruntfile.js', '<%= dirs.js %>/*.js' ]
                 , tasks: [ 'jshint', 'jscs', 'concat' ]
@@ -232,6 +250,6 @@ module.exports = function(grunt) {
         }
     });
 
-    grunt.registerTask('default', [ 'copy', 'sass:build', 'autoprefixer', 'concat', 'uglify', 'imagemin', 'jscs' ]);
+    grunt.registerTask('default', [ 'copy', 'sass:build', 'autoprefixer', 'concat', 'uglify', 'imagemin', 'jscs', 'phplint' ]);
     grunt.registerTask('dev', [ 'copy', 'connect', 'watch' ]);
 };
