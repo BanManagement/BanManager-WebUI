@@ -37,7 +37,7 @@ function latestBans($server, $serverID) {
 
 			$expires = ($r['expires'] + $mysqlSecs)- time();
 			echo '
-					<li class="latestban"><a href="index.php?action=viewplayer&player='.$playername.'&server='.$serverID.'"><img src="https://minotar.net/helm/'.$playername.'/23" alt="'.$playername.'" class="minihead" /> '.$playername.'</a><button class="btn btn-info ban-info" rel="popover" data-html="true" data-content="'.$r['reason'].'" data-original-title="'.$actorname;
+					<li class="latestban"><a href="index.php?action=viewplayer&player='.$playername.'&server='.$serverID.'"><img src="https://cravatar.eu/helmavatar/'.$playername.'/23" alt="'.$playername.'" class="minihead" /> '.$playername.'</a><button class="btn btn-info ban-info" rel="popover" data-html="true" data-content="'.$r['reason'].'" data-original-title="'.$actorname;
 			if($r['expires'] == 0)
 				echo ' <span class=\'label label-danger\'>Never</span>';
 			else if($expires > 0)
@@ -77,7 +77,7 @@ function latestMutes($server, $serverID) {
 			$actorname = UUIDtoPlayerName($r['actor_id'], $server);
 
 			$expires = ($r['expires'] + $mysqlSecs)- time();
-			echo '<li class="latestban"><a href="index.php?action=viewplayer&player='.$playername.'&server='.$serverID.'"><img src="https://minotar.net/helm/'.$playername.'/23" alt="'.$playername.'" class="minihead" /> '.$playername.'</a><button class="btn btn-info ban-info" rel="popover" data-html="true" data-content="'.$r['reason'].'" data-original-title="'.$actorname;
+			echo '<li class="latestban"><a href="index.php?action=viewplayer&player='.$playername.'&server='.$serverID.'"><img src="https://cravatar.eu/helmavatar/'.$playername.'/23" alt="'.$playername.'" class="minihead" /> '.$playername.'</a><button class="btn btn-info ban-info" rel="popover" data-html="true" data-content="'.$r['reason'].'" data-original-title="'.$actorname;
 			if($r['expires'] == 0)
 				echo ' <span class=\'label label-danger\'>Never</span>';
 			else if($expires > 0)
@@ -116,7 +116,7 @@ function latestWarnings($server, $serverID) {
 			$playername = UUIDtoPlayerName($r['player_id'], $server);
 			$actorname = UUIDtoPlayerName($r['actor_id'], $server);
 
-			echo '<li class="latestban"><a href="index.php?action=viewplayer&player='.$playername.'&server='.$serverID.'"><img src="https://minotar.net/helm/'.$playername.'/23" alt="'.$playername.'" class="minihead" /> '.$playername.'</a><button class="btn btn-info ban-info" rel="popover" data-html="true" data-content="'.$r['reason'].'" data-original-title="'.$actorname.'"><span class="glyphicon glyphicon-info-sign"></span></button></li>';
+			echo '<li class="latestban"><a href="index.php?action=viewplayer&player='.$playername.'&server='.$serverID.'"><img src="https://cravatar.eu/helmavatar/'.$playername.'/23" alt="'.$playername.'" class="minihead" /> '.$playername.'</a><button class="btn btn-info ban-info" rel="popover" data-html="true" data-content="'.$r['reason'].'" data-original-title="'.$actorname.'"><span class="glyphicon glyphicon-info-sign"></span></button></li>';
 		}
 	}
 }
