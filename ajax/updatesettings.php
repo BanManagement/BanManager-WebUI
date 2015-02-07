@@ -82,7 +82,7 @@ if($_POST['type'] == 'mainsettings') {
 if(!isset($variables))
 	die('Could be a hacking attempt.');
 
-$contents = file_get_contents('settings.php');
+$contents = file_get_contents('../settings.php');
 
 foreach($variables as $var) {
 	if($$var == 'true' || $$var == 'false')
@@ -95,7 +95,7 @@ foreach($variables as $var) {
 		$contents = str_replace("<?php".PHP_EOL, "<?php".PHP_EOL."$"."settings".$$var, $contents);
 }
 
-file_put_contents('settings.php', $contents);
+file_put_contents('../settings.php', $contents);
 
 $array['success'] = 'true';
 
