@@ -13,5 +13,12 @@ node_modules
 bower_components
 .sass-cache
 
+# SASS files
+assets/css/jquery.mCustomScrollbar.scss
+assets/css/bootstrap-datetimepicker.scss
+assets/css/tablesorter-theme.bootstrap.scss
+assets/css/visualize.scss
+assets/css/visualize-light.scss
+
 # Meta files
 .DS_Store
