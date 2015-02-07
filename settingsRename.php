@@ -56,9 +56,10 @@ $settings['cache_search'] = 600;
 $settings['cache_home'] = 60;
 
 // Skin service options
-// ("%s" is the placeholder for the player name, make sure your pattern includes that!)
-$settings['skin']['helm'] = "https://cravatar.eu/helmavatar/%s";
-$settings['skin']['complete'] = "https://cravatar.eu/3d/%s/270";
+// ("%name%" is the placeholder for the player %name)
+// ("%uuid%" is the placeholder for the player uuid)
+$settings['skin']['helm'] = "https://cravatar.eu/helmavatar/%name%";
+$settings['skin']['complete'] = "https://cravatar.eu/3d/%name%/270";
 
 /**
 * These are the language options for Ban Management
