@@ -24,38 +24,46 @@ button .navbar-btn  a {
 
 .panel-jumbotron .panel-body .pastbans {
   font-size: 12px;
-    font-weight: bold;
+  font-weight: bold;
+
+  .badge {
+    color: #ED381C;
+    background: none;
+  }
 }
-.panel-jumbotron .panel-body .pastbans .badge {
-  color: #ED381C;
-  background: none;
-}
+
 #ajaxLoading {
   margin-top: 15px;
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 15px;
   text-align: center;
+
+  .small {
+    display: inline-block;
+    margin: 0;
+    vertical-align: text-top;
+  }
 }
-#ajaxLoading.small {
-  display: inline-block;
-  margin: 0;
-  vertical-align: text-top;
-}
+
 .latestban {
   position: relative;
+
+  button {
+    position: absolute;
+    right: 4px;
+    top: 4px;
+  }
 }
-.latestban button {
-  position: absolute;
-  right: 4px;
-  top: 4px;
-}
+
 #servers td {
   vertical-align: middle;
 }
+
 td.admin-options {
   text-align: center;
 }
+
 #search {
   position: relative;
 }
@@ -63,11 +71,13 @@ td.admin-options {
 .scratch {
     display:none;
 }
+
 #copyright_image{
   width: 100px;
   height: 25px;
   margin-top: -6px;
 }
+
 #excludepast{
   padding: 5px;
 }
