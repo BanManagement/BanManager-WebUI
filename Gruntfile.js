@@ -97,7 +97,6 @@ module.exports = function(grunt) {
                     , '<%= dirs.bower %>/jquery.tablesorter/js/jquery.tablesorter.widgets.js'
                     , '<%= dirs.bower %>/jquery.tablesorter/js/jquery.tablesorter.widgets-dilter-formatter.js'
                     , '<%= dirs.bower %>/jquery.tablesorter/addons/pager/jquery.tablesorter.pager.js'
-                    , '<%= dirs.bower %>/jquery.serverless-mc-skin-viewer/jquery.minecraftskin.js'
                     , '<%= dirs.bower %>/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.js'
                     , '<%= dirs.bower %>/jQuery-Visualize/js/visualize.jQuery.js'
                     , '<%= dirs.bower %>/jquery-mousewheel/jquery.mousewheel.js'
