@@ -25,7 +25,6 @@ module.exports = function(grunt) {
             dev: {
                 options: {
                     outputStyle: 'nested'
-                    , loadPath: '.'
                     , sourceMap: true
                 }
                 , files: {
@@ -35,7 +34,6 @@ module.exports = function(grunt) {
             , build: {
                 options: {
                     outputStyle: 'compressed'
-                    , loadPath: '.'
                     , sourceMap: false
                 }
                 , files: {
