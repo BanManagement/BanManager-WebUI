@@ -13,7 +13,7 @@ body {
   padding-bottom: 40px;
 }
 
-button .navbar-btn  a{
+button .navbar-btn  a {
   text-decoration: none;
   color: #fff;
 }
@@ -59,19 +59,7 @@ td.admin-options {
 #search {
   position: relative;
 }
-.minihead {
-  width: 20px;
-  display: inline-block;
-}
-.minecraft_head .head {
-    display:none;
-}
-.minecraft_head:hover .hat {
-    display:none;
-}
-.minecraft_head:hover .head {
-    display:inline-block;
-}
+
 .scratch {
     display:none;
 }
@@ -112,8 +100,17 @@ td.admin-options {
 }
 
 .skin {
-  text-align: center;
-  display: block;
+  &-helm {
+    width: 20px;
+    display: inline-block;
+  }
+
+  &-complete {
+    height: 270px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
 }
 
 #player_ban_info {
