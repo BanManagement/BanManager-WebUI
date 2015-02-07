@@ -56,7 +56,7 @@ else {
 		<div class="row">
 			<div class="col-lg-3">
 					<div class="player_information">
-							<span class="skin" data-minecraft-username="<?php echo $_GET['player'];?>"></span>
+							<center> <img src="https://cravatar.eu/3d/<?php echo $_GET['player'];?>/256" alt="<?php echo $_GET['player'];?>" class="fullplayer"> </center>
 							<span id="player_name" title="UUID: <?php echo $UUID;?>"><?php echo $_GET['player'];?></span>
 					</div>
 			</div>
