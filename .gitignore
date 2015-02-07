@@ -7,3 +7,21 @@ cache/*
 
 # Test dump
 .dump_*.sql*
+
+# build specific
+.sass-cache
+bower_components
+node_modules
+coverage
+.coveralls.yml
+npm-debug.log
+
+# SASS files
+assets/css/jquery.mCustomScrollbar.scss
+assets/css/bootstrap-datetimepicker.scss
+assets/css/tablesorter-theme.bootstrap.scss
+assets/css/visualize.scss
+assets/css/visualize-light.scss
+
+# Meta files
+.DS_Store

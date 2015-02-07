@@ -1,12 +1,14 @@
 <?php
-/*  BanManagement © 2012, a web interface for the Bukkit plugin BanManager
-		by James Mortemore of http://www.frostcast.net
-	is licenced under a Creative Commons
-	Attribution-NonCommercial-ShareAlike 2.0 UK: England & Wales.
-	Permissions beyond the scope of this licence
-	may be available at http://creativecommons.org/licenses/by-nc-sa/2.0/uk/.
-	Additional licence terms at https://raw.github.com/confuser/Ban-Management/master/banmanagement/licence.txt
-*/
+/*
+ *  BanManagement © 2015, a web interface for the Bukkit plugin BanManager
+ *  by James Mortemore of http://www.frostcast.net
+ *  is licenced under a Creative Commons
+ *  Attribution-NonCommercial-ShareAlike 2.0 UK: England & Wales.
+ *  Permissions beyond the scope of this licence
+ *  may be available at http://creativecommons.org/licenses/by-nc-sa/2.0/uk/.
+ *  Additional licence terms at https://raw.githubusercontent.com/BanManagement/BanManager-WebUI/master/LICENSE
+ */
+
 session_name("BanManagement");
 session_start();
 ob_start();
@@ -660,11 +662,20 @@ function searchIps($search, $serverID, $server, $sortByCol = 'name', $sortBy = '
 }
 
 $actions = array(
-	'addserver',
 	'admin',
+	'deletecache',
+	'logout',
+	'searchplayer',
+	'searchip',
+	'servers',
+	'viewip',
+	'viewplayer'
+);
+
+$ajaxactions = array(
+	'addserver',
 	'deleteban',
 	'deletebanrecord',
-	'deletecache',
 	'deleteipban',
 	'deleteipbanrecord',
 	'deletekickrecord',
@@ -672,19 +683,13 @@ $actions = array(
 	'deletemuterecord',
 	'deleteserver',
 	'deletewarning',
-	'editserver',
-	'logout',
 	'reorderserver',
-	'searchplayer',
-	'searchip',
-	'servers',
 	'updateban',
 	'updateipban',
 	'updatemute',
 	'updatesettings',
-	'viewip',
-	'viewplayer'
 );
+
 if(file_exists('settings.php')){
 	include('settings.php');
 }
@@ -717,9 +722,11 @@ if(!isset($_GET['ajax']) || (isset($_GET['ajax']) && !$_GET['ajax']))
 	include('header.php');
 
 if(isset($_GET['action']) && in_array($_GET['action'], $actions))
-	include($_GET['action'].'.php');
+	include("actions/".$_GET['action'].'.php');
+else if(isset($_GET['action']) && in_array($_GET['action'], $ajaxactions))
+	include("ajax/".$_GET['action'].'.php');
 else if(!isset($_GET['action']))
-	include('home.php');
+	include('actions/home.php');
 else
 	echo 'Action not found, possible hacking attempt';
 if(!isset($_GET['ajax']) || (isset($_GET['ajax']) && !$_GET['ajax']))

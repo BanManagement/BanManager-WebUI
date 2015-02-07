@@ -39,6 +39,24 @@ Feel free to contribute if you have any suggestions or ideas.
 1. Please be aware, the mysql settings you entered are stored in settings.php in plain text, nobody else can read it unless they are able to download the file via FTP (or SSH etc) or you have an exploit in another script on your server.
 1. All done! If you have some bans, test it. Click "Home", in the search box type % and hit search. It will list all players that are currently banned or have been banned.
 
+#### Development
+
+In case you want to help us and contribute to the project you need to compile the assets with the assistence of Grunt:
+
+1. Make sure you've installed `node` and `npm`
+1. Install Grunt, Bower and Linter and code checker:  
+  `npm install -g grunt-cli bower jshint jscs`
+1. Install all dependencies:  
+  `npm install`
+1. Install web libraries:  
+  `bower install`
+1. Run grunt task to compile assets and start watching for local file changes:  
+  `grunt dev`
+
+If you want to commit your changes, exclude the `dev` argument.
+
+Caution: When using the `dev` argument, Grunt won't minify your JS or CSS, so it's easier to debug. Once you run `grunt` (without the `dev`), the files are minified!
+
 ### Adjustments so far
 
 * Convert all `.php` files to UTF-8 and add proper EOF
@@ -52,6 +70,7 @@ Feel free to contribute if you have any suggestions or ideas.
 * Default timezone in settings for `date()` functions
 * Replaced `mysql_` functions with `mysqli_` ones
 * PHP 5.3 compatible
+* Bower and Grunt to compile assets and libraries
 
 ### Todo / Improvements
 
@@ -67,4 +86,4 @@ You can find a working demo over here: http://bans.yeahwh.at
 
 ### Version
 
-1.1
+1.1.0
