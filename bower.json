@@ -25,7 +25,7 @@
     "CanvasLoader": "~0.9.1",
     "jquery.countdown": "~2.0.4",
     "jquery.tablesorter": "~2.18.4",
-    "visualize.jQuery": "http://dwpe.googlecode.com/svn-history/r12/trunk/charting/js/visualize.jQuery.js",
-    "jquery.serverless-mc-skin-viewer": "~1.0.2"
+    "jquery.serverless-mc-skin-viewer": "~1.0.2",
+    "jQuery-Visualize": "https://github.com/filamentgroup/jQuery-Visualize.git"
   }
 }

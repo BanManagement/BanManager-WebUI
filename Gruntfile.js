@@ -96,7 +96,7 @@ module.exports = function(grunt) {
                     '<%= dirs.bower %>/jquery.tablesorter/js/jquery.tablesorter.js',
                     '<%= dirs.bower %>/jquery.tablesorter/js/jquery.tablesorter.widgets.js',
                     '<%= dirs.bower %>/jquery.tablesorter/js/jquery.tablesorter.widgets-dilter-formatter.js',
-                    '<%= dirs.bower %>/visualize.jQuery/index.js',
+                    '<%= dirs.bower %>/jQuery-Visualize/js/visualize.jQuery.js',
                     '<%= dirs.bower %>/moment/moment.js',
                     '<%= dirs.bower %>/jquery.serverless-mc-skin-viewer/jquery.minecraftskin.js',
                     '<%= dirs.js %>/*.js',
@@ -181,6 +181,8 @@ module.exports = function(grunt) {
               {expand: true, cwd: '<%= dirs.bower %>/malihu-custom-scrollbar-plugin/', src: ['jquery.mCustomScrollbar.css'], dest: '<%= dirs.css %>', rename: function(dest, src) { return dest + '/jquery.mCustomScrollbar.scss'; }},
               {expand: true, cwd: '<%= dirs.bower %>/eonasdan-bootstrap-datetimepicker/build/css/', src: ['bootstrap-datetimepicker.css'], dest: '<%= dirs.css %>', rename: function(dest, src) { return dest + '/bootstrap-datetimepicker.scss'; }},
               {expand: true, cwd: '<%= dirs.bower %>/jquery.tablesorter/css/', src: ['theme.bootstrap.css'], dest: '<%= dirs.css %>', rename: function(dest, src) { return dest + '/tablesorter-theme.bootstrap.scss'; }},
+              {expand: true, cwd: '<%= dirs.bower %>/jQuery-Visualize/css/', src: ['visualize.css'], dest: '<%= dirs.css %>', rename: function(dest, src) { return dest + '/visualize.scss'; }},
+              {expand: true, cwd: '<%= dirs.bower %>/jQuery-Visualize/css/', src: ['visualize-light.css'], dest: '<%= dirs.css %>', rename: function(dest, src) { return dest + '/visualize-light.scss'; }},
             ]
           }
         },
