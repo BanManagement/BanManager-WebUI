@@ -209,7 +209,7 @@ module.exports = function(grunt) {
             stdout: true
             , stderr: true
           }
-          , files: [ '*.php' ]
+          , files: [ 'actions/*.php', 'ajaxactions/*.php' ]
         }
 
         /*
