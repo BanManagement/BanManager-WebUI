@@ -42,7 +42,7 @@ $(function() {
     });
     return false;
   });
-  $(".deleteServer").live('click', function() {
+  $(".deleteServer").on('click', function() {
     var id = $(this).data('serverid');
     var formBody = $("#container");
     $this = $(this);
@@ -71,7 +71,7 @@ $(function() {
       }
     });
   });
-  $(".reorderServer").live('click', function() {
+  $(".reorderServer").on('click', function() {
     var id = $(this).data('serverid');
     var order = $(this).data('order');
     var formBody = $("#container");
@@ -324,7 +324,7 @@ $(function() {
     return false;
   });
 
-  $("#previous-bans a.delete").live('click', function(e) {
+  $("#previous-bans a.delete").on('click', function(e) {
     e.preventDefault();
     var id = $(this).data('record-id');
     var server = $(this).data('server');
@@ -357,7 +357,7 @@ $(function() {
     });
   });
 
-  $("#previous-mutes a.delete").live('click', function(e) {
+  $("#previous-mutes a.delete").on('click', function(e) {
     e.preventDefault();
     var id = $(this).data('record-id');
     var server = $(this).data('server');
@@ -390,7 +390,7 @@ $(function() {
     });
   });
 
-  $("#previous-kicks a.delete").live('click', function(e) {
+  $("#previous-kicks a.delete").on('click', function(e) {
     e.preventDefault();
     var id = $(this).data('record-id');
     var server = $(this).data('server');
@@ -423,7 +423,7 @@ $(function() {
     });
   });
 
-  $("#previous-warnings a.delete").live('click', function(e) {
+  $("#previous-warnings a.delete").on('click', function(e) {
     e.preventDefault();
     var id = $(this).data('record-id');
     var server = $(this).data('server');
@@ -456,7 +456,7 @@ $(function() {
     });
   });
 
-  $("#previous-ip-bans a.delete").live('click', function(e) {
+  $("#previous-ip-bans a.delete").on('click', function(e) {
     e.preventDefault();
     var id = $(this).data('record-id');
     var server = $(this).data('server');
@@ -499,7 +499,7 @@ $(function() {
     return false;
   });
 
-  $("#confirmModal a.btn-primary").live('click', function(e) {
+  $("#confirmModal a.btn-primary").on('click', function(e) {
     e.preventDefault();
     var formBody = $("#confirmModal .modal-body");
     $this = $(this);
