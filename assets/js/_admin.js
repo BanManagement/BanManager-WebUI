@@ -192,7 +192,7 @@ $(function() {
 
           var expires = $("#editban form input[name=expires]").val();
 
-          if(expires == "")
+          if(expires === "")
             $("#current-ban .expires").html('<span class="label label-important">Never</span>');
           else {
             $("#current-ban .expires").countdown({
@@ -247,7 +247,7 @@ $(function() {
 
           var expires = $("#editmute form input[name=expires]").val();
 
-          if(expires == "")
+          if(expires === "")
             $("#current-mute .expires").html('<span class="label label-important">Never</span>');
           else {
             $("#current-mute .expires").countdown({
@@ -302,7 +302,7 @@ $(function() {
 
           var expires = $("#editipban form input[name=expires]").val();
 
-          if(expires == "")
+          if(expires === "")
             $("#current-ban .expires").html('<span class="label label-important">Never</span>');
           else {
             $("#current-ban .expires").countdown({
@@ -588,7 +588,7 @@ var dateFormat = function () {
         }
 
         // Passing date through Date applies Date.parse, if necessary
-        date = date ? new Date(date) : new Date;
+        date = date ? new Date(date) : new Date();
         if (isNaN(date)) throw SyntaxError("invalid date");
 
         mask = String(dF.masks[mask] || mask || dF.masks["default"]);

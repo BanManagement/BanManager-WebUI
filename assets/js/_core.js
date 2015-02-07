@@ -143,7 +143,7 @@ $(function() {
         }
         rows.push(row); // add new row array to rows array
         }
-        if(rows.length == 0)
+        if(rows.length === 0)
         row.push("None");
 
         return [ total, rows, headers ];
