@@ -127,15 +127,15 @@ function latestWarnings($server, $serverID) {
 		<div class="col-lg-6">
 			<h1><?php echo $language['header-title']; ?></h1>
 			<form action="index.php" method="get" class="form-horizontal" id="search">
-						<div class="input-group">
-						<div class="input-group-btn">
-								<button id="player" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Player <span class="caret"></span></button>
+				<div class="input-group search">
+					<div class="input-group-btn">
+						<button id="player" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Player <span class="caret"></span></button>
 						<ul class="dropdown-menu">
 							<li id="ip"><a href="#">Search by IP Address</a></li>
 						</ul>
 					</div>
 					<input type="text" name="player" class="form-control" placeholder="Search by username">
-					</div>
+				</div>
 			<?php
 			if(!empty($settings['servers']) && count($settings['servers']) > 1) {
 				echo '
