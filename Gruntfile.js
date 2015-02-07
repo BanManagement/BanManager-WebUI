@@ -224,7 +224,7 @@ module.exports = function(grunt) {
             },
             scripts: {
                 files: ['Gruntfile.js', '<%= dirs.js %>/*.js'],
-                tasks: ['jshint', 'concat'],
+                tasks: ['jshint', 'jscs', 'concat'],
                 options: {
                     spawn: false
                 }
