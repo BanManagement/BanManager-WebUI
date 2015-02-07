@@ -97,6 +97,7 @@ module.exports = function(grunt) {
                     '<%= dirs.bower %>/jquery.tablesorter/js/jquery.tablesorter.widgets.js',
                     '<%= dirs.bower %>/jquery.tablesorter/js/jquery.tablesorter.widgets-dilter-formatter.js',
                     '<%= dirs.bower %>/visualize.jQuery/index.js',
+                    '<%= dirs.bower %>/moment/moment.js',
                     '<%= dirs.js %>/*.js',
                     '!<%= dirs.js %>/modernizr.js',
                     '!<%= dirs.js %>/build.js'
