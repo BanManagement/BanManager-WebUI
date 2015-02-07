@@ -49,8 +49,10 @@ In case you want to help us and contribute to this project you need to compile t
   `npm install`
 1. Install web libraries:  
   `bower install`
-1. Run grunt task to compile assets:  
-  `grunt`
+1. Run grunt task to compile assets and start watching for local file changes:  
+  `grunt dev`
+
+Caution: When using the `dev` argument, Grunt won't minify your JS or CSS, so it's easier to debug. Once you run `grunt` (without the `dev`), the files are minified!
 
 ### Adjustments so far
 
