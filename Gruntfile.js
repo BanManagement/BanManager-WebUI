@@ -172,7 +172,7 @@ module.exports = function(grunt) {
 
         /*
          * Copy
-         * - Cope files via Grunt from A to B
+         * - Copy files via Grunt from A to B
          * - Used for Bootstraps fonts which are included in the bower component folder
          */
 
@@ -186,6 +186,18 @@ module.exports = function(grunt) {
               {expand: true, cwd: '<%= dirs.bower %>/jQuery-Visualize/css/', src: ['visualize.css'], dest: '<%= dirs.css %>', rename: function(dest) { return dest + '/visualize.scss'; }},
               {expand: true, cwd: '<%= dirs.bower %>/jQuery-Visualize/css/', src: ['visualize-light.css'], dest: '<%= dirs.css %>', rename: function(dest) { return dest + '/visualize-light.scss'; }},
             ]
+          }
+        },
+
+        /*
+         * JSCS (JavaScriptCodeStyle)
+         * - Check JS markup based on policies defined in .jscsrc
+         */
+
+        jscs: {
+          src: "assets/js/_*.js",
+          options: {
+            config: ".jscsrc"
           }
         },
 
@@ -220,6 +232,6 @@ module.exports = function(grunt) {
         },
     });
 
-    grunt.registerTask('default', ['copy', 'sass:build', 'autoprefixer', 'concat', 'uglify', 'imagemin']);
+    grunt.registerTask('default', ['copy', 'sass:build', 'autoprefixer', 'concat', 'uglify', 'imagemin', 'jscs']);
     grunt.registerTask('dev', ['copy', 'connect', 'watch']);
 };
