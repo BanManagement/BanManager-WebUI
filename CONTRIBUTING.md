@@ -19,3 +19,4 @@ In order for us to help you please check that you've completed the following ste
 * Non-trivial changes should be discussed in an issue first
 * Develop in a topic branch, not master (e.g. `feature/new-view`)
 * Write a convincing description of your PR and why we should land it
+* If you write JavaScript, make sure you follow https://github.com/bengourley/js-style-guide/
