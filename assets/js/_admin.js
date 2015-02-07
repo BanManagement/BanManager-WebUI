@@ -1,52 +1,53 @@
-/*  BanManagement © 2012, a web interface for the Bukkit plugin BanManager
-    by James Mortemore of http://www.frostcast.net
-  is licenced under a Creative Commons
-  Attribution-NonCommercial-ShareAlike 2.0 UK: England & Wales.
-  Permissions beyond the scope of this licence
-  may be available at http://creativecommons.org/licenses/by-nc-sa/2.0/uk/.
-  Additional licence terms at https://raw.github.com/confuser/Ban-Management/master/banmanagement/licence.txt
-  */
+/*
+ *  BanManagement © 2015, a web interface for the Bukkit plugin BanManager
+ *  by James Mortemore of http://www.frostcast.net
+ *  is licenced under a Creative Commons
+ *  Attribution-NonCommercial-ShareAlike 2.0 UK: England & Wales.
+ *  Permissions beyond the scope of this licence
+ *  may be available at http://creativecommons.org/licenses/by-nc-sa/2.0/uk/.
+ *  Additional licence terms at https://raw.githubusercontent.com/BanManagement/BanManager-WebUI/master/LICENSE
+ */
 
-  /* global authid */
-  /* global CanvasLoader */
+/* global authid */
+/* global CanvasLoader */
 
-  $(function() {
+$(function() {
 
-    $('#addserver form').submit(function(e) {
-      e.preventDefault();
-      var form = $(this)
-      , formBody = form.find('.modal-body');
+  $('#addserver form').submit(function(e) {
+    e.preventDefault();
+    var form = $(this)
+    , formBody = form.find('.modal-body');
 
-      if (!form.valid())
-        return false;
-      errorRemove();
-      formBody.hide().after('<div id="ajaxLoading"><span id="loadingSmall"></span><br />Testing connection</div>');
-      showLoading('loadingSmall');
-      $.ajax({
-        url: 'index.php?action=addserver&ajax=true&authid=' + authid
-        , data: form.serialize()
-        , type: 'post'
-        , dataType: 'json'
-        , success: function(data) {
-          hideLoading();
-          formBody.show();
-          if (data.error) {
-            formBody.prepend(error(data.error));
-          } else {
-            errorRemove();
-            $('#addserver').modal('hide');
-            $('#servers tbody').append('<tr><td>' + data.success.serverName + '</td><td><a href="#" class="btn btn-danger deleteServer" data-serverid="' + data.success.id + '"><i class="glyphicon glyphicon-trash"></i></a></td>');
-            $('#noservers').remove();
-          }
-        }
-        , error: function(jqXHR) {
-          hideLoading();
-          formBody.show();
-          formBody.prepend(error('Invalid response from server, try again<br />Response: ' + jqXHR.responseText));
-        }
-      });
+    if (!form.valid())
       return false;
+    errorRemove();
+    formBody.hide().after('<div id="ajaxLoading"><span id="loadingSmall"></span><br />Testing connection</div>');
+    showLoading('loadingSmall');
+    $.ajax({
+      url: 'index.php?action=addserver&ajax=true&authid=' + authid
+      , data: form.serialize()
+      , type: 'post'
+      , dataType: 'json'
+      , success: function(data) {
+        hideLoading();
+        formBody.show();
+        if (data.error) {
+          formBody.prepend(error(data.error));
+        } else {
+          errorRemove();
+          $('#addserver').modal('hide');
+          $('#servers tbody').append('<tr><td>' + data.success.serverName + '</td><td><a href="#" class="btn btn-danger deleteServer" data-serverid="' + data.success.id + '"><i class="glyphicon glyphicon-trash"></i></a></td>');
+          $('#noservers').remove();
+        }
+      }
+      , error: function(jqXHR) {
+        hideLoading();
+        formBody.show();
+        formBody.prepend(error('Invalid response from server, try again<br />Response: ' + jqXHR.responseText));
+      }
     });
+    return false;
+  });
 $('.deleteServer').on('click', function() {
   var id = $(this).data('serverid')
   , formBody = $('#container')

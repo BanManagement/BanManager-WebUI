@@ -1,12 +1,14 @@
 <?php
-/*  BanManagement � 2012, a web interface for the Bukkit plugin BanManager
-		by James Mortemore of http://www.frostcast.net
-		is licenced under a Creative Commons
-		Attribution-NonCommercial-ShareAlike 2.0 UK: England & Wales.
-		Permissions beyond the scope of this licence
-		may be available at http://creativecommons.org/licenses/by-nc-sa/2.0/uk/.
-		Additional licence terms at https://raw.github.com/confuser/Ban-Management/master/banmanagement/licence.txt
-*/
+/*
+ *  BanManagement © 2015, a web interface for the Bukkit plugin BanManager
+ *  by James Mortemore of http://www.frostcast.net
+ *  is licenced under a Creative Commons
+ *  Attribution-NonCommercial-ShareAlike 2.0 UK: England & Wales.
+ *  Permissions beyond the scope of this licence
+ *  may be available at http://creativecommons.org/licenses/by-nc-sa/2.0/uk/.
+ *  Additional licence terms at https://raw.githubusercontent.com/BanManagement/BanManager-WebUI/master/LICENSE
+ */
+
 if(empty($settings['password']) || $settings['password'] == 'password')
 	errors('You have not set a password. For your security, it\'s required that you set one.');
 else if(isset($_SESSION['failed_attempts']) && $_SESSION['failed_attempts'] > 4) {
