@@ -58,7 +58,7 @@ else {
 		<div class="row">
 			<div class="col-lg-3">
 					<div class="player_information">
-							<div><img src="<?php echo sprintf($settings['skin']['complete'], $_GET['player']) ?>" class="skin-complete" alt="<?php echo $_GET['player'];?>"/></div>
+							<div><img src="<?php echo str_replace(array('%name%', '%uuid%'), array($_GET['player'], $UUID), $settings['skin']['complete']) ?>" class="skin-complete" alt="<?php echo $_GET['player'];?>"/></div>
 							<span id="player_name" title="UUID: <?php echo $UUID;?>"><?php echo $_GET['player'];?></span>
 					</div>
 			</div>

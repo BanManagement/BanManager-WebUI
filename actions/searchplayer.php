@@ -142,7 +142,7 @@ else {
 					$time = (!empty($player['time']) ? date('j F Y h:i:s A', $player['time']) : '');
 
 				$ajaxArray['rows'][] = array(
-					'<img src="'.sprintf($settings['skin']['helm'], $playerName).'" alt="'.$playerName.'" class="skin-helm" /> <a href="index.php?action=viewplayer&player='.$playerName.'&server='.$_GET['server'].'">'.$playerName.'</a>',
+					'<img src="'.str_replace(array('%name%', '%uuid%'), array($playerName, $playerNames[$i]), $settings['skin']['helm']).'" alt="'.$playerName.'" class="skin-helm" /> <a href="index.php?action=viewplayer&player='.$playerName.'&server='.$_GET['server'].'">'.$playerName.'</a>',
 					$player['type'],
 					UUIDtoPlayerName($player['by'], $server),
 					$player['reason'],
