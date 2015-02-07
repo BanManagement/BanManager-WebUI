@@ -28,17 +28,17 @@ $(function() {
       error.wrap('<span class="help-inline" />');
       $(placement).after(error.parent());
       error.parent().parent().parent().removeClass('success').addClass('error');
-    },
-    success: function(label) {
+    }
+    , success: function(label) {
       label.parent().parent().parent().removeClass('error').addClass('success');
     }
   });
   $('form').validate();
   $('time').each(function() {
     $(this).countdown({
-      until: new Date($(this).attr('datetime')),
-      format: 'yowdhms', layout: '{y<} {yn} {yl}, {y>} {o<} {on} {ol}, {o>} {w<} {wn} {wl}, {w>} {d<} {dn} {dl}, {d>} {h<} {hn} {hl}, {h>} {m<} {mn} {ml}, {m>} {s<} {sn} {sl} {s>}',
-      onExpiry: function() {
+      until: new Date($(this).attr('datetime'))
+      , format: 'yowdhms', layout: '{y<} {yn} {yl}, {y>} {o<} {on} {ol}, {o>} {w<} {wn} {wl}, {w>} {d<} {dn} {dl}, {d>} {h<} {hn} {hl}, {h>} {m<} {mn} {ml}, {m>} {s<} {sn} {sl} {s>}'
+      , onExpiry: function() {
         location.reload();
       }
     });
@@ -55,97 +55,86 @@ $(function() {
   $.extend($.tablesorter.themes.bootstrap, {
     // these classes are added to the table. To see other table classes available,
     // look here: http://twitter.github.com/bootstrap/base-css.html#tables
-    table      : 'table table-bordered',
-    header     : 'bootstrap-header', // give the header a gradient background
-    footerRow  : '',
-    footerCells: '',
-    icons      : '', // add "icon-white" to make them white; this icon class is added to the <i> in the header
-    sortNone   : 'bootstrap-icon-unsorted',
-    sortAsc    : 'glyphicon glyphicon-chevron-up',
-    sortDesc   : 'glyphicon glyphicon-chevron-down',
-    active     : '', // applied when column is sorted
-    hover      : '', // use custom css here - bootstrap class may not override it
-    filterRow  : '', // filter row class
-    even       : '', // odd row zebra striping
-    odd        : ''  // even row zebra striping
+    table: 'table table-bordered'
+    , header: 'bootstrap-header' // give the header a gradient background
+    , footerRow: ''
+    , footerCells: ''
+    , icons: '' // add "icon-white" to make them white; this icon class is added to the <i> in the header
+    , sortNone: 'bootstrap-icon-unsorted'
+    , sortAsc: 'glyphicon glyphicon-chevron-up'
+    , sortDesc: 'glyphicon glyphicon-chevron-down'
+    , active: '' // applied when column is sorted
+    , hover: '' // use custom css here - bootstrap class may not override it
+    , filterRow: '' // filter row class
+    , even: '' // odd row zebra striping
+    , odd: ''  // even row zebra striping
   });
 
   $.tablesorter.addParser({
     // set a unique id
-    id: 'expires',
-    is: function() {
+    id: 'expires'
+    , is: function() {
       // return false so this parser is not auto detected
       return false;
-    },
-    format: function(s, table, cell) {
+    }
+    , format: function(s, table, cell) {
       // format your data for normalization
       return $(cell).data('expires');
-    },
-    // set type, either numeric or text
-    type: 'numeric'
+    }
+    , type: 'numeric' // set type, either numeric or text
   });
 
   $('table.sortable').tablesorter({
     /*jshint camelcase: false */
-    theme : 'bootstrap', // this will
-
-    widthFixed: true,
-
-    headers: { 4: { sorter: 'expires' } },
-
-    sortList: [[0,0]],
-
-    headerTemplate : '{content} {icon}', // new in v2.7. Needed to add the bootstrap icon!
-
+    theme: 'bootstrap' // this will
+    , widthFixed: true
+    , headers: { 4: { sorter: 'expires' } }
+    , sortList: [ [ 0,0 ] ]
+    , headerTemplate: '{content} {icon}' // new in v2.7. Needed to add the bootstrap icon!
     // widget code contained in the jquery.tablesorter.widgets.js file
     // use the zebra stripe widget if you plan on hiding any rows (filter widget)
-    widgets : [ 'uitheme', 'filter', 'zebra', 'saveSort' ],
-
-    widgetOptions : {
+    , widgets: [ 'uitheme', 'filter', 'zebra', 'saveSort' ]
+    , widgetOptions: {
       // using the default zebra striping class name, so it actually isn't included in the theme variable above
       // this is ONLY needed for bootstrap theming if you are using the filter widget, because rows are hidden
-      zebra : ['even', 'odd'],
-
+      zebra: [ 'even', 'odd' ]
       // reset filters button
-      filter_reset : '.reset',
-
+      , filter_reset: '.reset'
       // set the uitheme widget to use the bootstrap theme class names
       // uitheme : "bootstrap"
-      filter_searchDelay : 1000
-
+      , filter_searchDelay: 1000
     }
   }).tablesorterPager({
     // target the pager markup - see the HTML block below
-    container: $('.pager'),
-
-    ajaxUrl: 'index.php?action=' + $('#container form input[name="action"]').val() + '&player=' + $('#container form input[name="player"]').val() + '&server=' + $('#container form input[name="server"]').val() + '&excluderecords=' + $('#container form input[name="excluderecords"]').val() + '&ajax=true&size={size}&page={page}&sortby={sortList:column}&filter={filterList:filter}',
-    ajaxObject: {
-      dataType: 'json',
-      success: function() {
+    container: $('.pager')
+    , ajaxUrl: 'index.php?action=' + $('#container form input[name="action"]').val() + '&player=' + $('#container form input[name="player"]').val() + '&server=' + $('#container form input[name="server"]').val() + '&excluderecords=' + $('#container form input[name="excluderecords"]').val() + '&ajax=true&size={size}&page={page}&sortby={sortList:column}&filter={filterList:filter}'
+    , ajaxObject: {
+      dataType: 'json'
+      , success: function() {
         hideLoading();
-      },
-      error: function() {
+      }
+      , error: function() {
         hideLoading();
-      },
-      beforeSend: function() {
+      }
+      , beforeSend: function() {
         $('table.sortable').before('<div id="ajaxLoading"><span id="loadingSmall"></span><br />Fetching...</div>');
         showLoading('loadingSmall');
       }
-    },
-    ajaxProcessing: function(data){
+    }
+    , ajaxProcessing: function(data) {
       if (data && data.hasOwnProperty('rows')) {
-        var r, row, c, d = data.rows,
+        var r, row, c, d = data.rows
         // total number of rows (required)
-        total = data.total_rows,
+        , total = data.total_rows
         // array of header names (optional)
-        headers = data.headers,
+        , headers = data.headers
         // all rows: array of arrays; each internal array has the table cell data for that row
-        rows = [],
+        , rows = []
         // len should match pager set size (c.size)
-        len = d.length;
+        , len = d.length;
         // this will depend on how the json is set up - see City0.json
         // rows
-        for ( r=0; r < len; r++ ) {
+        for ( r = 0; r < len; r++ ) {
         row = []; // new row array
         // cells
         for ( c in d[r] ) {
@@ -155,22 +144,22 @@ $(function() {
         }
         rows.push(row); // add new row array to rows array
         }
-        if(rows.length === 0)
+        if (rows.length === 0)
         row.push('None');
 
         return [ total, rows, headers ];
       }
-    },
+    }
 
     // target the pager page select dropdown - choose a page
-    cssGoto: '.pagenum',
+    , cssGoto: '.pagenum'
 
     // remove rows from the table to speed up the sort of large tables.
     // setting this to false, only hides the non-visible rows; needed if you plan to add/remove rows with the pager enabled.
-    removeRows: false,
+    , removeRows: false
 
     // output string - default is '{page}/{totalPages}';
     // possible variables: {page}, {totalPages}, {filteredPages}, {startRow}, {endRow}, {filteredRows} and {totalRows}
-    output: '{startRow} - {endRow} / {filteredRows} ({totalRows})'
+    , output: '{startRow} - {endRow} / {filteredRows} ({totalRows})'
   });
 });
