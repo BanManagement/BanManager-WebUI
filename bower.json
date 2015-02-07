@@ -24,6 +24,7 @@
     "ExplorerCanvas": "*",
     "CanvasLoader": "~0.9.1",
     "jquery.countdown": "~2.0.4",
-    "jquery.tablesorter": "~2.18.4"
+    "jquery.tablesorter": "~2.18.4",
+    "visualize.jQuery": "http://dwpe.googlecode.com/svn-history/r12/trunk/charting/js/visualize.jQuery.js"
   }
 }
