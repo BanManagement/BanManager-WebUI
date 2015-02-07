@@ -14,27 +14,27 @@ error_reporting(0);
 @ini_set('display_errors', 0); // Fallback incase error_reporting(0) fails
 
 if(!isset($_SESSION['admin']) || (isset($_SESSION['admin']) && !$_SESSION['admin']))
-	die('Hacking attempt');
+	die('Invalid: action missing.');
 else if(!isset($_GET['authid']) || (isset($_GET['authid']) && $_GET['authid'] != sha1($settings['password'])))
-	die('Hacking attempt');
+	die('Invalid: authentication failed.');
 else if(!is_alphanumdash($_POST['playerstable']))
-	die('Hacking attempt');
+	die('Invalid: input "playerstable" is not alpha nummerical (dashes allowed)');
 else if(!is_alphanumdash($_POST['playerbanstable']))
-	die('Hacking attempt');
+	die('Invalid: input "playerbanstable" is not alpha nummerical (dashes allowed)');
 else if(!is_alphanumdash($_POST['playerbanrecordstable']))
-	die('Hacking attempt');
+	die('Invalid: input "playerbanrecordstable" is not alpha nummerical (dashes allowed)');
 else if(!is_alphanumdash($_POST['playermutestable']))
-	die('Hacking attempt');
+	die('Invalid: input "playermutestable" is not alpha nummerical (dashes allowed)');
 else if(!is_alphanumdash($_POST['playermutesrecordstable']))
-	die('Hacking attempt');
+	die('Invalid: input "playermutesrecordstable" is not alpha nummerical (dashes allowed)');
 else if(!is_alphanumdash($_POST['playerkickstable']))
-	die('Hacking attempt');
+	die('Invalid: input "playerkickstable" is not alpha nummerical (dashes allowed)');
 else if(!is_alphanumdash($_POST['playerwarningstable']))
-	die('Hacking attempt');
+	die('Invalid: input "playerwarningstable" is not alpha nummerical (dashes allowed)');
 else if(!is_alphanumdash($_POST['ipbanstable']))
-	die('Hacking attempt');
+	die('Invalid: input "ipbanstable" is not alpha nummerical (dashes allowed)');
 else if(!is_alphanumdash($_POST['ipbanrecordstable']))
-	die('Hacking attempt');
+	die('Invalid: input "ipbanrecordstable" is not alpha nummerical (dashes allowed)');
 
 function tableExists($name) {
 	global $mysqli;
