@@ -195,9 +195,9 @@ module.exports = function(grunt) {
          */
 
         jscs: {
-          src: "assets/js/_*.js",
+          src: 'assets/js/_*.js',
           options: {
-            config: ".jscsrc"
+            config: '.jscsrc'
           }
         },
 
