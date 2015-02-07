@@ -58,8 +58,8 @@ $settings['cache_home'] = 60;
 // Skin service options
 // ("%name%" is the placeholder for the player %name)
 // ("%uuid%" is the placeholder for the player uuid)
-$settings['skin']['helm'] = "https://cravatar.eu/helmavatar/%name%";
-$settings['skin']['complete'] = "https://cravatar.eu/3d/%name%/270";
+$settings['skin']['helm'] = "https://crafatar.com/avatars/%uuid%?helm&size=32";
+$settings['skin']['complete'] = "https://crafatar.com/renders/body/%uuid%?helm&scale=4";
 
 /**
 * These are the language options for Ban Management
