@@ -23,9 +23,7 @@ $path = $_SERVER['HTTP_HOST'].str_replace('index.php', '', $_SERVER['SCRIPT_NAME
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="description" content="<?php echo $language['description']; ?>" />
 		<meta name="author" content="Frostcast" />
-		<link rel="stylesheet" type="text/css" href="css/bootstrap.css" media="screen" />
-		<link rel="stylesheet" type="text/css" href="css/core.css" />
-		<link rel="stylesheet" type="text/css" href="css/theme.css" />
+		<link rel="stylesheet" type="text/css" href="assets/css/style.css" media="screen" />
 		<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 				<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 				<!--[if lt IE 9]>
@@ -33,7 +31,6 @@ $path = $_SERVER['HTTP_HOST'].str_replace('index.php', '', $_SERVER['SCRIPT_NAME
 						<script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
 				<![endif]-->
 		<?php if(isset($_GET['action']) && $_GET['action'] == 'viewplayer'): ?>
-		<link rel="stylesheet" type="text/css" href="css/jquery.mCustomScrollbar.css" />
 		<?php endif; ?>
 	</head>
 <body>
