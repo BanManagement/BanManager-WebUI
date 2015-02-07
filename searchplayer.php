@@ -140,7 +140,7 @@ else {
 					$time = (!empty($player['time']) ? date('j F Y h:i:s A', $player['time']) : '');
 
 				$ajaxArray['rows'][] = array(
-					'<img src="https://minotar.net/helm/'.$playerName.'/23" alt="'.$playerName.'" class="minihead" /> <a href="index.php?action=viewplayer&player='.$playerName.'&server='.$_GET['server'].'">'.$playerName.'</a>',
+					'<img src="https://cravatar.eu/helmavatar/'.$playerName.'/23" alt="'.$playerName.'" class="minihead" /> <a href="index.php?action=viewplayer&player='.$playerName.'&server='.$_GET['server'].'">'.$playerName.'</a>',
 					$player['type'],
 					UUIDtoPlayerName($player['by'], $server),
 					$player['reason'],
