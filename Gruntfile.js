@@ -2,17 +2,17 @@ module.exports = function(grunt) {
     require('load-grunt-tasks')(grunt);
 
     grunt.initConfig({
-        pkg: grunt.file.readJSON('package.json'),
+        pkg: grunt.file.readJSON('package.json')
 
         // Helper variables
-        dirs: {
-            bower: 'bower_components',
-            css: 'assets/css',
-            js: 'assets/js',
-            images: 'assets/images',
-            fonts: 'assets/fonts',
-            svg: 'assets/svg'
-        },
+        , dirs: {
+            bower: 'bower_components'
+            , css: 'assets/css'
+            , js: 'assets/js'
+            , images: 'assets/images'
+            , fonts: 'assets/fonts'
+            , svg: 'assets/svg'
+        }
 
         /*
          * SASS
@@ -20,58 +20,58 @@ module.exports = function(grunt) {
          * - In dev mode there is no minifying
          */
 
-        sass: {
+        , sass: {
             dev: {
                 options: {
-                    outputStyle: 'nested',
-                    loadPath: '.',
-                    sourceMap: true
-                },
-                files: {
-                    '<%= dirs.css %>/style.css': '<%= dirs.css %>/style.scss'
+                    outputStyle: 'nested'
+                    , loadPath: '.'
+                    , sourceMap: true
                 }
-            },
-            build: {
-                options: {
-                    outputStyle: 'compressed',
-                    loadPath: '.',
-                    sourceMap: false
-                },
-                files: {
+                , files: {
                     '<%= dirs.css %>/style.css': '<%= dirs.css %>/style.scss'
                 }
             }
-        },
+            , build: {
+                options: {
+                    outputStyle: 'compressed'
+                    , loadPath: '.'
+                    , sourceMap: false
+                }
+                , files: {
+                    '<%= dirs.css %>/style.css': '<%= dirs.css %>/style.scss'
+                }
+            }
+        }
 
         /*
          * Autoprefixer
          * - Makes sure you use the proper vendor-prefixed CSS properties
          */
 
-        autoprefixer: {
+        , autoprefixer: {
             options: {
-                browsers: ['last 2 versions']
-            },
-            dist: {
+                browsers: [ 'last 2 versions' ]
+            }
+            , dist: {
                 files: {
                     '<%= dirs.css %>/style.css': '<%= dirs.css %>/style.css'
                 }
             }
-        },
+        }
 
         /*
          * Connect
          * - Inbuilt web server
          */
 
-        connect: {
+        , connect: {
             server: {
                 options: {
-                    port: 9001,
-                    base: ''
+                    port: 9001
+                    , base: ''
                 }
             }
-        },
+        }
 
         /*
          * Concat task
@@ -79,96 +79,96 @@ module.exports = function(grunt) {
          * - Ignores "modernizr.js", since it has to be seperate
          */
 
-        concat: {
+        , concat: {
             options: {
-                separator: ';',
-            },
-            dist: {
+                separator: ';'
+            }
+            , dist: {
                 src: [
-                    '<%= dirs.bower %>/moment/moment.js',
-                    '<%= dirs.bower %>/ExplorerCanvas/excanvas.js',
-                    '<%= dirs.bower %>/jquery/dist/jquery.js',
-                    '<%= dirs.bower %>/bootstrap-sass-official/assets/javascripts/bootstrap.js',
-                    '<%= dirs.bower %>/jquery.validate/dist/jquery.validate.js',
-                    '<%= dirs.bower %>/CanvasLoader/js/heartcode-canvasloader.js',
-                    '<%= dirs.bower %>/jquery.countdown/dist/jquery.countdown.js',
-                    '<%= dirs.bower %>/jquery.tablesorter/js/jquery.tablesorter.js',
-                    '<%= dirs.bower %>/jquery.tablesorter/js/jquery.tablesorter.widgets.js',
-                    '<%= dirs.bower %>/jquery.tablesorter/js/jquery.tablesorter.widgets-dilter-formatter.js',
-                    '<%= dirs.bower %>/jquery.tablesorter/addons/pager/jquery.tablesorter.pager.js',
-                    '<%= dirs.bower %>/jquery.serverless-mc-skin-viewer/jquery.minecraftskin.js',
-                    '<%= dirs.bower %>/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.js',
-                    '<%= dirs.bower %>/jQuery-Visualize/js/visualize.jQuery.js',
-                    '<%= dirs.bower %>/jquery-mousewheel/jquery.mousewheel.js',
-                    '<%= dirs.bower %>/eonasdan-bootstrap-datetimepicker/src/js/bootstrap-datetimepicker.js',
-                    '<%= dirs.js %>/*.js',
-                    '!<%= dirs.js %>/modernizr.js',
-                    '!<%= dirs.js %>/build.js'
-                ],
-                dest: '<%= dirs.js %>/build.js',
-            },
-        },
+                    '<%= dirs.bower %>/moment/moment.js'
+                    , '<%= dirs.bower %>/ExplorerCanvas/excanvas.js'
+                    , '<%= dirs.bower %>/jquery/dist/jquery.js'
+                    , '<%= dirs.bower %>/bootstrap-sass-official/assets/javascripts/bootstrap.js'
+                    , '<%= dirs.bower %>/jquery.validate/dist/jquery.validate.js'
+                    , '<%= dirs.bower %>/CanvasLoader/js/heartcode-canvasloader.js'
+                    , '<%= dirs.bower %>/jquery.countdown/dist/jquery.countdown.js'
+                    , '<%= dirs.bower %>/jquery.tablesorter/js/jquery.tablesorter.js'
+                    , '<%= dirs.bower %>/jquery.tablesorter/js/jquery.tablesorter.widgets.js'
+                    , '<%= dirs.bower %>/jquery.tablesorter/js/jquery.tablesorter.widgets-dilter-formatter.js'
+                    , '<%= dirs.bower %>/jquery.tablesorter/addons/pager/jquery.tablesorter.pager.js'
+                    , '<%= dirs.bower %>/jquery.serverless-mc-skin-viewer/jquery.minecraftskin.js'
+                    , '<%= dirs.bower %>/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.js'
+                    , '<%= dirs.bower %>/jQuery-Visualize/js/visualize.jQuery.js'
+                    , '<%= dirs.bower %>/jquery-mousewheel/jquery.mousewheel.js'
+                    , '<%= dirs.bower %>/eonasdan-bootstrap-datetimepicker/src/js/bootstrap-datetimepicker.js'
+                    , '<%= dirs.js %>/*.js'
+                    , '!<%= dirs.js %>/modernizr.js'
+                    , '!<%= dirs.js %>/build.js'
+                ]
+                , dest: '<%= dirs.js %>/build.js'
+            , }
+        , }
 
         /*
          * JShint
          * - Validate JavaScript
          */
 
-        jshint: {
+        , jshint: {
             options: {
                 jshintrc: true
-            },
-            all: [
-                'Gruntfile.js',
-                '<%= dirs.js %>/*.js',
-                '!<%= dirs.js %>/modernizr.js',
-                '!<%= dirs.js %>/build.js'
+            }
+            , all: [
+                'Gruntfile.js'
+                , '<%= dirs.js %>/*.js'
+                , '!<%= dirs.js %>/modernizr.js'
+                , '!<%= dirs.js %>/build.js'
             ]
-        },
+        }
 
         /*
          * HTMLhint
          * - Validate HTML
          */
 
-        htmlhint: {
+        , htmlhint: {
             html: {
                 options: {
                     'tag-pair': true
-                },
-                src: ['*.html']
+                }
+                , src: [ '*.html' ]
             }
-        },
+        }
 
         /*
          * Uglify
          * - Minify JavaScript
          */
 
-        uglify: {
+        , uglify: {
             all: {
                 files: {
-                    '<%= dirs.js %>/build.js': ['<%= dirs.js %>/build.js'],
-                    '<%= dirs.js %>/modernizr.js': ['<%= dirs.bower %>/modernizr/modernizr.js']
+                    '<%= dirs.js %>/build.js': [ '<%= dirs.js %>/build.js' ]
+                    , '<%= dirs.js %>/modernizr.js': [ '<%= dirs.bower %>/modernizr/modernizr.js' ]
                 }
             }
-        },
+        }
 
         /*
          * Imagemin
          * - Minify images
          */
 
-        imagemin: {
+        , imagemin: {
             dynamic: {
-                files: [{
-                    expand: true,
-                    cwd: '<%= dirs.images %>',
-                    src: ['**/*.{png,jpg,gif}'],
-                    dest: '<%= dirs.images %>'
-                }]
+                files: [ {
+                    expand: true
+                    , cwd: '<%= dirs.images %>'
+                    , src: [ '**/*.{png,jpg,gif}' ]
+                    , dest: '<%= dirs.images %>'
+                } ]
             }
-        },
+        }
 
         /*
          * Copy
@@ -176,62 +176,62 @@ module.exports = function(grunt) {
          * - Used for Bootstraps fonts which are included in the bower component folder
          */
 
-        copy: {
+        , copy: {
           main: {
             files: [
-              {expand: true, cwd: '<%= dirs.bower %>/bootstrap-sass-official/assets/fonts/bootstrap/', src: ['**'], dest: '<%= dirs.fonts %>'},
-              {expand: true, cwd: '<%= dirs.bower %>/malihu-custom-scrollbar-plugin/', src: ['jquery.mCustomScrollbar.css'], dest: '<%= dirs.css %>', rename: function(dest) { return dest + '/jquery.mCustomScrollbar.scss'; }},
-              {expand: true, cwd: '<%= dirs.bower %>/eonasdan-bootstrap-datetimepicker/build/css/', src: ['bootstrap-datetimepicker.css'], dest: '<%= dirs.css %>', rename: function(dest) { return dest + '/bootstrap-datetimepicker.scss'; }},
-              {expand: true, cwd: '<%= dirs.bower %>/jquery.tablesorter/css/', src: ['theme.bootstrap.css'], dest: '<%= dirs.css %>', rename: function(dest) { return dest + '/tablesorter-theme.bootstrap.scss'; }},
-              {expand: true, cwd: '<%= dirs.bower %>/jQuery-Visualize/css/', src: ['visualize.css'], dest: '<%= dirs.css %>', rename: function(dest) { return dest + '/visualize.scss'; }},
-              {expand: true, cwd: '<%= dirs.bower %>/jQuery-Visualize/css/', src: ['visualize-light.css'], dest: '<%= dirs.css %>', rename: function(dest) { return dest + '/visualize-light.scss'; }},
+              { expand: true, cwd: '<%= dirs.bower %>/bootstrap-sass-official/assets/fonts/bootstrap/', src: [ '**' ], dest: '<%= dirs.fonts %>' }
+              , { expand: true, cwd: '<%= dirs.bower %>/malihu-custom-scrollbar-plugin/', src: [ 'jquery.mCustomScrollbar.css' ], dest: '<%= dirs.css %>', rename: function(dest) { return dest + '/jquery.mCustomScrollbar.scss'; } }
+              , { expand: true, cwd: '<%= dirs.bower %>/eonasdan-bootstrap-datetimepicker/build/css/', src: [ 'bootstrap-datetimepicker.css' ], dest: '<%= dirs.css %>', rename: function(dest) { return dest + '/bootstrap-datetimepicker.scss'; } }
+              , { expand: true, cwd: '<%= dirs.bower %>/jquery.tablesorter/css/', src: [ 'theme.bootstrap.css' ], dest: '<%= dirs.css %>', rename: function(dest) { return dest + '/tablesorter-theme.bootstrap.scss'; } }
+              , { expand: true, cwd: '<%= dirs.bower %>/jQuery-Visualize/css/', src: [ 'visualize.css' ], dest: '<%= dirs.css %>', rename: function(dest) { return dest + '/visualize.scss'; } }
+              , { expand: true, cwd: '<%= dirs.bower %>/jQuery-Visualize/css/', src: [ 'visualize-light.css' ], dest: '<%= dirs.css %>', rename: function(dest) { return dest + '/visualize-light.scss'; } }
             ]
           }
-        },
+        }
 
         /*
          * JSCS (JavaScriptCodeStyle)
          * - Check JS markup based on policies defined in .jscsrc
          */
 
-        jscs: {
-          src: 'assets/js/_*.js',
-          options: {
+        , jscs: {
+          src: 'assets/js/_*.js'
+          , options: {
             config: '.jscsrc'
           }
-        },
+        }
 
         /*
          * Watch
          * - Watches files for changes and recompiles if neccesary
          */
 
-        watch: {
+        , watch: {
             options: {
                 livereload: true
-            },
-            sass: {
-                files: ['<%= dirs.css %>/*.scss'],
-                tasks: ['sass:dev', 'autoprefixer']
-            },
-            images: {
-                files: ['<%= dirs.images %>/*.{png,jpg,gif}'],
-                tasks: ['imagemin']
-            },
-            html: {
-                files: ['*.html'],
-                tasks: ['htmlhint']
-            },
-            scripts: {
-                files: ['Gruntfile.js', '<%= dirs.js %>/*.js'],
-                tasks: ['jshint', 'jscs', 'concat'],
-                options: {
+            }
+            , sass: {
+                files: [ '<%= dirs.css %>/*.scss' ]
+                , tasks: [ 'sass:dev', 'autoprefixer' ]
+            }
+            , images: {
+                files: [ '<%= dirs.images %>/*.{png,jpg,gif}' ]
+                , tasks: [ 'imagemin' ]
+            }
+            , html: {
+                files: [ '*.html' ]
+                , tasks: [ 'htmlhint' ]
+            }
+            , scripts: {
+                files: [ 'Gruntfile.js', '<%= dirs.js %>/*.js' ]
+                , tasks: [ 'jshint', 'jscs', 'concat' ]
+                , options: {
                     spawn: false
                 }
             }
-        },
+        }
     });
 
-    grunt.registerTask('default', ['copy', 'sass:build', 'autoprefixer', 'concat', 'uglify', 'imagemin', 'jscs']);
-    grunt.registerTask('dev', ['copy', 'connect', 'watch']);
+    grunt.registerTask('default', [ 'copy', 'sass:build', 'autoprefixer', 'concat', 'uglify', 'imagemin', 'jscs' ]);
+    grunt.registerTask('dev', [ 'copy', 'connect', 'watch' ]);
 };
