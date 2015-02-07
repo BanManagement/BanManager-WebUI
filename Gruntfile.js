@@ -85,6 +85,7 @@ module.exports = function(grunt) {
             },
             dist: {
                 src: [
+                    '<%= dirs.bower %>/moment/moment.js',
                     '<%= dirs.bower %>/ExplorerCanvas/excanvas.js',
                     '<%= dirs.bower %>/jquery/dist/jquery.js',
                     '<%= dirs.bower %>/bootstrap-sass-official/assets/javascripts/bootstrap.js',
@@ -99,7 +100,6 @@ module.exports = function(grunt) {
                     '<%= dirs.bower %>/jQuery-Visualize/js/visualize.jQuery.js',
                     '<%= dirs.bower %>/jquery-mousewheel/jquery.mousewheel.js',
                     '<%= dirs.bower %>/eonasdan-bootstrap-datetimepicker/src/js/bootstrap-datetimepicker.js',
-                    '<%= dirs.bower %>/moment/moment.js',
                     '<%= dirs.js %>/*.js',
                     '!<%= dirs.js %>/modernizr.js',
                     '!<%= dirs.js %>/build.js'
