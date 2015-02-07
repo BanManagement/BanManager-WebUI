@@ -43,8 +43,8 @@ Feel free to contribute if you have any suggestions or ideas.
 
 In case you want to help us and contribute to this project you need to compile the JavaScript and SASS:
 
-1. Make sure you've installed `npm`, `grunt` and `bower`:  
-  `npm install -g grunt-cli bower`
+1. Make sure you've installed `npm`, `jshint`, `jscs`, `grunt` and `bower`:  
+  `npm install -g grunt-cli bower jshint jscs`
 1. Install all dependencies:  
   `npm install`
 1. Install web libraries:  
