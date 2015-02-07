@@ -1,3 +1,14 @@
+/*  BanManagement © 2012, a web interface for the Bukkit plugin BanManager
+    by James Mortemore of http://www.frostcast.net
+  is licenced under a Creative Commons
+  Attribution-NonCommercial-ShareAlike 2.0 UK: England & Wales.
+  Permissions beyond the scope of this licence
+  may be available at http://creativecommons.org/licenses/by-nc-sa/2.0/uk/.
+  Additional licence terms at https://raw.github.com/confuser/Ban-Management/master/banmanagement/licence.txt
+*/
+
+/* global CanvasLoader */
+
 function showLoading(element) {
   var cl = new CanvasLoader(element);
   cl.setColor('#4e68d9'); // default is '#000000'
@@ -9,7 +20,7 @@ function showLoading(element) {
 }
 
 function hideLoading() {
-  $("#ajaxLoading").remove();
+  $('#ajaxLoading').remove();
 }
 $(function() {
   jQuery.validator.setDefaults({
@@ -22,8 +33,8 @@ $(function() {
       label.parent().parent().parent().removeClass('error').addClass('success');
     }
   });
-  $("form").validate();
-  $("time").each(function() {
+  $('form').validate();
+  $('time').each(function() {
     $(this).countdown({
       until: new Date($(this).attr('datetime')),
       format: 'yowdhms', layout: '{y<} {yn} {yl}, {y>} {o<} {on} {ol}, {o>} {w<} {wn} {wl}, {w>} {d<} {dn} {dl}, {d>} {h<} {hn} {hl}, {h>} {m<} {mn} {ml}, {m>} {s<} {sn} {sl} {s>}',
@@ -62,20 +73,21 @@ $(function() {
   $.tablesorter.addParser({
     // set a unique id
     id: 'expires',
-    is: function(s, table, cell) {
+    is: function() {
       // return false so this parser is not auto detected
       return false;
     },
-    format: function(s, table, cell, cellIndex) {
+    format: function(s, table, cell) {
       // format your data for normalization
-      return $(cell).data("expires");
+      return $(cell).data('expires');
     },
     // set type, either numeric or text
     type: 'numeric'
   });
 
-  $("table.sortable").tablesorter({
-    theme : "bootstrap", // this will
+  $('table.sortable').tablesorter({
+    /*jshint camelcase: false */
+    theme : 'bootstrap', // this will
 
     widthFixed: true,
 
@@ -87,15 +99,15 @@ $(function() {
 
     // widget code contained in the jquery.tablesorter.widgets.js file
     // use the zebra stripe widget if you plan on hiding any rows (filter widget)
-    widgets : [ "uitheme", "filter", "zebra", "saveSort" ],
+    widgets : [ 'uitheme', 'filter', 'zebra', 'saveSort' ],
 
     widgetOptions : {
       // using the default zebra striping class name, so it actually isn't included in the theme variable above
       // this is ONLY needed for bootstrap theming if you are using the filter widget, because rows are hidden
-      zebra : ["even", "odd"],
+      zebra : ['even', 'odd'],
 
       // reset filters button
-      filter_reset : ".reset",
+      filter_reset : '.reset',
 
       // set the uitheme widget to use the bootstrap theme class names
       // uitheme : "bootstrap"
@@ -104,19 +116,19 @@ $(function() {
     }
   }).tablesorterPager({
     // target the pager markup - see the HTML block below
-    container: $(".pager"),
+    container: $('.pager'),
 
-    ajaxUrl: 'index.php?action=' + $("#container form input[name='action']").val() + '&player=' + $("#container form input[name='player']").val() + '&server=' + $("#container form input[name='server']").val() + '&excluderecords=' + $("#container form input[name='excluderecords']").val() + '&ajax=true&size={size}&page={page}&sortby={sortList:column}&filter={filterList:filter}',
+    ajaxUrl: 'index.php?action=' + $('#container form input[name="action"]').val() + '&player=' + $('#container form input[name="player"]').val() + '&server=' + $('#container form input[name="server"]').val() + '&excluderecords=' + $('#container form input[name="excluderecords"]').val() + '&ajax=true&size={size}&page={page}&sortby={sortList:column}&filter={filterList:filter}',
     ajaxObject: {
       dataType: 'json',
-      success: function(data, textStatus, jqXHR) {
+      success: function() {
         hideLoading();
       },
-      error: function(jqXHR, textStatus, errorThrown) {
+      error: function() {
         hideLoading();
       },
       beforeSend: function() {
-        $("table.sortable").before('<div id="ajaxLoading"><span id="loadingSmall"></span><br />Fetching...</div>');
+        $('table.sortable').before('<div id="ajaxLoading"><span id="loadingSmall"></span><br />Fetching...</div>');
         showLoading('loadingSmall');
       }
     },
@@ -137,21 +149,21 @@ $(function() {
         row = []; // new row array
         // cells
         for ( c in d[r] ) {
-          if (typeof(c) === "string") {
+          if (typeof(c) === 'string') {
           row.push(d[r][c]); // add each table cell data to row array
           }
         }
         rows.push(row); // add new row array to rows array
         }
         if(rows.length === 0)
-        row.push("None");
+        row.push('None');
 
         return [ total, rows, headers ];
       }
     },
 
     // target the pager page select dropdown - choose a page
-    cssGoto: ".pagenum",
+    cssGoto: '.pagenum',
 
     // remove rows from the table to speed up the sort of large tables.
     // setting this to false, only hides the non-visible rows; needed if you plan to add/remove rows with the pager enabled.

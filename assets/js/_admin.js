@@ -6,12 +6,16 @@
   may be available at http://creativecommons.org/licenses/by-nc-sa/2.0/uk/.
   Additional licence terms at https://raw.github.com/confuser/Ban-Management/master/banmanagement/licence.txt
 */
+
+/* global authid */
+/* global CanvasLoader */
+
 $(function() {
 
-  $("#addserver form").submit(function(e) {
+  $('#addserver form').submit(function(e) {
     e.preventDefault();
     var form = $(this);
-    var formBody = form.find(".modal-body");
+    var formBody = form.find('.modal-body');
     if(!form.valid())
       return false;
     errorRemove();
@@ -22,19 +26,19 @@ $(function() {
       data: form.serialize(),
       type: 'post',
       dataType: 'json',
-      success: function(data, textStatus, jqXHR) {
+      success: function(data) {
         hideLoading();
         formBody.show();
         if(data.error) {
           formBody.prepend(error(data.error));
         } else {
           errorRemove();
-          $("#addserver").modal('hide');
-          $("#servers tbody").append('<tr><td>'+data.success.serverName+'</td><td><a href="#" class="btn btn-danger deleteServer" data-serverid="'+data.success.id+'"><i class="glyphicon glyphicon-trash"></i></a></td>');
-          $("#noservers").remove();
+          $('#addserver').modal('hide');
+          $('#servers tbody').append('<tr><td>'+data.success.serverName+'</td><td><a href="#" class="btn btn-danger deleteServer" data-serverid="'+data.success.id+'"><i class="glyphicon glyphicon-trash"></i></a></td>');
+          $('#noservers').remove();
         }
       },
-      error: function(jqXHR, textStatus, errorThrown) {
+      error: function(jqXHR) {
         hideLoading();
         formBody.show();
         formBody.prepend(error('Invalid response from server, try again<br />Response: '+jqXHR.responseText));
@@ -42,17 +46,17 @@ $(function() {
     });
     return false;
   });
-  $(".deleteServer").on('click', function() {
+  $('.deleteServer').on('click', function() {
     var id = $(this).data('serverid');
-    var formBody = $("#container");
-    $this = $(this);
+    var formBody = $('#container');
+    var $this = $(this);
     $(this).append('<div id="ajaxLoading" class="small"><span id="loadingSmall"></span></div>').find('i').hide().parent().addClass('disabled');
     showLoading('loadingSmall');
     $.ajax({
       url: 'index.php?action=deleteserver&ajax=true&authid='+authid+'&id='+id,
       type: 'post',
       dataType: 'json',
-      success: function(data, textStatus, jqXHR) {
+      success: function(data) {
         hideLoading();
         $this.removeClass('disabled').find('i').show();
         if(data.error) {
@@ -64,45 +68,45 @@ $(function() {
           });
         }
       },
-      error: function(jqXHR, textStatus, errorThrown) {
+      error: function(jqXHR) {
         hideLoading();
         $this.removeClass('disabled').find('i').show();
         formBody.prepend(error('Invalid response from server, try again<br />Response: '+jqXHR.responseText));
       }
     });
   });
-  $(".reorderServer").on('click', function() {
+  $('.reorderServer').on('click', function() {
     var id = $(this).data('serverid');
     var order = $(this).data('order');
-    var formBody = $("#container");
-    $this = $(this);
+    var formBody = $('#container');
+    var $this = $(this);
     $(this).append('<div id="ajaxLoading" class="small"><span id="loadingSmall"></span></div>').find('.glyphicon-arrow-up').hide().parent().addClass('disabled');
     showLoading('loadingSmall');
     $.ajax({
       url: 'index.php?action=reorderserver&ajax=true&authid='+authid+'&server='+id+'&order='+order,
       type: 'post',
       dataType: 'json',
-      success: function(data, textStatus, jqXHR) {
+      success: function(data) {
         hideLoading();
         $this.removeClass('disabled').find('.glyphicon-arrow-up').show();
         if(data.error) {
           formBody.prepend(error(data.error));
         } else {
           errorRemove();
-          $("#servers").html(data.success.table);
+          $('#servers').html(data.success.table);
         }
       },
-      error: function(jqXHR, textStatus, errorThrown) {
+      error: function(jqXHR) {
         hideLoading();
         $this.removeClass('disabled').find('.glyphicon-arrow-up').show();
         formBody.prepend(error('Invalid response from server, try again<br />Response: '+jqXHR.responseText));
       }
     });
   });
-  $("form.settings").submit(function(e) {
+  $('form.settings').submit(function(e) {
     e.preventDefault();
     var form = $(this);
-    var formBody = form.find("table");
+    var formBody = form.find('table');
     if(!form.valid())
       return false;
     errorRemove();
@@ -113,7 +117,7 @@ $(function() {
       data: form.serialize(),
       type: 'post',
       dataType: 'json',
-      success: function(data, textStatus, jqXHR) {
+      success: function(data) {
         hideLoading();
         formBody.show();
         if(data.error) {
@@ -122,7 +126,7 @@ $(function() {
           errorRemove();
         }
       },
-      error: function(jqXHR, textStatus, errorThrown) {
+      error: function(jqXHR) {
         hideLoading();
         formBody.show();
         form.prepend(error('Invalid response from server, try again<br />Response: '+jqXHR.responseText));
@@ -133,20 +137,20 @@ $(function() {
 
   if(jQuery.fn.datetimepicker) {
     $('.modal').on('shown.bs.modal', function () {
-      $(".datetimepicker").datetimepicker();
+      $('.datetimepicker').datetimepicker();
     });
   }
 
-  $(".yourtime").html(dateFormat(new Date(), "dd/mm/yyyy HH:MM:ss"));
+  $('.yourtime').html(dateFormat(new Date(), 'dd/mm/yyyy HH:MM:ss'));
 
-  $("#editban form .bantype, #editmute form .bantype").click(function(e) {
+  $('#editban form .bantype, #editmute form .bantype').click(function(e) {
     e.preventDefault();
-    var $expires = $(this).parent().parent().find("input[name=expires]");
+    var $expires = $(this).parent().parent().find('input[name=expires]');
 
-    if($(this).html() == 'Permanent') {
+    if($(this).html() === 'Permanent') {
       $(this).html('Temporary');
 
-      $expires.removeAttr("disabled");
+      $expires.removeAttr('disabled');
 
       var picker = $(this).parent().parent().data('DateTimePicker');
 
@@ -155,48 +159,48 @@ $(function() {
     } else {
       $(this).html('Permanent');
       $expires.val('');
-      $expires.attr("disabled", "disabled");
+      $expires.attr('disabled', 'disabled');
     }
   });
 
-  $("#editban form").submit(function(e) {
+  $('#editban form').submit(function(e) {
     e.preventDefault();
 
     var form = $(this);
-    var formBody = form.find(".modal-body");
+    var formBody = form.find('.modal-body');
     if(!form.valid())
       return false;
     errorRemove();
 
-    if($(this).find("input[name=expires]").attr('disabled') == 'disabled') {
-      $(this).find("input[name=expires]").val('');
+    if($(this).find('input[name=expires]').attr('disabled') === 'disabled') {
+      $(this).find('input[name=expires]').val('');
     }
 
     formBody.hide().after('<div id="ajaxLoading"><span id="loadingSmall"></span><br />Saving</div>');
     showLoading('loadingSmall');
-    $("#editban form input[name=expiresTimestamp]").val($("#editban form input[name=expires]").parent().data('DateTimePicker').getDate().toDate().getTime() / 1000);
+    $('#editban form input[name=expiresTimestamp]').val($('#editban form input[name=expires]').parent().data('DateTimePicker').getDate().toDate().getTime() / 1000);
     $.ajax({
       url: 'index.php?action=updateban&ajax=true&authid='+authid,
       data: form.serialize(),
       type: 'post',
       dataType: 'json',
-      success: function(data, textStatus, jqXHR) {
+      success: function(data) {
         hideLoading();
         formBody.show();
         if(data.error) {
           formBody.prepend(error(data.error));
         } else {
           errorRemove();
-          $("#editban").modal('hide');
-          $("#current-ban .reason").html($("#editban form textarea[name=reason]").text());
+          $('#editban').modal('hide');
+          $('#current-ban .reason').html($('#editban form textarea[name=reason]').text());
 
-          var expires = $("#editban form input[name=expires]").val();
+          var expires = $('#editban form input[name=expires]').val();
 
-          if(expires === "")
-            $("#current-ban .expires").html('<span class="label label-important">Never</span>');
+          if(expires === '')
+            $('#current-ban .expires').html('<span class="label label-important">Never</span>');
           else {
-            $("#current-ban .expires").countdown({
-              until: $("#editban form input[name=expires]").parent().data('DateTimePicker').getDate().toDate(),
+            $('#current-ban .expires').countdown({
+              until: $('#editban form input[name=expires]').parent().data('DateTimePicker').getDate().toDate(),
               format: 'yowdhms', layout: '{y<} {yn} {yl}, {y>} {o<} {on} {ol}, {o>} {w<} {wn} {wl}, {w>} {d<} {dn} {dl}, {d>} {h<} {hn} {hl}, {h>} {m<} {mn} {ml}, {m>} {s<} {sn} {sl} {s>}',
               onExpiry: function() {
                 location.reload();
@@ -205,7 +209,7 @@ $(function() {
           }
         }
       },
-      error: function(jqXHR, textStatus, errorThrown) {
+      error: function(jqXHR) {
         hideLoading();
         formBody.show();
         formBody.prepend(error('Invalid response from server, try again<br />Response: '+jqXHR.responseText));
@@ -214,44 +218,44 @@ $(function() {
     return false;
   });
 
-  $("#editmute form").submit(function(e) {
+  $('#editmute form').submit(function(e) {
     e.preventDefault();
 
     var form = $(this);
-    var formBody = form.find(".modal-body");
+    var formBody = form.find('.modal-body');
     if(!form.valid())
       return false;
     errorRemove();
 
-    if($(this).find("input[name=expires]").attr('disabled') == 'disabled') {
-      $(this).find("input[name=expires]").val('');
+    if($(this).find('input[name=expires]').attr('disabled') === 'disabled') {
+      $(this).find('input[name=expires]').val('');
     }
 
     formBody.hide().after('<div id="ajaxLoading"><span id="loadingSmall"></span><br />Saving</div>');
     showLoading('loadingSmall');
-    $("#editmute form input[name=expiresTimestamp]").val($("#editmute form input[name=expires]").parent().parent().data('DateTimePicker').getDate().getTime()/1000);
+    $('#editmute form input[name=expiresTimestamp]').val($('#editmute form input[name=expires]').parent().parent().data('DateTimePicker').getDate().getTime()/1000);
     $.ajax({
       url: 'index.php?action=updatemute&ajax=true&authid='+authid,
       data: form.serialize(),
       type: 'post',
       dataType: 'json',
-      success: function(data, textStatus, jqXHR) {
+      success: function(data) {
         hideLoading();
         formBody.show();
         if(data.error) {
           formBody.prepend(error(data.error));
         } else {
           errorRemove();
-          $("#editmute").modal('hide');
-          $("#current-mute .reason").html($("#editmute form textarea[name=reason]").text());
+          $('#editmute').modal('hide');
+          $('#current-mute .reason').html($('#editmute form textarea[name=reason]').text());
 
-          var expires = $("#editmute form input[name=expires]").val();
+          var expires = $('#editmute form input[name=expires]').val();
 
-          if(expires === "")
-            $("#current-mute .expires").html('<span class="label label-important">Never</span>');
+          if(expires === '')
+            $('#current-mute .expires').html('<span class="label label-important">Never</span>');
           else {
-            $("#current-mute .expires").countdown({
-              until: $("#editmute form input[name=expires]").parent().parent().data('DateTimePicker').getDate(),
+            $('#current-mute .expires').countdown({
+              until: $('#editmute form input[name=expires]').parent().parent().data('DateTimePicker').getDate(),
               format: 'yowdhms', layout: '{y<} {yn} {yl}, {y>} {o<} {on} {ol}, {o>} {w<} {wn} {wl}, {w>} {d<} {dn} {dl}, {d>} {h<} {hn} {hl}, {h>} {m<} {mn} {ml}, {m>} {s<} {sn} {sl} {s>}',
               onExpiry: function() {
                 location.reload();
@@ -260,7 +264,7 @@ $(function() {
           }
         }
       },
-      error: function(jqXHR, textStatus, errorThrown) {
+      error: function(jqXHR) {
         hideLoading();
         formBody.show();
         formBody.prepend(error('Invalid response from server, try again<br />Response: '+jqXHR.responseText));
@@ -269,44 +273,44 @@ $(function() {
     return false;
   });
 
-  $("#editbanip form").submit(function(e) {
+  $('#editbanip form').submit(function(e) {
     e.preventDefault();
 
     var form = $(this);
-    var formBody = form.find(".modal-body");
+    var formBody = form.find('.modal-body');
     if(!form.valid())
       return false;
     errorRemove();
 
-    if($(this).find("input[name=expires]").attr('disabled') == 'disabled') {
-      $(this).find("input[name=expires]").val('');
+    if($(this).find('input[name=expires]').attr('disabled') === 'disabled') {
+      $(this).find('input[name=expires]').val('');
     }
 
     formBody.hide().after('<div id="ajaxLoading"><span id="loadingSmall"></span><br />Saving</div>');
     showLoading('loadingSmall');
-    $("#editipban form input[name=expiresTimestamp]").val($("#editipban form input[name=expires]").parent().parent().data('DateTimePicker').getDate().getTime()/1000);
+    $('#editipban form input[name=expiresTimestamp]').val($('#editipban form input[name=expires]').parent().parent().data('DateTimePicker').getDate().getTime()/1000);
     $.ajax({
       url: 'index.php?action=updateipban&ajax=true&authid='+authid,
       data: form.serialize(),
       type: 'post',
       dataType: 'json',
-      success: function(data, textStatus, jqXHR) {
+      success: function(data) {
         hideLoading();
         formBody.show();
         if(data.error) {
           formBody.prepend(error(data.error));
         } else {
           errorRemove();
-          $("#editipban").modal('hide');
-          $("#current-ban .reason").html($("#editipban form textarea[name=reason]").text());
+          $('#editipban').modal('hide');
+          $('#current-ban .reason').html($('#editipban form textarea[name=reason]').text());
 
-          var expires = $("#editipban form input[name=expires]").val();
+          var expires = $('#editipban form input[name=expires]').val();
 
-          if(expires === "")
-            $("#current-ban .expires").html('<span class="label label-important">Never</span>');
+          if(expires === '')
+            $('#current-ban .expires').html('<span class="label label-important">Never</span>');
           else {
-            $("#current-ban .expires").countdown({
-              until: $("#editipban form input[name=expires]").parent().parent().data('DateTimePicker').getDate(),
+            $('#current-ban .expires').countdown({
+              until: $('#editipban form input[name=expires]').parent().parent().data('DateTimePicker').getDate(),
               format: 'yowdhms', layout: '{y<} {yn} {yl}, {y>} {o<} {on} {ol}, {o>} {w<} {wn} {wl}, {w>} {d<} {dn} {dl}, {d>} {h<} {hn} {hl}, {h>} {m<} {mn} {ml}, {m>} {s<} {sn} {sl} {s>}',
               onExpiry: function() {
                 location.reload();
@@ -315,7 +319,7 @@ $(function() {
           }
         }
       },
-      error: function(jqXHR, textStatus, errorThrown) {
+      error: function(jqXHR) {
         hideLoading();
         formBody.show();
         formBody.prepend(error('Invalid response from server, try again<br />Response: '+jqXHR.responseText));
@@ -324,19 +328,19 @@ $(function() {
     return false;
   });
 
-  $("#previous-bans a.delete").on('click', function(e) {
+  $('#previous-bans a.delete').on('click', function(e) {
     e.preventDefault();
     var id = $(this).data('record-id');
     var server = $(this).data('server');
-    var formBody = $("#container");
-    $this = $(this);
+    var formBody = $('#container');
+    var $this = $(this);
     $(this).append('<div id="ajaxLoading" class="small"><span id="loadingSmall"></span></div>').find('i').hide().parent().addClass('disabled');
     showLoading('loadingSmall');
     $.ajax({
       url: 'index.php?action=deletebanrecord&ajax=true&authid='+authid+'&server='+server+'&id='+id,
       type: 'post',
       dataType: 'json',
-      success: function(data, textStatus, jqXHR) {
+      success: function(data) {
         hideLoading();
         $this.removeClass('disabled').find('i').show();
         if(data.error) {
@@ -349,7 +353,7 @@ $(function() {
           });
         }
       },
-      error: function(jqXHR, textStatus, errorThrown) {
+      error: function(jqXHR) {
         hideLoading();
         $this.removeClass('disabled').find('i').show();
         formBody.prepend(error('Invalid response from server, try again<br />Response: '+jqXHR.responseText));
@@ -357,19 +361,19 @@ $(function() {
     });
   });
 
-  $("#previous-mutes a.delete").on('click', function(e) {
+  $('#previous-mutes a.delete').on('click', function(e) {
     e.preventDefault();
     var id = $(this).data('record-id');
     var server = $(this).data('server');
-    var formBody = $("#container");
-    $this = $(this);
+    var formBody = $('#container');
+    var $this = $(this);
     $(this).append('<div id="ajaxLoading" class="small"><span id="loadingSmall"></span></div>').find('i').hide().parent().addClass('disabled');
     showLoading('loadingSmall');
     $.ajax({
       url: 'index.php?action=deletemuterecord&ajax=true&authid='+authid+'&server='+server+'&id='+id,
       type: 'post',
       dataType: 'json',
-      success: function(data, textStatus, jqXHR) {
+      success: function(data) {
         hideLoading();
         $this.removeClass('disabled').find('i').show();
         if(data.error) {
@@ -382,7 +386,7 @@ $(function() {
           });
         }
       },
-      error: function(jqXHR, textStatus, errorThrown) {
+      error: function(jqXHR) {
         hideLoading();
         $this.removeClass('disabled').find('i').show();
         formBody.prepend(error('Invalid response from server, try again<br />Response: '+jqXHR.responseText));
@@ -390,19 +394,19 @@ $(function() {
     });
   });
 
-  $("#previous-kicks a.delete").on('click', function(e) {
+  $('#previous-kicks a.delete').on('click', function(e) {
     e.preventDefault();
     var id = $(this).data('record-id');
     var server = $(this).data('server');
-    var formBody = $("#container");
-    $this = $(this);
+    var formBody = $('#container');
+    var $this = $(this);
     $(this).append('<div id="ajaxLoading" class="small"><span id="loadingSmall"></span></div>').find('i').hide().parent().addClass('disabled');
     showLoading('loadingSmall');
     $.ajax({
       url: 'index.php?action=deletekickrecord&ajax=true&authid='+authid+'&server='+server+'&id='+id,
       type: 'post',
       dataType: 'json',
-      success: function(data, textStatus, jqXHR) {
+      success: function(data) {
         hideLoading();
         $this.removeClass('disabled').find('i').show();
         if(data.error) {
@@ -415,7 +419,7 @@ $(function() {
           });
         }
       },
-      error: function(jqXHR, textStatus, errorThrown) {
+      error: function(jqXHR) {
         hideLoading();
         $this.removeClass('disabled').find('i').show();
         formBody.prepend(error('Invalid response from server, try again<br />Response: '+jqXHR.responseText));
@@ -423,19 +427,19 @@ $(function() {
     });
   });
 
-  $("#previous-warnings a.delete").on('click', function(e) {
+  $('#previous-warnings a.delete').on('click', function(e) {
     e.preventDefault();
     var id = $(this).data('record-id');
     var server = $(this).data('server');
-    var formBody = $("#container");
-    $this = $(this);
+    var formBody = $('#container');
+    var $this = $(this);
     $(this).append('<div id="ajaxLoading" class="small"><span id="loadingSmall"></span></div>').find('i').hide().parent().addClass('disabled');
     showLoading('loadingSmall');
     $.ajax({
       url: 'index.php?action=deletewarning&ajax=true&authid='+authid+'&server='+server+'&id='+id,
       type: 'post',
       dataType: 'json',
-      success: function(data, textStatus, jqXHR) {
+      success: function(data) {
         hideLoading();
         $this.removeClass('disabled').find('i').show();
         if(data.error) {
@@ -448,7 +452,7 @@ $(function() {
           });
         }
       },
-      error: function(jqXHR, textStatus, errorThrown) {
+      error: function(jqXHR) {
         hideLoading();
         $this.removeClass('disabled').find('i').show();
         formBody.prepend(error('Invalid response from server, try again<br />Response: '+jqXHR.responseText));
@@ -456,19 +460,19 @@ $(function() {
     });
   });
 
-  $("#previous-ip-bans a.delete").on('click', function(e) {
+  $('#previous-ip-bans a.delete').on('click', function(e) {
     e.preventDefault();
     var id = $(this).data('record-id');
     var server = $(this).data('server');
-    var formBody = $("#container");
-    $this = $(this);
+    var formBody = $('#container');
+    var $this = $(this);
     $(this).append('<div id="ajaxLoading" class="small"><span id="loadingSmall"></span></div>').find('i').hide().parent().addClass('disabled');
     showLoading('loadingSmall');
     $.ajax({
       url: 'index.php?action=deleteipbanrecord&ajax=true&authid='+authid+'&server='+server+'&id='+id,
       type: 'post',
       dataType: 'json',
-      success: function(data, textStatus, jqXHR) {
+      success: function(data) {
         hideLoading();
         $this.removeClass('disabled').find('i').show();
         if(data.error) {
@@ -481,7 +485,7 @@ $(function() {
           });
         }
       },
-      error: function(jqXHR, textStatus, errorThrown) {
+      error: function(jqXHR) {
         hideLoading();
         $this.removeClass('disabled').find('i').show();
         formBody.prepend(error('Invalid response from server, try again<br />Response: '+jqXHR.responseText));
@@ -489,20 +493,20 @@ $(function() {
     });
   });
 
-  $("[data-role=confirm]").click(function(e) {
+  $('[data-role=confirm]').click(function(e) {
     e.preventDefault();
-    $("body").append('<div class="modal fade" id="confirmModal"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><a class="close" data-dismiss="modal">&times;</a><h3>'+$(this).data("confirm-title")+'</h3></div><div class="modal-body"><p>'+$(this).data("confirm-body")+'</p></div><div class="modal-footer"><a href="#" class="btn cancel" data-dismiss="modal">Cancel</a><a href="'+$(this).attr("href")+'" class="btn btn-primary">Confirm</a></div></div></div></div>');
-    $("#confirmModal").modal().find(".cancel").focus();
+    $('body').append('<div class="modal fade" id="confirmModal"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><a class="close" data-dismiss="modal">&times;</a><h3>'+$(this).data('confirm-title')+'</h3></div><div class="modal-body"><p>'+$(this).data('confirm-body')+'</p></div><div class="modal-footer"><a href="#" class="btn cancel" data-dismiss="modal">Cancel</a><a href="'+$(this).attr('href')+'" class="btn btn-primary">Confirm</a></div></div></div></div>');
+    $('#confirmModal').modal().find('.cancel').focus();
     $('#confirmModal').on('hidden', function () {
       $(this).remove();
     });
     return false;
   });
 
-  $("#confirmModal a.btn-primary").on('click', function(e) {
+  $('#confirmModal a.btn-primary').on('click', function(e) {
     e.preventDefault();
-    var formBody = $("#confirmModal .modal-body");
-    $this = $(this);
+    var formBody = $('#confirmModal .modal-body');
+    var $this = $(this);
 
     formBody.hide().after('<div id="ajaxLoading"><span id="loadingSmall"></span><br />Removing</div>');
     showLoading('loadingSmall');
@@ -510,17 +514,17 @@ $(function() {
       url: $this.attr('href'),
       type: 'get',
       dataType: 'json',
-      success: function(data, textStatus, jqXHR) {
+      success: function(data) {
         hideLoading();
         formBody.show();
         if(data.error) {
           formBody.prepend(error(data.error));
         } else {
-          $("#confirmModal").modal('hide');
+          $('#confirmModal').modal('hide');
           location.reload();
         }
       },
-      error: function(jqXHR, textStatus, errorThrown) {
+      error: function(jqXHR) {
         hideLoading();
         $this.removeClass('disabled').find('i').show();
         formBody.prepend(error('Invalid response from server, try again<br />Response: '+jqXHR.responseText));
@@ -541,7 +545,7 @@ function showLoading(element) {
 }
 
 function hideLoading() {
-  $("#ajaxLoading").remove();
+  $('#ajaxLoading').remove();
 }
 
 function error(message) {
@@ -549,7 +553,7 @@ function error(message) {
 }
 
 function errorRemove() {
-  $("#error").remove();
+  $('#error').remove();
 }
 
 /*
@@ -573,41 +577,42 @@ var dateFormat = function () {
         pad = function (val, len) {
             val = String(val);
             len = len || 2;
-            while (val.length < len) val = "0" + val;
+            while (val.length < len) val = '0' + val;
             return val;
         };
 
     // Regexes and supporting functions are cached through closure
     return function (date, mask, utc) {
+        /*jshint maxcomplexity: 20 */
         var dF = dateFormat;
 
         // You can't provide utc if you skip other args (use the "UTC:" mask prefix)
-        if (arguments.length == 1 && Object.prototype.toString.call(date) == "[object String]" && !/\d/.test(date)) {
+        if (arguments.length === 1 && Object.prototype.toString.call(date) === '[object String]' && !/\d/.test(date)) {
             mask = date;
             date = undefined;
         }
 
         // Passing date through Date applies Date.parse, if necessary
         date = date ? new Date(date) : new Date();
-        if (isNaN(date)) throw SyntaxError("invalid date");
+        if (isNaN(date)) throw new SyntaxError('invalid date');
 
-        mask = String(dF.masks[mask] || mask || dF.masks["default"]);
+        mask = String(dF.masks[mask] || mask || dF.masks['default']);
 
         // Allow setting the utc argument via the mask
-        if (mask.slice(0, 4) == "UTC:") {
+        if (mask.slice(0, 4) === 'UTC:') {
             mask = mask.slice(4);
             utc = true;
         }
 
-        var _ = utc ? "getUTC" : "get",
-            d = date[_ + "Date"](),
-            D = date[_ + "Day"](),
-            m = date[_ + "Month"](),
-            y = date[_ + "FullYear"](),
-            H = date[_ + "Hours"](),
-            M = date[_ + "Minutes"](),
-            s = date[_ + "Seconds"](),
-            L = date[_ + "Milliseconds"](),
+        var _ = utc ? 'getUTC' : 'get',
+            d = date[_ + 'Date'](),
+            D = date[_ + 'Day'](),
+            m = date[_ + 'Month'](),
+            y = date[_ + 'FullYear'](),
+            H = date[_ + 'Hours'](),
+            M = date[_ + 'Minutes'](),
+            s = date[_ + 'Seconds'](),
+            L = date[_ + 'Milliseconds'](),
             o = utc ? 0 : date.getTimezoneOffset(),
             flags = {
                 d:    d,
@@ -630,13 +635,13 @@ var dateFormat = function () {
                 ss:   pad(s),
                 l:    pad(L, 3),
                 L:    pad(L > 99 ? Math.round(L / 10) : L),
-                t:    H < 12 ? "a"  : "p",
-                tt:   H < 12 ? "am" : "pm",
-                T:    H < 12 ? "A"  : "P",
-                TT:   H < 12 ? "AM" : "PM",
-                Z:    utc ? "UTC" : (String(date).match(timezone) || [""]).pop().replace(timezoneClip, ""),
-                o:    (o > 0 ? "-" : "+") + pad(Math.floor(Math.abs(o) / 60) * 100 + Math.abs(o) % 60, 4),
-                S:    ["th", "st", "nd", "rd"][d % 10 > 3 ? 0 : (d % 100 - d % 10 != 10) * d % 10]
+                t:    H < 12 ? 'a'  : 'p',
+                tt:   H < 12 ? 'am' : 'pm',
+                T:    H < 12 ? 'A'  : 'P',
+                TT:   H < 12 ? 'AM' : 'PM',
+                Z:    utc ? 'UTC' : (String(date).match(timezone) || ['']).pop().replace(timezoneClip, ''),
+                o:    (o > 0 ? '-' : '+') + pad(Math.floor(Math.abs(o) / 60) * 100 + Math.abs(o) % 60, 4),
+                S:    ['th', 'st', 'nd', 'rd'][d % 10 > 3 ? 0 : (d % 100 - d % 10 !== 10) * d % 10]
             };
 
         return mask.replace(token, function ($0) {
@@ -647,29 +652,29 @@ var dateFormat = function () {
 
 // Some common format strings
 dateFormat.masks = {
-    "default":      "ddd mmm dd yyyy HH:MM:ss",
-    shortDate:      "m/d/yy",
-    mediumDate:     "mmm d, yyyy",
-    longDate:       "mmmm d, yyyy",
-    fullDate:       "dddd, mmmm d, yyyy",
-    shortTime:      "h:MM TT",
-    mediumTime:     "h:MM:ss TT",
-    longTime:       "h:MM:ss TT Z",
-    isoDate:        "yyyy-mm-dd",
-    isoTime:        "HH:MM:ss",
-    isoDateTime:    "yyyy-mm-dd'T'HH:MM:ss",
-    isoUtcDateTime: "UTC:yyyy-mm-dd'T'HH:MM:ss'Z'"
+    'default':      'ddd mmm dd yyyy HH:MM:ss',
+    shortDate:      'm/d/yy',
+    mediumDate:     'mmm d, yyyy',
+    longDate:       'mmmm d, yyyy',
+    fullDate:       'dddd, mmmm d, yyyy',
+    shortTime:      'h:MM TT',
+    mediumTime:     'h:MM:ss TT',
+    longTime:       'h:MM:ss TT Z',
+    isoDate:        'yyyy-mm-dd',
+    isoTime:        'HH:MM:ss',
+    isoDateTime:    'yyyy-mm-dd\'T\'HH:MM:ss',
+    isoUtcDateTime: 'UTC:yyyy-mm-dd\'T\'HH:MM:ss\'Z\''
 };
 
 // Internationalization strings
 dateFormat.i18n = {
     dayNames: [
-        "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat",
-        "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
+        'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat',
+        'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'
     ],
     monthNames: [
-        "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
-        "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"
+        'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+        'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'
     ]
 };
 
