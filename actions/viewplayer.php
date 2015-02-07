@@ -516,7 +516,7 @@ else {
 						<td>'.$r['reason'].'</td>
 						<td>'.UUIDtoPlayerName($r['pastActor_id'], $server).'</td>
 						<td>'.date('d/m/y', $r['created']).'</td>
-						<td>'.($r['expired'] == 0 ? 'Permanent' : secs_to_h($r['expired'] - $r['created'])).'</td>
+						<td>'.($r['expired'] == 0 ? 'Permanent' : secs_to_h($r['expired'] - $r['pastCreated'])).'</td>
 						<td>'.UUIDtoPlayerName($r['actor_id'], $server).'</td>
 						<td>'.date('d/m/y', $r['created']).'</td>'.($serverName ? '
 						<td>'.$r['server'].'</td>' : '').($admin ? '
