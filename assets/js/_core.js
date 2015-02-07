@@ -5,12 +5,12 @@
   Permissions beyond the scope of this licence
   may be available at http://creativecommons.org/licenses/by-nc-sa/2.0/uk/.
   Additional licence terms at https://raw.github.com/confuser/Ban-Management/master/banmanagement/licence.txt
-*/
+  */
 
-/* global CanvasLoader */
+  /* global CanvasLoader */
 
-function showLoading(element) {
-  var cl = new CanvasLoader(element);
+  function showLoading(element) {
+    var cl = new CanvasLoader(element);
   cl.setColor('#4e68d9'); // default is '#000000'
   cl.setDiameter(16); // default is 40
   cl.setDensity(59); // default is 40
@@ -135,17 +135,19 @@ $(function() {
         // this will depend on how the json is set up - see City0.json
         // rows
         for ( r = 0; r < len; r++ ) {
-        row = []; // new row array
-        // cells
-        for ( c in d[r] ) {
-          if (typeof(c) === 'string') {
-          row.push(d[r][c]); // add each table cell data to row array
+          row = []; // new row array
+          // cells
+          for ( c in d[r] ) {
+            if (typeof(c) === 'string') {
+              row.push(d[r][c]); // add each table cell data to row array
+            }
           }
+          rows.push(row); // add new row array to rows array
         }
-        rows.push(row); // add new row array to rows array
+
+        if (rows.length === 0) {
+          row.push('None');
         }
-        if (rows.length === 0)
-        row.push('None');
 
         return [ total, rows, headers ];
       }
