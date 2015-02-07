@@ -85,6 +85,7 @@ module.exports = function(grunt) {
             },
             dist: {
                 src: [
+                    '<%= dirs.bower %>/ExplorerCanvas/excanvas.js',
                     '<%= dirs.bower %>/jquery/dist/jquery.js',
                     '<%= dirs.bower %>/bootstrap-sass-official/assets/javascripts/bootstrap.js',
                     '<%= dirs.bower %>/jquery.validate/dist/jquery.validate.js',
@@ -93,7 +94,6 @@ module.exports = function(grunt) {
                     '<%= dirs.bower %>/jquery.tablesorter/js/jquery.tablesorter.js',
                     '<%= dirs.bower %>/jquery.tablesorter/js/jquery.tablesorter.widgets.js',
                     '<%= dirs.bower %>/jquery.tablesorter/js/jquery.tablesorter.widgets-dilter-formatter.js',
-                    '<%= dirs.bower %>/ExplorerCanvas/excanvas.js',
                     '<%= dirs.bower %>/jquery.serverless-mc-skin-viewer/jquery.minecraftskin.js',
                     '<%= dirs.bower %>/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.js',
                     '<%= dirs.bower %>/jQuery-Visualize/js/visualize.jQuery.js',
