@@ -71,6 +71,8 @@ Caution: When using the `dev` argument, Grunt won't minify your JS or CSS, so it
 * Replaced `mysql_` functions with `mysqli_` ones
 * PHP 5.3 compatible
 * Bower and Grunt to compile assets and libraries
+* Refactor (more information [#16](https://github.com/BanManagement/BanManager-WebUI/issues/16))
+* Configurable skin service
 
 ### Todo / Improvements
 
@@ -86,4 +88,4 @@ You can find a working demo over here: http://bans.yeahwh.at
 
 ### Version
 
-1.1.0
+1.2.0
