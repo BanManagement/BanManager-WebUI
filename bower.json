@@ -19,7 +19,6 @@
     "jquery": "2.1.3",
     "modernizr": "~2.8.3",
     "bootstrap-sass-official": "~3.3.3",
-    "malihu-custom-scrollbar-plugin": "~3.0.7",
     "eonasdan-bootstrap-datetimepicker": "~4.0.0",
     "ExplorerCanvas": "*",
     "CanvasLoader": "~0.9.1",
