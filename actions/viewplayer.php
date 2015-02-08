@@ -453,7 +453,7 @@ else {
 						<td>'.UUIDtoPlayerName($r['actor_id'], $server).'</td>
 						<td>'.date('H:i:s d/m/y', $r['created']).'</td>'.($serverName ? '
 						<td>'.$r['server'].'</td>' : '').($admin ? '
-						<td class="admin-options"><a href="#" class="btn btn-danger delete" title="Remove" data-server="'.$_GET['server'].'" data-record-id="'.$r['id'].'"><span class="glyphicon glyphicon-trash"></span></a></td>' : '').'
+						<td class="admin-options"><a href="#" class="btn btn-danger delete btn-xs" title="Remove" data-server="'.$_GET['server'].'" data-record-id="'.$r['id'].'"><span class="glyphicon glyphicon-trash"></span></a></td>' : '').'
 					</tr>';
 					++$i;
 				}
@@ -520,7 +520,7 @@ else {
 						<td>'.UUIDtoPlayerName($r['actor_id'], $server).'</td>
 						<td>'.date('d/m/y', $r['created']).'</td>'.($serverName ? '
 						<td>'.$r['server'].'</td>' : '').($admin ? '
-						<td class="admin-options"><a href="#" class="btn btn-danger delete" title="Remove" data-server="'.$_GET['server'].'" data-record-id="'.$r['id'].'"><span class="glyphicon glyphicon-trash"></span></a></td>' : '').'
+						<td class="admin-options"><a href="#" class="btn btn-danger delete btn-xs" title="Remove" data-server="'.$_GET['server'].'" data-record-id="'.$r['id'].'"><span class="glyphicon glyphicon-trash"></span></a></td>' : '').'
 					</tr>';
 					++$i;
 				}
@@ -581,7 +581,7 @@ else {
 						<td>'.UUIDtoPlayerName($r['actor_id'], $server).'</td>
 						<td>'.date('H:i:s d/m/y', $r['created']).'</td>'.($serverName ? '
 						<td>'.$r['server'].'</td>' : '').($admin ? '
-						<td class="admin-options"><a href="#" class="btn btn-danger delete" title="Remove" data-server="'.$_GET['server'].'" data-record-id="'.$r['id'].'"><span class="glyphicon glyphicon-trash"></span></a></td>' : '').'
+						<td class="admin-options"><a href="#" class="btn btn-danger delete btn-xs" title="Remove" data-server="'.$_GET['server'].'" data-record-id="'.$r['id'].'"><span class="glyphicon glyphicon-trash"></span></a></td>' : '').'
 					</tr>';
 					++$i;
 				}
@@ -641,7 +641,7 @@ else {
 						<td>'.UUIDtoPlayerName($r['actor_id'], $server).'</td>
 						<td>'.date('d/m/y', $r['created']).'</td>'.($serverName ? '
 						<td>'.$r['server'].'</td>' : '').($admin ? '
-						<td class="admin-options"><a href="#" class="btn btn-danger delete" title="Remove" data-server="'.$_GET['server'].'" data-record-id="'.$r['id'].'"><span class="glyphicon glyphicon-trash"></span></a></td>' : '').'
+						<td class="admin-options"><a href="#" class="btn btn-danger delete btn-xs" title="Remove" data-server="'.$_GET['server'].'" data-record-id="'.$r['id'].'"><span class="glyphicon glyphicon-trash"></span></a></td>' : '').'
 					</tr>';
 					++$i;
 				}
