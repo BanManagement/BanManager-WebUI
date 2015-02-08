@@ -103,6 +103,13 @@ td.admin-options {
   height: 300px;
 }
 
+@media screen and (min-width: 1200px) {
+  .player_information {
+    position: fixed;
+    width: 260px;
+  }
+}
+
 #player_name {
   font-weight: 700;
   text-align: center;
