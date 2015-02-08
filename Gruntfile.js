@@ -227,7 +227,7 @@ module.exports = function(grunt) {
             stdout: true
             , stderr: true
           }
-          , files: [ 'actions/*.php', 'ajaxactions/*.php' ]
+          , files: ['*.php', 'actions/*.php', 'ajaxactions/*.php' ]
         }
 
         /*
@@ -252,7 +252,7 @@ module.exports = function(grunt) {
                 , tasks: [ 'htmlhint' ]
             }
             , php: {
-                files: [ '*.php' ]
+                files: [ '*.php', 'actions/*.php', 'ajaxactions/*.php' ]
                 , tasks: [ 'phplint' ]
             }
             , scripts: {
