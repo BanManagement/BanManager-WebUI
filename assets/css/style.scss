@@ -2,7 +2,7 @@
 //  Variables
 //
 
-$icon-font-path: "../fonts/";
+$icon-font-path: "../../fonts/";
 
 //
 //  Imports
@@ -11,13 +11,12 @@ $icon-font-path: "../fonts/";
 /* Bower */
 @import 'bower_components/bootstrap-sass-official/assets/stylesheets/_bootstrap.scss';
 
-/* Bower aliases */
-@import 'bootstrap-datetimepicker';
-@import 'tablesorter-theme.bootstrap';
-// @import 'visualize';
-// @import 'visualize-light';
+/* Bower (grunt-copy) components */
+@import 'libs/bootstrap-datetimepicker';
+@import 'libs/tablesorter-theme.bootstrap';
+// @import 'libs/visualize';
+// @import 'libs/visualize-light';
 
 /* Custom */
-@import 'bootstrap-theme';
+@import 'libs/jquery_bootstrap-theme';
 @import 'main';
-
