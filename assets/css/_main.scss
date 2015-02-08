@@ -137,3 +137,8 @@ td.admin-options {
 .nav-tabs {
   border-bottom: none;
 }
+
+.nav-tabs>li>a {
+  border: none;
+  border-radius: 4px;
+}
