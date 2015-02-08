@@ -74,14 +74,6 @@ Caution: When using the `dev` argument, Grunt won't minify your JS or CSS, so it
 * Refactor (more information [#16](https://github.com/BanManagement/BanManager-WebUI/issues/16))
 * Configurable skin service
 
-### Todo / Improvements
-
-* Improve IP search
-* Check if admin functions still work (low prio, not in use on our server)
-* Grunt/Gulp to compile assets/libs
-* Keep up MySQL connection
-* Prepared Statements (`mysqli`)
-
 ### Demo
 
 You can find a working demo over here: http://bans.yeahwh.at
