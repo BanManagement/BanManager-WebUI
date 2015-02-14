@@ -659,7 +659,13 @@ function searchIps($search, $serverID, $server, $sortByCol = 'name', $sortBy = '
 				return false;
 			}
 		} else {
-			$whereStatement = "WHERE ip = INET_ATON('".$search."')";
+			// Check if IP is complete, if not complete and turn into range query
+			if ($search != completeIPaddress($search, "start")) {
+				$whereStatement = "WHERE ip BETWEEN INET_ATON('".completeIPaddress($search, "start")."') AND INET_ATON('".completeIPaddress($search, "end")."')";
+			// Otherwise search for exact IP
+			} else {
+				$whereStatement = "WHERE ip = INET_ATON('".$search."')";
+			}
 		}
 	}
 
