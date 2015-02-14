@@ -2,6 +2,10 @@
   "name": "BanManager-WebUI",
   "version": "1.0.0",
   "description": "Web interface for BanManager",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BanManagement/BanManager-WebUI.git"
+  },
   "devDependencies": {
     "grunt": "^0.4.5",
     "grunt-autoprefixer": "^2.2.0",
