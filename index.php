@@ -594,6 +594,29 @@ function searchPlayers($search, $serverID, $server, $sortByCol = 'name', $sortBy
 	}
 }
 
+// Function to complete an IP address.
+// if $position == "start" { 192.168 => 192.168.0.0 }
+// if $position == "end" { 192.168 => 192.168.255.255 }
+function completeIPaddress($ip, $position) {
+	$ipOctets = explode(".", $ip);
+
+	if ($position == "start") {
+		$suffix = "0";
+	} elseif ($position == "end") {
+		$suffix = "255";
+	}
+
+	if (count($ipOctets) == 4) {
+		return $ip;
+	} elseif (count($ipOctets) == 3) {
+		return sprintf("%s.%s.%s.%s", $ipOctets[0], $ipOctets[1], $ipOctets[2], $suffix);
+	} elseif (count($ipOctets) == 2) {
+		return sprintf("%s.%s.%s.%s", $ipOctets[0], $ipOctets[1], $suffix, $suffix);
+	} elseif (count($ipOctets) == 1) {
+		return sprintf("%s.%s.%s.%s", $ipOctets[0], $suffix, $suffix, $suffix);
+	}
+}
+
 function searchIps($search, $serverID, $server, $sortByCol = 'name', $sortBy = 'ASC', $past = true) {
 	global $settings;
 	$found = array();
@@ -625,7 +648,19 @@ function searchIps($search, $serverID, $server, $sortByCol = 'name', $sortBy = '
 	if ($search == "%") {
 		$whereStatement = "";
 	} else {
-		$whereStatement = "WHERE ip = INET_ATON('".$search."')";
+
+		// Check if search contains a "-", aka range search
+		if (strpos($search, '-') == true) {
+			$searchIPs = explode("-", $search);
+			// Make sure we only have two IP elements
+			if (count($searchIPs) == 2) {
+				$whereStatement = "WHERE ip BETWEEN INET_ATON('".completeIPaddress($searchIPs[0], "start")."') AND INET_ATON('".completeIPaddress($searchIPs[1], "end")."')";
+			} else {
+				return false;
+			}
+		} else {
+			$whereStatement = "WHERE ip = INET_ATON('".$search."')";
+		}
 	}
 
 	// Found results
