@@ -1,11 +1,11 @@
 {
   "name": "BanManager-WebUI",
-  "version": "1.0.0",
+  "version": "1.2.0",
+  "description": "Web interface for BanManager",
   "authors": [
     "James Mortemore",
     "Jonas Friedmann"
   ],
-  "description": "Web interface for BanManager",
   "license": "CC BY-NC-SA 2.0 UK",
   "private": true,
   "ignore": [
