@@ -161,8 +161,8 @@ module.exports = function(grunt) {
                       , '<%= dirs.js %>/modernizr.js': [ '<%= dirs.bower %>/modernizr/modernizr.js' ]
                   }
                 ]
-            },
-            admin: {
+            }
+            , admin: {
                 files: [
                   {
                       '<%= dirs.js %>/build.admin.js': [ '<%= dirs.js %>/build.admin.js' ]
@@ -227,7 +227,7 @@ module.exports = function(grunt) {
             stdout: true
             , stderr: true
           }
-          , files: ['*.php', 'actions/*.php', 'ajaxactions/*.php' ]
+          , files: [ '*.php', 'actions/*.php', 'ajaxactions/*.php' ]
         }
 
         /*
