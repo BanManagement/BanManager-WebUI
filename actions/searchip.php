@@ -137,7 +137,7 @@ else {
 				$ajaxArray['rows'][] = array(
 					'<a href="index.php?action=viewip&ip='.$playerNames[$i].'&server='.$_GET['server'].'">'.$playerNames[$i].'</a>',
 					$player['type'],
-					$player['by'],
+					UUIDtoPlayerName($player['by'], $server),
 					$player['reason'],
 					$expires,
 					$time
