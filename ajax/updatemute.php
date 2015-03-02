@@ -42,12 +42,12 @@ else {
 		if(!$mysqlicon)
 			$error = 'Unable to connect to database';
 		else {
-			$currentMute = mysqli_query($mysqlicon, "SELECT mute_id FROM ".$server['mutesTable']." WHERE mute_id = '".$_POST['id']."'");
+			$currentMute = mysqli_query($mysqlicon, "SELECT id FROM ".$server['playerMutesTable']." WHERE id = '".$_POST['id']."'");
 
 			if(mysqli_num_rows($currentMute) == 0)
 				$error = 'That mute does not exist';
 			else {
-				mysqli_query($mysqlicon, "UPDATE ".$server['mutesTable']." SET mute_reason = '".$_POST['reason']."',  mute_expires_on = '$timestamp' WHERE mute_id = '".$_POST['id']."'");
+				mysqli_query($mysqlicon, "UPDATE ".$server['playerMutesTable']." SET reason = '".$_POST['reason']."',  expires = '$timestamp' WHERE id = '".$_POST['id']."'");
 
 				// Clear the cache
 				clearCache($_POST['server'].'/players');
