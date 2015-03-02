@@ -33,7 +33,7 @@ else {
 		if(mysqli_num_rows($pastBans) == 0)
 			$error = 'That record does not exist';
 		else {
-			mysqli_query($mysqlicon, "DELETE FROM ".$server['kicksTable']." WHERE id = '".$_GET['id']."'");
+			mysqli_query($mysqlicon, "DELETE FROM ".$server['playerKicksTable']." WHERE id = '".$_GET['id']."'");
 
 			// Clear the cache
 			clearCache($_GET['server'].'/players');
