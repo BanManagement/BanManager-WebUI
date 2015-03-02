@@ -47,7 +47,7 @@ else {
 			if(mysqli_num_rows($currentMute) == 0)
 				$error = 'That mute does not exist';
 			else {
-				mysqli_query($mysqlicon, "UPDATE ".$server['playerMutesTable']." SET reason = '".$_POST['reason']."',  expires = '$timestamp' WHERE id = '".$_POST['id']."'");
+				mysqli_query($mysqlicon, "UPDATE ".$server['playerMutesTable']." SET reason = '".$_POST['reason']."', updated = UNIX_TIMESTAMP(now()),  expires = '$timestamp' WHERE id = '".$_POST['id']."'");
 
 				// Clear the cache
 				clearCache($_POST['server'].'/players');
