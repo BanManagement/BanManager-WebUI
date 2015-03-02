@@ -28,15 +28,15 @@ else {
 	if(!$mysqlicon)
 		$error = 'Unable to connect to database';
 	else {
-		$currentMute = mysqli_query($mysqlicon, "SELECT mute_id FROM ".$server['mutesTable']." WHERE mute_id = '".$_GET['id']."'");
+		$currentMute = mysqli_query($mysqlicon, "SELECT id FROM ".$server['playerMutesTable']." WHERE id = '".$_GET['id']."'");
 
 		if(mysqli_num_rows($currentMute) == 0)
 			$error = 'That record does not exist';
 		else {
 
-			mysqli_query($mysqlicon, "INSERT INTO ".$server['mutesRecordTable']." (muted, muted_by, mute_reason, mute_time, mute_expired_on, unmuted_by, unmuted_time, server) SELECT b.muted, b.muted_by, b.mute_reason, b.mute_time, b.mute_expires_on, \"Web\", UNIX_TIMESTAMP(now()), b.server FROM ".$server['mutesTable']." b WHERE b.mute_id = '".$_GET['id']."'");
+			mysqli_query($mysqlicon, "INSERT INTO ".$server['playerMuteRecordsTable']." (player_id, reason, expired, actor_id, pastActor_id, pastCreated, created) SELECT b.player_id, b.reason, b.expires, 0, b.actor_id, b.created, UNIX_TIMESTAMP(now()) FROM ".$server['playerMutesTable']." AS b WHERE b.id = '".$_GET['id']."'");
 			// Now delete it
-			mysqli_query($mysqlicon, "DELETE FROM ".$server['mutesTable']." WHERE mute_id = '".$_GET['id']."'");
+			mysqli_query($mysqlicon, "DELETE FROM ".$server['playerMutesTable']." WHERE id = '".$_GET['id']."'");
 
 			// Clear the cache
 			clearCache($_GET['server'].'/players');

@@ -28,15 +28,15 @@ else {
 	if(!$mysqlicon)
 		$error = 'Unable to connect to database';
 	else {
-		$currentBan = mysqli_query($mysqlicon, "SELECT ban_id FROM ".$server['ipTable']." WHERE ban_id = '".$_GET['id']."'");
+		$currentBan = mysqli_query($mysqlicon, "SELECT id FROM ".$server['ipBansTable']." WHERE id = '".$_GET['id']."'");
 
 		if(mysqli_num_rows($currentBan) == 0)
 			$error = 'That record does not exist';
 		else {
 
-			mysqli_query($mysqlicon, "INSERT INTO ".$server['ipRecordTable']." (banned, banned_by, ban_reason, ban_time, ban_expired_on, unbanned_by, unbanned_time, server) SELECT b.banned, b.banned_by, b.ban_reason, b.ban_time, b.ban_expires_on, \"Web\", UNIX_TIMESTAMP(now()), b.server FROM ".$server['ipTable']." b WHERE b.ban_id = '".$_GET['id']."'");
+			mysqli_query($mysqlicon, "INSERT INTO ".$server['ipBanRecordsTable']." (ip, reason, expired, actor_id, pastActor_id, pastCreated, created) SELECT b.ip, b.reason, b.expires, 0, b.actor_id, b.created, UNIX_TIMESTAMP(now()) FROM ".$server['ipBansTable']." AS b WHERE b.id = '".$_GET['id']."'");
 			// Now delete it
-			mysqli_query($mysqlicon, "DELETE FROM ".$server['ipTable']." WHERE ban_id = '".$_GET['id']."'");
+			mysqli_query($mysqlicon, "DELETE FROM ".$server['ipBansTable']." WHERE id = '".$_GET['id']."'");
 
 			// Clear the cache
 			clearCache($_GET['server'].'/ips');
