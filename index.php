@@ -747,6 +747,18 @@ else{
 	errors('Unable to located the settings.php file. If you haven\'t renamed settingsRename.php yet, please go do that now to make Ban Management functional.');
 }
 
+// Check neccessary PHP functions
+if (isset($settings['debug']['functiontest']) && $settings['debug']['functiontest'] == true) {
+	$functions = array(
+		'mysqli_connect'
+	);
+
+	foreach ($functions as $function) {
+		if (!function_exists($function)) {
+			echo '<div class="container" id="container"><pre>Caution: '.$function.' doesn\'t exist!</pre></div>'; }
+	}
+}
+
 if (isset($settings['debug']['error_reporting']) && $settings['debug']['error_reporting'] == true) {
 	@ini_set('display_errors', '1');
 	error_reporting(1);
