@@ -80,4 +80,4 @@ You can find a working demo over here: http://bans.yeahwh.at
 
 ### Version
 
-1.2.0
+1.3.0
