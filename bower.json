@@ -23,6 +23,7 @@
     "CanvasLoader": "~0.9.1",
     "jquery.tablesorter": "~2.18.4",
     "jQuery-Visualize": "https://github.com/filamentgroup/jQuery-Visualize.git",
-    "jquery.validate": "~1.13.0"
+    "jquery.validate": "~1.13.0",
+    "moment": "~2.7.0"
   }
 }
