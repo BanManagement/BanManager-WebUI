@@ -385,7 +385,7 @@ else {
 							</div>
 							<input type="hidden" name="id" value="<?php echo $currentMutes['id']; ?>" />
 							<input type="hidden" name="server" value="<?php echo $_GET['server']; ?>" />
-							<input type="hidden" name="expiresTimestamp" value="" />
+							<input type="hidden" name="expiresTimestamp" value="<?php echo $currentMutes['expires']; ?>" />
 						</form>
 					</div>
 				</div>
