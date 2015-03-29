@@ -19,12 +19,7 @@
 			</footer>
 		</div> <!-- /container -->
 
-		<!-- Add compiled JavaScript -->
-<!-- 		<script src="//<?php echo $path; ?>assets/js/build<?php echo ((isset($_SESSION['admin']) && $_SESSION['admin']) ? '.admin' : ''); ?>.js"></script>
- -->
-
 		<script src="//<?php echo $path; ?>assets/js/build.js"></script>
-		<script src="//<?php echo $path; ?>assets/js/_admin.js"></script>
 
 		<?php
 			if((isset($settings['iframe_protection']) && $settings['iframe_protection']) || !isset($settings['iframe_protection'])) {

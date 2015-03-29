@@ -99,18 +99,9 @@ module.exports = function(grunt) {
                     , '<%= dirs.bower %>/jquery-mousewheel/jquery.mousewheel.js'
                     , '<%= dirs.js %>/*.js'
                     , '!<%= dirs.js %>/modernizr.js'
-                    , '!<%= dirs.js %>/_admin.js'
                     , '!<%= dirs.js %>/build.js'
-                    , '!<%= dirs.js %>/build.admin.js'
                 ]
                 , dest: '<%= dirs.js %>/build.js'
-            }
-            , admin: {
-                src: [
-                    '<%= dirs.js %>/build.js'
-                    , '<%= dirs.js %>/_admin.js'
-                ]
-                , dest: '<%= dirs.js %>/build.admin.js'
             }
         }
 
@@ -128,7 +119,6 @@ module.exports = function(grunt) {
                 , '<%= dirs.js %>/*.js'
                 , '!<%= dirs.js %>/modernizr.js'
                 , '!<%= dirs.js %>/build.js'
-                , '!<%= dirs.js %>/build.admin.js'
             ]
         }
 
@@ -157,13 +147,6 @@ module.exports = function(grunt) {
                   {
                       '<%= dirs.js %>/build.js': [ '<%= dirs.js %>/build.js' ]
                       , '<%= dirs.js %>/modernizr.js': [ '<%= dirs.bower %>/modernizr/modernizr.js' ]
-                  }
-                ]
-            }
-            , admin: {
-                files: [
-                  {
-                      '<%= dirs.js %>/build.admin.js': [ '<%= dirs.js %>/build.admin.js' ]
                   }
                 ]
             }
