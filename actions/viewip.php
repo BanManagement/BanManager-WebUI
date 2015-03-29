@@ -32,7 +32,8 @@ else {
 		$admin = false;
 
 	// Check if the player exists
-	$associatedAccounts = cache("SELECT *, HEX(id) AS id FROM ".$server['playersTable']." WHERE ip = INET_ATON('".$_GET['ip']."')", $settings['cache_viewip'], $_GET['server'].'/ips', $server);
+	$associatedAccounts = array();
+	array_push($associatedAccounts, cache("SELECT *, HEX(id) AS id FROM ".$server['playersTable']." WHERE ip = INET_ATON('".$_GET['ip']."')", $settings['cache_viewip'], $_GET['server'].'/ips', $server));
 	$currentBans = cache("SELECT *, HEX(actor_id) AS actor_id FROM ".$server['ipBansTable']." WHERE ip = INET_ATON('".$_GET['ip']."')", $settings['cache_viewip'], $_GET['server'].'/ips', $server);
 	$pastBans = cache("SELECT *, HEX(actor_id) AS actor_id, HEX(pastActor_id) AS pastActor_id FROM ".$server['ipBanRecordsTable']." WHERE ip = INET_ATON('".$_GET['ip']."')", $settings['cache_viewip'], $_GET['server'].'/ips', $server);
 	if(count($currentBans) == 0 && count($pastBans) == 0) {
