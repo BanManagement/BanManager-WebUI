@@ -327,16 +327,15 @@ else {
 								<h3>Editing Mute</h3>
 							</div>
 							<div class="modal-body">
-								<div class="container">
-									<div class="form-group">
+									<div class="control-group">
 										<label class="control-label" for="yourtime">Your Time:</label>
 											<span class="yourtime"></span>
 									</div>
-									<div class="form-group">
+									<div class="control-group">
 										<label class="control-label" for="servertime">Server Time:</label>
 											<span class="servertime"><?php echo date('d/m/Y H:i:s', time() + $mysqlSecs); ?></span>
 									</div>
-								<!--	<div class="form-group">
+								<!--	<div class="control-group">
 										<label class="control-label" for="mutedatetime">Expires Server Time:</label>
 										<div class="input-group">
 											<div class="input datetimepicker date">
@@ -375,12 +374,11 @@ else {
 											</div>
 										</div>
 									</div> -->
-									<div class="form-group">
+									<div class="control-group">
 										<label class="control-label" for="mutereason">Reason:</label>
 											<textarea id="mutereason" class="form-control" name="reason" rows="4"><?php echo $currentMutes['reason']; ?></textarea>
 									</div>
 								</div>
-							</div>
 							<div class="modal-footer">
 								<a href="#" class="btn" data-dismiss="modal">Close</a>
 								<input type="submit" class="btn btn-primary" value="Save" />
