@@ -91,7 +91,6 @@ module.exports = function(grunt) {
                     , '<%= dirs.bower %>/bootstrap-sass-official/assets/javascripts/bootstrap.js'
                     , '<%= dirs.bower %>/jquery.validate/dist/jquery.validate.js'
                     , '<%= dirs.bower %>/CanvasLoader/js/heartcode-canvasloader.js'
-                    , '<%= dirs.bower %>/jquery.countdown/dist/jquery.countdown.js'
                     , '<%= dirs.bower %>/jquery.tablesorter/js/jquery.tablesorter.js'
                     , '<%= dirs.bower %>/jquery.tablesorter/js/jquery.tablesorter.widgets.js'
                     , '<%= dirs.bower %>/jquery.tablesorter/js/jquery.tablesorter.widgets-dilter-formatter.js'
