@@ -119,7 +119,7 @@ else {
 						<td>Expires in:</td>
 						<td>';
 			if($currentBans['expires'] == 0)
-				echo '<span class="label label-important">Never</span>';
+				echo '<button disabled class="btn btn-danger btn-xs bantype">Never</button>';
 			else {
 				$currentBans['expires'] = $currentBans['expires'] + $mysqlSecs;
 				$currentBans['created'] = $currentBans['created'] + $mysqlSecs;
@@ -160,7 +160,7 @@ else {
 					<tr>
 						<td colspan="2">
 							<a class="btn btn-warning edit" title="Edit" href="#editipban" data-toggle="modal"><i class="icon-pencil icon-white"></i> Edit</a>
-							<a class="btn btn-danger delete" title="Unban" data-role="confirm" href="index.php?action=deleteipban&ajax=true&authid='.sha1($settings['password']).'&server='.$_GET['server'].'&id='.$currentBans['id'].'" data-confirm-title="Unban '.$_GET['ip'].'" data-confirm-body="Are you sure you want to unban '.$_GET['ip'].'?<br />This cannot be undone"><i class="icon-trash icon-white"></i> Unban</a>
+							<a class="btn btn-danger delete" title="Unban" data-role="confirm" href="#" data-confirm-title="Unban '.$_GET['ip'].'" data-confirm-body="Are you sure you want to unban '.$_GET['ip'].'?<br />This cannot be undone"><i class="icon-trash icon-white"></i> Unban</a>
 						</td>
 					</tr>
 				</tfoot>';
@@ -169,78 +169,82 @@ else {
 			</table>
 		<?php
 		if($admin && count($currentBans) != 0) {?>
-			<div class="modal hide fade" id="editipban">
-				<form class="form-horizontal" action="" method="post">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal">&times;</button>
-						<h3>Edit IP Ban</h3>
-					</div>
-					<div class="modal-body">
-						<fieldset>
-							<div class="control-group">
-								<label class="control-label" for="yourtime">Your Time:</label>
-								<div class="controls">
-									<span class="yourtime"></span>
-								</div>
+			<div class="modal fade" id="editipban">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<form class="form-horizontal" action="" method="post">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal">&times;</button>
+								<h3>Edit IP Ban</h3>
 							</div>
-							<div class="control-group">
-								<label class="control-label" for="servertime">Server Time:</label>
-								<div class="controls">
-									<span class="servertime"><?php echo date('d/m/Y H:i:s', time() + $mysqlSecs); ?></span>
-								</div>
-							</div>
-							<div class="control-group">
-								<label class="control-label" for="bandatetime">Expires Server Time:</label>
-								<div class="controls">
-									<div class="input-append datetimepicker date"><?php
-			echo '
-										<div class="input-prepend">
-											<button class="btn btn-danger bantype" type="button">';
-			if($currentBans['expires'] == 0)
-				echo 'Never';
-			else
-				echo 'Temp';
-
-			echo '</button>
-											<input type="text" class="required';
-
-			if($currentBans['expires'] == 0)
-				echo ' disabled" disabled="disabled"';
-			else
-				echo '"';
-
-			echo ' name="expires" data-format="dd/MM/yyyy hh:mm:ss" value="';
-
-			if($currentBans['expires'] == 0)
-				echo '';
-			else
-				echo date('d/m/Y H:i:s', $currentBans['expires']);
-
-			echo '" id="bandatetime" />';
-										?>
-											<span class="add-on">
-												<i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
-											</span>
+							<div class="modal-body">
+								<fieldset>
+									<div class="control-group">
+										<label class="control-label" for="yourtime">Your Time:</label>
+										<div class="controls">
+											<span class="yourtime"></span>
 										</div>
 									</div>
-								</div>
+									<div class="control-group">
+										<label class="control-label" for="servertime">Server Time:</label>
+										<div class="controls">
+											<span class="servertime"><?php echo date('d/m/Y H:i:s', time() + $mysqlSecs); ?></span>
+										</div>
+									</div>
+									<div class="control-group">
+										<label class="control-label" for="bandatetime">Expires Server Time:</label>
+										<div class="controls">
+											<div class="input-append datetimepicker date"><?php
+					echo '
+												<div class="input-prepend">
+													<button class="btn btn-danger bantype" type="button">';
+					if($currentBans['expires'] == 0)
+						echo 'Never';
+					else
+						echo 'Temp';
+
+					echo '</button>
+													<input type="text" class="required';
+
+					if($currentBans['expires'] == 0)
+						echo ' disabled" disabled="disabled"';
+					else
+						echo '"';
+
+					echo ' name="expires" data-format="dd/MM/yyyy hh:mm:ss" value="';
+
+					if($currentBans['expires'] == 0)
+						echo '';
+					else
+						echo date('d/m/Y H:i:s', $currentBans['expires']);
+
+					echo '" id="bandatetime" />';
+												?>
+													<span class="add-on">
+														<i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+													</span>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="control-group">
+										<label class="control-label" for="banreason">Reason:</label>
+										<div class="controls">
+											<textarea id="banreason" name="reason" class="form-control" rows="4"><?php echo $currentBans['reason']; ?></textarea>
+										</div>
+									</div>
+								</fieldset>
 							</div>
-							<div class="control-group">
-								<label class="control-label" for="banreason">Reason:</label>
-								<div class="controls">
-									<textarea id="banreason" name="reason" rows="4"><?php echo $currentBans['reason']; ?></textarea>
-								</div>
+							<div class="modal-footer">
+								<a href="#" class="btn" data-dismiss="modal">Close</a>
+								<input type="submit" class="btn btn-primary" value="Save" />
 							</div>
-						</fieldset>
+							<input type="hidden" name="id" value="<?php echo $currentBans['id']; ?>" />
+							<input type="hidden" name="server" value="<?php echo $_GET['server']; ?>" />
+							<input type="hidden" name="expiresTimestamp" value="<?php echo $currentBans['expires']; ?>" />
+						</form>
 					</div>
-					<div class="modal-footer">
-						<a href="#" class="btn" data-dismiss="modal">Close</a>
-						<input type="submit" class="btn btn-primary" value="Save" />
-					</div>
-					<input type="hidden" name="id" value="<?php echo $currentBans['id']; ?>" />
-					<input type="hidden" name="server" value="<?php echo $_GET['server']; ?>" />
-					<input type="hidden" name="expiresTimestamp" value="" />
-				</form>
+				</div>
 			</div><?php
 		}
 			?>
@@ -255,7 +259,8 @@ else {
 						<th>On</th>
 						<th>Length</th>
 						<th>Unbanned By</th>
-						<th>At</th><?php
+						<th>At</th>
+						<th><span class="glyphicon glyphicon-pencil"></span></th><?php
 		if(!isset($pastBans[0]) || (isset($pastBans[0]) && !is_array($pastBans[0])))
 			$pastBans = array($pastBans);
 		$serverName = false;
@@ -277,7 +282,7 @@ else {
 		if(isset($pastBans[0]) && count($pastBans[0]) == 0) {
 			echo '
 					<tr>
-						<td colspan="8">None</td>
+						<td colspan="9">None</td>
 					</tr>';
 		} else {
 			$i = 1;
@@ -299,7 +304,7 @@ else {
 						<td>'.UUIDtoPlayerName($r['actor_id'], $server).'</td>
 						<td>'.date('H:i:s d/m/y', $r['created']).'</td>'.($serverName ? '
 						<td>'.$r['server'].'</td>' : '').($admin ? '
-						<td class="admin-options"><a href="#" class="btn btn-danger delete" title="Remove" data-server="'.$_GET['server'].'" data-record-id="'.$r['id'].'"><i class="icon-trash icon-white"></i></a></td>' : '').'
+						<td class="admin-options"><a href="#" class="btn btn-danger btn-xs delete" title="Remove" data-server="'.$_GET['server'].'" data-record-id="'.$r['id'].'"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a></td>' : '').'
 					</tr>';
 				++$i;
 			}
