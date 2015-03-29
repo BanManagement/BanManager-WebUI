@@ -97,7 +97,6 @@ module.exports = function(grunt) {
                     , '<%= dirs.bower %>/jquery.tablesorter/addons/pager/jquery.tablesorter.pager.js'
                     , '<%= dirs.bower %>/jQuery-Visualize/js/visualize.jQuery.js'
                     , '<%= dirs.bower %>/jquery-mousewheel/jquery.mousewheel.js'
-                    , '<%= dirs.bower %>/eonasdan-bootstrap-datetimepicker/src/js/bootstrap-datetimepicker.js'
                     , '<%= dirs.js %>/*.js'
                     , '!<%= dirs.js %>/modernizr.js'
                     , '!<%= dirs.js %>/_admin.js'
@@ -196,7 +195,6 @@ module.exports = function(grunt) {
           main: {
             files: [
               { expand: true, cwd: '<%= dirs.bower %>/bootstrap-sass-official/assets/fonts/bootstrap/', src: [ '**' ], dest: '<%= dirs.fonts %>' }
-              , { expand: true, cwd: '<%= dirs.bower %>/eonasdan-bootstrap-datetimepicker/build/css/', src: [ 'bootstrap-datetimepicker.css' ], dest: '<%= dirs.css %>/libs', rename: function(dest) { return dest + '/bootstrap-datetimepicker.scss'; } }
               , { expand: true, cwd: '<%= dirs.bower %>/jquery.tablesorter/css/', src: [ 'theme.bootstrap.css' ], dest: '<%= dirs.css %>/libs', rename: function(dest) { return dest + '/tablesorter-theme.bootstrap.scss'; } }
               , { expand: true, cwd: '<%= dirs.bower %>/jQuery-Visualize/css/', src: [ 'visualize.css' ], dest: '<%= dirs.css %>/libs', rename: function(dest) { return dest + '/visualize.scss'; } }
               , { expand: true, cwd: '<%= dirs.bower %>/jQuery-Visualize/css/', src: [ 'visualize-light.css' ], dest: '<%= dirs.css %>/libs', rename: function(dest) { return dest + '/visualize-light.scss'; } }
