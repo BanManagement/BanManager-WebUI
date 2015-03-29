@@ -159,7 +159,7 @@ $('#editban form .bantype, #editmute form .bantype').click(function(e) {
 
     var picker = $(this).parent().parent().data('DateTimePicker');
 
-    picker.date(new Date());
+    picker.setDate(new Date());
 
   } else {
     $(this).html('Permanent');
@@ -184,7 +184,7 @@ $('#editban form').submit(function(e) {
 
   formBody.hide().after('<div id="ajaxLoading"><span id="loadingSmall"></span><br />Saving</div>');
   showLoading('loadingSmall');
-  $('#editban form input[name=expiresTimestamp]').val($('#editban form input[name=expires]').parent().data('DateTimePicker').date().toDate().getTime() / 1000);
+  $('#editban form input[name=expiresTimestamp]').val($('#editban form input[name=expires]').parent().data('DateTimePicker').getDate().toDate().getTime() / 1000);
   $.ajax({
     url: 'index.php?action=updateban&ajax=true&authid=' + authid
     , data: form.serialize()
@@ -206,7 +206,7 @@ $('#editban form').submit(function(e) {
           $('#current-ban .expires').html('<span class="label label-important">Never</span>');
         else {
           $('#current-ban .expires').countdown({
-            until: $('#editban form input[name=expires]').parent().data('DateTimePicker').date().toDate()
+            until: $('#editban form input[name=expires]').parent().data('DateTimePicker').getDate().toDate()
             , format: 'yowdhms', layout: '{y<} {yn} {yl}, {y>} {o<} {on} {ol}, {o>} {w<} {wn} {wl}, {w>} {d<} {dn} {dl}, {d>} {h<} {hn} {hl}, {h>} {m<} {mn} {ml}, {m>} {s<} {sn} {sl} {s>}'
             , onExpiry: function() {
               location.reload();
@@ -240,7 +240,7 @@ $('#editmute form').submit(function(e) {
 
   formBody.hide().after('<div id="ajaxLoading"><span id="loadingSmall"></span><br />Saving</div>');
   showLoading('loadingSmall');
-  $('#editmute form input[name=expiresTimestamp]').val($('#editmute form input[name=expires]').parent().parent().data('DateTimePicker').date().getTime() / 1000);
+  $('#editmute form input[name=expiresTimestamp]').val($('#editmute form input[name=expires]').parent().parent().data('DateTimePicker').getDate().getTime() / 1000);
   $.ajax({
     url: 'index.php?action=updatemute&ajax=true&authid=' + authid
     , data: form.serialize()
@@ -262,7 +262,7 @@ $('#editmute form').submit(function(e) {
           $('#current-mute .expires').html('<span class="label label-important">Never</span>');
         else {
           $('#current-mute .expires').countdown({
-            until: $('#editmute form input[name=expires]').parent().parent().data('DateTimePicker').date()
+            until: $('#editmute form input[name=expires]').parent().parent().data('DateTimePicker').getDate()
             , format: 'yowdhms', layout: '{y<} {yn} {yl}, {y>} {o<} {on} {ol}, {o>} {w<} {wn} {wl}, {w>} {d<} {dn} {dl}, {d>} {h<} {hn} {hl}, {h>} {m<} {mn} {ml}, {m>} {s<} {sn} {sl} {s>}'
             , onExpiry: function() {
               location.reload();
@@ -296,7 +296,7 @@ $('#editbanip form').submit(function(e) {
 
   formBody.hide().after('<div id="ajaxLoading"><span id="loadingSmall"></span><br />Saving</div>');
   showLoading('loadingSmall');
-  $('#editipban form input[name=expiresTimestamp]').val($('#editipban form input[name=expires]').parent().parent().data('DateTimePicker').date().getTime() / 1000);
+  $('#editipban form input[name=expiresTimestamp]').val($('#editipban form input[name=expires]').parent().parent().data('DateTimePicker').getDate().getTime() / 1000);
   $.ajax({
     url: 'index.php?action=updateipban&ajax=true&authid=' + authid
     , data: form.serialize()
@@ -318,7 +318,7 @@ $('#editbanip form').submit(function(e) {
           $('#current-ban .expires').html('<span class="label label-important">Never</span>');
         else {
           $('#current-ban .expires').countdown({
-            until: $('#editipban form input[name=expires]').parent().parent().data('DateTimePicker').date()
+            until: $('#editipban form input[name=expires]').parent().parent().data('DateTimePicker').getDate()
             , format: 'yowdhms', layout: '{y<} {yn} {yl}, {y>} {o<} {on} {ol}, {o>} {w<} {wn} {wl}, {w>} {d<} {dn} {dl}, {d>} {h<} {hn} {hl}, {h>} {m<} {mn} {ml}, {m>} {s<} {sn} {sl} {s>}'
             , onExpiry: function() {
               location.reload();
