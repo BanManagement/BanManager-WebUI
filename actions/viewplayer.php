@@ -203,7 +203,7 @@ else {
 											else
 												echo '"';
 
-											echo ' name="expires" data-format="DD/MM/YYYY hh:mm:ss" value="';
+											echo ' name="expires" data-format="DD/MM/YYYY HH:mm:ss" value="';
 
 											if($currentBans['expires'] == 0)
 												echo '';
@@ -358,7 +358,7 @@ else {
 											else
 												echo '"';
 
-											echo ' name="expires" data-format="dd/MM/yyyy hh:mm:ss" value="';
+											echo ' name="expires" data-format="dd/MM/yyyy HH:mm:ss" value="';
 
 											if($currentMutes['expires'] == 0)
 												echo '';
