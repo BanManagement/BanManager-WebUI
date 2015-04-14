@@ -66,7 +66,10 @@ else {
 			echo substr($html, 0, -2).'
 			</h5>';
 		}
-			?>
+
+		if ($admin || !$settings['associated_accounts_only_for_admins']) {
+
+		?>
 			<br />
 			<table class="table table-striped table-bordered" id="associated-accounts">
 				<caption>Associated Accounts</caption>
@@ -101,6 +104,7 @@ else {
 					?>
 				</tbody>
 			</table>
+			<?php } ?>
 			<br />
 			<table class="table table-striped table-bordered">
 				<caption>Current Ban</caption>

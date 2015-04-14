@@ -45,6 +45,9 @@ $settings['player_warnings'] = true;
 $settings['player_current_ban_extra_html'] = '';
 $settings['player_current_mute_extra_html'] = '';
 
+// Turn to false, if you want to show accociated accounts for everyone, without authentication
+$settings['associated_accounts_only_for_admins'] = true;
+
 $settings['widget_bans_count'] = 5;
 $settings['widget_mutes_count'] = 5;
 $settings['widget_warnings_count'] = 5;
