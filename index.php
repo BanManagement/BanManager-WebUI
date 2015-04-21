@@ -743,8 +743,9 @@ $ajaxactions = array(
 if(file_exists('settings.php')){
 	include('settings.php');
 }
-else{
-	errors('Unable to located the settings.php file. If you haven\'t renamed settingsRename.php yet, please go do that now to make Ban Management functional.');
+else {
+	include('actions/firstrun.php');
+	exit;
 }
 
 // Check neccessary PHP functions
