@@ -209,15 +209,9 @@ $(function() {
         }
       };
 
-    $widget.css('cursor', 'pointer')
     $widget.append($checkbox);
 
     // Event Handlers
-    $widget.on('click', function () {
-      $checkbox.prop('checked', !$checkbox.is(':checked'));
-      $checkbox.triggerHandler('change');
-      updateDisplay();
-    });
     $checkbox.on('change', function () {
       updateDisplay();
     });
