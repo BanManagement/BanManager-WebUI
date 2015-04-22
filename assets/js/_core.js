@@ -223,10 +223,21 @@ $(function() {
 
     // Actions
     function updateDisplay() {
-      var isChecked = $checkbox.is(':checked');
+      var isChecked = $checkbox.is(':checked')
+      , stateStatus;
 
       // Set the button's state
-      $widget.data('state', (isChecked) ? 'success' : 'failed');
+      if (isChecked) {
+        stateStatus = 'success';
+      } else {
+        if ($widget.data('state')) {
+          stateStatus = 'failed';
+        } else {
+          stateStatus = 'none';
+        }
+      }
+
+      $widget.data('state', stateStatus);
 
       // Set the button's icon
       $widget.find('.state-icon')
@@ -235,7 +246,11 @@ $(function() {
 
       // Update the button's color
       $widget.removeClass(style + 'default').removeClass(style + 'danger').removeClass(style + 'success');
-      $widget.addClass(style + settings[$widget.data('state')].color);
+      if ($widget.data('state') === 'failed' || $widget.data('state') === 'success') {
+        $widget.addClass(style + settings[$widget.data('state')].color);
+      } else {
+        $widget.addClass(style + settings.none.color);
+      }
     }
 
     // Initialization
