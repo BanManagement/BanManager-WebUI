@@ -187,4 +187,85 @@ $(function() {
 
     window.location.href = 'index.php?action=' + $('#search input[name=action]').val() + '&server=' + server + '&player=%25';
   });
+
+  /*
+   * Checked list group
+   * (http://bootsnipp.com/snippets/featured/checked-list-group)
+   */
+
+  $('.list-group.checked-list-box .list-group-item').each(function () {
+
+    // Settings
+    var $widget = $(this)
+    , $checkbox = $('<input type="checkbox" class="hidden" />')
+    , style = ($widget.data('style') === 'button' ? 'btn-' : 'list-group-item-')
+    , settings = {
+        success: {
+          icon: 'glyphicon glyphicon-check'
+          , color: 'success'
+        }
+        , failed: {
+          icon: 'glyphicon glyphicon-remove'
+          , color: 'danger'
+        }
+        , none: {
+          icon: 'glyphicon glyphicon-unchecked'
+          , color: 'default'
+        }
+      };
+
+    $widget.append($checkbox);
+
+    // Event Handlers
+    $checkbox.on('change', function () {
+      updateDisplay();
+    });
+
+    // Actions
+    function updateDisplay() {
+      var isChecked = $checkbox.is(':checked')
+      , stateStatus;
+
+      // Set the button's state
+      if (isChecked) {
+        stateStatus = 'success';
+      } else {
+        if ($widget.data('state')) {
+          stateStatus = 'failed';
+        } else {
+          stateStatus = 'none';
+        }
+      }
+
+      $widget.data('state', stateStatus);
+
+      // Set the button's icon
+      $widget.find('.state-icon')
+        .removeClass()
+        .addClass('state-icon ' + settings[$widget.data('state')].icon);
+
+      // Update the button's color
+      $widget.removeClass(style + 'default').removeClass(style + 'danger').removeClass(style + 'success');
+      if ($widget.data('state') === 'failed' || $widget.data('state') === 'success') {
+        $widget.addClass(style + settings[$widget.data('state')].color);
+      } else {
+        $widget.addClass(style + settings.none.color);
+      }
+    }
+
+    // Initialization
+    function init() {
+      if ($widget.data('state') === 'success') {
+        $checkbox.prop('checked', !$checkbox.is(':checked'));
+      }
+
+      updateDisplay();
+
+      // Inject the icon if applicable
+      if ($widget.find('.state-icon').length === 0) {
+        $widget.prepend('<span class="state-icon ' + settings[$widget.data('state')].icon + '"></span>');
+      }
+    }
+    init();
+  });
 });

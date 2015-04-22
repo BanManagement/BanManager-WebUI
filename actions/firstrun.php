@@ -8,6 +8,43 @@
  *  may be available at http://creativecommons.org/licenses/by-nc-sa/2.0/uk/.
  *  Additional licence terms at https://raw.githubusercontent.com/BanManagement/BanManager-WebUI/master/LICENSE
  */
+
+$path = $_SERVER['HTTP_HOST'].str_replace('index.php', '', $_SERVER['SCRIPT_NAME']);
+
+function checkCache(){
+	if (!is_writeable(IN_PATH.'cache/')) {
+		return false;
+	}
+	return true;
+}
+
+function checkSettingsFileExistance(){
+	if (!file_exists(IN_PATH.'settings.php')) {
+		return false;
+	}
+	return true;
+}
+
+function checkSettingsFileWriteable(){
+	if (!is_writable(IN_PATH.'settings.php')) {
+		return false;
+	}
+	return true;
+}
+
+function checkWeakPassword(){
+	if (checkSettingsFileExistance()){
+		if ($settings['password'] != 'password') {
+			return true;
+		}
+	}
+	return false;
+}
+
+if (!checkCache() || !checkSettingsFileExistance() || !checkSettingsFileWriteable() || !checkWeakPassword()) {
+	$failed = true;
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -27,25 +64,27 @@
 				<p class="lead">Thanks for using the BanManager-WebUI.</p>
 				<hr />
 
-				<?php if(isset($_GET['action'])): ?>
-					<div class="alert alert-box alert-danger">
-						<strong>Oh no! That failed!</strong>
+				<?php if($failed) { ?>
+					<div class="alert alert-box alert-warning">
+						<strong>Oh no, the check failed!</strong>
 						<p>Check if you have set up everything correctly and try again.</p>
 					</div>
-				<?php endif; ?>
+				<?php } ?>
 
-				<div style="margin: 40px 0 40px 0">
+				<div>
 					<p>It seems like you did not yet setup the WebUI. Let's get started with that right now.</p>
 
-					<h3>Preperation</h3>
-					<ol>
-						<li>Make sure the <kbd>cache</kbd> directory is writeable and readable.</li>
-						<li>Rename the <kbd>settingsRename.php</kbd> file to <kbd>settings.php</kbd>.</li>
-						<li>Make sure the <kbd>settings.php</kbd> file is writeable and readable.</li>
-						<li>Open your <kbd>settings.php</kbd> with an editor (such as Notepad++) and adjust the settings. Make sure to set a strong password!</li>
-					</ol>
-
-					<p style="margin-top: 60px"><a href="index.php?action=admin" class="btn btn-primary"><i class="glyphicon glyphicon-check"></i> Let's go!</a></p>
+					<h3>Preperation / checklist</h3>
+					<ul id="check-list-box" class="list-group checked-list-box">
+						<li class="list-group-item" data-state="<?= (checkCache()) ? 'success' : 'failed' ?>">Make sure the <kbd>cache</kbd> directory is writeable and readable.</li>
+						<li class="list-group-item" data-state="<?= (checkSettingsFileExistance()) ? 'success' : 'failed' ?>">Rename the <kbd>settingsRename.php</kbd> file to <kbd>settings.php</kbd>.</li>
+						<li class="list-group-item" data-state="<?= (checkSettingsFileWriteable()) ? 'success' : 'failed' ?>">Make sure the <kbd>settings.php</kbd> file is writeable and readable.</li>
+						<li class="list-group-item" data-state="<?= (checkWeakPassword()) ? 'success' : 'failed' ?>">Open your <kbd>settings.php</kbd> with an editor (such as Notepad++) and adjust the settings. Make sure to set a strong password!</li>
+					</ul>
+					<a href="index.php?action=firstrun" class="btn btn-default"><i class="glyphicon glyphicon-check"></i> Run check</a>
+					<?php if(!$failed && isset($_GET['action'])) { ?>
+						<a href="/" class="btn btn-primary"><i class="glyphicon glyphicon-arrow-left"></i> Back to WebUI</a>
+					<?php } ?>
 				</div>
 			</div>
 		</div>
@@ -63,6 +102,9 @@
 				</div>
 			</div>
 		</div>
+		<script src="//<?php echo $path; ?>assets/js/build.js"></script>
 	</footer>
 </body>
 </html>
+
+<?php exit(); ?>

@@ -715,6 +715,7 @@ $actions = array(
 	'admin',
 	'deletecache',
 	'logout',
+	'firstrun',
 	'searchplayer',
 	'searchip',
 	'servers',
