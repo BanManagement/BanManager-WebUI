@@ -11,7 +11,6 @@
 
 $path = $_SERVER['HTTP_HOST'].str_replace('index.php', '', $_SERVER['SCRIPT_NAME']);
 
-
 ?>
 
 <!DOCTYPE html>
@@ -32,7 +31,7 @@ $path = $_SERVER['HTTP_HOST'].str_replace('index.php', '', $_SERVER['SCRIPT_NAME
 				<hr />
 
 				<?php if(isset($_GET['action'])): ?>
-					<div class="alert alert-box alert-danger">
+					<div class="alert alert-box alert-warning">
 						<strong>Oh no! That failed!</strong>
 						<p>Check if you have set up everything correctly and try again.</p>
 					</div>

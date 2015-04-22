@@ -198,14 +198,19 @@ $(function() {
     // Settings
     var $widget = $(this)
     , $checkbox = $('<input type="checkbox" class="hidden" />')
-    , color = ($widget.data('color') ? $widget.data('color') : 'primary')
     , style = ($widget.data('style') === 'button' ? 'btn-' : 'list-group-item-')
     , settings = {
-        on: {
+        success: {
           icon: 'glyphicon glyphicon-check'
+          , color: 'success'
         }
-        , off: {
+        , failed: {
+          icon: 'glyphicon glyphicon-remove'
+          , color: 'danger'
+        }
+        , none: {
           icon: 'glyphicon glyphicon-unchecked'
+          , color: 'default'
         }
       };
 
@@ -221,7 +226,7 @@ $(function() {
       var isChecked = $checkbox.is(':checked');
 
       // Set the button's state
-      $widget.data('state', (isChecked) ? 'on' : 'off');
+      $widget.data('state', (isChecked) ? 'success' : 'failed');
 
       // Set the button's icon
       $widget.find('.state-icon')
@@ -229,11 +234,8 @@ $(function() {
         .addClass('state-icon ' + settings[$widget.data('state')].icon);
 
       // Update the button's color
-      if (isChecked) {
-        $widget.addClass(style + color + ' active');
-      } else {
-        $widget.removeClass(style + color + ' active');
-      }
+      $widget.removeClass(style + 'default').removeClass(style + 'danger').removeClass(style + 'success');
+      $widget.addClass(style + settings[$widget.data('state')].color);
     }
 
     // Initialization
