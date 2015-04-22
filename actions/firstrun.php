@@ -30,12 +30,12 @@ $path = $_SERVER['HTTP_HOST'].str_replace('index.php', '', $_SERVER['SCRIPT_NAME
 				<p class="lead">Thanks for using the BanManager-WebUI.</p>
 				<hr />
 
-				<?php if(isset($_GET['action'])): ?>
+				<?php if(isset($_GET['action'])) { ?>
 					<div class="alert alert-box alert-warning">
 						<strong>Oh no! That failed!</strong>
 						<p>Check if you have set up everything correctly and try again.</p>
 					</div>
-				<?php endif; ?>
+				<?php } ?>
 
 				<div>
 					<p>It seems like you did not yet setup the WebUI. Let's get started with that right now.</p>
