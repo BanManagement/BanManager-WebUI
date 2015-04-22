@@ -73,6 +73,10 @@ Caution: When using the `dev` argument, Grunt won't minify your JS or CSS, so it
 * Bower and Grunt to compile assets and libraries
 * Refactor (more information [#16](https://github.com/BanManagement/BanManager-WebUI/issues/16))
 * Configurable skin service
+* More debug options
+* Better impression on first run (PR #53)
+* "First run" checks
+* Improve error handling for admin authentication (issue #49)
 
 ### Demo
 
