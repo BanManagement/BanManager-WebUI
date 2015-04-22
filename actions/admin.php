@@ -45,7 +45,7 @@ else if(isset($_SESSION['failed_attempts']) && $_SESSION['failed_attempts'] > 4)
 		else
 			$_SESSION['failed_attempts'] = 1;
 		$_SESSION['failed_attempt'] = time() + $time;
-		redirect('index.php?action=admin');
+		errors('Wrong password. Please <a href="index.php?action=admin">try again</a>.');
 	} else {
 		$_SESSION['admin'] = true;
 		redirect('index.php?action=admin');
