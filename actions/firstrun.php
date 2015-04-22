@@ -11,6 +11,40 @@
 
 $path = $_SERVER['HTTP_HOST'].str_replace('index.php', '', $_SERVER['SCRIPT_NAME']);
 
+function checkCache(){
+	if (!is_writeable(IN_PATH.'cache/')) {
+		return false;
+	}
+	return true;
+}
+
+function checkSettingsFileExistance(){
+	if (!file_exists(IN_PATH.'settings.php')) {
+		return false;
+	}
+	return true;
+}
+
+function checkSettingsFileWriteable(){
+	if (!is_writable(IN_PATH.'settings.php')) {
+		return false;
+	}
+	return true;
+}
+
+function checkWeakPassword(){
+	if (checkSettingsFileExistance()){
+		if ($settings['password'] != 'password') {
+			return true;
+		}
+	}
+	return false;
+}
+
+if (!checkCache() || !checkSettingsFileExistance() || !checkSettingsFileWriteable() || !checkWeakPassword()) {
+	$failed = true;
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -40,12 +74,12 @@ $path = $_SERVER['HTTP_HOST'].str_replace('index.php', '', $_SERVER['SCRIPT_NAME
 				<div>
 					<p>It seems like you did not yet setup the WebUI. Let's get started with that right now.</p>
 
-					<h3>Preperation</h3>
+					<h3>Preperation / checklist</h3>
 					<ul id="check-list-box" class="list-group checked-list-box">
-						<li class="list-group-item" data-state="success">Make sure the <kbd>cache</kbd> directory is writeable and readable.</li>
-						<li class="list-group-item" data-state="failed">Rename the <kbd>settingsRename.php</kbd> file to <kbd>settings.php</kbd>.</li>
-						<li class="list-group-item">Make sure the <kbd>settings.php</kbd> file is writeable and readable.</li>
-						<li class="list-group-item">Open your <kbd>settings.php</kbd> with an editor (such as Notepad++) and adjust the settings. Make sure to set a strong password!</li>
+						<li class="list-group-item" data-state="<?= (checkCache()) ? 'success' : 'failed' ?>">Make sure the <kbd>cache</kbd> directory is writeable and readable.</li>
+						<li class="list-group-item" data-state="<?= (checkSettingsFileExistance()) ? 'success' : 'failed' ?>">Rename the <kbd>settingsRename.php</kbd> file to <kbd>settings.php</kbd>.</li>
+						<li class="list-group-item" data-state="<?= (checkSettingsFileWriteable()) ? 'success' : 'failed' ?>">Make sure the <kbd>settings.php</kbd> file is writeable and readable.</li>
+						<li class="list-group-item" data-state="<?= (checkWeakPassword()) ? 'success' : 'failed' ?>">Open your <kbd>settings.php</kbd> with an editor (such as Notepad++) and adjust the settings. Make sure to set a strong password!</li>
 					</ul>
 					<p><a href="/" class="btn btn-primary"><i class="glyphicon glyphicon-check"></i> Let's go!</a></p>
 				</div>
