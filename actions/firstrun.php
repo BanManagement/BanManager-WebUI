@@ -34,11 +34,12 @@ function checkSettingsFileWriteable(){
 
 function checkWeakPassword(){
 	if (checkSettingsFileExistance()){
-		if ($settings['password'] != 'password') {
-			return true;
+		include(IN_PATH.'settings.php');
+		if ($settings['password'] == 'password') {
+			return false;
 		}
 	}
-	return false;
+	return true;
 }
 
 if (!checkCache() || !checkSettingsFileExistance() || !checkSettingsFileWriteable() || !checkWeakPassword()) {
