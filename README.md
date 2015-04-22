@@ -84,4 +84,4 @@ You can find a working demo over here: http://bans.yeahwh.at
 
 ### Version
 
-1.3.0
+1.4.0
