@@ -5,7 +5,7 @@ BanManager-WebUI
 
 Git repo initialized with existing WebUI project for BanManager by [confuser](https://github.com/confuser/Ban-Management). The main purpose of this repository is to to fix the WebUI for the latest major database restructure from version 4 to version 5.
 
-Caution: This project is WIP. There could be still some bugs and issues that I didn't iron out yet. Please report those via [GitHub issues](https://github.com/yeahwhat-mc/BanManager-WebUI/issues) if you notice anything. 
+Caution: This project is WIP. There could be still some bugs and issues that I didn't iron out yet. Please report those via [GitHub issues](https://github.com/BanManagement/BanManager-WebUI/issues) if you notice anything. 
 
 Feel free to contribute if you have any suggestions or ideas.
 
@@ -14,7 +14,7 @@ Feel free to contribute if you have any suggestions or ideas.
 ##### Preperation
 
 1. Clone this repository into your Nginx/Apache document root:  
-  `git clone https://github.com/yeahwhat-mc/BanManager-WebUI.git /var/www/banmanager`
+  `git clone https://github.com/BanManagement/BanManager-WebUI.git /var/www/banmanager`
 1. Make sure cache is writeable:  
   `cd /var/www/banmanager`  
   `chmod 777 cache/`  
@@ -22,7 +22,7 @@ Feel free to contribute if you have any suggestions or ideas.
   `cp settingsRename.php settings.php`
 1. Make sure settings file is writeable:  
   `chmod 777 settings.php`
-1. Open and adjust the settings and make sure you're entered `$settings['password']`.
+1. Open and adjust the settings and make sure you're adjusted `$settings['password']`.
 
 ##### Installation
 
