@@ -1,0 +1,10 @@
+---
+banmanager.dev:
+  title: banmanager
+  php:
+    build: system
+  vhost:
+    servername: banmanager.dev
+    serveraliases:
+      - www.banmanager.dev
+    ssl: false
