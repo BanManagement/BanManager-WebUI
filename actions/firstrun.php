@@ -8,6 +8,10 @@
  *  may be available at http://creativecommons.org/licenses/by-nc-sa/2.0/uk/.
  *  Additional licence terms at https://raw.githubusercontent.com/BanManagement/BanManager-WebUI/master/LICENSE
  */
+
+$path = $_SERVER['HTTP_HOST'].str_replace('index.php', '', $_SERVER['SCRIPT_NAME']);
+
+
 ?>
 
 <!DOCTYPE html>
@@ -38,13 +42,12 @@
 					<p>It seems like you did not yet setup the WebUI. Let's get started with that right now.</p>
 
 					<h3>Preperation</h3>
-					<ol>
-						<li>Make sure the <kbd>cache</kbd> directory is writeable and readable.</li>
-						<li>Rename the <kbd>settingsRename.php</kbd> file to <kbd>settings.php</kbd>.</li>
-						<li>Make sure the <kbd>settings.php</kbd> file is writeable and readable.</li>
-						<li>Open your <kbd>settings.php</kbd> with an editor (such as Notepad++) and adjust the settings. Make sure to set a strong password!</li>
-					</ol>
-
+					<ul id="check-list-box" class="list-group checked-list-box">
+						<li class="list-group-item" data-state="success">Make sure the <kbd>cache</kbd> directory is writeable and readable.</li>
+						<li class="list-group-item" data-state="failed">Rename the <kbd>settingsRename.php</kbd> file to <kbd>settings.php</kbd>.</li>
+						<li class="list-group-item">Make sure the <kbd>settings.php</kbd> file is writeable and readable.</li>
+						<li class="list-group-item">Open your <kbd>settings.php</kbd> with an editor (such as Notepad++) and adjust the settings. Make sure to set a strong password!</li>
+					</ul>
 					<p style="margin-top: 60px"><a href="index.php?action=admin" class="btn btn-primary"><i class="glyphicon glyphicon-check"></i> Let's go!</a></p>
 				</div>
 			</div>
@@ -63,6 +66,7 @@
 				</div>
 			</div>
 		</div>
+		<script src="//<?php echo $path; ?>assets/js/build.js"></script>
 	</footer>
 </body>
 </html>
