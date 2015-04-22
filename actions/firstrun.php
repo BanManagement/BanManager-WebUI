@@ -37,7 +37,7 @@ $path = $_SERVER['HTTP_HOST'].str_replace('index.php', '', $_SERVER['SCRIPT_NAME
 					</div>
 				<?php endif; ?>
 
-				<div style="margin: 40px 0 40px 0">
+				<div>
 					<p>It seems like you did not yet setup the WebUI. Let's get started with that right now.</p>
 
 					<h3>Preperation</h3>
@@ -47,7 +47,7 @@ $path = $_SERVER['HTTP_HOST'].str_replace('index.php', '', $_SERVER['SCRIPT_NAME
 						<li class="list-group-item">Make sure the <kbd>settings.php</kbd> file is writeable and readable.</li>
 						<li class="list-group-item">Open your <kbd>settings.php</kbd> with an editor (such as Notepad++) and adjust the settings. Make sure to set a strong password!</li>
 					</ul>
-					<p style="margin-top: 60px"><a href="index.php?action=admin" class="btn btn-primary"><i class="glyphicon glyphicon-check"></i> Let's go!</a></p>
+					<p><a href="/" class="btn btn-primary"><i class="glyphicon glyphicon-check"></i> Let's go!</a></p>
 				</div>
 			</div>
 		</div>
