@@ -48,450 +48,450 @@ $(function() {
     });
     return false;
   });
-$('.deleteServer').on('click', function() {
-  var id = $(this).data('serverid')
-  , formBody = $('#container')
-  , $this = $(this);
 
-  $(this).append('<div id="ajaxLoading" class="small"><span id="loadingSmall"></span></div>').find('i').hide().parent().addClass('disabled');
-  showLoading('loadingSmall');
-  $.ajax({
-    url: 'index.php?action=deleteserver&ajax=true&authid=' + authid + '&id=' + id
-    , type: 'post'
-    , dataType: 'json'
-    , success: function(data) {
-      hideLoading();
-      $this.removeClass('disabled').find('i').show();
-      if (data.error) {
-        formBody.prepend(error(data.error));
-      } else {
-        errorRemove();
-        $this.parent().parent().fadeOut(function() {
-          $(this).remove();
-        });
+  $('.deleteServer').on('click', function() {
+    var id = $(this).data('serverid')
+    , formBody = $('#container')
+    , $this = $(this);
+
+    $(this).append('<div id="ajaxLoading" class="small"><span id="loadingSmall"></span></div>').find('i').hide().parent().addClass('disabled');
+    showLoading('loadingSmall');
+    $.ajax({
+      url: 'index.php?action=deleteserver&ajax=true&authid=' + authid + '&id=' + id
+      , type: 'post'
+      , dataType: 'json'
+      , success: function(data) {
+        hideLoading();
+        $this.removeClass('disabled').find('i').show();
+        if (data.error) {
+          formBody.prepend(error(data.error));
+        } else {
+          errorRemove();
+          $this.parent().parent().fadeOut(function() {
+            $(this).remove();
+          });
+        }
       }
-    }
-    , error: function(jqXHR) {
-      hideLoading();
-      $this.removeClass('disabled').find('i').show();
-      formBody.prepend(error('Invalid response from server, try again<br />Response: ' + jqXHR.responseText));
-    }
-  });
-});
-$('.reorderServer').on('click', function() {
-  var id = $(this).data('serverid')
-  , order = $(this).data('order')
-  , formBody = $('#container')
-  , $this = $(this);
-
-  $(this).append('<div id="ajaxLoading" class="small"><span id="loadingSmall"></span></div>').find('.glyphicon-arrow-up').hide().parent().addClass('disabled');
-  showLoading('loadingSmall');
-  $.ajax({
-    url: 'index.php?action=reorderserver&ajax=true&authid=' + authid + '&server=' + id + '&order=' + order
-    , type: 'post'
-    , dataType: 'json'
-    , success: function(data) {
-      hideLoading();
-      $this.removeClass('disabled').find('.glyphicon-arrow-up').show();
-      if (data.error) {
-        formBody.prepend(error(data.error));
-      } else {
-        errorRemove();
-        $('#servers').html(data.success.table);
+      , error: function(jqXHR) {
+        hideLoading();
+        $this.removeClass('disabled').find('i').show();
+        formBody.prepend(error('Invalid response from server, try again<br />Response: ' + jqXHR.responseText));
       }
-    }
-    , error: function(jqXHR) {
-      hideLoading();
-      $this.removeClass('disabled').find('.glyphicon-arrow-up').show();
-      formBody.prepend(error('Invalid response from server, try again<br />Response: ' + jqXHR.responseText));
-    }
+    });
   });
-});
-$('form.settings').submit(function(e) {
-  e.preventDefault();
-  var form = $(this)
-  , formBody = form.find('table');
+  $('.reorderServer').on('click', function() {
+    var id = $(this).data('serverid')
+    , order = $(this).data('order')
+    , formBody = $('#container')
+    , $this = $(this);
 
-  if (!form.valid())
+    $(this).append('<div id="ajaxLoading" class="small"><span id="loadingSmall"></span></div>').find('.glyphicon-arrow-up').hide().parent().addClass('disabled');
+    showLoading('loadingSmall');
+    $.ajax({
+      url: 'index.php?action=reorderserver&ajax=true&authid=' + authid + '&server=' + id + '&order=' + order
+      , type: 'post'
+      , dataType: 'json'
+      , success: function(data) {
+        hideLoading();
+        $this.removeClass('disabled').find('.glyphicon-arrow-up').show();
+        if (data.error) {
+          formBody.prepend(error(data.error));
+        } else {
+          errorRemove();
+          $('#servers').html(data.success.table);
+        }
+      }
+      , error: function(jqXHR) {
+        hideLoading();
+        $this.removeClass('disabled').find('.glyphicon-arrow-up').show();
+        formBody.prepend(error('Invalid response from server, try again<br />Response: ' + jqXHR.responseText));
+      }
+    });
+  });
+  $('form.settings').submit(function(e) {
+    e.preventDefault();
+    var form = $(this)
+    , formBody = form.find('table');
+
+    if (!form.valid())
+      return false;
+    errorRemove();
+    formBody.hide().after('<div id="ajaxLoading"><span id="loadingSmall"></span><br />Saving</div>');
+    showLoading('loadingSmall');
+    $.ajax({
+      url: 'index.php?action=updatesettings&ajax=true&authid=' + authid
+      , data: form.serialize()
+      , type: 'post'
+      , dataType: 'json'
+      , success: function(data) {
+        hideLoading();
+        formBody.show();
+        if (data.error) {
+          form.prepend(error(data.error));
+        } else {
+          errorRemove();
+        }
+      }
+      , error: function(jqXHR) {
+        hideLoading();
+        formBody.show();
+        form.prepend(error('Invalid response from server, try again<br />Response: ' + jqXHR.responseText));
+      }
+    });
     return false;
-  errorRemove();
-  formBody.hide().after('<div id="ajaxLoading"><span id="loadingSmall"></span><br />Saving</div>');
-  showLoading('loadingSmall');
-  $.ajax({
-    url: 'index.php?action=updatesettings&ajax=true&authid=' + authid
-    , data: form.serialize()
-    , type: 'post'
-    , dataType: 'json'
-    , success: function(data) {
-      hideLoading();
-      formBody.show();
-      if (data.error) {
-        form.prepend(error(data.error));
-      } else {
-        errorRemove();
-      }
-    }
-    , error: function(jqXHR) {
-      hideLoading();
-      formBody.show();
-      form.prepend(error('Invalid response from server, try again<br />Response: ' + jqXHR.responseText));
-    }
   });
-  return false;
-});
 
-if (jQuery.fn.datetimepicker) {
-  $('.modal').on('shown.bs.modal', function () {
-    $('.datetimepicker').datetimepicker();
-  });
-}
-
-$('.yourtime').html(dateFormat(new Date(), 'dd/mm/yyyy HH:MM:ss'));
-
-$('#editban form .bantype, #editmute form .bantype').click(function(e) {
-  e.preventDefault();
-  var $expires = $(this).parent().parent().find('input[name=expires]');
-
-  if ($(this).html() === 'Permanent') {
-    $(this).html('Temporary');
-
-    $expires.removeAttr('disabled');
-
-    var picker = $(this).parent().parent().data('DateTimePicker');
-
-    picker.setDate(new Date());
-
-  } else {
-    $(this).html('Permanent');
-    $expires.val('');
-    $expires.attr('disabled', 'disabled');
-  }
-});
-
-$('#editban form').submit(function(e) {
-  e.preventDefault();
-
-  var form = $(this)
-  , formBody = form.find('.modal-body');
-
-  if (!form.valid())
-    return false;
-  errorRemove();
-
-  if ($(this).find('input[name=expires]').attr('disabled') === 'disabled') {
-    $(this).find('input[name=expires]').val('');
+  if (jQuery.fn.datetimepicker) {
+    $('.modal').on('shown.bs.modal', function () {
+      $('.datetimepicker').datetimepicker();
+    });
   }
 
-  formBody.hide().after('<div id="ajaxLoading"><span id="loadingSmall"></span><br />Saving</div>');
-  showLoading('loadingSmall');
-  $('#editban form input[name=expiresTimestamp]').val($('#editban form input[name=expires]').parent().data('DateTimePicker').getDate().toDate().getTime() / 1000);
-  $.ajax({
-    url: 'index.php?action=updateban&ajax=true&authid=' + authid
-    , data: form.serialize()
-    , type: 'post'
-    , dataType: 'json'
-    , success: function(data) {
-      hideLoading();
-      formBody.show();
-      if (data.error) {
-        formBody.prepend(error(data.error));
-      } else {
-        errorRemove();
-        $('#editban').modal('hide');
-        location.reload();
+  $('.yourtime').html(dateFormat(new Date(), 'dd/mm/yyyy HH:MM:ss'));
+
+  $('#editban form .bantype, #editmute form .bantype').click(function(e) {
+    e.preventDefault();
+    var $expires = $(this).parent().parent().find('input[name=expires]');
+
+    if ($(this).html() === 'Permanent') {
+      $(this).html('Temporary');
+
+      $expires.removeAttr('disabled');
+
+      var picker = $(this).parent().parent().data('DateTimePicker');
+
+      picker.setDate(new Date());
+
+    } else {
+      $(this).html('Permanent');
+      $expires.val('');
+      $expires.attr('disabled', 'disabled');
+    }
+  });
+
+  $('#editban form').submit(function(e) {
+    e.preventDefault();
+
+    var form = $(this)
+    , formBody = form.find('.modal-body');
+
+    if (!form.valid())
+      return false;
+    errorRemove();
+
+    if ($(this).find('input[name=expires]').attr('disabled') === 'disabled') {
+      $(this).find('input[name=expires]').val('');
+    }
+
+    formBody.hide().after('<div id="ajaxLoading"><span id="loadingSmall"></span><br />Saving</div>');
+    showLoading('loadingSmall');
+    $('#editban form input[name=expiresTimestamp]').val($('#editban form input[name=expires]').parent().data('DateTimePicker').getDate().toDate().getTime() / 1000);
+    $.ajax({
+      url: 'index.php?action=updateban&ajax=true&authid=' + authid
+      , data: form.serialize()
+      , type: 'post'
+      , dataType: 'json'
+      , success: function(data) {
+        hideLoading();
+        formBody.show();
+        if (data.error) {
+          formBody.prepend(error(data.error));
+        } else {
+          errorRemove();
+          $('#editban').modal('hide');
+          location.reload();
+        }
       }
-    }
-    , error: function(jqXHR) {
-      hideLoading();
-      formBody.show();
-      formBody.prepend(error('Invalid response from server, try again<br />Response: ' + jqXHR.responseText));
-    }
-  });
-return false;
-});
-
-$('#editmute form').submit(function(e) {
-  e.preventDefault();
-
-  var form = $(this)
-  , formBody = form.find('.modal-body');
-
-  if (!form.valid())
-    return false;
-  errorRemove();
-
-  // if ($(this).find('input[name=expires]').attr('disabled') === 'disabled') {
-  //   $(this).find('input[name=expires]').val('');
-  // }
-
-  formBody.hide().after('<div id="ajaxLoading"><span id="loadingSmall"></span><br />Saving</div>');
-  showLoading('loadingSmall');
-  // $('#editmute form input[name=expiresTimestamp]').val($('#editmute form input[name=expires]').parent().parent().data('DateTimePicker').date().getTime() / 1000);
-  $.ajax({
-    url: 'index.php?action=updatemute&ajax=true&authid=' + authid
-    , data: form.serialize()
-    , type: 'post'
-    , dataType: 'json'
-    , success: function(data) {
-      hideLoading();
-      formBody.show();
-      if (data.error) {
-        formBody.prepend(error(data.error));
-      } else {
-        errorRemove();
-        $('#editmute').modal('hide');
-        location.reload();
+      , error: function(jqXHR) {
+        hideLoading();
+        formBody.show();
+        formBody.prepend(error('Invalid response from server, try again<br />Response: ' + jqXHR.responseText));
       }
-    }
-    , error: function(jqXHR) {
-      hideLoading();
-      formBody.show();
-      formBody.prepend(error('Invalid response from server, try again<br />Response: ' + jqXHR.responseText));
-    }
-  });
-return false;
-});
-
-$('#editipban form').submit(function(e) {
-  e.preventDefault();
-  var form = $(this)
-  , formBody = form.find('.modal-body');
-
-  if (!form.valid())
-    return false;
-  errorRemove();
-
-  formBody.hide().after('<div id="ajaxLoading"><span id="loadingSmall"></span><br />Saving</div>');
-  showLoading('loadingSmall');
-  $.ajax({
-    url: 'index.php?action=updateipban&ajax=true&authid=' + authid
-    , data: form.serialize()
-    , type: 'post'
-    , dataType: 'json'
-    , success: function(data) {
-      hideLoading();
-      formBody.show();
-      if (data.error) {
-        formBody.prepend(error(data.error));
-      } else {
-        errorRemove();
-        $('#editipban').modal('hide');
-        location.reload();
-      }
-    }
-    , error: function(jqXHR) {
-      hideLoading();
-      formBody.show();
-      formBody.prepend(error('Invalid response from server, try again<br />Response: ' + jqXHR.responseText));
-    }
-  });
-return false;
-});
-
-$('#previous-bans a.delete').on('click', function(e) {
-  e.preventDefault();
-  var id = $(this).data('record-id')
-  , server = $(this).data('server')
-  , formBody = $('#container')
-  , $this = $(this);
-  $(this).append('<div id="ajaxLoading" class="small"><span id="loadingSmall"></span></div>').find('i').hide().parent().addClass('disabled');
-  showLoading('loadingSmall');
-  $.ajax({
-    url: 'index.php?action=deletebanrecord&ajax=true&authid=' + authid + '&server=' + server + '&id=' + id
-    , type: 'post'
-    , dataType: 'json'
-    , success: function(data) {
-      hideLoading();
-      $this.removeClass('disabled').find('i').show();
-      if (data.error) {
-        $(document).load().scrollTop(0);
-        formBody.prepend(error(data.error));
-      } else {
-        errorRemove();
-        $this.parent().parent().fadeOut(function() {
-          $(this).remove();
-        });
-      }
-    }
-    , error: function(jqXHR) {
-      hideLoading();
-      $this.removeClass('disabled').find('i').show();
-      formBody.prepend(error('Invalid response from server, try again<br />Response: ' + jqXHR.responseText));
-    }
-  });
-});
-
-$('#previous-mutes a.delete').on('click', function(e) {
-  e.preventDefault();
-  var id = $(this).data('record-id')
-  , server = $(this).data('server')
-  , formBody = $('#container')
-  , $this = $(this);
-  $(this).append('<div id="ajaxLoading" class="small"><span id="loadingSmall"></span></div>').find('i').hide().parent().addClass('disabled');
-  showLoading('loadingSmall');
-  $.ajax({
-    url: 'index.php?action=deletemuterecord&ajax=true&authid=' + authid + '&server=' + server + '&id=' + id
-    , type: 'post'
-    , dataType: 'json'
-    , success: function(data) {
-      hideLoading();
-      $this.removeClass('disabled').find('i').show();
-      if (data.error) {
-        $(document).load().scrollTop(0);
-        formBody.prepend(error(data.error));
-      } else {
-        errorRemove();
-        $this.parent().parent().fadeOut(function() {
-          $(this).remove();
-        });
-      }
-    }
-    , error: function(jqXHR) {
-      hideLoading();
-      $this.removeClass('disabled').find('i').show();
-      formBody.prepend(error('Invalid response from server, try again<br />Response: ' + jqXHR.responseText));
-    }
-  });
-});
-
-$('#previous-kicks a.delete').on('click', function(e) {
-  e.preventDefault();
-  var id = $(this).data('record-id')
-  , server = $(this).data('server')
-  , formBody = $('#container')
-  , $this = $(this);
-  $(this).append('<div id="ajaxLoading" class="small"><span id="loadingSmall"></span></div>').find('i').hide().parent().addClass('disabled');
-  showLoading('loadingSmall');
-  $.ajax({
-    url: 'index.php?action=deletekickrecord&ajax=true&authid=' + authid + '&server=' + server + '&id=' + id
-    , type: 'post'
-    , dataType: 'json'
-    , success: function(data) {
-      hideLoading();
-      $this.removeClass('disabled').find('i').show();
-      if (data.error) {
-        $(document).load().scrollTop(0);
-        formBody.prepend(error(data.error));
-      } else {
-        errorRemove();
-        $this.parent().parent().fadeOut(function() {
-          $(this).remove();
-        });
-      }
-    }
-    , error: function(jqXHR) {
-      hideLoading();
-      $this.removeClass('disabled').find('i').show();
-      formBody.prepend(error('Invalid response from server, try again<br />Response: ' + jqXHR.responseText));
-    }
-  });
-});
-
-$('#previous-warnings a.delete').on('click', function(e) {
-  e.preventDefault();
-  var id = $(this).data('record-id')
-  , server = $(this).data('server')
-  , formBody = $('#container')
-  , $this = $(this);
-  $(this).append('<div id="ajaxLoading" class="small"><span id="loadingSmall"></span></div>').find('i').hide().parent().addClass('disabled');
-  showLoading('loadingSmall');
-  $.ajax({
-    url: 'index.php?action=deletewarning&ajax=true&authid=' + authid + '&server=' + server + '&id=' + id
-    , type: 'post'
-    , dataType: 'json'
-    , success: function(data) {
-      hideLoading();
-      $this.removeClass('disabled').find('i').show();
-      if (data.error) {
-        $(document).load().scrollTop(0);
-        formBody.prepend(error(data.error));
-      } else {
-        errorRemove();
-        $this.parent().parent().fadeOut(function() {
-          $(this).remove();
-        });
-      }
-    }
-    , error: function(jqXHR) {
-      hideLoading();
-      $this.removeClass('disabled').find('i').show();
-      formBody.prepend(error('Invalid response from server, try again<br />Response: ' + jqXHR.responseText));
-    }
-  });
-});
-
-$('#previous-ip-bans a.delete').on('click', function(e) {
-  e.preventDefault();
-  var id = $(this).data('record-id')
-  , server = $(this).data('server')
-  , formBody = $('#container')
-  , $this = $(this);
-  $(this).append('<div id="ajaxLoading" class="small"><span id="loadingSmall"></span></div>').find('i').hide().parent().addClass('disabled');
-  showLoading('loadingSmall');
-  $.ajax({
-    url: 'index.php?action=deleteipbanrecord&ajax=true&authid=' + authid + '&server=' + server + '&id=' + id
-    , type: 'post'
-    , dataType: 'json'
-    , success: function(data) {
-      hideLoading();
-      $this.removeClass('disabled').find('i').show();
-      if (data.error) {
-        $(document).load().scrollTop(0);
-        formBody.prepend(error(data.error));
-      } else {
-        errorRemove();
-        $this.parent().parent().fadeOut(function() {
-          $(this).remove();
-        });
-      }
-    }
-    , error: function(jqXHR) {
-      hideLoading();
-      $this.removeClass('disabled').find('i').show();
-      formBody.prepend(error('Invalid response from server, try again<br />Response: ' + jqXHR.responseText));
-    }
-  });
-});
-
-$('[data-role=confirm]').click(function(e) {
-  e.preventDefault();
-  $('body').append('<div class="modal fade" id="confirmModal"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><a class="close" data-dismiss="modal">&times;</a><h3>' + $(this).data('confirm-title') + '</h3></div><div class="modal-body"><p>' + $(this).data('confirm-body') + '</p></div><div class="modal-footer"><a href="#" class="btn cancel" data-dismiss="modal">Cancel</a><a href="' + $(this).attr('href') + '" class="btn btn-primary">Confirm</a></div></div></div></div>');
-  $('#confirmModal').modal().find('.cancel').focus();
-  $('#confirmModal').on('hidden', function () {
-    $(this).remove();
-  });
+    });
   return false;
-});
-
-$('#confirmModal a.btn-primary').on('click', function(e) {
-  e.preventDefault();
-  var formBody = $('#confirmModal .modal-body')
-  , $this = $(this);
-
-  formBody.hide().after('<div id="ajaxLoading"><span id="loadingSmall"></span><br />Removing</div>');
-  showLoading('loadingSmall');
-  $.ajax({
-    url: $this.attr('href')
-    , type: 'get'
-    , dataType: 'json'
-    , success: function(data) {
-      hideLoading();
-      formBody.show();
-      if (data.error) {
-        formBody.prepend(error(data.error));
-      } else {
-        $('#confirmModal').modal('hide');
-        location.reload();
-      }
-    }
-    , error: function(jqXHR) {
-      hideLoading();
-      $this.removeClass('disabled').find('i').show();
-      formBody.prepend(error('Invalid response from server, try again<br />Response: ' + jqXHR.responseText));
-    }
   });
-});
 
+  $('#editmute form').submit(function(e) {
+    e.preventDefault();
+
+    var form = $(this)
+    , formBody = form.find('.modal-body');
+
+    if (!form.valid())
+      return false;
+    errorRemove();
+
+    // if ($(this).find('input[name=expires]').attr('disabled') === 'disabled') {
+    //   $(this).find('input[name=expires]').val('');
+    // }
+
+    formBody.hide().after('<div id="ajaxLoading"><span id="loadingSmall"></span><br />Saving</div>');
+    showLoading('loadingSmall');
+    // $('#editmute form input[name=expiresTimestamp]').val($('#editmute form input[name=expires]').parent().parent().data('DateTimePicker').date().getTime() / 1000);
+    $.ajax({
+      url: 'index.php?action=updatemute&ajax=true&authid=' + authid
+      , data: form.serialize()
+      , type: 'post'
+      , dataType: 'json'
+      , success: function(data) {
+        hideLoading();
+        formBody.show();
+        if (data.error) {
+          formBody.prepend(error(data.error));
+        } else {
+          errorRemove();
+          $('#editmute').modal('hide');
+          location.reload();
+        }
+      }
+      , error: function(jqXHR) {
+        hideLoading();
+        formBody.show();
+        formBody.prepend(error('Invalid response from server, try again<br />Response: ' + jqXHR.responseText));
+      }
+    });
+  return false;
+  });
+
+  $('#editipban form').submit(function(e) {
+    e.preventDefault();
+    var form = $(this)
+    , formBody = form.find('.modal-body');
+
+    if (!form.valid())
+      return false;
+    errorRemove();
+
+    formBody.hide().after('<div id="ajaxLoading"><span id="loadingSmall"></span><br />Saving</div>');
+    showLoading('loadingSmall');
+    $.ajax({
+      url: 'index.php?action=updateipban&ajax=true&authid=' + authid
+      , data: form.serialize()
+      , type: 'post'
+      , dataType: 'json'
+      , success: function(data) {
+        hideLoading();
+        formBody.show();
+        if (data.error) {
+          formBody.prepend(error(data.error));
+        } else {
+          errorRemove();
+          $('#editipban').modal('hide');
+          location.reload();
+        }
+      }
+      , error: function(jqXHR) {
+        hideLoading();
+        formBody.show();
+        formBody.prepend(error('Invalid response from server, try again<br />Response: ' + jqXHR.responseText));
+      }
+    });
+  return false;
+  });
+
+  $('#previous-bans a.delete').on('click', function(e) {
+    e.preventDefault();
+    var id = $(this).data('record-id')
+    , server = $(this).data('server')
+    , formBody = $('#container')
+    , $this = $(this);
+    $(this).append('<div id="ajaxLoading" class="small"><span id="loadingSmall"></span></div>').find('i').hide().parent().addClass('disabled');
+    showLoading('loadingSmall');
+    $.ajax({
+      url: 'index.php?action=deletebanrecord&ajax=true&authid=' + authid + '&server=' + server + '&id=' + id
+      , type: 'post'
+      , dataType: 'json'
+      , success: function(data) {
+        hideLoading();
+        $this.removeClass('disabled').find('i').show();
+        if (data.error) {
+          $(document).load().scrollTop(0);
+          formBody.prepend(error(data.error));
+        } else {
+          errorRemove();
+          $this.parent().parent().fadeOut(function() {
+            $(this).remove();
+          });
+        }
+      }
+      , error: function(jqXHR) {
+        hideLoading();
+        $this.removeClass('disabled').find('i').show();
+        formBody.prepend(error('Invalid response from server, try again<br />Response: ' + jqXHR.responseText));
+      }
+    });
+  });
+
+  $('#previous-mutes a.delete').on('click', function(e) {
+    e.preventDefault();
+    var id = $(this).data('record-id')
+    , server = $(this).data('server')
+    , formBody = $('#container')
+    , $this = $(this);
+    $(this).append('<div id="ajaxLoading" class="small"><span id="loadingSmall"></span></div>').find('i').hide().parent().addClass('disabled');
+    showLoading('loadingSmall');
+    $.ajax({
+      url: 'index.php?action=deletemuterecord&ajax=true&authid=' + authid + '&server=' + server + '&id=' + id
+      , type: 'post'
+      , dataType: 'json'
+      , success: function(data) {
+        hideLoading();
+        $this.removeClass('disabled').find('i').show();
+        if (data.error) {
+          $(document).load().scrollTop(0);
+          formBody.prepend(error(data.error));
+        } else {
+          errorRemove();
+          $this.parent().parent().fadeOut(function() {
+            $(this).remove();
+          });
+        }
+      }
+      , error: function(jqXHR) {
+        hideLoading();
+        $this.removeClass('disabled').find('i').show();
+        formBody.prepend(error('Invalid response from server, try again<br />Response: ' + jqXHR.responseText));
+      }
+    });
+  });
+
+  $('#previous-kicks a.delete').on('click', function(e) {
+    e.preventDefault();
+    var id = $(this).data('record-id')
+    , server = $(this).data('server')
+    , formBody = $('#container')
+    , $this = $(this);
+    $(this).append('<div id="ajaxLoading" class="small"><span id="loadingSmall"></span></div>').find('i').hide().parent().addClass('disabled');
+    showLoading('loadingSmall');
+    $.ajax({
+      url: 'index.php?action=deletekickrecord&ajax=true&authid=' + authid + '&server=' + server + '&id=' + id
+      , type: 'post'
+      , dataType: 'json'
+      , success: function(data) {
+        hideLoading();
+        $this.removeClass('disabled').find('i').show();
+        if (data.error) {
+          $(document).load().scrollTop(0);
+          formBody.prepend(error(data.error));
+        } else {
+          errorRemove();
+          $this.parent().parent().fadeOut(function() {
+            $(this).remove();
+          });
+        }
+      }
+      , error: function(jqXHR) {
+        hideLoading();
+        $this.removeClass('disabled').find('i').show();
+        formBody.prepend(error('Invalid response from server, try again<br />Response: ' + jqXHR.responseText));
+      }
+    });
+  });
+
+  $('#previous-warnings a.delete').on('click', function(e) {
+    e.preventDefault();
+    var id = $(this).data('record-id')
+    , server = $(this).data('server')
+    , formBody = $('#container')
+    , $this = $(this);
+    $(this).append('<div id="ajaxLoading" class="small"><span id="loadingSmall"></span></div>').find('i').hide().parent().addClass('disabled');
+    showLoading('loadingSmall');
+    $.ajax({
+      url: 'index.php?action=deletewarning&ajax=true&authid=' + authid + '&server=' + server + '&id=' + id
+      , type: 'post'
+      , dataType: 'json'
+      , success: function(data) {
+        hideLoading();
+        $this.removeClass('disabled').find('i').show();
+        if (data.error) {
+          $(document).load().scrollTop(0);
+          formBody.prepend(error(data.error));
+        } else {
+          errorRemove();
+          $this.parent().parent().fadeOut(function() {
+            $(this).remove();
+          });
+        }
+      }
+      , error: function(jqXHR) {
+        hideLoading();
+        $this.removeClass('disabled').find('i').show();
+        formBody.prepend(error('Invalid response from server, try again<br />Response: ' + jqXHR.responseText));
+      }
+    });
+  });
+
+  $('#previous-ip-bans a.delete').on('click', function(e) {
+    e.preventDefault();
+    var id = $(this).data('record-id')
+    , server = $(this).data('server')
+    , formBody = $('#container')
+    , $this = $(this);
+    $(this).append('<div id="ajaxLoading" class="small"><span id="loadingSmall"></span></div>').find('i').hide().parent().addClass('disabled');
+    showLoading('loadingSmall');
+    $.ajax({
+      url: 'index.php?action=deleteipbanrecord&ajax=true&authid=' + authid + '&server=' + server + '&id=' + id
+      , type: 'post'
+      , dataType: 'json'
+      , success: function(data) {
+        hideLoading();
+        $this.removeClass('disabled').find('i').show();
+        if (data.error) {
+          $(document).load().scrollTop(0);
+          formBody.prepend(error(data.error));
+        } else {
+          errorRemove();
+          $this.parent().parent().fadeOut(function() {
+            $(this).remove();
+          });
+        }
+      }
+      , error: function(jqXHR) {
+        hideLoading();
+        $this.removeClass('disabled').find('i').show();
+        formBody.prepend(error('Invalid response from server, try again<br />Response: ' + jqXHR.responseText));
+      }
+    });
+  });
+
+  $(document).on('click', '[data-role=confirm]', function(e) {
+    e.preventDefault();
+    $('body').append('<div class="modal fade" id="confirmModal"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><a class="close" data-dismiss="modal">&times;</a><h3>' + $(this).data('confirm-title') + '</h3></div><div class="modal-body"><p>' + $(this).data('confirm-body') + '</p></div><div class="modal-footer"><a href="#" class="btn cancel" data-dismiss="modal">Cancel</a><a href="' + $(this).attr('href') + '" class="btn btn-primary">Confirm</a></div></div></div></div>');
+    $('#confirmModal').modal().find('.cancel').focus();
+    $('#confirmModal').on('hidden', function () {
+      $(this).remove();
+    });
+    return false;
+  });
+
+  $(document).on('click', '#confirmModal a.btn-primary', function(e) {
+    e.preventDefault();
+    var formBody = $('#confirmModal .modal-body')
+      , $this = $(this);
+
+      formBody.hide().after('<div id="ajaxLoading"><span id="loadingSmall"></span><br />Removing</div>');
+      showLoading('loadingSmall');
+      $.ajax({
+        url: $this.attr('href')
+        , type: 'get'
+        , dataType: 'json'
+        , success: function(data) {
+          hideLoading();
+          formBody.show();
+          if (data.error) {
+            formBody.prepend(error(data.error));
+          } else {
+            $('#confirmModal').modal('hide');
+            location.reload();
+          }
+        }
+        , error: function(jqXHR) {
+          hideLoading();
+          $this.removeClass('disabled').find('i').show();
+          formBody.prepend(error('Invalid response from server, try again<br />Response: ' + jqXHR.responseText));
+        }
+      });
+   });
 });
 
 function showLoading(element) {
