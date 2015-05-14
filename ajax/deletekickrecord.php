@@ -28,12 +28,12 @@ else {
 	if(!$mysqlicon)
 		$error = 'Unable to connect to database';
 	else {
-		$pastBans = mysqli_query($mysqlicon, "SELECT kick_id FROM ".$server['kicksTable']." WHERE kick_id = '".$_GET['id']."'");
+		$pastBans = mysqli_query($mysqlicon, "SELECT id FROM ".$server['playerKicksTable']." WHERE id = '".$_GET['id']."'");
 
 		if(mysqli_num_rows($pastBans) == 0)
 			$error = 'That record does not exist';
 		else {
-			mysqli_query($mysqlicon, "DELETE FROM ".$server['kicksTable']." WHERE kick_id = '".$_GET['id']."'");
+			mysqli_query($mysqlicon, "DELETE FROM ".$server['playerKicksTable']." WHERE id = '".$_GET['id']."'");
 
 			// Clear the cache
 			clearCache($_GET['server'].'/players');

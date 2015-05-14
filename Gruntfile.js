@@ -91,28 +91,17 @@ module.exports = function(grunt) {
                     , '<%= dirs.bower %>/bootstrap-sass-official/assets/javascripts/bootstrap.js'
                     , '<%= dirs.bower %>/jquery.validate/dist/jquery.validate.js'
                     , '<%= dirs.bower %>/CanvasLoader/js/heartcode-canvasloader.js'
-                    , '<%= dirs.bower %>/jquery.countdown/dist/jquery.countdown.js'
                     , '<%= dirs.bower %>/jquery.tablesorter/js/jquery.tablesorter.js'
                     , '<%= dirs.bower %>/jquery.tablesorter/js/jquery.tablesorter.widgets.js'
                     , '<%= dirs.bower %>/jquery.tablesorter/js/jquery.tablesorter.widgets-dilter-formatter.js'
                     , '<%= dirs.bower %>/jquery.tablesorter/addons/pager/jquery.tablesorter.pager.js'
                     , '<%= dirs.bower %>/jQuery-Visualize/js/visualize.jQuery.js'
                     , '<%= dirs.bower %>/jquery-mousewheel/jquery.mousewheel.js'
-                    , '<%= dirs.bower %>/eonasdan-bootstrap-datetimepicker/src/js/bootstrap-datetimepicker.js'
                     , '<%= dirs.js %>/*.js'
                     , '!<%= dirs.js %>/modernizr.js'
-                    , '!<%= dirs.js %>/_admin.js'
                     , '!<%= dirs.js %>/build.js'
-                    , '!<%= dirs.js %>/build.admin.js'
                 ]
                 , dest: '<%= dirs.js %>/build.js'
-            }
-            , admin: {
-                src: [
-                    '<%= dirs.js %>/build.js'
-                    , '<%= dirs.js %>/_admin.js'
-                ]
-                , dest: '<%= dirs.js %>/build.admin.js'
             }
         }
 
@@ -130,7 +119,6 @@ module.exports = function(grunt) {
                 , '<%= dirs.js %>/*.js'
                 , '!<%= dirs.js %>/modernizr.js'
                 , '!<%= dirs.js %>/build.js'
-                , '!<%= dirs.js %>/build.admin.js'
             ]
         }
 
@@ -162,13 +150,6 @@ module.exports = function(grunt) {
                   }
                 ]
             }
-            , admin: {
-                files: [
-                  {
-                      '<%= dirs.js %>/build.admin.js': [ '<%= dirs.js %>/build.admin.js' ]
-                  }
-                ]
-            }
         }
 
         /*
@@ -197,7 +178,6 @@ module.exports = function(grunt) {
           main: {
             files: [
               { expand: true, cwd: '<%= dirs.bower %>/bootstrap-sass-official/assets/fonts/bootstrap/', src: [ '**' ], dest: '<%= dirs.fonts %>' }
-              , { expand: true, cwd: '<%= dirs.bower %>/eonasdan-bootstrap-datetimepicker/build/css/', src: [ 'bootstrap-datetimepicker.css' ], dest: '<%= dirs.css %>/libs', rename: function(dest) { return dest + '/bootstrap-datetimepicker.scss'; } }
               , { expand: true, cwd: '<%= dirs.bower %>/jquery.tablesorter/css/', src: [ 'theme.bootstrap.css' ], dest: '<%= dirs.css %>/libs', rename: function(dest) { return dest + '/tablesorter-theme.bootstrap.scss'; } }
               , { expand: true, cwd: '<%= dirs.bower %>/jQuery-Visualize/css/', src: [ 'visualize.css' ], dest: '<%= dirs.css %>/libs', rename: function(dest) { return dest + '/visualize.scss'; } }
               , { expand: true, cwd: '<%= dirs.bower %>/jQuery-Visualize/css/', src: [ 'visualize-light.css' ], dest: '<%= dirs.css %>/libs', rename: function(dest) { return dest + '/visualize-light.scss'; } }
