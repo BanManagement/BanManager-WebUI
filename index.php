@@ -410,10 +410,11 @@ function constructWhereWithUUIDs($uuidArray, $idColumn){
 	$whereStatement = NULL;
 
 	if (count($uuidArray) > 1) {
-		foreach ($uuidArray as $uuid) {
-			$whereStatement = $whereStatement.$idColumn." = UNHEX('".$uuid."') OR ";
-		}
-		$whereStatement = substr($whereStatement, 0, -4);
+		$whereStatement = $idColumn." IN (";
+        foreach ($uuidArray as $uuid) {
+            $whereStatement = $whereStatement."UNHEX('".$uuid."'),";
+        }
+        $whereStatement = substr($whereStatement, 0, -1).")";
 	} else if(count($uuidArray) == 1) {
 		$whereStatement = $idColumn." = UNHEX('".$uuidArray[0]."')";
 	}
