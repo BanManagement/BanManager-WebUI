@@ -370,56 +370,12 @@ function clearCache($folder = '', $olderThan = 0) {
 	}
 }
 
-function UUIDtoPlayerName($uuid, $server) {
-	$result = cache("SELECT HEX(id) as id, name FROM ".$server['playersTable']." WHERE id = UNHEX('".$uuid."') ORDER BY name", 300, 'UUIDtoPlayerName', $server);
-
-	if(isset($result[0]) && !is_array($result[0]) && !empty($result[0])){
-		$result = array($result);
-	}
-
-	$found = array();
-
-	foreach($result as $r) {
-		array_push($found, $r['name']);
-	}
-
-	if (isset($found[0])) {
-		return $found[0];
-	} else {
-		return false;
-	}
-}
-
 function playerNameToUUID($name, $server) {
-	$result = cache("SELECT HEX(id) as id, name FROM ".$server['playersTable']." WHERE name LIKE '%".$name."%' ORDER BY name", 300, 'playerNameToUUID', $server);
-
-	if(isset($result[0]) && !is_array($result[0]) && !empty($result[0])){
-		$result = array($result);
-	}
-
-	$found = array();
-
-	foreach($result as $r) {
-		array_push($found, $r['id']);
-	}
-
-	return $found;
-}
-
-function constructWhereWithUUIDs($uuidArray, $idColumn){
-	$whereStatement = NULL;
-
-	if (count($uuidArray) > 1) {
-		$whereStatement = $idColumn." IN (";
-        foreach ($uuidArray as $uuid) {
-            $whereStatement = $whereStatement."UNHEX('".$uuid."'),";
-        }
-        $whereStatement = substr($whereStatement, 0, -1).")";
-	} else if(count($uuidArray) == 1) {
-		$whereStatement = $idColumn." = UNHEX('".$uuidArray[0]."')";
-	}
-
-	return $whereStatement;
+	$result = cache("SELECT HEX(id) as id FROM ".$server['playersTable']." WHERE name = '$name'", 300, 'playerNameToUUID', $server);
+	if(isset($result[0]))
+		return $result['id'];
+	else
+		return null;
 }
 
 function connect($server) {
@@ -485,100 +441,96 @@ function searchPlayers($search, $serverID, $server, $sortByCol = 'name', $sortBy
 	// Found results
 	$found = array();
 
-	$whereStatement = constructWhereWithUUIDs(playerNameToUUID($search, $server), 'player_id');
+	if((isset($settings['player_current_ban']) && $settings['player_current_ban']) || !isset($settings['player_current_ban'])) {
+		// Current Bans
+		$result = cache("SELECT HEX(player_id) AS player_id, p.name, a.name AS actor_name, reason, created, expires FROM ".$server['playerBansTable']." b JOIN ".$server['playersTable']." p ON b.player_id = p.id JOIN ".$server['playersTable']." a ON b.actor_id = a.id WHERE p.name LIKE '%".$search."%' ORDER BY ".$sort['bans']." $sortBy", $settings['cache_search'], $serverID.'/search', $server);
+		if(isset($result[0]) && !is_array($result[0]) && !empty($result[0]))
+			$result = array($result);
 
-	if ($whereStatement) {
-		if((isset($settings['player_current_ban']) && $settings['player_current_ban']) || !isset($settings['player_current_ban'])) {
-			// Current Bans
-			$result = cache("SELECT HEX(player_id) AS player_id, HEX(actor_id) AS actor_id, reason, created, expires FROM ".$server['playerBansTable']." WHERE ".constructWhereWithUUIDs(playerNameToUUID($search, $server), 'player_id')." ORDER BY ".$sort['bans']." $sortBy", $settings['cache_search'], $serverID.'/search', $server);
-			if(isset($result[0]) && !is_array($result[0]) && !empty($result[0]))
-				$result = array($result);
-
-			if($result && count($result) > 0) {
-				foreach($result as $r)
-					$found[$r['player_id']] = array('by' => $r['actor_id'], 'reason' => $r['reason'], 'type' => 'Ban', 'time' => $r['created'], 'expires' => $r['expires']);
-			}
+		if($result && count($result) > 0) {
+			foreach($result as $r)
+				$found[$r['player_id']] = array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => 'Ban', 'time' => $r['created'], 'expires' => $r['expires']);
 		}
+	}
 
-		if((isset($settings['player_previous_bans']) && $settings['player_previous_bans']) || !isset($settings['player_previous_bans'])) {
-			if($past) {
-				// Past Bans
-				$result = cache("SELECT HEX(player_id) AS player_id, HEX(actor_id) AS actor_id, reason, created, expired FROM ".$server['playerBanRecordsTable']." WHERE ".constructWhereWithUUIDs(playerNameToUUID($search, $server), 'player_id')." ORDER BY ".$sort['banrecords']." $sortBy", $settings['cache_search'], $serverID.'/search', $server);
-				if(isset($result[0]) && !is_array($result[0]) && !empty($result[0]))
-					$result = array($result);
-
-				if($result && count($result) > 0) {
-					foreach($result as $r) {
-						if(!isset($found[$r['player_id']]))
-							$found[$r['player_id']] = array('by' => $r['actor_id'], 'reason' => $r['reason'], 'type' => 'Ban', 'time' => $r['created'], 'expires' => $r['expired'], 'past' => true);
-						else if(isset($found[$r['player_id']]['created']) && $found[$r['player_id']]['created'] < $r['created'])
-							$found[$r['player_id']] = array('by' => $r['actor_id'], 'reason' => $r['reason'], 'type' => 'Ban', 'time' => $r['created'], 'expires' => $r['expired'], 'past' => true);
-					}
-				}
-			}
-		}
-
-		if((isset($settings['player_current_mute']) && $settings['player_current_mute']) || !isset($settings['player_current_mute'])) {
-			// Current Mutes
-			$result = cache("SELECT HEX(player_id) AS player_id, HEX(actor_id) AS actor_id, reason, created, expires FROM ".$server['playerMutesTable']." WHERE ".constructWhereWithUUIDs(playerNameToUUID($search, $server), 'player_id')." ORDER BY ".$sort['mutes']." $sortBy", $settings['cache_search'], $serverID.'/search', $server);
-			if(isset($result[0]) && !is_array($result[0]) && !empty($result[0]))
-				$result = array($result);
-
-			if($result && count($result) > 0) {
-				foreach($result as $r) {
-					if(!isset($found[$r['player_id']]))
-					$found[$r['player_id']] = array('by' => $r['actor_id'], 'reason' => $r['reason'], 'type' => 'Mute', 'time' => $r['created'], 'expires' => $r['expires']);
-				}
-			}
-		}
-
+	if((isset($settings['player_previous_bans']) && $settings['player_previous_bans']) || !isset($settings['player_previous_bans'])) {
 		if($past) {
-			if((isset($settings['player_previous_mutes']) && $settings['player_previous_mutes']) || !isset($settings['player_previous_mutes'])) {
-				// Past Mutes
-				$result = cache("SELECT HEX(player_id) AS player_id, HEX(actor_id) AS actor_id, reason, created, expired FROM ".$server['playerMuteRecordsTable']." WHERE ".constructWhereWithUUIDs(playerNameToUUID($search, $server), 'player_id')." ORDER BY ".$sort['mutes']." $sortBy", $settings['cache_search'], $serverID.'/search', $server);
-				if(isset($result[0]) && !is_array($result[0]) && !empty($result[0]))
-					$result = array($result);
-
-				if($result && count($result) > 0) {
-					foreach($result as $r) {
-						if(!isset($found[$r['player_id']]))
-							$found[$r['player_id']] = array('by' => $r['actor_id'], 'reason' => $r['reason'], 'type' => 'Mute', 'time' => $r['created'], 'expires' => $r['expired'], 'past' => true);
-						else if(isset($found[$r['player_id']]['created']) && $found[$r['player_id']]['created'] < $r['created'])
-							$found[$r['player_id']] = array('by' => $r['actor_id'], 'reason' => $r['reason'], 'type' => 'Mute', 'time' => $r['created'], 'expires' => $r['expired'], 'past' => true);
-					}
-				}
-			}
-
-			if((isset($settings['player_kicks']) && $settings['player_kicks']) || !isset($settings['player_kicks'])) {
-				// Kicks
-				$result = cache("SELECT HEX(player_id) AS player_id, HEX(actor_id) AS actor_id, reason, created FROM ".$server['playerKicksTable']." WHERE ".constructWhereWithUUIDs(playerNameToUUID($search, $server), 'player_id')." ORDER BY ".$sort['kicks']." $sortBy", $settings['cache_search'], $serverID.'/search', $server);
-				if(isset($result[0]) && !is_array($result[0]) && !empty($result[0]))
-					$result = array($result);
-
-				if($result && count($result) > 0) {
-					foreach($result as $r) {
-						if(!isset($found[$r['player_id']]))
-							$found[$r['player_id']] = array('by' => $r['actor_id'], 'reason' => $r['reason'], 'type' => 'Kick', 'time' => $r['created'], 'expires' => 0, 'past' => true);
-						else if(isset($found[$r['player_id']]['created']) && $found[$r['player_id']]['created'] < $r['created'])
-							$found[$r['player_id']] = array('by' => $r['actor_id'], 'reason' => $r['reason'], 'type' => 'Kick', 'time' => $r['created'], 'expires' => 0, 'past' => true);
-					}
-				}
-			}
-		}
-
-		if((isset($settings['player_warnings']) && $settings['player_warnings']) || !isset($settings['player_warnings'])) {
-			// Warnings
-			$result = cache("SELECT HEX(player_id) AS player_id, HEX(actor_id) AS actor_id, reason, created FROM ".$server['playerWarningsTable']." WHERE ".constructWhereWithUUIDs(playerNameToUUID($search, $server), 'player_id')." ORDER BY ".$sort['warnings']." $sortBy", $settings['cache_search'], $serverID.'/search', $server);
+			// Past Bans
+			$result = cache("SELECT HEX(player_id) AS player_id, p.name, a.name AS actor_name, reason, created, expired FROM ".$server['playerBanRecordsTable']." b JOIN ".$server['playersTable']." p ON b.player_id = p.id JOIN ".$server['playersTable']." a ON b.actor_id = a.id WHERE p.name LIKE '%".$search."%' ORDER BY ".$sort['banrecords']." $sortBy", $settings['cache_search'], $serverID.'/search', $server);
 			if(isset($result[0]) && !is_array($result[0]) && !empty($result[0]))
 				$result = array($result);
 
 			if($result && count($result) > 0) {
 				foreach($result as $r) {
 					if(!isset($found[$r['player_id']]))
-						$found[$r['player_id']] = array('by' => $r['actor_id'], 'reason' => $r['reason'], 'type' => 'Warning', 'time' => $r['created'], 'expires' => 0, 'past' => true);
+						$found[$r['player_id']] = array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => 'Ban', 'time' => $r['created'], 'expires' => $r['expired'], 'past' => true);
 					else if(isset($found[$r['player_id']]['created']) && $found[$r['player_id']]['created'] < $r['created'])
-						$found[$r['player_id']] = array('by' => $r['actor_id'], 'reason' => $r['reason'], 'type' => 'Warning', 'time' => $r['created'], 'expires' => 0, 'past' => true);
+						$found[$r['player_id']] = array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => 'Ban', 'time' => $r['created'], 'expires' => $r['expired'], 'past' => true);
 				}
+			}
+		}
+	}
+
+	if((isset($settings['player_current_mute']) && $settings['player_current_mute']) || !isset($settings['player_current_mute'])) {
+		// Current Mutes
+		$result = cache("SELECT HEX(player_id) AS player_id, p.name, a.name AS actor_name, reason, created, expires FROM ".$server['playerMutesTable']." b JOIN ".$server['playersTable']." p ON b.player_id = p.id JOIN ".$server['playersTable']." a ON b.actor_id = a.id WHERE p.name LIKE '%".$search."%' ORDER BY ".$sort['mutes']." $sortBy", $settings['cache_search'], $serverID.'/search', $server);
+		if(isset($result[0]) && !is_array($result[0]) && !empty($result[0]))
+			$result = array($result);
+
+		if($result && count($result) > 0) {
+			foreach($result as $r) {
+				if(!isset($found[$r['player_id']]))
+				$found[$r['player_id']] = array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => 'Mute', 'time' => $r['created'], 'expires' => $r['expires']);
+			}
+		}
+	}
+
+	if($past) {
+		if((isset($settings['player_previous_mutes']) && $settings['player_previous_mutes']) || !isset($settings['player_previous_mutes'])) {
+			// Past Mutes
+			$result = cache("SELECT HEX(player_id) AS player_id, p.name, a.name AS actor_name, reason, created, expired FROM ".$server['playerMuteRecordsTable']." b JOIN ".$server['playersTable']." p ON b.player_id = p.id JOIN ".$server['playersTable']." a ON b.actor_id = a.id WHERE p.name LIKE '%".$search."%' ORDER BY ".$sort['mutes']." $sortBy", $settings['cache_search'], $serverID.'/search', $server);
+			if(isset($result[0]) && !is_array($result[0]) && !empty($result[0]))
+				$result = array($result);
+
+			if($result && count($result) > 0) {
+				foreach($result as $r) {
+					if(!isset($found[$r['player_id']]))
+						$found[$r['player_id']] = array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => 'Mute', 'time' => $r['created'], 'expires' => $r['expired'], 'past' => true);
+					else if(isset($found[$r['player_id']]['created']) && $found[$r['player_id']]['created'] < $r['created'])
+						$found[$r['player_id']] = array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => 'Mute', 'time' => $r['created'], 'expires' => $r['expired'], 'past' => true);
+				}
+			}
+		}
+
+		if((isset($settings['player_kicks']) && $settings['player_kicks']) || !isset($settings['player_kicks'])) {
+			// Kicks
+			$result = cache("SELECT HEX(player_id) AS player_id, p.name, a.name AS actor_name, reason, created FROM ".$server['playerKicksTable']." b JOIN ".$server['playersTable']." p ON b.player_id = p.id JOIN ".$server['playersTable']." a ON b.actor_id = a.id WHERE p.name LIKE '%".$search."%' ORDER BY ".$sort['kicks']." $sortBy", $settings['cache_search'], $serverID.'/search', $server);
+			if(isset($result[0]) && !is_array($result[0]) && !empty($result[0]))
+				$result = array($result);
+
+			if($result && count($result) > 0) {
+				foreach($result as $r) {
+					if(!isset($found[$r['player_id']]))
+						$found[$r['player_id']] = array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => 'Kick', 'time' => $r['created'], 'expires' => 0, 'past' => true);
+					else if(isset($found[$r['player_id']]['created']) && $found[$r['player_id']]['created'] < $r['created'])
+						$found[$r['player_id']] = array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => 'Kick', 'time' => $r['created'], 'expires' => 0, 'past' => true);
+				}
+			}
+		}
+	}
+
+	if((isset($settings['player_warnings']) && $settings['player_warnings']) || !isset($settings['player_warnings'])) {
+		// Warnings
+		$result = cache("SELECT HEX(player_id) AS player_id, p.name, a.name AS actor_name, reason, created FROM ".$server['playerWarningsTable']." b JOIN ".$server['playersTable']." p ON b.player_id = p.id JOIN ".$server['playersTable']." a ON b.actor_id = a.id WHERE p.name LIKE '%".$search."%' ORDER BY ".$sort['warnings']." $sortBy", $settings['cache_search'], $serverID.'/search', $server);
+		if(isset($result[0]) && !is_array($result[0]) && !empty($result[0]))
+			$result = array($result);
+
+		if($result && count($result) > 0) {
+			foreach($result as $r) {
+				if(!isset($found[$r['player_id']]))
+					$found[$r['player_id']] = array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => 'Warning', 'time' => $r['created'], 'expires' => 0, 'past' => true);
+				else if(isset($found[$r['player_id']]['created']) && $found[$r['player_id']]['created'] < $r['created'])
+					$found[$r['player_id']] = array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => 'Warning', 'time' => $r['created'], 'expires' => 0, 'past' => true);
 			}
 		}
 	}
@@ -587,8 +539,7 @@ function searchPlayers($search, $serverID, $server, $sortByCol = 'name', $sortBy
 		return false;
 	else if(count($found) == 1) {
 		// Redirect!
-		$p = array_keys($found);
-		redirect('index.php?action=viewplayer&player='.UUIDtoPlayerName($p[0], $server).'&server='.$serverID);
+		redirect('index.php?action=viewplayer&player='.reset($found)['name'].'&server='.$serverID);
 	} else {
 		// STUFF
 		return $found;
@@ -625,11 +576,11 @@ function searchIps($search, $serverID, $server, $sortByCol = 'name', $sortBy = '
 	switch($sortByCol) {
 		default:
 		case 0: // Name
-			$sort['bans'] = $sort['banrecords'] = 'id';
+			$sort['bans'] = $sort['banrecords'] = 'b.id';
 		break;
 		case 1: // Type
 			$sortByType = true;
-			$sort['bans'] = $sort['banrecords'] = 'id';
+			$sort['bans'] = $sort['banrecords'] = 'b.id';
 		break;
 		case 2: // By
 			$sort['bans'] = $sort['banrecords'] = 'actor_id';
@@ -674,28 +625,28 @@ function searchIps($search, $serverID, $server, $sortByCol = 'name', $sortBy = '
 	$found = array();
 
 	// Current Bans
-	$result = cache("SELECT *, HEX(actor_id) AS actor_id FROM ".$server['ipBansTable']." ".$whereStatement." ORDER BY ".$sort['bans']." $sortBy", $settings['cache_search'], $serverID.'/search', $server);
+	$result = cache("SELECT *, a.name AS actor_name FROM ".$server['ipBansTable']." b JOIN ".$server['playersTable']." a ON b.actor_id = a.id ".$whereStatement." ORDER BY ".$sort['bans']." $sortBy", $settings['cache_search'], $serverID.'/search', $server);
 	if(isset($result[0]) && !is_array($result[0]) && !empty($result[0]))
 		$result = array($result);
 
 	if($result && count($result) > 0) {
 		foreach($result as $r) {
-			$found[long2ip($r['ip'])] = array('by' => $r['actor_id'], 'reason' => $r['reason'], 'type' => 'IP Ban', 'time' => $r['created'], 'expires' => $r['expires']);
+			$found[long2ip($r['ip'])] = array('by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => 'IP Ban', 'time' => $r['created'], 'expires' => $r['expires']);
 		}
 	}
 
 	if($past) {
 		// Past Bans
-		$result = cache("SELECT *, HEX(actor_id) AS actor_id, HEX(pastActor_id) AS pastActor_id FROM ".$server['ipBanRecordsTable']." ".$whereStatement." ORDER BY ".$sort['banrecords']." $sortBy", $settings['cache_search'], $serverID.'/search', $server);
+		$result = cache("SELECT *, a.name AS actor_name FROM ".$server['ipBanRecordsTable']." b JOIN ".$server['playersTable']." a ON b.actor_id = a.id ".$whereStatement." ORDER BY ".$sort['banrecords']." $sortBy", $settings['cache_search'], $serverID.'/search', $server);
 		if(isset($result[0]) && !is_array($result[0]) && !empty($result[0]))
 			$result = array($result);
 
 		if($result && count($result) > 0) {
 			foreach($result as $r) {
 				if(!isset($found[long2ip($r['ip'])]))
-					$found[long2ip($r['ip'])] = array('by' => $r['actor_id'], 'reason' => $r['reason'], 'type' => 'IP Ban', 'time' => $r['created'], 'expires' => $r['expired'], 'past' => true);
+					$found[long2ip($r['ip'])] = array('by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => 'IP Ban', 'time' => $r['created'], 'expires' => $r['expired'], 'past' => true);
 				else if($found[long2ip($r['ip'])]['created'] < $r['created'])
-					$found[long2ip($r['ip'])] = array('by' => $r['actor_id'], 'reason' => $r['reason'], 'type' => 'IP Ban', 'time' => $r['created'], 'expires' => $r['expired'], 'past' => false);
+					$found[long2ip($r['ip'])] = array('by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => 'IP Ban', 'time' => $r['created'], 'expires' => $r['expired'], 'past' => false);
 			}
 		}
 	}

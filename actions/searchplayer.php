@@ -90,9 +90,8 @@ else {
 				if(!isset($playerNames[$i]))
 					break;
 
-				$playerName = UUIDtoPlayerName($playerNames[$i], $server);
-
 				$player = $found[$playerNames[$i]];
+				$playerName = $player['name'];
 				$expireTime = ($player['expires'] + $mysqlSecs)- $timeNow;
 
 				if($player['type'] != 'Kick' && $player['type'] != 'Warning') {
@@ -108,7 +107,7 @@ else {
 					$skip = false;
 					switch($filterCol) {
 						case 0:
-							if(stripos(UUIDtoPlayerName($playerNames[$i], $server), $filter) === false)
+							if(stripos($playerName, $filter) === false)
 								$skip = true;
 						break;
 						case 1:
@@ -144,7 +143,7 @@ else {
 				$ajaxArray['rows'][] = array(
 					'<img src="'.str_replace(array('%name%', '%uuid%'), array($playerName, $playerNames[$i]), $settings['skin']['helm']).'" class="skin-helm" /> <a href="index.php?action=viewplayer&player='.$playerName.'&server='.$_GET['server'].'">'.$playerName.'</a>',
 					$player['type'],
-					UUIDtoPlayerName($player['by'], $server),
+					$player['by'],
 					$player['reason'],
 					$expires,
 					$time

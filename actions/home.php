@@ -16,7 +16,7 @@ function latestBans($server, $serverID) {
 	clearCache($serverID.'/latestbans', 300);
 	clearCache($serverID.'/mysqlTime', 300);
 
-	$result = cache("SELECT HEX(player_id) AS player_id, HEX(actor_id) AS actor_id, reason, created, expires FROM ".$server['playerBansTable']." ORDER BY created DESC LIMIT ".$settings['widget_bans_count'], $settings['cache_home'], $serverID.'/search', $server);
+	$result = cache("SELECT HEX(player_id) AS player_id, p.name, a.name AS actor_name, reason, created, expires FROM ".$server['playerBansTable']." b JOIN ".$server['playersTable']." p ON b.player_id = p.id JOIN bm_players a ON b.actor_id = a.id ORDER BY created DESC LIMIT ".$settings['widget_bans_count'], $settings['cache_home'], $serverID.'/search', $server);
 
 	if(isset($result[0]) && !is_array($result[0]) && !empty($result[0])){
 		$result = array($result);
@@ -33,8 +33,8 @@ function latestBans($server, $serverID) {
 		$mysqlTime = ($mysqlTime > 0)  ? floor($mysqlTime) : ceil ($mysqlTime);
 		$mysqlSecs = ($mysqlTime * 60) * 60;
 		foreach($result as $r) {
-			$playername = UUIDtoPlayerName($r['player_id'], $server);
-			$actorname = UUIDtoPlayerName($r['actor_id'], $server);
+			$playername = $r['name'];
+			$actorname = $r['actor_name'];
 
 			$expires = ($r['expires'] + $mysqlSecs)- time();
 			echo '
@@ -57,7 +57,7 @@ function latestMutes($server, $serverID) {
 	clearCache($serverID.'/latestmutes', 300);
 	clearCache($serverID.'/mysqlTime', 300);
 
-	$result = cache("SELECT HEX(player_id) AS player_id, HEX(actor_id) AS actor_id, reason, created, expires FROM ".$server['playerMutesTable']." ORDER BY created DESC LIMIT ".$settings['widget_mutes_count'], $settings['cache_home'], $serverID.'/search', $server);
+	$result = cache("SELECT HEX(player_id) AS player_id, p.name, a.name AS actor_name, reason, created, expires FROM ".$server['playerMutesTable']." b JOIN ".$server['playersTable']." p ON b.player_id = p.id JOIN bm_players a ON b.actor_id = a.id ORDER BY created DESC LIMIT ".$settings['widget_mutes_count'], $settings['cache_home'], $serverID.'/search', $server);
 
 	if(isset($result[0]) && !is_array($result[0]) && !empty($result[0])) {
 		$result = array($result);
@@ -74,8 +74,8 @@ function latestMutes($server, $serverID) {
 		$mysqlTime = ($mysqlTime > 0)  ? floor($mysqlTime) : ceil ($mysqlTime);
 		$mysqlSecs = ($mysqlTime * 60) * 60;
 		foreach($result as $r) {
-			$playername = UUIDtoPlayerName($r['player_id'], $server);
-			$actorname = UUIDtoPlayerName($r['actor_id'], $server);
+			$playername = $r['name'];
+			$actorname = $r['actor_name'];
 
 			$expires = ($r['expires'] + $mysqlSecs)- time();
 			echo '<li class="latestban"><a href="index.php?action=viewplayer&player='.$playername.'&server='.$serverID.'"><img src="'.str_replace(array('%name%', '%uuid%'), array($playername, $r['player_id']), $settings['skin']['helm']).'" class="skin-helm" /> '.$playername.'</a><button class="btn btn-info ban-info" rel="popover" data-html="true" data-content="'.str_replace('"', '&quot;', $r['reason']).'" data-original-title="'.$actorname;
@@ -97,7 +97,7 @@ function latestWarnings($server, $serverID) {
 	clearCache($serverID.'/latestwarnings', 300);
 	clearCache($serverID.'/mysqlTime', 300);
 
-	$result = cache("SELECT HEX(player_id) AS player_id, HEX(actor_id) AS actor_id, reason, created FROM ".$server['playerWarningsTable']." ORDER BY created DESC LIMIT ".$settings['widget_warnings_count'], $settings['cache_home'], $serverID.'/search', $server);
+	$result = cache("SELECT HEX(player_id) AS player_id, p.name, a.name AS actor_name, reason, created, expires FROM ".$server['playerWarningsTable']." b JOIN ".$server['playersTable']." p ON b.player_id = p.id JOIN bm_players a ON b.actor_id = a.id ORDER BY created DESC LIMIT ".$settings['widget_warnings_count'], $settings['cache_home'], $serverID.'/search', $server);
 
 	if(isset($result[0]) && !is_array($result[0]) && !empty($result[0])){
 		$result = array($result);
@@ -114,10 +114,17 @@ function latestWarnings($server, $serverID) {
 		$mysqlTime = ($mysqlTime > 0)  ? floor($mysqlTime) : ceil ($mysqlTime);
 		$mysqlSecs = ($mysqlTime * 60) * 60;
 		foreach($result as $r) {
-			$playername = UUIDtoPlayerName($r['player_id'], $server);
-			$actorname = UUIDtoPlayerName($r['actor_id'], $server);
+			$playername = $r['name'];
+			$actorname = $r['actor_name'];
 
-			echo '<li class="latestban"><a href="index.php?action=viewplayer&player='.$playername.'&server='.$serverID.'"><img src="'.str_replace(array('%name%', '%uuid%'), array($playername, $r['player_id']), $settings['skin']['helm']).'" class="skin-helm" /> '.$playername.'</a><button class="btn btn-info ban-info" rel="popover" data-html="true" data-content="'.str_replace('"', '&quot;', $r['reason']).'" data-original-title="'.$actorname.'"><span class="glyphicon glyphicon-info-sign"></span></button></li>';
+			echo '<li class="latestban"><a href="index.php?action=viewplayer&player='.$playername.'&server='.$serverID.'"><img src="'.str_replace(array('%name%', '%uuid%'), array($playername, $r['player_id']), $settings['skin']['helm']).'" class="skin-helm" /> '.$playername.'</a><button class="btn btn-info ban-info" rel="popover" data-html="true" data-content="'.str_replace('"', '&quot;', $r['reason']).'" data-original-title="'.$actorname;
+			if($r['expires'] == 0)
+				echo ' <span class=\'label label-danger\'>Never</span>';
+			else if($expires > 0)
+				echo ' <span class=\'label label-warning\'>'.secs_to_hmini($expires).'</span>';
+			else
+				echo ' <span class=\'label label-success\'>Now</span>';
+			echo '"><span class="glyphicon glyphicon-info-sign"></span></button></li>';
 		}
 	}
 }

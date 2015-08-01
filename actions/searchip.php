@@ -101,7 +101,7 @@ else {
 					$skip = false;
 					switch($filterCol) {
 						case 0:
-							if(stripos(UUIDtoPlayerName($playerNames[$i], $server), $filter) === false)
+							if(stripos($playerNames[$i], $filter) === false)
 								$skip = true;
 						break;
 						case 1:
@@ -137,7 +137,7 @@ else {
 				$ajaxArray['rows'][] = array(
 					'<a href="index.php?action=viewip&ip='.$playerNames[$i].'&server='.$_GET['server'].'">'.$playerNames[$i].'</a>',
 					$player['type'],
-					UUIDtoPlayerName($player['by'], $server),
+					$player['by'],
 					$player['reason'],
 					$expires,
 					$time

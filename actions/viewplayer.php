@@ -33,15 +33,14 @@ else {
 	}
 
 	$UUID = playerNameToUUID($_GET['player'], $server);
-	$UUID = $UUID[0];
 
 	// Check if the player exists
-	$currentBans = cache("SELECT *, HEX(player_id) as player_id, HEX(actor_id) as actor_id FROM ".$server['playerBansTable']." WHERE player_id = UNHEX('".$UUID."')", $settings['cache_viewplayer'], $_GET['server'].'/players', $server);
-	$pastBans = cache("SELECT *, HEX(player_id) as player_id, HEX(actor_id) as actor_id, HEX(pastActor_id) as pastActor_id FROM ".$server['playerBanRecordsTable']." WHERE player_id = UNHEX('".$UUID."') AND pastCreated <> 0", $settings['cache_viewplayer'], $_GET['server'].'/players', $server);
-	$currentMutes = cache("SELECT *, HEX(player_id) as player_id, HEX(actor_id) as actor_id FROM ".$server['playerMutesTable']." WHERE player_id = UNHEX('".$UUID."')", $settings['cache_viewplayer'], $_GET['server'].'/players', $server);
-	$pastMutes = cache("SELECT *, HEX(player_id) as player_id, HEX(actor_id) as actor_id, HEX(pastActor_id) as pastActor_id FROM ".$server['playerMuteRecordsTable']." WHERE player_id = UNHEX('".$UUID."')", $settings['cache_viewplayer'], $_GET['server'].'/players', $server);
-	$pastKicks = cache("SELECT *, HEX(player_id) as player_id, HEX(actor_id) as actor_id FROM ".$server['playerKicksTable']." WHERE player_id = UNHEX('".$UUID."')", $settings['cache_viewplayer'], $_GET['server'].'/players', $server);
-	$pastWarnings = cache("SELECT *, HEX(player_id) as player_id, HEX(actor_id) as actor_id FROM ".$server['playerWarningsTable']." WHERE player_id = UNHEX('".$UUID."')", $settings['cache_viewplayer'], $_GET['server'].'/players', $server);
+	$currentBans = cache("SELECT b.id, reason, created, expires, a.name AS actor_name FROM ".$server['playerBansTable']." b JOIN ".$server['playersTable']." a ON b.actor_id = a.id WHERE player_id = UNHEX('".$UUID."')", $settings['cache_viewplayer'], $_GET['server'].'/players', $server);
+	$pastBans = cache("SELECT b.id, reason, created, expired, a.name AS actor_name, pa.name AS pastActor_name FROM ".$server['playerBanRecordsTable']." b JOIN ".$server['playersTable']." a ON b.actor_id = a.id JOIN ".$server['playersTable']." pa ON b.pastActor_id = pa.id WHERE player_id = UNHEX('".$UUID."') AND pastCreated <> 0", $settings['cache_viewplayer'], $_GET['server'].'/players', $server);
+	$currentMutes = cache("SELECT b.id, reason, created, expires, a.name AS actor_name FROM ".$server['playerMutesTable']." b JOIN ".$server['playersTable']." a ON b.actor_id = a.id WHERE player_id = UNHEX('".$UUID."')", $settings['cache_viewplayer'], $_GET['server'].'/players', $server);
+	$pastMutes = cache("SELECT b.id, reason, created, expired, a.name AS actor_name, pa.name AS pastActor_name FROM ".$server['playerMuteRecordsTable']." b JOIN ".$server['playersTable']." a ON b.actor_id = a.id JOIN ".$server['playersTable']." pa ON b.pastActor_id = pa.id WHERE player_id = UNHEX('".$UUID."')", $settings['cache_viewplayer'], $_GET['server'].'/players', $server);
+	$pastKicks = cache("SELECT b.id, reason, created, a.name AS actor_name FROM ".$server['playerKicksTable']." b JOIN ".$server['playersTable']." a ON b.actor_id = a.id WHERE player_id = UNHEX('".$UUID."')", $settings['cache_viewplayer'], $_GET['server'].'/players', $server);
+	$pastWarnings = cache("SELECT b.id, reason, created, a.name AS actor_name FROM ".$server['playerWarningsTable']." b JOIN ".$server['playersTable']." a ON b.actor_id = a.id WHERE player_id = UNHEX('".$UUID."')", $settings['cache_viewplayer'], $_GET['server'].'/players', $server);
 
 	if(count($currentBans) == 0 && count($pastBans) == 0 && count($currentMutes) == 0 && count($pastMutes) == 0 && count($pastKicks) == 0 && $pastWarnings == 0) {
 		errors('Player does not exist');
@@ -116,7 +115,7 @@ else {
 					</tr>
 					<tr>
 						<td>Banned by:</td>
-						<td>'.UUIDtoPlayerName($currentBans['actor_id'], $server).'</td>
+						<td>'.$currentBans['actor_name'].'</td>
 					</tr>
 					<tr>
 						<td>Banned at:</td>
@@ -270,7 +269,7 @@ else {
 					</tr>
 					<tr>
 						<td>Muted by:</td>
-						<td>'.UUIDtoPlayerName($currentMutes['actor_id'], $server).'</td>
+						<td>'.$currentMutes['actor_name'].'</td>
 					</tr>
 					<tr>
 						<td>Muted at:</td>
@@ -445,10 +444,10 @@ else {
 					<tr>
 						<td>'.$i.'</td>
 						<td>'.$r['reason'].'</td>
-						<td>'.UUIDtoPlayerName($r['pastActor_id'], $server).'</td>
+						<td>'.$r['pastActor_name'].'</td>
 						<td>'.date('H:i:s d/m/y', $r['pastCreated']).'</td>
 						<td>'.($r['expired'] == 0 ? 'Permanent' : secs_to_h($r['expired'] - $r['pastCreated'])).'</td>
-						<td>'.UUIDtoPlayerName($r['actor_id'], $server).'</td>
+						<td>'.$r['actor_name'].'</td>
 						<td>'.date('H:i:s d/m/y', $r['created']).'</td>'.($serverName ? '
 						<td>'.$r['server'].'</td>' : '').($admin ? '
 						<td class="admin-options"><a href="#" class="btn btn-danger delete btn-xs" title="Remove" data-server="'.$_GET['server'].'" data-record-id="'.$r['id'].'"><span class="glyphicon glyphicon-trash"></span></a></td>' : '').'
@@ -512,10 +511,10 @@ else {
 					<tr>
 						<td>'.$i.'</td>
 						<td>'.$r['reason'].'</td>
-						<td>'.UUIDtoPlayerName($r['pastActor_id'], $server).'</td>
+						<td>'.$r['pastActor_name'].'</td>
 						<td>'.date('d/m/y', $r['created']).'</td>
 						<td>'.($r['expired'] == 0 ? 'Permanent' : secs_to_h($r['expired'] - $r['pastCreated'])).'</td>
-						<td>'.UUIDtoPlayerName($r['actor_id'], $server).'</td>
+						<td>'.$r['actor_name'].'</td>
 						<td>'.date('d/m/y', $r['pastCreated']).'</td>'.($serverName ? '
 						<td>'.$r['server'].'</td>' : '').($admin ? '
 						<td class="admin-options"><a href="#" class="btn btn-danger delete btn-xs" title="Remove" data-server="'.$_GET['server'].'" data-record-id="'.$r['id'].'"><span class="glyphicon glyphicon-trash"></span></a></td>' : '').'
@@ -576,7 +575,7 @@ else {
 					<tr>
 						<td>'.$i.'</td>
 						<td>'.$r['reason'].'</td>
-						<td>'.UUIDtoPlayerName($r['actor_id'], $server).'</td>
+						<td>'.$r['actor_name'].'</td>
 						<td>'.date('H:i:s d/m/y', $r['created']).'</td>'.($serverName ? '
 						<td>'.$r['server'].'</td>' : '').($admin ? '
 						<td class="admin-options"><a href="#" class="btn btn-danger delete btn-xs" title="Remove" data-server="'.$_GET['server'].'" data-record-id="'.$r['id'].'"><span class="glyphicon glyphicon-trash"></span></a></td>' : '').'
@@ -636,7 +635,7 @@ else {
 					<tr>
 						<td>'.$i.'</td>
 						<td>'.$r['reason'].'</td>
-						<td>'.UUIDtoPlayerName($r['actor_id'], $server).'</td>
+						<td>'.$r['actor_name'].'</td>
 						<td>'.date('d/m/y', $r['created']).'</td>'.($serverName ? '
 						<td>'.$r['server'].'</td>' : '').($admin ? '
 						<td class="admin-options"><a href="#" class="btn btn-danger delete btn-xs" title="Remove" data-server="'.$_GET['server'].'" data-record-id="'.$r['id'].'"><span class="glyphicon glyphicon-trash"></span></a></td>' : '').'

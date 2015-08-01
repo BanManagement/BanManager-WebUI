@@ -32,10 +32,9 @@ else {
 		$admin = false;
 
 	// Check if the player exists
-	$associatedAccounts = array();
-	array_push($associatedAccounts, cache("SELECT *, HEX(id) AS id FROM ".$server['playersTable']." WHERE ip = INET_ATON('".$_GET['ip']."')", $settings['cache_viewip'], $_GET['server'].'/ips', $server));
-	$currentBans = cache("SELECT *, HEX(actor_id) AS actor_id FROM ".$server['ipBansTable']." WHERE ip = INET_ATON('".$_GET['ip']."')", $settings['cache_viewip'], $_GET['server'].'/ips', $server);
-	$pastBans = cache("SELECT *, HEX(actor_id) AS actor_id, HEX(pastActor_id) AS pastActor_id FROM ".$server['ipBanRecordsTable']." WHERE ip = INET_ATON('".$_GET['ip']."')", $settings['cache_viewip'], $_GET['server'].'/ips', $server);
+	$associatedAccounts = cache("SELECT HEX(id) AS id, name FROM ".$server['playersTable']." WHERE ip = INET_ATON('".$_GET['ip']."')", $settings['cache_viewip'], $_GET['server'].'/ips', $server);
+	$currentBans = cache("SELECT *, a.name AS actor_name FROM ".$server['ipBansTable']." b JOIN ".$server['playersTable']." a ON b.actor_id = a.id WHERE b.ip = INET_ATON('".$_GET['ip']."')", $settings['cache_viewip'], $_GET['server'].'/ips', $server);
+	$pastBans = cache("SELECT *, a.name AS actor_name, pa.name AS pastActor_name FROM ".$server['ipBanRecordsTable']." b JOIN ".$server['playersTable']." a ON b.actor_id = a.id JOIN ".$server['playersTable']." pa ON b.pastActor_id = pa.id WHERE b.ip = INET_ATON('".$_GET['ip']."')", $settings['cache_viewip'], $_GET['server'].'/ips', $server);
 	if(count($currentBans) == 0 && count($pastBans) == 0) {
 		errors('IP does not exist');
 		?><a href="index.php" class="btn btn-primary">New Search</a><?php
@@ -90,16 +89,14 @@ else {
 					<td colspan="4">None found</td>
 				</tr>';
 						} else {
-							$i = 1;
-							foreach($associatedAccounts as $r) {
+							foreach($associatedAccounts as $i => $r) {
 								echo '
 									<tr>
-										<td>'.$i.'</td>
-										<td>'.UUIDtoPlayerName($r['id'], $server).'</td>
+										<td>'.($i + 1).'</td>
+										<td>'.$r['name'].'</td>
 										<td>'.$r['id'].'</td>
-										<td>'.long2ip($r['ip']).'</td>
+										<td>'.$_GET['ip'].'</td>
 									</tr>';
-								++$i;
 							}
 						}
 					?>
@@ -137,7 +134,7 @@ else {
 					</tr>
 					<tr>
 						<td>Banned by:</td>
-						<td>'.UUIDtoPlayerName($currentBans['actor_id'], $server).'</td>
+						<td>'.$currentBans['actor_name'].'</td>
 					</tr>
 					<tr>
 						<td>Banned at:</td>
@@ -302,10 +299,10 @@ else {
 					<tr>
 						<td>'.$i.'</td>
 						<td>'.$r['reason'].'</td>
-						<td>'.UUIDtoPlayerName($r['pastActor_id'], $server).'</td>
+						<td>'.$r['pastActor_name'].'</td>
 						<td>'.date('H:i:s d/m/y', $r['pastCreated']).'</td>
 						<td>'.($r['expired'] == 0 ? 'Never' : secs_to_h($r['expired'] - $r['pastCreated'])).'</td>
-						<td>'.UUIDtoPlayerName($r['actor_id'], $server).'</td>
+						<td>'.$r['actor_name'].'</td>
 						<td>'.date('H:i:s d/m/y', $r['created']).'</td>'.($serverName ? '
 						<td>'.$r['server'].'</td>' : '').($admin ? '
 						<td class="admin-options"><a href="#" class="btn btn-danger btn-xs delete" title="Remove" data-server="'.$_GET['server'].'" data-record-id="'.$r['id'].'"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a></td>' : '').'
