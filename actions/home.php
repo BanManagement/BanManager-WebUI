@@ -16,7 +16,7 @@ function latestBans($server, $serverID) {
 	clearCache($serverID.'/latestbans', 300);
 	clearCache($serverID.'/mysqlTime', 300);
 
-	$result = cache("SELECT HEX(player_id) AS player_id, p.name, a.name AS actor_name, reason, created, expires FROM ".$server['playerBansTable']." b JOIN ".$server['playersTable']." p ON b.player_id = p.id JOIN bm_players a ON b.actor_id = a.id ORDER BY created DESC LIMIT ".$settings['widget_bans_count'], $settings['cache_home'], $serverID.'/search', $server);
+	$result = cache("SELECT HEX(player_id) AS player_id, p.name, a.name AS actor_name, reason, created, expires FROM ".$server['playerBansTable']." b JOIN ".$server['playersTable']." p ON b.player_id = p.id JOIN ".$server['playersTable']." a ON b.actor_id = a.id ORDER BY created DESC LIMIT ".$settings['widget_bans_count'], $settings['cache_home'], $serverID.'/search', $server);
 
 	if(isset($result[0]) && !is_array($result[0]) && !empty($result[0])){
 		$result = array($result);
@@ -57,7 +57,7 @@ function latestMutes($server, $serverID) {
 	clearCache($serverID.'/latestmutes', 300);
 	clearCache($serverID.'/mysqlTime', 300);
 
-	$result = cache("SELECT HEX(player_id) AS player_id, p.name, a.name AS actor_name, reason, created, expires FROM ".$server['playerMutesTable']." b JOIN ".$server['playersTable']." p ON b.player_id = p.id JOIN bm_players a ON b.actor_id = a.id ORDER BY created DESC LIMIT ".$settings['widget_mutes_count'], $settings['cache_home'], $serverID.'/search', $server);
+	$result = cache("SELECT HEX(player_id) AS player_id, p.name, a.name AS actor_name, reason, created, expires FROM ".$server['playerMutesTable']." b JOIN ".$server['playersTable']." p ON b.player_id = p.id JOIN ".$server['playersTable']." a ON b.actor_id = a.id ORDER BY created DESC LIMIT ".$settings['widget_mutes_count'], $settings['cache_home'], $serverID.'/search', $server);
 
 	if(isset($result[0]) && !is_array($result[0]) && !empty($result[0])) {
 		$result = array($result);
@@ -97,7 +97,7 @@ function latestWarnings($server, $serverID) {
 	clearCache($serverID.'/latestwarnings', 300);
 	clearCache($serverID.'/mysqlTime', 300);
 
-	$result = cache("SELECT HEX(player_id) AS player_id, p.name, a.name AS actor_name, reason, created, expires FROM ".$server['playerWarningsTable']." b JOIN ".$server['playersTable']." p ON b.player_id = p.id JOIN bm_players a ON b.actor_id = a.id ORDER BY created DESC LIMIT ".$settings['widget_warnings_count'], $settings['cache_home'], $serverID.'/search', $server);
+	$result = cache("SELECT HEX(player_id) AS player_id, p.name, a.name AS actor_name, reason, created, expires FROM ".$server['playerWarningsTable']." b JOIN ".$server['playersTable']." p ON b.player_id = p.id JOIN ".$server['playersTable']." a ON b.actor_id = a.id ORDER BY created DESC LIMIT ".$settings['widget_warnings_count'], $settings['cache_home'], $serverID.'/search', $server);
 
 	if(isset($result[0]) && !is_array($result[0]) && !empty($result[0])){
 		$result = array($result);
