@@ -539,7 +539,8 @@ function searchPlayers($search, $serverID, $server, $sortByCol = 'name', $sortBy
 		return false;
 	else if(count($found) == 1) {
 		// Redirect!
-		redirect('index.php?action=viewplayer&player='.reset($found)['name'].'&server='.$serverID);
+		$player = reset($found);
+		redirect('index.php?action=viewplayer&player='.$player['name'].'&server='.$serverID);
 	} else {
 		// STUFF
 		return $found;
