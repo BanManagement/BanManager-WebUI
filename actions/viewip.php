@@ -34,7 +34,7 @@ else {
 	// Check if the player exists
 	$associatedAccounts = cache("SELECT HEX(id) AS id, name FROM ".$server['playersTable']." WHERE ip = INET_ATON('".$_GET['ip']."')", $settings['cache_viewip'], $_GET['server'].'/ips', $server);
 	$currentBans = cache("SELECT *, a.name AS actor_name FROM ".$server['ipBansTable']." b JOIN ".$server['playersTable']." a ON b.actor_id = a.id WHERE b.ip = INET_ATON('".$_GET['ip']."')", $settings['cache_viewip'], $_GET['server'].'/ips', $server);
-	$pastBans = cache("SELECT *, a.name AS actor_name, pa.name AS pastActor_name FROM ".$server['ipBanRecordsTable']." b JOIN ".$server['playersTable']." a ON b.actor_id = a.id JOIN ".$server['playersTable']." pa ON b.pastActor_id = pa.id WHERE b.ip = INET_ATON('".$_GET['ip']."')", $settings['cache_viewip'], $_GET['server'].'/ips', $server);
+	$pastBans = cache("SELECT *, a.name AS actor_name, pa.name AS pastActor_name, pastCreated FROM ".$server['ipBanRecordsTable']." b JOIN ".$server['playersTable']." a ON b.actor_id = a.id JOIN ".$server['playersTable']." pa ON b.pastActor_id = pa.id WHERE b.ip = INET_ATON('".$_GET['ip']."')", $settings['cache_viewip'], $_GET['server'].'/ips', $server);
 	if(count($currentBans) == 0 && count($pastBans) == 0) {
 		errors('IP does not exist');
 		?><a href="index.php" class="btn btn-primary">New Search</a><?php
