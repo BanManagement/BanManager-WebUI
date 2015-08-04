@@ -12,11 +12,11 @@ $icon-font-path: "../fonts/";
 @import 'bower_components/bootstrap-sass-official/assets/stylesheets/_bootstrap.scss';
 
 /* Bower (grunt-copy) components */
-@import 'libs/bootstrap-datetimepicker';
 @import 'libs/tablesorter-theme.bootstrap';
 // @import 'libs/visualize';
 // @import 'libs/visualize-light';
 
 /* Custom */
 @import 'libs/jquery_bootstrap-theme';
+@import 'datetimepickerPlugin';
 @import 'main';
