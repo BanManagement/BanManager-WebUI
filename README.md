@@ -77,6 +77,7 @@ Caution: When using the `dev` argument, Grunt won't minify your JS or CSS, so it
 * Better impression on first run (PR #53)
 * "First run" checks
 * Improve error handling for admin authentication (issue #49)
+* Improve database performance 
 
 ### Demo
 
