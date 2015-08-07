@@ -382,7 +382,7 @@ function connect($server) {
 	global $settings;
 
 	$mysqli = mysqli_connect($server['host'], $server['username'], $server['password'], $server['database'])
-		or die("Some error occurred during connection " . mysqli_error($mysqli));
+		or print("Some error occurred during connection " . mysqli_error($mysqli));
 
 	$settings['last_connection'] = $server;
 
