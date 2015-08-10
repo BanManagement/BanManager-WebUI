@@ -52,6 +52,8 @@ else if(isset($_SESSION['failed_attempts']) && $_SESSION['failed_attempts'] > 4)
 	}
 } else if(isset($_SESSION['admin']) && $_SESSION['admin']) {
 	?>
+	<div class="alert alert-info updatecheck" role="alert"><strong>Update available!</strong> You are currently using version <code>{{your.version}}</code>. Click here to download the latest version <code>{{new.version}}</code>: <a href="https://github.com/BanManagement/BanManager-WebUI/releases">https://github.com/BanManagement/BanManager-WebUI/releases</a></div>
+
 	<table class="table table-striped table-bordered" id="servers">
 		<thead>
 			<tr>
