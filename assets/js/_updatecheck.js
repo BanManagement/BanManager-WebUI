@@ -73,3 +73,41 @@ function versionCompare(v1, v2, options) {
   return 0;
 }
 
+function checkGithuVersion(callback){
+  $.ajax({
+    url: 'https://api.github.com/repos/BanManagement/BanManager-WebUI/releases',
+    dataType: 'json',
+    success: function(data) {
+      /*jshint camelcase: false */
+      callback(data[0].tag_name);
+      /*jshint camelcase: true */
+    }
+  });
+}
+
+function checkLocalVersion(callback){
+  $.ajax({
+    url: '//' + window.location.host + '/VERSION',
+    dataType: 'text',
+    success: function(data) {
+      callback($.trim(data));
+    }
+  });
+}
+
+$(document).ready(function() {
+  console.log(window.location.host)
+  if ($('.updatecheck').length !== 0) {
+    checkLocalVersion(function(localVersion) {
+      checkGithuVersion(function(remoteVersion) {
+        if (versionCompare(localVersion, remoteVersion) < 0) {
+          var currentUpdateAlert = $('.updatecheck').html();
+          currentUpdateAlert = currentUpdateAlert.replace('{{your.version}}', localVersion);
+          currentUpdateAlert = currentUpdateAlert.replace('{{new.version}}', remoteVersion);
+          $('.updatecheck').html(currentUpdateAlert);
+          $('.updatecheck').show();
+        }
+      })
+    });
+  }
+});
