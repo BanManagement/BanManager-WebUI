@@ -449,7 +449,7 @@ function searchPlayers($search, $serverID, $server, $sortByCol = 'name', $sortBy
 
 		if($result && count($result) > 0) {
 			foreach($result as $r)
-				$found[$r['player_id']] = array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => 'Ban', 'time' => $r['created'], 'expires' => $r['expires']);
+				array_push($found, array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => 'Ban', 'time' => $r['created'], 'expires' => $r['expires'], 'uuid' => $r['player_id']));
 		}
 	}
 
@@ -463,9 +463,9 @@ function searchPlayers($search, $serverID, $server, $sortByCol = 'name', $sortBy
 			if($result && count($result) > 0) {
 				foreach($result as $r) {
 					if(!isset($found[$r['player_id']]))
-						$found[$r['player_id']] = array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => 'Ban', 'time' => $r['created'], 'expires' => $r['expired'], 'past' => true);
+						array_push($found, array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => 'Ban', 'time' => $r['created'], 'expires' => $r['expired'], 'past' => true, 'uuid' => $r['player_id']));
 					else if(isset($found[$r['player_id']]['created']) && $found[$r['player_id']]['created'] < $r['created'])
-						$found[$r['player_id']] = array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => 'Ban', 'time' => $r['created'], 'expires' => $r['expired'], 'past' => true);
+						array_push($found, array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => 'Ban', 'time' => $r['created'], 'expires' => $r['expired'], 'past' => true, 'uuid' => $r['player_id']));
 				}
 			}
 		}
@@ -480,7 +480,7 @@ function searchPlayers($search, $serverID, $server, $sortByCol = 'name', $sortBy
 		if($result && count($result) > 0) {
 			foreach($result as $r) {
 				if(!isset($found[$r['player_id']]))
-				$found[$r['player_id']] = array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => 'Mute', 'time' => $r['created'], 'expires' => $r['expires']);
+					array_push($found, array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => 'Mute', 'time' => $r['created'], 'expires' => $r['expires'], 'uuid' => $r['player_id']));
 			}
 		}
 	}
@@ -495,9 +495,9 @@ function searchPlayers($search, $serverID, $server, $sortByCol = 'name', $sortBy
 			if($result && count($result) > 0) {
 				foreach($result as $r) {
 					if(!isset($found[$r['player_id']]))
-						$found[$r['player_id']] = array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => 'Mute', 'time' => $r['created'], 'expires' => $r['expired'], 'past' => true);
+						array_push($found, array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => 'Mute', 'time' => $r['created'], 'expires' => $r['expired'], 'past' => true, 'uuid' => $r['player_id']));
 					else if(isset($found[$r['player_id']]['created']) && $found[$r['player_id']]['created'] < $r['created'])
-						$found[$r['player_id']] = array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => 'Mute', 'time' => $r['created'], 'expires' => $r['expired'], 'past' => true);
+						array_push($found, array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => 'Mute', 'time' => $r['created'], 'expires' => $r['expired'], 'past' => true, 'uuid' => $r['player_id']));
 				}
 			}
 		}
@@ -511,9 +511,9 @@ function searchPlayers($search, $serverID, $server, $sortByCol = 'name', $sortBy
 			if($result && count($result) > 0) {
 				foreach($result as $r) {
 					if(!isset($found[$r['player_id']]))
-						$found[$r['player_id']] = array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => 'Kick', 'time' => $r['created'], 'expires' => 0, 'past' => true);
+						array_push($found, array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => 'Kick', 'time' => $r['created'], 'expires' => 0, 'past' => true, 'uuid' => $r['player_id']));
 					else if(isset($found[$r['player_id']]['created']) && $found[$r['player_id']]['created'] < $r['created'])
-						$found[$r['player_id']] = array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => 'Kick', 'time' => $r['created'], 'expires' => 0, 'past' => true);
+						array_push($found, array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => 'Kick', 'time' => $r['created'], 'expires' => 0, 'past' => true, 'uuid' => $r['player_id']));
 				}
 			}
 		}
@@ -528,9 +528,9 @@ function searchPlayers($search, $serverID, $server, $sortByCol = 'name', $sortBy
 		if($result && count($result) > 0) {
 			foreach($result as $r) {
 				if(!isset($found[$r['player_id']]))
-					$found[$r['player_id']] = array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => 'Warning', 'time' => $r['created'], 'expires' => 0, 'past' => true);
+					array_push($found, array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => 'Warning', 'time' => $r['created'], 'expires' => 0, 'past' => true, 'uuid' => $r['player_id']));
 				else if(isset($found[$r['player_id']]['created']) && $found[$r['player_id']]['created'] < $r['created'])
-					$found[$r['player_id']] = array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => 'Warning', 'time' => $r['created'], 'expires' => 0, 'past' => true);
+					array_push($found, array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => 'Warning', 'time' => $r['created'], 'expires' => 0, 'past' => true, 'uuid' => $r['player_id']));
 			}
 		}
 	}
