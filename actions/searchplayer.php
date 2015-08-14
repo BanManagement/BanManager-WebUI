@@ -141,7 +141,7 @@ else {
 					$time = (!empty($player['time']) ? date('j F Y h:i:s A', $player['time']) : '');
 
 				$ajaxArray['rows'][] = array(
-					'<img src="'.str_replace(array('%name%', '%uuid%'), array($playerName, $playerNames[$i]), $settings['skin']['helm']).'" class="skin-helm" /> <a href="index.php?action=viewplayer&player='.$playerName.'&server='.$_GET['server'].'">'.$playerName.'</a>',
+					'<img src="'.str_replace(array('%name%', '%uuid%'), array($playerName, $player['uuid']), $settings['skin']['helm']).'" class="skin-helm" /> <a href="index.php?action=viewplayer&player='.$playerName.'&server='.$_GET['server'].'">'.$playerName.'</a>',
 					$player['type'],
 					$player['by'],
 					$player['reason'],
@@ -163,6 +163,9 @@ else {
 			$total = 1;
 		if(!is_array($found) || !isset($ajaxArray['rows']))
 			$ajaxArray = array('total_rows' => 1, 'rows' => array(array('None Found', '', '', '', '', '')));
+
+			// print(json_encode(count($found)));
+			// print(json_encode($found));
 
 		die(json_encode($ajaxArray));
 	}
