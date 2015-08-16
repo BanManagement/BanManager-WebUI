@@ -69,21 +69,24 @@ $settings['skin']['complete'] = "https://crafatar.com/renders/body/%uuid%?helm&s
 * These are the language options for Ban Management
 **/
 
-$language['brand'] = 'Ban Management'; // The branding of all pages
-$language['header-title'] = 'Account Status'; // Edit the 'Account Status' text above the search
-$language['description'] = ''; // Meta Description for search engines
-$language['title'] = 'Ban Management by Frostcast'; // Title of all pages
-$language['latest_bans_title'] = 'Recent Bans'; // The text displayed over the latest bans table
-$language['latest_mutes_title'] = 'Recent Mutes'; // The text displayed over the latest mutes table
-$language['latest_warnings_title'] = 'Recent Warnings'; // The text displayed over the latest warnings table
-$language['nav-home'] = 'Home'; // The text displayed in the navbar for 'Home'
-$language['nav-stats'] = 'Statistics'; // The text displayed in the navbar for 'Servers'
-$language['past_player_bans'] = 'Past Player Bans'; // The text displayed on the homepage
-$language['bm_info_text'] = // The text displayed if bm_info is set to true. Enter your text below, HTML elements supported
-'
-  Ban Management is a ban and mute system that allows players to check if and why they were banned, muted or warned and by
-  whom.
-';
+$language = array(
+  'general' => array(
+    'brand' => 'Ban Management',
+    'meta-author' => 'Frostcast',
+    'meta-description' => '',
+    'title' => 'Ban Management by Frostcast',
+    'nav-home' => 'Home',
+    'nav-stats' => 'Statistics',
+  ),
+  'home' => array(
+    'header-title' => 'Account Status',
+    'latest_bans' => 'Recent Bans',
+    'latest_mutes' => 'Recent Mutes',
+    'latest_warnings' => 'Recent Warnings',
+    'past_player_bans' => 'Past Player Bans',
+    'bm_info_text' => 'Ban Management is a ban and mute system that allows players to check if and why they were banned, muted or warned and by whom.',
+  )
+);
 
 /**
 * These are the settings for editing the layout of Ban Management
