@@ -10,8 +10,8 @@
  */
 
 $nav = array(
-	$language['nav-home'] => 'index.php',
-	$language['nav-stats'] => 'index.php?action=servers'
+	$language['general']['nav-home'] => 'index.php',
+	$language['general']['nav-stats'] => 'index.php?action=servers'
 );
 
 $path = $_SERVER['HTTP_HOST'].str_replace('index.php', '', $_SERVER['SCRIPT_NAME']);
@@ -20,11 +20,11 @@ $path = $_SERVER['HTTP_HOST'].str_replace('index.php', '', $_SERVER['SCRIPT_NAME
 <html lang="en">
 	<head>
 		<meta charset="utf-8" />
-			<title><?php echo $language['title']; ?></title>
+			<title><?php echo $language['general']['title']; ?></title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="description" content="<?php echo $language['description']; ?>" />
-		<meta name="author" content="Frostcast" />
+		<meta name="description" content="<?php echo $language['general']['meta-description']; ?>" />
+		<meta name="author" content="<?php echo $language['general']['meta-author']; ?>" />
 		<link rel="stylesheet" type="text/css" href="assets/css/style.css" media="screen" />
 		<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 				<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -43,7 +43,7 @@ $path = $_SERVER['HTTP_HOST'].str_replace('index.php', '', $_SERVER['SCRIPT_NAME
 					<span class="sr-only">Toggle navigation</span>
 					<span class="glyphicon glyphicon-th-large"></span>
 				</button>
-				<a class="navbar-brand" href="index.php"><?php echo $language['brand']; ?></a>
+				<a class="navbar-brand" href="index.php"><?php echo $language['general']['brand']; ?></a>
 			</div>
 			<div class="collapse navbar-collapse navbar-nav-collapse">
 				<ul class="nav navbar-nav">

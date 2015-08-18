@@ -132,7 +132,7 @@ function latestWarnings($server, $serverID) {
 <div class="jumbotron">
 	<div class="row">
 		<div class="col-lg-6">
-			<h1><?php echo $language['header-title']; ?></h1>
+			<h1><?php echo $language['home']['header-title']; ?></h1>
 			<form action="index.php" method="get" class="form-horizontal" id="search">
 				<div class="input-group search">
 					<div class="input-group-btn">
@@ -202,12 +202,12 @@ function latestWarnings($server, $serverID) {
 
 						?>
 						<?php
-							echo $language['brand'];
+							echo $language['general']['brand'];
 						?>
 
 						</span><br />
 
-						<?php echo $language['bm_info_text']; ?>
+						<?php echo $language['home']['bm_info_text']; ?>
 					</p>
 		<?php
 		}
@@ -216,7 +216,7 @@ function latestWarnings($server, $serverID) {
 		?>
 					<span>
 						<span class="glyphicon glyphicon-globe"></span>
-						<?php echo $language['past_player_bans']; ?>
+						<?php echo $language['home']['past_player_bans']; ?>
 					</span>
 					<div class="list-group pastbans">
 					<?php
@@ -344,7 +344,7 @@ if(count($settings['servers']) > 1) {
 		if((isset($settings['latest_bans']) && $settings['latest_bans']) || !isset($settings['latest_bans'])) {
 			echo '
 			<div class="col-lg-4">
-				<h3>'.$language['latest_bans_title'].'</h3>
+				<h3>'.$language['home']['latest_bans'].'</h3>
 				<ul class="nav nav-tabs nav-stacked">';
 					latestBans($server, 0);
 				echo '
@@ -355,7 +355,7 @@ if(count($settings['servers']) > 1) {
 		if((isset($settings['latest_mutes']) && $settings['latest_mutes'])) {
 			echo '
 			<div class="col-lg-4">
-				<h3>'.$language['latest_mutes_title'].'</h3>
+				<h3>'.$language['home']['latest_mutes'].'</h3>
 				<ul class="nav nav-tabs nav-stacked">';
 					latestMutes($server, 0);
 					echo '
@@ -366,7 +366,7 @@ if(count($settings['servers']) > 1) {
 		if((isset($settings['latest_warnings']) && $settings['latest_warnings'])) {
 			echo '
 			<div class="col-lg-4">
-				<h3>'.$language['latest_warnings_title'].'</h3>
+				<h3>'.$language['home']['latest_warnings'].'</h3>
 				<ul class="nav nav-tabs nav-stacked">';
 					latestWarnings($server, 0);
 				echo '
