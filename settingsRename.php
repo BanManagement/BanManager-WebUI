@@ -80,11 +80,17 @@ $language = array(
   ),
   'home' => array(
     'header-title' => 'Account Status',
+    'search-player' => 'Player',
+    'search-ip' => 'IP Address',
+    'button-search' => 'Search',
+    'button-display' => 'Display All',
+    'bm_info_text' => 'Ban Management is a ban and mute system that allows players to check if and why they were banned, muted or warned and by whom.',
+    'past_player_bans' => 'Past Player Bans',
     'latest_bans' => 'Recent Bans',
     'latest_mutes' => 'Recent Mutes',
     'latest_warnings' => 'Recent Warnings',
-    'past_player_bans' => 'Past Player Bans',
-    'bm_info_text' => 'Ban Management is a ban and mute system that allows players to check if and why they were banned, muted or warned and by whom.',
+    'no_records' => 'No records',
+  ),
   )
 );
 

@@ -10,7 +10,7 @@
  */
 
 function latestBans($server, $serverID) {
-	global $settings;
+	global $settings, $language;
 
 	// Clear old latest bans cache's
 	clearCache($serverID.'/latestbans', 300);
@@ -25,7 +25,7 @@ function latestBans($server, $serverID) {
 	$rows = count($result);
 
 	if($rows == 0){
-		echo '<li><span class="label label-info">No Records</span></li>';
+		echo '<li><span class="label label-info">'.$language['home']['no_records'].'</span></li>';
 	}	else {
 		$timeDiff = cache('SELECT ('.time().' - UNIX_TIMESTAMP(now()))/3600 AS mysqlTime', 5, $serverID.'/mysqlTime', $server); // Cache it for a few seconds
 
@@ -51,7 +51,7 @@ function latestBans($server, $serverID) {
 }
 
 function latestMutes($server, $serverID) {
-	global $settings;
+	global $settings, $language;
 
 	// Clear old latest mutes cache's
 	clearCache($serverID.'/latestmutes', 300);
@@ -66,7 +66,7 @@ function latestMutes($server, $serverID) {
 	$rows = count($result);
 
 	if($rows == 0){
-		echo '<li><span class="label label-info">No Records</span></li>';
+		echo '<li><span class="label label-info">'.$language['home']['no_records'].'</span></li>';
 	} else {
 		$timeDiff = cache('SELECT ('.time().' - UNIX_TIMESTAMP(now()))/3600 AS mysqlTime', 5, $serverID.'/mysqlTime', $server); // Cache it for a few seconds
 
@@ -91,7 +91,7 @@ function latestMutes($server, $serverID) {
 }
 
 function latestWarnings($server, $serverID) {
-	global $settings;
+	global $settings, $language;
 
 	// Clear old latest warnings cache's
 	clearCache($serverID.'/latestwarnings', 300);
@@ -106,7 +106,7 @@ function latestWarnings($server, $serverID) {
 	$rows = count($result);
 
 	if($rows == 0) {
-		echo '<li><span class="label label-info">No Records</span></li>';
+		echo '<li><span class="label label-info">'.$language['home']['no_records'].'</span></li>';
 	} else {
 		$timeDiff = cache('SELECT ('.time().' - UNIX_TIMESTAMP(now()))/3600 AS mysqlTime', 5, $serverID.'/mysqlTime', $server); // Cache it for a few seconds
 
@@ -136,9 +136,9 @@ function latestWarnings($server, $serverID) {
 			<form action="index.php" method="get" class="form-horizontal" id="search">
 				<div class="input-group search">
 					<div class="input-group-btn">
-						<button id="player" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Player <span class="caret"></span></button>
+						<button id="player" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><?= $language['home']['search-player']; ?> <span class="caret"></span></button>
 						<ul class="dropdown-menu">
-							<li id="ip"><a href="#">Search by IP Address</a></li>
+							<li id="ip"><a href="#"><?= $language['home']['search-ip']; ?></a></li>
 						</ul>
 					</div>
 					<input type="text" name="player" class="form-control" placeholder="Search by username">
@@ -176,8 +176,8 @@ function latestWarnings($server, $serverID) {
 				?>
 					<input type="hidden" name="action" value="searchplayer" />
 					<div class="btn-group">
-						<button type="submit" class="btn btn-primary">Search</button>
-						<button type="button" class="btn btn-primary" id="viewall">Display All</button>
+						<button type="submit" class="btn btn-primary"><?= $language['home']['button-search']; ?></button>
+						<button type="button" class="btn btn-primary" id="viewall"><?= $language['home']['button-display']; ?></button>
 					</div>
 					<?php
 					if(isset($settings['submit_buttons_after_html']))

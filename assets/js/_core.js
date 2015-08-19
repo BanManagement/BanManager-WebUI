@@ -171,7 +171,7 @@ $(function() {
       $('#search input[name=action]').attr('value', 'searchip');
     } else {
       var ip = $('#ip');
-      $('#player').attr('id', 'ip').find('a').text('IP');
+      $('#player').attr('id', 'ip').find('a').text('IP Address');
       ip.attr('id', 'player').html('Player <span class="caret"></span>');
       $('#search input[type=text]').attr('placeholder', 'Enter Player Name');
       $('#search input[name=action]').attr('value', 'searchplayer');
