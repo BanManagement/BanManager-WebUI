@@ -91,6 +91,12 @@ $language = array(
     'latest_warnings' => 'Recent Warnings',
     'no_records' => 'No records',
   ),
+  'stats' => array(
+    'header-title' => 'Ban Statistics',
+    'server' => 'Server',
+    'current_tmp_bans' => 'Current Temporary Bans',
+    'current_perm_bans' => 'Current Permanent Bans',
+    'past_bans' => 'Past Bans',
   )
 );
 

@@ -14,12 +14,12 @@ if(empty($settings['servers']))
 else {
 	?>
 	<table class="table table-striped table-bordered">
-		<h1 style="font-size: 49px;">Ban Statistics</h1>
+		<h1 style="font-size: 49px;"><?= $language['stats']['header-title']; ?></h1>
 		<thead>
-			<th>Server</th>
-			<th>Current Temporary Bans</th>
-			<th>Current Permanent Bans</th>
-			<th>Past Bans</th>
+			<th><?= $language['stats']['server']; ?></th>
+			<th><?= $language['stats']['current_tmp_bans']; ?></th>
+			<th><?= $language['stats']['current_perm_bans']; ?></th>
+			<th><?= $language['stats']['past_bans']; ?></th>
 		</thead>
 		<tbody>
 	<?php
