@@ -65,7 +65,7 @@ if (!checkCache() || !checkSettingsFileExistance() || !checkSettingsFileWriteabl
 				<p class="lead">Thanks for using the BanManager-WebUI.</p>
 				<hr />
 
-				<?php if($failed) { ?>
+				<?php if(@$failed) { ?>
 					<div class="alert alert-box alert-warning">
 						<strong>Oh no, the check failed!</strong>
 						<p>Check if you have set up everything correctly and try again.</p>
@@ -83,7 +83,7 @@ if (!checkCache() || !checkSettingsFileExistance() || !checkSettingsFileWriteabl
 						<li class="list-group-item" data-state="<?= (checkWeakPassword()) ? 'success' : 'failed' ?>">Open your <kbd>settings.php</kbd> with an editor (such as Notepad++) and adjust the settings. Make sure to set a strong password!</li>
 					</ul>
 					<a href="index.php?action=firstrun" class="btn btn-default"><i class="glyphicon glyphicon-check"></i> Run check</a>
-					<?php if(!$failed && isset($_GET['action'])) { ?>
+					<?php if(!@$failed && isset($_GET['action'])) { ?>
 						<a href="/" class="btn btn-primary"><i class="glyphicon glyphicon-arrow-left"></i> Back to WebUI</a>
 					<?php } ?>
 				</div>
