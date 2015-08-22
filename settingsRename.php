@@ -97,6 +97,21 @@ $language = array(
     'current_tmp_bans' => 'Current Temporary Bans',
     'current_perm_bans' => 'Current Permanent Bans',
     'past_bans' => 'Past Bans',
+  ),
+  'firstrun' => array(
+    /* 'firstrun' translation is yet not in use */
+    'welcome' => 'Welcome!',
+    'thankyou' => 'Thanks for using the BanManager-WebUI.',
+    'failed' => 'Oh no, the check failed!',
+    'failed-extended' => 'Check if you have set up everything correctly and try again.',
+    'pending-setup' => 'It seems like you did not yet setup the WebUI. Let\'s get started with that right now.',
+    'preparation' => 'Preperation / checklist',
+    'task-cache' => 'Make sure the <kbd>cache</kbd> directory is writeable and readable.',
+    'task-rename_settings' => 'Rename the <kbd>settingsRename.php</kbd> file to <kbd>settings.php</kbd>.',
+    'task-writable_settings' => 'Make sure the <kbd>settings.php</kbd> file is writeable and readable.',
+    'task-proper_passwort' => 'Open your <kbd>settings.php</kbd> with an editor (such as Notepad++) and adjust the settings. Make sure to set a strong password!',
+    'button-submit' => 'Run check',
+    'button-back' => 'Back to WebUI',
   )
 );
 
