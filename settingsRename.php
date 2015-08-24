@@ -98,6 +98,18 @@ $language = array(
     'current_perm_bans' => 'Current Permanent Bans',
     'past_bans' => 'Past Bans',
   ),
+  'searchplayer' => array(
+    'header' => 'Advanced Search',
+    'new_search' => 'New Search',
+    'player_name' => 'Player Name',
+    'type' => 'Type',
+    'by' => 'by',
+    'reason' => 'Reason',
+    'expires' => 'Expires',
+    'date' => 'Date',
+    'input-title-page_size' => 'Select page size',
+    'input-title-page_number' => 'Select page number',
+  ),
   'admin' => array(
     'login-header' => 'Admin Control Panel',
     'login-description' => 'If you forgot your password please refer to settings.php to change it.',

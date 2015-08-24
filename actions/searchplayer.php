@@ -170,13 +170,13 @@ else {
 
 	if(!$found) {
 		errors('No matched players found');
-		?><a href="index.php" class="btn btn-primary">New Search</a><?php
+		?><a href="index.php" class="btn btn-primary"><?= $language['searchplayer']['new_search']; ?></a><?php
 	} else {
 		?>
 	<form class="form-inline" action="" method="get">
 		<fieldset>
 			<div class="page-header">
-				<h1>Advanced Search</h1>
+				<h1><?= $language['searchplayer']['header']; ?></h1>
 			</div>
 			<input type="hidden" name="action" value="searchplayer" />
 			<input type="hidden" name="server" value="<?php echo $_GET['server']; ?>" />
@@ -186,12 +186,12 @@ else {
 	<table class="table table-striped table-bordered sortable">
 		<thead>
 			<tr>
-				<th>Player Name</th>
-				<th>Type</th>
-				<th>By</th>
-				<th>Reason</th>
-				<th>Expires</th>
-				<th>Date</th>
+				<th><?= $language['searchplayer']['player_name']; ?></th>
+				<th><?= $language['searchplayer']['type']; ?></th>
+				<th><?= $language['searchplayer']['by']; ?></th>
+				<th><?= $language['searchplayer']['reason']; ?></th>
+				<th><?= $language['searchplayer']['expires']; ?></th>
+				<th><?= $language['searchplayer']['date']; ?></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -204,13 +204,13 @@ else {
 					<span class="pagedisplay"></span>
 					<button class="btn btn-default next"><span class="glyphicon glyphicon-arrow-right" style="float:none"></span></button>
 					<button class="btn btn-default last"><span class="glyphicon glyphicon-step-forward"></span></button>
-					<select class="pagesize input-mini" title="Select page size">
+					<select class="pagesize input-mini" title="<?= $language['searchplayer']['input-title-page_size']; ?>">
 						<option selected="selected" value="10">10</option>
 						<option value="20">20</option>
 						<option value="30">30</option>
 						<option value="40">40</option>
 					</select>
-					<select class="pagenum input-mini" title="Select page number"></select>
+					<select class="pagenum input-mini" title="<?= $language['searchplayer']['input-title-page_number']; ?>"></select>
 				</th>
 			</tr>
 		</tfoot>
