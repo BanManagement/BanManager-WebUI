@@ -8,6 +8,7 @@
  *  Additional licence terms at https://raw.githubusercontent.com/BanManagement/BanManager-WebUI/master/LICENSE
  */
 
+/* global language */
 /* global CanvasLoader */
 
 function showLoading(element) {
@@ -25,6 +26,21 @@ function hideLoading() {
 }
 
 $(function() {
+  // Construct URI
+  var ownURI = window.location.protocol + '//' + window.location.hostname + '/' + window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/')),
+      locale;
+
+  // Load current locale file synchronously
+  $.ajax({
+    type: 'GET',
+    url: ownURI + 'l10n/' + language + '.json',
+    dataType: 'json',
+    success: function(json) {
+      locale = json;
+    },
+    async: false
+  })
+
   jQuery.validator.setDefaults({
     errorPlacement: function(error, placement) {
       error.wrap('<span class="help-inline" />');
