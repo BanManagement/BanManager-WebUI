@@ -11,6 +11,8 @@
     "header-title": "Account Status",
     "search-player": "Player",
     "search-ip": "IP Address",
+    "search-placeholder-player": "Enter Player Name",
+    "search-placeholder-ip": "Enter IP Address",
     "button-search": "Search",
     "button-display": "Display All",
     "bm_info_text": "Ban Management is a ban and mute system that allows players to check if and why they were banned, muted or warned and by whom.",
