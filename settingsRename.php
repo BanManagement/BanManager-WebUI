@@ -23,6 +23,8 @@ $settings['debug']['functiontest'] = false; // check for neccessary PHP function
 $settings['debug']['error_reporting'] = false; // display PHP errors
 $settings['debug']['error_reporting_level'] = E_ALL; // Set error level (E_ALL, E_ERROR, E_WARNING, E_NOTICE)
 
+$settings['language'] = "en"; // Default locale setting ("en" by default)
+
 $settings['utf8'] = true; // Encoding (Recommended TRUE)
 $settings['latest_bans'] = true;  // Latest Bans table
 $settings['latest_mutes'] = true; // Latest Mutes table
@@ -64,11 +66,6 @@ $settings['cache_home'] = 60;
 // ("%uuid%" is the placeholder for the player uuid)
 $settings['skin']['helm'] = "https://crafatar.com/avatars/%uuid%?helm&size=24";
 $settings['skin']['complete'] = "https://crafatar.com/renders/body/%uuid%?helm&scale=7";
-
-/**
-* These are the language options for Ban Management
-**/
-
 
 /**
 * These are the settings for editing the layout of Ban Management
