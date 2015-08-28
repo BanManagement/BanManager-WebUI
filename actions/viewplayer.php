@@ -44,7 +44,7 @@ else {
 
 	if(count($currentBans) == 0 && count($pastBans) == 0 && count($currentMutes) == 0 && count($pastMutes) == 0 && count($pastKicks) == 0 && $pastWarnings == 0) {
 		errors('Player does not exist');
-		?><a href="index.php" class="btn btn-primary">New Search</a><?php
+		?><a href="index.php" class="btn btn-primary"><?= $language['viewplayer']['new_search']; ?></a><?php
 	} else {
 		// They have been banned, naughty!
 		// Now check the time differences!
@@ -62,14 +62,14 @@ else {
 					</div>
 			</div>
 			<div class="col-lg-9" id="player_ban_info">
-					<h4>Current Server: <?php echo $server['name']; ?></h4>
+					<h4><?= $language['viewplayer']['current_server']; ?>: <?php echo $server['name']; ?></h4>
 		<?php
 		$id = array_keys($settings['servers']);
 		$i = 0;
 		$html = '';
 		if(count($settings['servers']) > 1) {
 			echo '
-			<p>Change Server: ';
+			<p>'.$language['viewplayer']['change_server'].': ';
 			foreach($settings['servers'] as $serv) {
 				if($serv['name'] != $server['name']) {
 					$html .= '<a href="index.php?action=viewplayer&player='.$_GET['player'].'&server='.$id[$i].'">'.$serv['name'].'</a>, ';
@@ -84,22 +84,22 @@ else {
 			?>
 			<br />
 			<table id="current-ban" class="table table-striped table-bordered">
-				<caption>Current Ban</caption>
+				<caption><?= $language['viewplayer']['current_ban']['current_ban']; ?></caption>
 				<tbody>
 				<?php
 			if(count($currentBans) == 0) {
 				echo '
 					<tr>
-						<td colspan="2">None</td>
+						<td colspan="2">'.$language['viewplayer']['current_ban']['none'].'</td>
 					</tr>';
 			} else {
 				$reason = str_replace(array('&quot;', '"'), array('&#039;', '\''), $currentBans['reason']);
 				echo '
 					<tr>
-						<td>Expires in:</td>
+						<td>'.$language['viewplayer']['current_ban']['expires_in'].':</td>
 						<td class="expires">';
 				if($currentBans['expires'] == 0)
-					echo '<span class="label label-danger">Permanent</span>';
+					echo '<span class="label label-danger">'.$language['viewplayer']['current_ban']['permanent'].'</span>';
 				else {
 					$currentBans['expires'] = $currentBans['expires'] + $mysqlSecs;
 					$currentBans['created'] = $currentBans['created'] + $mysqlSecs;
@@ -108,27 +108,27 @@ else {
 					if($expires > 0)
 						echo '<time datetime="'.date('c', $currentBans['expires']).'">'.secs_to_h($expires).'</time>';
 					else
-						echo 'Now';
+						echo $language['viewplayer']['current_ban']['now'];
 				}
 
 				echo '</td>
 					</tr>
 					<tr>
-						<td>Banned by:</td>
+						<td>'.$language['viewplayer']['current_ban']['banned_by'].':</td>
 						<td>'.$currentBans['actor_name'].'</td>
 					</tr>
 					<tr>
-						<td>Banned at:</td>
+						<td>'.$language['viewplayer']['current_ban']['banned_at'].':</td>
 						<td>'.date('jS F Y h:i:s A', $currentBans['created']).'</td>
 					</tr>
 					<tr>
-						<td>Reason:</td>
+						<td>'.$language['viewplayer']['current_ban']['ban_reason'].':</td>
 						<td class="reason">'.$currentBans['reason'].'</td>
 					</tr>';
 				if(!empty($currentBans['server'])) {
 					echo '
 					<tr>
-						<td>Server:</td>
+						<td>'.$language['viewplayer']['current_ban']['banned_at'].':</td>
 						<td>'.$currentBans['server'].'</td>
 					</tr>';
 				}
@@ -140,8 +140,8 @@ else {
 				<tfoot>
 					<tr>
 						<td colspan="2">
-							<a class="btn btn-warning edit" title="Edit" href="#editban" data-toggle="modal"><span class="glyphicon glyphicon-pencil"></span> Edit</a>
-							<a class="btn btn-danger delete" title="Unban" data-role="confirm" href="index.php?action=deleteban&ajax=true&authid='.sha1($settings['password']).'&server='.$_GET['server'].'&id='.$currentBans['id'].'" data-confirm-title="Unban '.$_GET['player'].'" data-confirm-body="Are you sure you want to unban '.$_GET['player'].'?<br />This cannot be undone"><span class="glyphicon glyphicon-trash"></span> Unban</a>
+							<a class="btn btn-warning edit" title="'.$language['viewplayer']['current_ban']['edit'].'" href="#editban" data-toggle="modal"><span class="glyphicon glyphicon-pencil"></span> '.$language['viewplayer']['current_ban']['edit'].'</a>
+							<a class="btn btn-danger delete" title="'.$language['viewplayer']['current_ban']['unban'].'" data-role="confirm" href="index.php?action=deleteban&ajax=true&authid='.sha1($settings['password']).'&server='.$_GET['server'].'&id='.$currentBans['id'].'" data-confirm-title="'.sprintf($language['viewplayer']['current_ban']['unban_modal-title'], $_GET['player']).'" data-confirm-body="'.sprintf($language['viewplayer']['current_ban']['unban_modal-body'], $_GET['player']).'"><span class="glyphicon glyphicon-trash"></span> '.$language['viewplayer']['current_ban']['unban'].'</a>
 						</td>
 					</tr>
 				</tfoot>';
@@ -165,23 +165,23 @@ else {
 						<form class="form-horizontal" action="" method="post">
 							<div class="modal-header">
 								<button type="button" class="close" data-dismiss="modal">&times;</button>
-								<h3>Editing Ban</h3>
+								<h3><?= $language['viewplayer']['current_ban']['edit_modal-editing_ban']; ?></h3>
 							</div>
 							<div class="modal-body">
 								<div class="control-group">
-									<label class="control-label" for="yourtime">Your Time:</label>
+									<label class="control-label" for="yourtime"><?= $language['viewplayer']['current_ban']['edit_modal-your_time']; ?>:</label>
 									<div class="controls">
 										<span class="yourtime"></span>
 									</div>
 								</div>
 								<div class="control-group">
-									<label class="control-label" for="servertime">Server Time:</label>
+									<label class="control-label" for="servertime"><?= $language['viewplayer']['current_ban']['edit_modal-server_time']; ?>:</label>
 									<div class="controls">
 										<span class="servertime"><?php echo date('d/m/Y H:i:s', time() + $mysqlSecs); ?></span>
 									</div>
 								</div>
 								<div class="control-group">
-									<label class="control-label" for="bandatetime">Expires Server Time:</label>
+									<label class="control-label" for="bandatetime"><?= $language['viewplayer']['current_ban']['edit_modal-expires_server_time']; ?>:</label>
 									<div class="controls">
 										<div class="input-group date datetimepicker">
 										<?php
@@ -189,9 +189,9 @@ else {
 											<span class="input-group-btn">
 												<button class="btn btn-danger bantype" type="button">';
 											if($currentBans['expires'] == 0)
-												echo 'Permanent';
+												echo $language['viewplayer']['current_ban']['edit_modal-permanent'];
 											else
-												echo 'Temporary';
+												echo $language['viewplayer']['current_ban']['edit_modal-temporary'];
 
 											echo '</button>
 											</span>
@@ -217,12 +217,12 @@ else {
 										</div>
 									</div>
 								</div>
-								<label for="banreason">Reason:</label>
+								<label for="banreason"><?= $language['viewplayer']['current_ban']['edit_modal-reason']; ?>:</label>
 								<textarea id="banreason" name="reason" class="form-control" rows="4"><?php echo $currentBans['reason']; ?></textarea>
 							</div>
 							<div class="modal-footer">
-								<a href="#" class="btn" data-dismiss="modal">Close</a>
-								<input type="submit" class="btn btn-primary" value="Save" />
+								<a href="#" class="btn" data-dismiss="modal"><?= $language['viewplayer']['current_ban']['edit_modal-close']; ?></a>
+								<input type="submit" class="btn btn-primary" value="<?= $language['viewplayer']['current_ban']['edit_modal-save']; ?>" />
 							</div>
 							<input type="hidden" name="id" value="<?php echo $currentBans['id']; ?>" />
 							<input type="hidden" name="server" value="<?php echo $_GET['server']; ?>" />
@@ -239,22 +239,22 @@ else {
 			?>
 			<br />
 			<table id="current-mute" class="table table-striped table-bordered">
-				<caption>Current Mute</caption>
+				<caption><?= $language['viewplayer']['current_mute']['current_mute']; ?></caption>
 				<tbody>
 				<?php
 			if(count($currentMutes) == 0) {
 				echo '
 					<tr>
-						<td colspan="2">None</td>
+						<td colspan="2">'.$language['viewplayer']['current_mute']['none'].'</td>
 					</tr>';
 			} else {
 				$reason = str_replace(array('&quot;', '"'), array('&#039;', '\''), $currentMutes['reason']);
 				echo '
 					<tr>
-						<td>Expires in:</td>
+						<td>'.$language['viewplayer']['current_mute']['expires_in'].':</td>
 						<td class="expires">';
 				if($currentMutes['expires'] == 0)
-					echo '<span class="label label-danger">Permanent</span>';
+					echo '<span class="label label-danger">'.$language['viewplayer']['current_mute']['permanent'].'</span>';
 				else {
 					$currentMutes['expires'] = $currentMutes['expires'] + $mysqlSecs;
 					$currentMutes['created'] = $currentMutes['created'] + $mysqlSecs;
@@ -263,27 +263,27 @@ else {
 					if($expires > 0)
 						echo '<time datetime="'.date('c', $currentMutes['expires']).'">'.secs_to_h($expires).'</time>';
 					else
-						echo 'Now';
+						echo $language['viewplayer']['current_mute']['now'];
 				}
 				echo '</td>
 					</tr>
 					<tr>
-						<td>Muted by:</td>
+						<td>'.$language['viewplayer']['current_mute']['muted_by'].':</td>
 						<td>'.$currentMutes['actor_name'].'</td>
 					</tr>
 					<tr>
-						<td>Muted at:</td>
+						<td>'.$language['viewplayer']['current_mute']['muted_at'].':</td>
 						<td>'.date('jS F Y h:i:s A', $currentMutes['created']).'</td>
 					</tr>
 					<tr>
-						<td>Reason:</td>
+						<td>'.$language['viewplayer']['current_mute']['mute_reason'].':</td>
 						<td class="reason">'.$currentMutes['reason'].'</td>
 					</tr>
 					<tr>';
 				if(!empty($currentMutes['server'])) {
 					echo '
 					<tr>
-						<td>Server:</td>
+						<td>'.$language['viewplayer']['current_mute']['server'].':</td>
 						<td>'.$currentMutes['server'].'</td>
 					</tr>';
 				}
@@ -297,8 +297,8 @@ else {
 				<tfoot>
 					<tr>
 						<td colspan="2">
-							<a class="btn btn-warning edit" title="Edit" href="#editmute" data-toggle="modal"><span class="glyphicon glyphicon-pencil"></span> Edit</a>
-							<a class="btn btn-danger delete" title="Unban" data-role="confirm" href="index.php?action=deletemute&ajax=true&authid='.sha1($settings['password']).'&server='.$_GET['server'].'&id='.$currentMutes['id'].'" data-confirm-title="Unban '.$_GET['player'].'" data-confirm-body="Are you sure you want to unmute '.$_GET['player'].'?<br />This cannot be undone"><span class="glyphicon glyphicon-trash"></span> Unmute</a>
+							<a class="btn btn-warning edit" title="'.$language['viewplayer']['current_mute']['edit'].'" href="#editmute" data-toggle="modal"><span class="glyphicon glyphicon-pencil"></span> '.$language['viewplayer']['current_mute']['edit'].'</a>
+							<a class="btn btn-danger delete" title="'.$language['viewplayer']['current_mute']['unmute'].'" data-role="confirm" href="index.php?action=deletemute&ajax=true&authid='.sha1($settings['password']).'&server='.$_GET['server'].'&id='.$currentMutes['id'].'" data-confirm-title="'.sprintf($language['viewplayer']['current_mute']['unmute_modal-title'], $_GET['player']).'" data-confirm-body="Are you sure you want to unmute '.$_GET['player'].'?<br />This cannot be undone"><span class="glyphicon glyphicon-trash"></span> Unmute</a>
 						</td>
 					</tr>
 				</tfoot>';
@@ -323,19 +323,19 @@ else {
 						<form class="form-horizontal" action="" method="post">
 							<div class="modal-header">
 								<button type="button" class="close" data-dismiss="modal">&times;</button>
-								<h3>Editing Mute</h3>
+								<h3><?= $language['viewplayer']['current_mute']['edit_modal-editing_mute'] ?></h3>
 							</div>
 							<div class="modal-body">
 									<div class="control-group">
-										<label class="control-label" for="yourtime">Your Time:</label>
+										<label class="control-label" for="yourtime"><?= $language['viewplayer']['current_mute']['edit_modal-your_time'] ?>:</label>
 											<span class="yourtime"></span>
 									</div>
 									<div class="control-group">
-										<label class="control-label" for="servertime">Server Time:</label>
+										<label class="control-label" for="servertime"><?= $language['viewplayer']['current_mute']['edit_modal-server_time'] ?>:</label>
 											<span class="servertime"><?php echo date('d/m/Y H:i:s', time() + $mysqlSecs); ?></span>
 									</div>
 								<!--	<div class="control-group">
-										<label class="control-label" for="mutedatetime">Expires Server Time:</label>
+										<label class="control-label" for="mutedatetime"><?= $language['viewplayer']['current_mute']['edit_modal-expires_server_time'] ?>:</label>
 										<div class="input-group">
 											<div class="input datetimepicker date">
 											<?php
@@ -344,9 +344,9 @@ else {
 												<div class="input-group-addon">
 													<button class="btn btn-danger bantype" type="button">';
 											if($currentMutes['expires'] == 0)
-												echo 'Permanent';
+												echo $language['viewplayer']['current_mute']['edit_modal-permanent'];
 											else
-												echo 'Temporary';
+												echo $language['viewplayer']['current_mute']['edit_modal-temporary'];
 
 											echo '</button>
 													<input type="text" class="required';
@@ -374,13 +374,13 @@ else {
 										</div>
 									</div> -->
 									<div class="control-group">
-										<label class="control-label" for="mutereason">Reason:</label>
+										<label class="control-label" for="mutereason"><?= $language['viewplayer']['current_mute']['edit_modal-reason'] ?>:</label>
 											<textarea id="mutereason" class="form-control" name="reason" rows="4"><?php echo $currentMutes['reason']; ?></textarea>
 									</div>
 								</div>
 							<div class="modal-footer">
-								<a href="#" class="btn" data-dismiss="modal">Close</a>
-								<input type="submit" class="btn btn-primary" value="Save" />
+								<a href="#" class="btn" data-dismiss="modal"><?= $language['viewplayer']['current_mute']['edit_modal-close'] ?></a>
+								<input type="submit" class="btn btn-primary" value="<?= $language['viewplayer']['current_mute']['edit_modal-your_time'] ?>" />
 							</div>
 							<input type="hidden" name="id" value="<?php echo $currentMutes['id']; ?>" />
 							<input type="hidden" name="server" value="<?php echo $_GET['server']; ?>" />
@@ -396,16 +396,16 @@ else {
 		?>
 			<br />
 			<table class="table table-striped table-bordered" id="previous-bans">
-				<caption>Previous Bans</caption>
+				<caption><?= $language['viewplayer']['previous_bans']['previous_bans'] ?></caption>
 				<thead>
 					<tr>
-						<th>ID</th>
-						<th>Reason</th>
-						<th>By</th>
-						<th>On</th>
-						<th>Length</th>
-						<th>Unbanned By</th>
-						<th>At</th><?php
+						<th><?= $language['viewplayer']['previous_bans']['id'] ?></th>
+						<th><?= $language['viewplayer']['previous_bans']['reason'] ?></th>
+						<th><?= $language['viewplayer']['previous_bans']['by'] ?></th>
+						<th><?= $language['viewplayer']['previous_bans']['on'] ?></th>
+						<th><?= $language['viewplayer']['previous_bans']['length'] ?></th>
+						<th><?= $language['viewplayer']['previous_bans']['unbanned_by'] ?></th>
+						<th><?= $language['viewplayer']['previous_bans']['at'] ?></th><?php
 			if(!isset($pastBans[0]) || (isset($pastBans[0]) && !is_array($pastBans[0])))
 				$pastBans = array($pastBans);
 			$serverName = false;
@@ -417,7 +417,7 @@ else {
 			}
 			if($serverName) {
 				echo '
-						<th>Server</th>';
+						<th>'.$language['viewplayer']['previous_bans']['server'].'</th>';
 			}
 			if($admin)
 				echo '
@@ -430,7 +430,7 @@ else {
 			if(isset($pastBans[0]) && count($pastBans[0]) == 0) {
 				echo '
 					<tr>
-						<td colspan="8">None</td>
+						<td colspan="8">'.$language['viewplayer']['previous_bans']['none'].'</td>
 					</tr>';
 			} else {
 				$i = 1;
