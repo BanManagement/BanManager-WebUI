@@ -173,7 +173,41 @@
       "unbanned_by": "Unbanned By",
       "at": "At",
       "server": "Server",
-      "none": "None"
+      "none": "None",
+      "admin-remove": "Remove"
+    },
+    "previous_mutes": {
+      "previous_mutes": "Previous Mutes",
+      "id": "ID",
+      "reason": "Reason",
+      "by": "By",
+      "on": "On",
+      "length": "Length",
+      "unmuted_by": "Unmuted By",
+      "at": "At",
+      "server": "Server",
+      "none": "None",
+      "admin-remove": "Remove"
+    },
+    "previous_warnings": {
+      "previous_warnings": "Previous Warnings",
+      "id": "ID",
+      "reason": "Reason",
+      "by": "By",
+      "on": "On",
+      "server": "Server",
+      "none": "None",
+      "admin-remove": "Remove"
+    },
+    "previous_kicks": {
+      "previous_kicks": "Previous Kicks",
+      "id": "ID",
+      "reason": "Reason",
+      "by": "By",
+      "at": "At",
+      "server": "Server",
+      "none": "None",
+      "admin-remove": "Remove"
     }
   },
   "firstrun": {

@@ -450,7 +450,7 @@ else {
 						<td>'.$r['actor_name'].'</td>
 						<td>'.date('H:i:s d/m/y', $r['created']).'</td>'.($serverName ? '
 						<td>'.$r['server'].'</td>' : '').($admin ? '
-						<td class="admin-options"><a href="#" class="btn btn-danger delete btn-xs" title="Remove" data-server="'.$_GET['server'].'" data-record-id="'.$r['id'].'"><span class="glyphicon glyphicon-trash"></span></a></td>' : '').'
+						<td class="admin-options"><a href="#" class="btn btn-danger delete btn-xs" title="'.$language['viewplayer']['previous_bans']['admin-remove'].'" data-server="'.$_GET['server'].'" data-record-id="'.$r['id'].'"><span class="glyphicon glyphicon-trash"></span></a></td>' : '').'
 					</tr>';
 					++$i;
 				}
@@ -465,16 +465,16 @@ else {
 		?>
 			<br />
 			<table class="table table-striped table-bordered" id="previous-mutes">
-				<caption>Previous Mutes</caption>
+				<caption><?= $language['viewplayer']['previous_mutes']['previous_mutes'] ?></caption>
 				<thead>
 					<tr>
-						<th>ID</th>
-						<th>Reason</th>
-						<th>By</th>
-						<th>On</th>
-						<th>Length</th>
-						<th>Unmuted By</th>
-						<th>At</th><?php
+						<th><?= $language['viewplayer']['previous_mutes']['id'] ?></th>
+						<th><?= $language['viewplayer']['previous_mutes']['reason'] ?></th>
+						<th><?= $language['viewplayer']['previous_mutes']['by'] ?></th>
+						<th><?= $language['viewplayer']['previous_mutes']['on'] ?></th>
+						<th><?= $language['viewplayer']['previous_mutes']['length'] ?></th>
+						<th><?= $language['viewplayer']['previous_mutes']['unmuted_by'] ?></th>
+						<th><?= $language['viewplayer']['previous_mutes']['at'] ?></th><?php
 			if(isset($pastMutes[0]) && !is_array($pastMutes[0]))
 				$pastMutes = array($pastMutes);
 			$serverName = false;
@@ -486,7 +486,7 @@ else {
 			}
 			if($serverName) {
 					echo '
-						<th>Server</th>';
+						<th>'.$language['viewplayer']['previous_mutes']['server'].'</th>';
 			}
 			if($admin)
 				echo '
@@ -499,7 +499,7 @@ else {
 			if(count($pastMutes) == 0) {
 				echo '
 					<tr>
-						<td colspan="8">None</td>
+						<td colspan="8">'.$language['viewplayer']['previous_mutes']['none'].'</td>
 					</tr>';
 			} else {
 				$i = 1;
@@ -517,7 +517,7 @@ else {
 						<td>'.$r['actor_name'].'</td>
 						<td>'.date('d/m/y', $r['pastCreated']).'</td>'.($serverName ? '
 						<td>'.$r['server'].'</td>' : '').($admin ? '
-						<td class="admin-options"><a href="#" class="btn btn-danger delete btn-xs" title="Remove" data-server="'.$_GET['server'].'" data-record-id="'.$r['id'].'"><span class="glyphicon glyphicon-trash"></span></a></td>' : '').'
+						<td class="admin-options"><a href="#" class="btn btn-danger delete btn-xs" title="'.$language['viewplayer']['previous_mutes']['admin-remove'].'" data-server="'.$_GET['server'].'" data-record-id="'.$r['id'].'"><span class="glyphicon glyphicon-trash"></span></a></td>' : '').'
 					</tr>';
 					++$i;
 				}
@@ -532,13 +532,13 @@ else {
 			?>
 			<br />
 			<table class="table table-striped table-bordered" id="previous-warnings">
-				<caption>Warnings</caption>
+				<caption><?= $language['viewplayer']['previous_warnings']['previous_warnings'] ?></caption>
 				<thead>
 					<tr>
-						<th>ID</th>
-						<th>Reason</th>
-						<th>By</th>
-						<th>On</th><?php
+						<th><?= $language['viewplayer']['previous_warnings']['id'] ?></th>
+						<th><?= $language['viewplayer']['previous_warnings']['reason'] ?></th>
+						<th><?= $language['viewplayer']['previous_warnings']['by'] ?></th>
+						<th><?= $language['viewplayer']['previous_warnings']['on'] ?></th><?php
 			if(!isset($pastWarnings[0]) || (isset($pastWarnings[0]) && !is_array($pastWarnings[0])))
 				$pastWarnings = array($pastWarnings);
 			$serverName = false;
@@ -550,7 +550,7 @@ else {
 			}
 			if($serverName) {
 				echo '
-						<th>Server</th>';
+						<th>'.$language['viewplayer']['previous_warnings']['server'].'</th>';
 			}
 			if($admin)
 				echo '
@@ -563,7 +563,7 @@ else {
 			if(isset($pastWarnings[0]) && count($pastWarnings[0]) == 0) {
 				echo '
 					<tr>
-						<td colspan="8">None</td>
+						<td colspan="8">'.$language['viewplayer']['previous_warnings']['none'].'</td>
 					</tr>';
 			} else {
 				$i = 1;
@@ -578,7 +578,7 @@ else {
 						<td>'.$r['actor_name'].'</td>
 						<td>'.date('H:i:s d/m/y', $r['created']).'</td>'.($serverName ? '
 						<td>'.$r['server'].'</td>' : '').($admin ? '
-						<td class="admin-options"><a href="#" class="btn btn-danger delete btn-xs" title="Remove" data-server="'.$_GET['server'].'" data-record-id="'.$r['id'].'"><span class="glyphicon glyphicon-trash"></span></a></td>' : '').'
+						<td class="admin-options"><a href="#" class="btn btn-danger delete btn-xs" title="'.$language['viewplayer']['previous_warnings']['admin-remove'].'" data-server="'.$_GET['server'].'" data-record-id="'.$r['id'].'"><span class="glyphicon glyphicon-trash"></span></a></td>' : '').'
 					</tr>';
 					++$i;
 				}
@@ -593,13 +593,13 @@ else {
 		?>
 			<br />
 			<table class="table table-striped table-bordered" id="previous-kicks">
-				<caption>Kicks</caption>
+				<caption><?= $language['viewplayer']['previous_kicks']['previous_kicks'] ?></caption>
 				<thead>
 					<tr>
-						<th>ID</th>
-						<th>Reason</th>
-						<th>By</th>
-						<th>At</th><?php
+						<th><?= $language['viewplayer']['previous_kicks']['id'] ?></th>
+						<th><?= $language['viewplayer']['previous_kicks']['reason'] ?></th>
+						<th><?= $language['viewplayer']['previous_kicks']['by'] ?></th>
+						<th><?= $language['viewplayer']['previous_kicks']['at'] ?></th><?php
 			if(isset($pastKicks[0]) && !is_array($pastKicks[0]))
 				$pastKicks = array($pastKicks);
 			$serverName = false;
@@ -611,7 +611,7 @@ else {
 			}
 			if($serverName) {
 					echo '
-						<th>Server</th>';
+						<th>'.$language['viewplayer']['previous_kicks']['server'].'</th>';
 			}
 			if($admin)
 				echo '
@@ -624,7 +624,7 @@ else {
 			if(count($pastKicks) == 0) {
 				echo '
 					<tr>
-						<td colspan="8">None</td>
+						<td colspan="8">'.$language['viewplayer']['previous_kicks']['none'].'</td>
 					</tr>';
 			} else {
 				$i = 1;
@@ -638,7 +638,7 @@ else {
 						<td>'.$r['actor_name'].'</td>
 						<td>'.date('d/m/y', $r['created']).'</td>'.($serverName ? '
 						<td>'.$r['server'].'</td>' : '').($admin ? '
-						<td class="admin-options"><a href="#" class="btn btn-danger delete btn-xs" title="Remove" data-server="'.$_GET['server'].'" data-record-id="'.$r['id'].'"><span class="glyphicon glyphicon-trash"></span></a></td>' : '').'
+						<td class="admin-options"><a href="#" class="btn btn-danger delete btn-xs" title="'.$language['viewplayer']['previous_kicks']['admin-remove'].'" data-server="'.$_GET['server'].'" data-record-id="'.$r['id'].'"><span class="glyphicon glyphicon-trash"></span></a></td>' : '').'
 					</tr>';
 					++$i;
 				}
