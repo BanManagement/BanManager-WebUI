@@ -10,7 +10,7 @@
  */
 
 function latestBans($server, $serverID) {
-	global $settings;
+	global $settings, $language;
 
 	// Clear old latest bans cache's
 	clearCache($serverID.'/latestbans', 300);
@@ -25,7 +25,7 @@ function latestBans($server, $serverID) {
 	$rows = count($result);
 
 	if($rows == 0){
-		echo '<li><span class="label label-info">No Records</span></li>';
+		echo '<li><span class="label label-info">'.$language['home']['no_records'].'</span></li>';
 	}	else {
 		$timeDiff = cache('SELECT ('.time().' - UNIX_TIMESTAMP(now()))/3600 AS mysqlTime', 5, $serverID.'/mysqlTime', $server); // Cache it for a few seconds
 
@@ -51,7 +51,7 @@ function latestBans($server, $serverID) {
 }
 
 function latestMutes($server, $serverID) {
-	global $settings;
+	global $settings, $language;
 
 	// Clear old latest mutes cache's
 	clearCache($serverID.'/latestmutes', 300);
@@ -66,7 +66,7 @@ function latestMutes($server, $serverID) {
 	$rows = count($result);
 
 	if($rows == 0){
-		echo '<li><span class="label label-info">No Records</span></li>';
+		echo '<li><span class="label label-info">'.$language['home']['no_records'].'</span></li>';
 	} else {
 		$timeDiff = cache('SELECT ('.time().' - UNIX_TIMESTAMP(now()))/3600 AS mysqlTime', 5, $serverID.'/mysqlTime', $server); // Cache it for a few seconds
 
@@ -91,7 +91,7 @@ function latestMutes($server, $serverID) {
 }
 
 function latestWarnings($server, $serverID) {
-	global $settings;
+	global $settings, $language;
 
 	// Clear old latest warnings cache's
 	clearCache($serverID.'/latestwarnings', 300);
@@ -106,7 +106,7 @@ function latestWarnings($server, $serverID) {
 	$rows = count($result);
 
 	if($rows == 0) {
-		echo '<li><span class="label label-info">No Records</span></li>';
+		echo '<li><span class="label label-info">'.$language['home']['no_records'].'</span></li>';
 	} else {
 		$timeDiff = cache('SELECT ('.time().' - UNIX_TIMESTAMP(now()))/3600 AS mysqlTime', 5, $serverID.'/mysqlTime', $server); // Cache it for a few seconds
 
@@ -132,13 +132,13 @@ function latestWarnings($server, $serverID) {
 <div class="jumbotron">
 	<div class="row">
 		<div class="col-lg-6">
-			<h1><?php echo $language['header-title']; ?></h1>
+			<h1><?php echo $language['home']['header-title']; ?></h1>
 			<form action="index.php" method="get" class="form-horizontal" id="search">
 				<div class="input-group search">
 					<div class="input-group-btn">
-						<button id="player" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Player <span class="caret"></span></button>
+						<button id="player" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><?= $language['home']['search-player']; ?> <span class="caret"></span></button>
 						<ul class="dropdown-menu">
-							<li id="ip"><a href="#">Search by IP Address</a></li>
+							<li id="ip"><a href="#"><?= $language['home']['search-ip']; ?></a></li>
 						</ul>
 					</div>
 					<input type="text" name="player" class="form-control" placeholder="Search by username">
@@ -176,8 +176,8 @@ function latestWarnings($server, $serverID) {
 				?>
 					<input type="hidden" name="action" value="searchplayer" />
 					<div class="btn-group">
-						<button type="submit" class="btn btn-primary">Search</button>
-						<button type="button" class="btn btn-primary" id="viewall">Display All</button>
+						<button type="submit" class="btn btn-primary"><?= $language['home']['button-search']; ?></button>
+						<button type="button" class="btn btn-primary" id="viewall"><?= $language['home']['button-display']; ?></button>
 					</div>
 					<?php
 					if(isset($settings['submit_buttons_after_html']))
@@ -202,12 +202,12 @@ function latestWarnings($server, $serverID) {
 
 						?>
 						<?php
-							echo $language['brand'];
+							echo $language['general']['brand'];
 						?>
 
 						</span><br />
 
-						<?php echo $language['bm_info_text']; ?>
+						<?php echo $language['home']['bm_info_text']; ?>
 					</p>
 		<?php
 		}
@@ -216,7 +216,7 @@ function latestWarnings($server, $serverID) {
 		?>
 					<span>
 						<span class="glyphicon glyphicon-globe"></span>
-						<?php echo $language['past_player_bans']; ?>
+						<?php echo $language['home']['past_player_bans']; ?>
 					</span>
 					<div class="list-group pastbans">
 					<?php
@@ -344,7 +344,7 @@ if(count($settings['servers']) > 1) {
 		if((isset($settings['latest_bans']) && $settings['latest_bans']) || !isset($settings['latest_bans'])) {
 			echo '
 			<div class="col-lg-4">
-				<h3>'.$language['latest_bans_title'].'</h3>
+				<h3>'.$language['home']['latest_bans'].'</h3>
 				<ul class="nav nav-tabs nav-stacked">';
 					latestBans($server, 0);
 				echo '
@@ -355,7 +355,7 @@ if(count($settings['servers']) > 1) {
 		if((isset($settings['latest_mutes']) && $settings['latest_mutes'])) {
 			echo '
 			<div class="col-lg-4">
-				<h3>'.$language['latest_mutes_title'].'</h3>
+				<h3>'.$language['home']['latest_mutes'].'</h3>
 				<ul class="nav nav-tabs nav-stacked">';
 					latestMutes($server, 0);
 					echo '
@@ -366,7 +366,7 @@ if(count($settings['servers']) > 1) {
 		if((isset($settings['latest_warnings']) && $settings['latest_warnings'])) {
 			echo '
 			<div class="col-lg-4">
-				<h3>'.$language['latest_warnings_title'].'</h3>
+				<h3>'.$language['home']['latest_warnings'].'</h3>
 				<ul class="nav nav-tabs nav-stacked">';
 					latestWarnings($server, 0);
 				echo '

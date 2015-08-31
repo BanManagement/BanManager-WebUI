@@ -164,7 +164,7 @@ else {
 
 	if(!$found) {
 		errors('No matched IP or invalid format');
-		?><a href="index.php" class="btn btn-primary">New Search</a><?php
+		?><a href="index.php" class="btn btn-primary"><?= $language['searchip']['new_search']; ?></a><?php
 	} else {
 		?>
 	<form class="form-inline" action="" method="get">

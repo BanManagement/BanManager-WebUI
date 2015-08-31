@@ -23,6 +23,8 @@ $settings['debug']['functiontest'] = false; // check for neccessary PHP function
 $settings['debug']['error_reporting'] = false; // display PHP errors
 $settings['debug']['error_reporting_level'] = E_ALL; // Set error level (E_ALL, E_ERROR, E_WARNING, E_NOTICE)
 
+$settings['language'] = "en"; // Default locale setting ("en" by default)
+
 $settings['utf8'] = true; // Encoding (Recommended TRUE)
 $settings['latest_bans'] = true;  // Latest Bans table
 $settings['latest_mutes'] = true; // Latest Mutes table
@@ -64,26 +66,6 @@ $settings['cache_home'] = 60;
 // ("%uuid%" is the placeholder for the player uuid)
 $settings['skin']['helm'] = "https://crafatar.com/avatars/%uuid%?helm&size=24";
 $settings['skin']['complete'] = "https://crafatar.com/renders/body/%uuid%?helm&scale=7";
-
-/**
-* These are the language options for Ban Management
-**/
-
-$language['brand'] = 'Ban Management'; // The branding of all pages
-$language['header-title'] = 'Account Status'; // Edit the 'Account Status' text above the search
-$language['description'] = ''; // Meta Description for search engines
-$language['title'] = 'Ban Management by Frostcast'; // Title of all pages
-$language['latest_bans_title'] = 'Recent Bans'; // The text displayed over the latest bans table
-$language['latest_mutes_title'] = 'Recent Mutes'; // The text displayed over the latest mutes table
-$language['latest_warnings_title'] = 'Recent Warnings'; // The text displayed over the latest warnings table
-$language['nav-home'] = 'Home'; // The text displayed in the navbar for 'Home'
-$language['nav-stats'] = 'Statistics'; // The text displayed in the navbar for 'Servers'
-$language['past_player_bans'] = 'Past Player Bans'; // The text displayed on the homepage
-$language['bm_info_text'] = // The text displayed if bm_info is set to true. Enter your text below, HTML elements supported
-'
-  Ban Management is a ban and mute system that allows players to check if and why they were banned, muted or warned and by
-  whom.
-';
 
 /**
 * These are the settings for editing the layout of Ban Management

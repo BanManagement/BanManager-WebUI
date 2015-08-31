@@ -8,6 +8,7 @@
  *  Additional licence terms at https://raw.githubusercontent.com/BanManagement/BanManager-WebUI/master/LICENSE
  */
 
+/* global language */
 /* global CanvasLoader */
 
 function showLoading(element) {
@@ -25,6 +26,21 @@ function hideLoading() {
 }
 
 $(function() {
+  // Construct URI
+  var ownURI = window.location.protocol + '//' + window.location.hostname + '/' + window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/')),
+      locale;
+
+  // Load current locale file synchronously
+  $.ajax({
+    type: 'GET',
+    url: ownURI + 'l10n/' + language + '.json',
+    dataType: 'json',
+    success: function(json) {
+      locale = json;
+    },
+    async: false
+  })
+
   jQuery.validator.setDefaults({
     errorPlacement: function(error, placement) {
       error.wrap('<span class="help-inline" />');
@@ -165,15 +181,15 @@ $(function() {
     var s = $(this);
     if (s.attr('id') === 'ip') {
       var player = $('#player');
-      $('#ip').attr('id', 'player').find('a').text('Player');
+      $('#ip').attr('id', 'player').find('a').text(locale.home['search-player']);
       player.attr('id', 'ip').html('IP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="caret"></span>');
-      $('#search input[type=text]').attr('placeholder', 'Enter IP Address');
+      $('#search input[type=text]').attr('placeholder', locale.home['search-placeholder-ip']);
       $('#search input[name=action]').attr('value', 'searchip');
     } else {
       var ip = $('#ip');
-      $('#player').attr('id', 'ip').find('a').text('IP');
+      $('#player').attr('id', 'ip').find('a').text(locale.home['search-ip']);
       ip.attr('id', 'player').html('Player <span class="caret"></span>');
-      $('#search input[type=text]').attr('placeholder', 'Enter Player Name');
+      $('#search input[type=text]').attr('placeholder', locale.home['search-placeholder-player']);
       $('#search input[name=action]').attr('value', 'searchplayer');
     }
   });

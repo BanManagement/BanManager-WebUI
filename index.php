@@ -696,11 +696,13 @@ $ajaxactions = array(
 
 if(file_exists('settings.php')){
 	include('settings.php');
-}
-else {
+} else {
 	include('actions/firstrun.php');
 	exit;
 }
+
+// Load localization file
+$language = json_decode(file_get_contents(IN_PATH.'l10n/'.$settings['language'].'.json'), true);
 
 // Check neccessary PHP functions
 if (isset($settings['debug']['functiontest']) && $settings['debug']['functiontest'] == true) {

@@ -34,6 +34,11 @@
 						var authid = \''.sha1($settings['password']).'\';
 					</script>';
 			}
+
+			echo '
+				<script type="text/javascript">
+					var language = \''.$settings['language'].'\';
+				</script>';
 		?>
 	</body>
 </html>
