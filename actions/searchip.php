@@ -91,7 +91,7 @@ else {
 				$expireTime = ($player['expires'] + $mysqlSecs)- $timeNow;
 
 				if($player['expires'] == 0)
-					$expires = '<span class="label label-important">Permanent</span>';
+					$expires = '<span class="label label-danger">Permanent</span>';
 				else if(isset($expireTime) && $expireTime > 0) {
 					$expires = '<span class="label label-warning">'.secs_to_hmini($expireTime).'</span>';
 				} else
