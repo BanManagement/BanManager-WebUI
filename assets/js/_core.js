@@ -99,7 +99,7 @@ $(function() {
     theme: 'bootstrap' // this will
     , widthFixed: true
     , headers: { 4: { sorter: 'expires' } }
-    , sortList: [ [ 0,0 ] ]
+    , sortList: [ [ 5,1 ] ]
     , headerTemplate: '{content} {icon}' // new in v2.7. Needed to add the bootstrap icon!
     // widget code contained in the jquery.tablesorter.widgets.js file
     // use the zebra stripe widget if you plan on hiding any rows (filter widget)

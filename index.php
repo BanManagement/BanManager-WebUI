@@ -542,6 +542,28 @@ function searchPlayers($search, $serverID, $server, $sortByCol = 'name', $sortBy
 		}
 	}
 
+	switch($sortByCol) {
+		default:
+		case 0: // Name
+			aasort($found, "name", $sortBy);
+		break;
+		case 1: // Type
+			aasort($found, "type", $sortBy);
+		break;
+		case 2: // By
+			aasort($found, "by", $sortBy);
+		break;
+		case 3: // Reason
+			aasort($found, "reason", $sortBy);
+		break;
+		case 4: // Expires
+			aasort($found, "expires", $sortBy);
+		break;
+		case 5: // Date
+			aasort($found, "time", $sortBy);
+		break;
+	}
+
 	if(count($found) == 0)
 		return false;
 	else if(count($found) == 1) {
@@ -552,6 +574,25 @@ function searchPlayers($search, $serverID, $server, $sortByCol = 'name', $sortBy
 		// STUFF
 		return $found;
 	}
+}
+
+/* (credits to Lohoris - http://stackoverflow.com/a/2699110) */
+function aasort (&$array, $key, $desc) {
+		$sorter=array();
+		$ret=array();
+		reset($array);
+		foreach ($array as $ii => $va) {
+				$sorter[$ii]=$va[$key];
+		}
+		if ($desc == "DESC") {
+			arsort($sorter);
+		} else {
+			asort($sorter);
+		}
+		foreach ($sorter as $ii => $va) {
+				$ret[$ii]=$array[$ii];
+		}
+		$array=$ret;
 }
 
 // Function to complete an IP address.
