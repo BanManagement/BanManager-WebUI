@@ -700,6 +700,28 @@ function searchIps($search, $serverID, $server, $sortByCol = 'name', $sortBy = '
 		}
 	}
 
+	switch($sortByCol) {
+		default:
+		case 0: // Name
+			aasort($found, "ip", $sortBy);
+		break;
+		case 1: // Type
+			aasort($found, "type", $sortBy);
+		break;
+		case 2: // By
+			aasort($found, "by", $sortBy);
+		break;
+		case 3: // Reason
+			aasort($found, "reason", $sortBy);
+		break;
+		case 4: // Expires
+			aasort($found, "expires", $sortBy);
+		break;
+		case 5: // Date
+			aasort($found, "time", $sortBy);
+		break;
+	}
+
 	if(count($found) == 0)
 		return false;
 	else if(count($found) == 1) {
