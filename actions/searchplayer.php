@@ -101,6 +101,8 @@ else {
 						$expires = '<span class="label label-warning">'.secs_to_hmini($expireTime).'</span>';
 					} else
 						$expires = '<span class="label label-warning">Expired</span>';
+				} else {
+					$expires = '';
 				}
 
 				if(!empty($filter)) {
