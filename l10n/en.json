@@ -220,6 +220,57 @@
       "admin-remove": "Remove"
     }
   },
+  "viewip": {
+    "new_search": "New Search",
+    "server": "Server",
+    "change_server": "Change Server",
+    "associated_accounts": {
+      "associated_accounts": "Associated Accounts",
+      "id": "ID",
+      "playername": "Playername",
+      "uuid": "UUID",
+      "ip": "IP",
+      "none": "None found"
+    },
+    "current_ban": {
+      "current_ban": "Current Ban",
+      "none": "None",
+      "expires_in": "Expires in",
+      "never": "Never",
+      "now": "Now",
+      "banned_by": "Banned by",
+      "banned_at": "Banned at",
+      "reason": "Reason",
+      "server": "Server",
+      "edit": "Edit",
+      "unban": "Unban",
+      "unban_modal-title": "Unban %s",
+      "unban_modal-body": "Are you sure you want to unban %s?<br />This cannot be undone",
+      "edit_modal": {
+        "edit_ban": "Edit IP Ban",
+        "your_time": "Your Time",
+        "server_time": "Server Time",
+        "expires_server_time": "Expires Server Time",
+        "never": "Never",
+        "temp": "Temp",
+        "reason": "Reason",
+        "close": "Close",
+        "save": "Save"
+      }
+    },
+    "previous_bans": {
+      "previous_bans": "Previous Bans",
+      "id": "ID",
+      "reason": "Reason",
+      "by": "By",
+      "on": "On",
+      "length": "Length",
+      "unbanned_by": "Unbanned by",
+      "at": "At",
+      "server": "Server",
+      "none": "None"
+    }
+  },
   "firstrun": {
     "welcome": "Welcome!",
     "thankyou": "Thanks for using the BanManager-WebUI.",

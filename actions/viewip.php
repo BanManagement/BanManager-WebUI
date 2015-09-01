@@ -37,7 +37,7 @@ else {
 	$pastBans = cache("SELECT *, a.name AS actor_name, pa.name AS pastActor_name, pastCreated FROM ".$server['ipBanRecordsTable']." b JOIN ".$server['playersTable']." a ON b.actor_id = a.id JOIN ".$server['playersTable']." pa ON b.pastActor_id = pa.id WHERE b.ip = INET_ATON('".$_GET['ip']."')", $settings['cache_viewip'], $_GET['server'].'/ips', $server);
 	if(count($currentBans) == 0 && count($pastBans) == 0) {
 		errors('IP does not exist');
-		?><a href="index.php" class="btn btn-primary">New Search</a><?php
+		?><a href="index.php" class="btn btn-primary"><?= $language['viewip']['new_search'] ?></a><?php
 	} else {
 		// They have been banned, naughty!
 		// Now check the time differences!
@@ -49,14 +49,14 @@ else {
 		?>
 		<div class="hero-unit">
 			<h2><?php echo $_GET['ip']; ?></h2>
-			<h3>Server: <?php echo $server['name']; ?></h3>
+			<h3><?= $language['viewip']['server'] ?>: <?php echo $server['name']; ?></h3>
 		<?php
 		$id = array_keys($settings['servers']);
 		$i = 0;
 		$html = '';
 		if(count($settings['servers']) > 1) {
 			echo '
-			<h5>Change Server: ';
+			<h5>'.$language['viewip']['change_server'].': ';
 			foreach($settings['servers'] as $serv) {
 				if($serv['name'] != $server['name']) {
 					$html .= '<a href="index.php?action=viewplayer&ip='.$_GET['ip'].'&server='.$id[$i].'">'.$serv['name'].'</a>, ';
@@ -72,13 +72,13 @@ else {
 		?>
 			<br />
 			<table class="table table-striped table-bordered" id="associated-accounts">
-				<caption>Associated Accounts</caption>
+				<caption><?= $language['viewip']['associated_accounts']['associated_accounts'] ?></caption>
 				<thead>
 					<tr>
-						<th>ID</th>
-						<th>Playername</th>
-						<th>UUID</th>
-						<th>IP</th>
+						<th><?= $language['viewip']['associated_accounts']['id'] ?></th>
+						<th><?= $language['viewip']['associated_accounts']['playername'] ?></th>
+						<th><?= $language['viewip']['associated_accounts']['uuid'] ?></th>
+						<th><?= $language['viewip']['associated_accounts']['ip'] ?></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -86,7 +86,7 @@ else {
 						if(count($associatedAccounts) == 0) {
 							echo '
 				<tr>
-					<td colspan="4">None found</td>
+					<td colspan="4">'.$language['viewip']['associated_accounts']['none'].'</td>
 				</tr>';
 						} else {
 							if (count($associatedAccounts) == 2){
@@ -115,22 +115,22 @@ else {
 			<?php } ?>
 			<br />
 			<table class="table table-striped table-bordered">
-				<caption>Current Ban</caption>
+				<caption><?= $language['viewip']['current_ban']['current_ban'] ?></caption>
 				<tbody>
 				<?php
 		if(count($currentBans) == 0) {
 			echo '
 					<tr>
-						<td colspan="2">None</td>
+						<td colspan="2">'.$language['viewip']['current_ban']['none'].'</td>
 					</tr>';
 		} else {
 			$reason = str_replace(array('&quot;', '"'), array('&#039;', '\''), $currentBans['reason']);
 			echo '
 					<tr>
-						<td>Expires in:</td>
+						<td>'.$language['viewip']['current_ban']['expires_in'].':</td>
 						<td>';
 			if($currentBans['expires'] == 0)
-				echo '<button disabled class="btn btn-danger btn-xs bantype">Never</button>';
+				echo '<button disabled class="btn btn-danger btn-xs bantype">'.$language['viewip']['current_ban']['never'].'</button>';
 			else {
 				$currentBans['expires'] = $currentBans['expires'] + $mysqlSecs;
 				$currentBans['created'] = $currentBans['created'] + $mysqlSecs;
@@ -138,26 +138,26 @@ else {
 				if($expires > 0)
 					echo '<time datetime="'.date('c', $currentBans['expires']).'">'.secs_to_h($expires).'</time>';
 				else
-					echo 'Now';
+					echo $language['viewip']['current_ban']['now'];
 			}
 			echo '</td>
 					</tr>
 					<tr>
-						<td>Banned by:</td>
+						<td>'.$language['viewip']['current_ban']['banned_by'].':</td>
 						<td>'.$currentBans['actor_name'].'</td>
 					</tr>
 					<tr>
-						<td>Banned at:</td>
+						<td>'.$language['viewip']['current_ban']['banned_at'].':</td>
 						<td>'.date('jS F Y h:i:s A', $currentBans['created']).'</td>
 					</tr>
 					<tr>
-						<td>Reason:</td>
+						<td>'.$language['viewip']['current_ban']['reason'].':</td>
 						<td>'.$reason.'</td>
 					</tr>';
 			if(!empty($currentBans['server'])) {
 				echo '
 					<tr>
-						<td>Server:</td>
+						<td>'.$language['viewip']['current_ban']['server'].':</td>
 						<td>'.$currentBans['server'].'</td>
 					</tr>';
 			}
@@ -170,8 +170,8 @@ else {
 				<tfoot>
 					<tr>
 						<td colspan="2">
-							<a class="btn btn-warning edit" title="Edit" href="#editipban" data-toggle="modal"><i class="icon-pencil icon-white"></i> Edit</a>
-							<a class="btn btn-danger delete" title="Unban" data-role="confirm" href="#" data-confirm-title="Unban '.$_GET['ip'].'" data-confirm-body="Are you sure you want to unban '.$_GET['ip'].'?<br />This cannot be undone"><i class="icon-trash icon-white"></i> Unban</a>
+							<a class="btn btn-warning edit" title="'.$language['viewip']['current_ban']['edit'].'" href="#editipban" data-toggle="modal"><i class="icon-pencil icon-white"></i> Edit</a>
+							<a class="btn btn-danger delete" title="'.$language['viewip']['current_ban']['unban'].'" data-role="confirm" href="#" data-confirm-title="'.sprintf($language['viewip']['current_ban']['unban_modal-title'], $_GET['ip']).'" data-confirm-body="'.sprintf($language['viewip']['current_ban']['unban_modal-body'], $_GET['ip']).'"><i class="icon-trash icon-white"></i> Unban</a>
 						</td>
 					</tr>
 				</tfoot>';
@@ -186,33 +186,33 @@ else {
 						<form class="form-horizontal" action="" method="post">
 							<div class="modal-header">
 								<button type="button" class="close" data-dismiss="modal">&times;</button>
-								<h3>Edit IP Ban</h3>
+								<h3><?= $language['viewip']['current_ban']['edit_modal']['edit_ban'] ?></h3>
 							</div>
 							<div class="modal-body">
 								<fieldset>
 									<div class="control-group">
-										<label class="control-label" for="yourtime">Your Time:</label>
+										<label class="control-label" for="yourtime"><?= $language['viewip']['current_ban']['edit_modal']['your_time'] ?>:</label>
 										<div class="controls">
 											<span class="yourtime"></span>
 										</div>
 									</div>
 									<div class="control-group">
-										<label class="control-label" for="servertime">Server Time:</label>
+										<label class="control-label" for="servertime"><?= $language['viewip']['current_ban']['edit_modal']['server_time'] ?>:</label>
 										<div class="controls">
 											<span class="servertime"><?php echo date('d/m/Y H:i:s', time() + $mysqlSecs); ?></span>
 										</div>
 									</div>
 									<div class="control-group">
-										<label class="control-label" for="bandatetime">Expires Server Time:</label>
+										<label class="control-label" for="bandatetime"><?= $language['viewip']['current_ban']['edit_modal']['expires_server_time'] ?>:</label>
 										<div class="controls">
 											<div class="input-append datetimepicker date"><?php
 					echo '
 												<div class="input-prepend">
 													<button class="btn btn-danger bantype" type="button">';
 					if($currentBans['expires'] == 0)
-						echo 'Never';
+						echo $language['viewip']['current_ban']['edit_modal']['never'];
 					else
-						echo 'Temp';
+						echo $language['viewip']['current_ban']['edit_modal']['temp'];
 
 					echo '</button>
 													<input type="text" class="required';
@@ -239,7 +239,7 @@ else {
 										</div>
 									</div>
 									<div class="control-group">
-										<label class="control-label" for="banreason">Reason:</label>
+										<label class="control-label" for="banreason"><?= $language['viewip']['current_ban']['edit_modal']['reason'] ?>:</label>
 										<div class="controls">
 											<textarea id="banreason" name="reason" class="form-control" rows="4"><?php echo $currentBans['reason']; ?></textarea>
 										</div>
@@ -247,8 +247,8 @@ else {
 								</fieldset>
 							</div>
 							<div class="modal-footer">
-								<a href="#" class="btn" data-dismiss="modal">Close</a>
-								<input type="submit" class="btn btn-primary" value="Save" />
+								<a href="#" class="btn" data-dismiss="modal"><?= $language['viewip']['current_ban']['edit_modal']['close'] ?></a>
+								<input type="submit" class="btn btn-primary" value="<?= $language['viewip']['current_ban']['edit_modal']['save'] ?>" />
 							</div>
 							<input type="hidden" name="id" value="<?php echo $currentBans['id']; ?>" />
 							<input type="hidden" name="server" value="<?php echo $_GET['server']; ?>" />
@@ -261,16 +261,16 @@ else {
 			?>
 			<br />
 			<table class="table table-striped table-bordered" id="previous-ip-bans">
-				<caption>Previous Bans</caption>
+				<caption><?= $language['viewip']['previous_bans']['previous_bans'] ?></caption>
 				<thead>
 					<tr>
-						<th>ID</th>
-						<th>Reason</th>
-						<th>By</th>
-						<th>On</th>
-						<th>Length</th>
-						<th>Unbanned By</th>
-						<th>At</th>
+						<th><?= $language['viewip']['previous_bans']['id'] ?></th>
+						<th><?= $language['viewip']['previous_bans']['reason'] ?></th>
+						<th><?= $language['viewip']['previous_bans']['by'] ?></th>
+						<th><?= $language['viewip']['previous_bans']['on'] ?></th>
+						<th><?= $language['viewip']['previous_bans']['length'] ?></th>
+						<th><?= $language['viewip']['previous_bans']['unbanned_by'] ?></th>
+						<th><?= $language['viewip']['previous_bans']['at'] ?></th>
 						<th><span class="glyphicon glyphicon-pencil"></span></th><?php
 		if(!isset($pastBans[0]) || (isset($pastBans[0]) && !is_array($pastBans[0])))
 			$pastBans = array($pastBans);
@@ -283,7 +283,7 @@ else {
 		}
 		if($serverName) {
 				echo '
-					<th>Server</th>';
+					<th>'.$language['viewip']['previous_bans']['server'].'</th>';
 		}
 				?>
 
@@ -293,7 +293,7 @@ else {
 		if(isset($pastBans[0]) && count($pastBans[0]) == 0) {
 			echo '
 					<tr>
-						<td colspan="9">None</td>
+						<td colspan="9">'.$language['viewip']['previous_bans']['none'].'</td>
 					</tr>';
 		} else {
 			$i = 1;
