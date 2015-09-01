@@ -135,7 +135,7 @@ else {
 					$time = (!empty($player['time']) ? date('j F Y h:i:s A', $player['time']) : '');
 
 				$ajaxArray['rows'][] = array(
-					'<a href="index.php?action=viewip&ip='.$playerNames[$i].'&server='.$_GET['server'].'">'.$playerNames[$i].'</a>',
+					'<a href="index.php?action=viewip&ip='.$player['ip'].'&server='.$_GET['server'].'">'.$player['ip'].'</a>',
 					$player['type'],
 					$player['by'],
 					$player['reason'],
