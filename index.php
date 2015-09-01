@@ -246,7 +246,7 @@ function is_alphanumdash($string) {
 	return (preg_match("~^[a-z0-9_-]*$~iD", $string) !== 0 ? true : false);
 }
 
-function cache($query, $time, $folder = '', $server = array(), $name = '') {
+function cache($query, $time, $folder = '', $server = array(), $name = '', $assoc = false) {
 	global $settings;
 	$md5 = md5($query);
 	if($folder == '' && empty($name))
@@ -268,7 +268,7 @@ function cache($query, $time, $folder = '', $server = array(), $name = '') {
 		if(apc_exists($file))
 			return apc_fetch($file);
 		else {
-			return createCache($query, $server, $file, $time);
+			return createCache($query, $server, $file, $time, $assoc);
 		}
 	} else {
 		$file = IN_PATH.'cache/'.$file.'.php';
@@ -277,19 +277,19 @@ function cache($query, $time, $folder = '', $server = array(), $name = '') {
 		if(file_exists($file)) {
 			if(time() - filemtime($file) > $time) {
 				// Needs recache
-				return createCache($query, $server, $file); // Return the fresh data
+				return createCache($query, $server, $file, 0, $assoc); // Return the fresh data
 			} else {
 				// Serve the cache
 				return unserialize(file_get_contents($file, NULL, NULL, 16));
 			}
 		} else {
 			// Cache needs creating
-			return createCache($query, $server, $file); // Return the fresh data
+			return createCache($query, $server, $file, 0, $assoc); // Return the fresh data
 		}
 	}
 }
 
-function createCache($query, $server, $file, $time = 0) {
+function createCache($query, $server, $file, $time = 0, $assoc) {
 	global $settings;
 
 	// if(!empty($server)) {
@@ -315,8 +315,14 @@ function createCache($query, $server, $file, $time = 0) {
 	}
 
 	if(mysqli_num_rows($result) > 0) {
-		while($row = mysqli_fetch_array($result)){
-			array_push($data, $row);
+		if ($assoc) {
+			while($row = mysqli_fetch_assoc($result)){
+				array_push($data, $row);
+			}
+		} else {
+			while($row = mysqli_fetch_array($result)){
+				array_push($data, $row);
+			}
 		}
 	}
 
