@@ -60,6 +60,7 @@ $settings['cache_viewip'] = 600;
 $settings['cache_statistics'] = 3600;
 $settings['cache_search'] = 600;
 $settings['cache_home'] = 60;
+$settings['cache_playertouuid'] = 600;
 
 // Skin service options
 // ("%name%" is the placeholder for the player %name)

@@ -371,7 +371,8 @@ function clearCache($folder = '', $olderThan = 0) {
 }
 
 function playerNameToUUID($name, $server) {
-	$result = cache("SELECT HEX(id) as id FROM ".$server['playersTable']." WHERE name = '$name'", 300, 'playerNameToUUID', $server);
+	global $settings;
+	$result = cache("SELECT HEX(id) as id FROM ".$server['playersTable']." WHERE name = '$name'", $settings['cache_playertouuid'], 'playerNameToUUID', $server);
 	if(isset($result[0]))
 		return $result['id'];
 	else
