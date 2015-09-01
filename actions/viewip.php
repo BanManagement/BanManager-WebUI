@@ -89,14 +89,24 @@ else {
 					<td colspan="4">None found</td>
 				</tr>';
 						} else {
-							foreach($associatedAccounts as $i => $r) {
+							if (count($associatedAccounts) == 2){
 								echo '
 									<tr>
 										<td>'.($i + 1).'</td>
-										<td>'.$r['name'].'</td>
-										<td>'.$r['id'].'</td>
+										<td>'.$associatedAccounts['name'].'</td>
+										<td>'.$associatedAccounts['id'].'</td>
 										<td>'.$_GET['ip'].'</td>
 									</tr>';
+							} else {
+								foreach($associatedAccounts as $i => $r) {
+									echo '
+										<tr>
+											<td>'.($i + 1).'</td>
+											<td>'.$r['name'].'</td>
+											<td>'.$r['id'].'</td>
+											<td>'.$_GET['ip'].'</td>
+										</tr>';
+								}
 							}
 						}
 					?>
