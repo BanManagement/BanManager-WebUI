@@ -42,8 +42,8 @@
     "input-title-page_number": "Select page number"
   },
   "searchip": {
-    "header": "Advanced Search",
     "new_search": "New Search",
+    "header": "Advanced Search",
     "exclude_past": "Exclude Past",
     "update": "Update",
     "ip_address": "IP Address",

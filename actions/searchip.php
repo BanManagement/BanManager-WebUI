@@ -170,14 +170,14 @@ else {
 	<form class="form-inline" action="" method="get">
 		<fieldset>
 			<div class="page-header">
-				<h1>Advanced Search</h1>
+				<h1><?= $language['searchip']['header']; ?></h1>
 			</div>
 			<input type="hidden" name="action" value="searchip" />
 			<input type="hidden" name="server" value="<?php echo $_GET['server']; ?>" />
 			<input type="hidden" name="player" value="<?php echo $_GET['player']; ?>" />
 			<div class="checkbox" id="excludepast">
 			<label type="checkbox">
-				Exclude Past <input type="checkbox" name="excluderecords" value="1"
+				<?= $language['searchip']['exclude_past']; ?> <input type="checkbox" name="excluderecords" value="1"
 				<?php
 				if(isset($_GET['excluderecords']))
 					echo 'checked="checked"';
@@ -185,18 +185,18 @@ else {
 				/>
 			</label>
 			</div>
-			<button type="submit" class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-search"></span> Update</button>
+			<button type="submit" class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-search"></span> <?= $language['searchip']['update']; ?></button>
 		</fieldset>
 	</form>
 	<table class="table table-striped table-bordered sortable">
 		<thead>
 			<tr>
-				<th>IP Address</th>
-				<th>Type</th>
-				<th>By</th>
-				<th>Reason</th>
-				<th>Expires</th>
-				<th>Date</th>
+				<th><?= $language['searchip']['ip_address']; ?></th>
+				<th><?= $language['searchip']['type']; ?></th>
+				<th><?= $language['searchip']['by']; ?></th>
+				<th><?= $language['searchip']['reason']; ?></th>
+				<th><?= $language['searchip']['expires']; ?></th>
+				<th><?= $language['searchip']['date']; ?></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -209,13 +209,13 @@ else {
 					<span class="pagedisplay"></span>
 					<button class="btn btn-default next"><span class="glyphicon glyphicon-arrow-right" style="float:none"></span></button>
 					<button class="btn btn-default last"><span class="glyphicon glyphicon-step-forward"></span></button>
-					<select class="pagesize input-mini" title="Select page size">
+					<select class="pagesize input-mini" title="<?= $language['searchip']['input-title-page_size']; ?>">
 						<option selected="selected" value="10">10</option>
 						<option value="20">20</option>
 						<option value="30">30</option>
 						<option value="40">40</option>
 					</select>
-					<select class="pagenum input-mini" title="Select page number"></select>
+					<select class="pagenum input-mini" title="<?= $language['searchip']['input-title-page_number']; ?>"></select>
 				</th>
 			</tr>
 		</tfoot>
