@@ -74,4 +74,12 @@ $settings['skin']['complete'] = "https://crafatar.com/renders/body/%uuid%?helm&s
 
 $theme['navbar-dark'] = false; // Enable dark theme for the navbar
 
+
+// For possible external links in nav bar, uncomment the following lines
+
+// $theme['external_links'] = array(
+//   'Test' => 'http://test.de',
+//   'Toast' => 'http://toast.de',
+// );
+
 ?>

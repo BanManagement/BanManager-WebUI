@@ -54,6 +54,14 @@ $path = $_SERVER['HTTP_HOST'].str_replace('index.php', '', $_SERVER['SCRIPT_NAME
 				<li <?php if($request == $link) echo 'class="active"'; ?>><a href="<?php echo $link; ?>"><?php echo $name ?></a></li>
 				<?php
 					}
+
+					// Check if $settings['external_links'] is not empty
+					if (isset($theme['external_links'])) {
+						// For each external link in settings.php
+						foreach ($theme['external_links'] as $label => $link) {
+							echo '<li><a href="'.$link.'" target="_blank">'.$label.'</a></li>';
+						}
+					}
 				?>
 				</ul>
 					<?php
