@@ -1,6 +1,6 @@
 {
   "name": "banmanager-webui",
-  "version": "1.5.2",
+  "version": "1.5.3",
   "description": "Web interface for BanManager",
   "repository": {
     "type": "git",

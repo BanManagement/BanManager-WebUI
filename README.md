@@ -5,7 +5,7 @@ BanManager-WebUI
 
 Git repo initialized with existing WebUI project for BanManager by [confuser](https://github.com/confuser/Ban-Management). The main purpose of this repository is to to fix the WebUI for the latest major database restructure from version 4 to version 5.
 
-Caution: This project is WIP. There could be still some bugs and issues that I didn't iron out yet. Please report those via [GitHub issues](https://github.com/BanManagement/BanManager-WebUI/issues) if you notice anything. 
+Caution: This project is WIP. There could be still some bugs and issues that I didn't iron out yet. Please report those via [GitHub issues](https://github.com/BanManagement/BanManager-WebUI/issues) if you notice anything.
 
 Feel free to contribute if you have any suggestions or ideas.
 
@@ -61,8 +61,8 @@ Caution: When using the `dev` argument, Grunt won't minify your JS or CSS, so it
 
 * Convert all `.php` files to UTF-8 and add proper EOF
 * Support version 5 and up
-* Widgets more customizable in settings 
-* Configurable caching times 
+* Widgets more customizable in settings
+* Configurable caching times
 * Add debug option to output any SQL query
 * Fix "Statistics"
 * CSS adjustments
@@ -77,7 +77,13 @@ Caution: When using the `dev` argument, Grunt won't minify your JS or CSS, so it
 * Better impression on first run (PR #53)
 * "First run" checks
 * Improve error handling for admin authentication (issue #49)
-* Improve database performance 
+* Improve database performance
+* Prettier search filter inputs
+* Update checker in "Admin CP"
+* Add l10n
+* Improve search function
+* Bring back tablesorter functionality
+* Fix bootstrap label for "Permanent" tags
 
 ### Demo
 
@@ -85,4 +91,4 @@ You can find a working demo over here: http://bans.yeahwh.at
 
 ### Version
 
-1.5.2
+1.5.3
