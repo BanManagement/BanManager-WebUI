@@ -27,13 +27,18 @@ function hideLoading() {
 
 $(function() {
   // Construct URI
-  var ownURI = window.location.protocol + '//' + window.location.hostname + '/' + window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/')),
+  var ownURI = document.location.toString(),
       locale;
+
+  // Remove potential trailing slash
+  if (ownURI.substring(ownURI.length - 1) === '/') {
+      ownURI = ownURI.substring(0, ownURI.length - 1);
+  }
 
   // Load current locale file synchronously
   $.ajax({
     type: 'GET',
-    url: ownURI + 'l10n/' + language + '.json',
+    url: ownURI + '/l10n/' + language + '.json',
     dataType: 'json',
     success: function(json) {
       locale = json;
