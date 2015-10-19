@@ -91,4 +91,4 @@ You can find a working demo over here: http://bans.yeahwh.at
 
 ### Version
 
-1.5.3
+1.5.4
