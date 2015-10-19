@@ -86,8 +86,14 @@ function checkGithuVersion(callback){
 }
 
 function checkLocalVersion(callback){
+
+  var ownScripts = document.getElementsByTagName('script'),
+      ownPath = ownScripts[0].src.split('?')[0],
+      ownDir = ownPath.split('/').slice(0, -1).join('/') + '/',
+      ownURI = ownDir.replace('/assets/js/', '');
+
   $.ajax({
-    url: '//' + window.location.host + '/VERSION',
+    url: ownURI + '/VERSION',
     dataType: 'text',
     success: function(data) {
       callback($.trim(data));
@@ -96,7 +102,6 @@ function checkLocalVersion(callback){
 }
 
 $(document).ready(function() {
-  console.log(window.location.host)
   if ($('.updatecheck').length !== 0) {
     checkLocalVersion(function(localVersion) {
       checkGithuVersion(function(remoteVersion) {
