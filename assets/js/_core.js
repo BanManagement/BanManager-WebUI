@@ -27,13 +27,11 @@ function hideLoading() {
 
 $(function() {
   // Construct URI
-  var ownURI = document.location.toString(),
+  var ownScripts = document.getElementsByTagName('script'),
+      ownPath = ownScripts[0].src.split('?')[0],
+      ownDir = ownPath.split('/').slice(0, -1).join('/') + '/',
+      ownURI = ownDir.replace('/assets/js/', ''),
       locale;
-
-  // Remove potential trailing slash
-  if (ownURI.substring(ownURI.length - 1) === '/') {
-      ownURI = ownURI.substring(0, ownURI.length - 1);
-  }
 
   // Load current locale file synchronously
   $.ajax({
