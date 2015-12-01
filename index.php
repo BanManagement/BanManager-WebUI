@@ -400,7 +400,7 @@ function connect($server) {
 	return $mysqli;
 }
 
-function searchPlayers($search, $serverID, $server, $sortByCol = 'name', $sortBy = 'ASC', $past = true) {
+function searchPlayers($search, $serverID, $server, $sortByCol = 'name', $sortBy = 'ASC', $past = true, $isAjax = false) {
 	global $settings;
 
 	switch($sortByCol) {
@@ -564,9 +564,9 @@ function searchPlayers($search, $serverID, $server, $sortByCol = 'name', $sortBy
 		break;
 	}
 
-	if(count($found) == 0)
+	if(count($found) == 0) {
 		return false;
-	else if(count($found) == 1) {
+	} else if(count($found) == 1 && !$isAjax) {
 		// Redirect!
 		$player = reset($found);
 		redirect('index.php?action=viewplayer&player='.$player['name'].'&server='.$serverID);
@@ -618,7 +618,7 @@ function completeIPaddress($ip, $position) {
 	}
 }
 
-function searchIps($search, $serverID, $server, $sortByCol = 'name', $sortBy = 'ASC', $past = true) {
+function searchIps($search, $serverID, $server, $sortByCol = 'name', $sortBy = 'ASC', $past = true, $isAjax = false) {
 	global $settings;
 	$found = array();
 
@@ -724,7 +724,7 @@ function searchIps($search, $serverID, $server, $sortByCol = 'name', $sortBy = '
 
 	if(count($found) == 0)
 		return false;
-	else if(count($found) == 1) {
+	else if(count($found) == 1 && !$isAjax) {
 		// Redirect!
 		$p = array_keys($found);
 		redirect('index.php?action=viewip&ip='.$p[0].'&server='.$serverID);

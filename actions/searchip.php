@@ -65,7 +65,7 @@ else {
 					$sortBy = ($orders[2] == 0 ? 'ASC' : 'DESC');
 			}
 		}
-		$found = searchIps($search, $_GET['server'], $server, $sortByCol, $sortBy, $pastbans);
+		$found = searchIps($search, $_GET['server'], $server, $sortByCol, $sortBy, $pastbans, true);
 		$total = count($found);
 		$timeNow = time();
 
