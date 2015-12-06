@@ -30,11 +30,13 @@ else {
 	else {
 		$currentBan = mysqli_query($mysqlicon, "SELECT id FROM ".$server['playerBansTable']." WHERE id = '".$_GET['id']."'");
 
-		if(mysqli_num_rows($currentBan) == 0)
+		if(mysqli_num_rows($currentBan) == 0) {
 			$error = 'That record does not exist';
-		else {
-
-			mysqli_query($mysqlicon, "INSERT INTO ".$server['playerBanRecordsTable']." (player_id, reason, expired, actor_id, pastActor_id, pastCreated, created) SELECT b.player_id, b.reason, b.expires, 0, b.actor_id, b.created, UNIX_TIMESTAMP(now()) FROM ".$server['playerBansTable']." AS b WHERE b.id = '".$_GET['id']."'");
+		} else if (!$server['consoleId']) {
+			$error = 'Please specify a consoleId for this server';
+		} else {
+			$consoleId = str_replace('-', '', $server['consoleId']);
+			mysqli_query($mysqlicon, "INSERT INTO ".$server['playerBanRecordsTable']." (player_id, reason, expired, actor_id, pastActor_id, pastCreated, created) SELECT b.player_id, b.reason, b.expires, UNHEX('$consoleId'), b.actor_id, b.created, UNIX_TIMESTAMP(now()) FROM ".$server['playerBansTable']." AS b WHERE b.id = '".$_GET['id']."'");
 			// Now delete it
 			mysqli_query($mysqlicon, "DELETE FROM ".$server['playerBansTable']." WHERE id = '".$_GET['id']."'");
 

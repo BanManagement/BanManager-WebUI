@@ -35,6 +35,9 @@ else if(!is_alphanumdash($_POST['ipbanstable']))
 	die('Invalid: input "ipbanstable" is not alpha nummerical (dashes allowed)');
 else if(!is_alphanumdash($_POST['ipbanrecordstable']))
 	die('Invalid: input "ipbanrecordstable" is not alpha nummerical (dashes allowed)');
+else if(!preg_match('/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i', $_POST['consoleid'])) {
+	die('Invalid: input "consoleid" is not a valid UUID');
+}
 
 function tableExists($name) {
 	global $mysqli;
@@ -72,10 +75,9 @@ else {
 	// Success! Add it
 	$servers = $settings['servers'];
 
-	if (empty($servers))
-		$servers = array();
+	if (empty($servers)) $servers = array();
 
-	$servers[] = array(
+	$server = array(
 		'name' => $_POST['servername'],
 		'host' => $_POST['host'],
 		'database' => $_POST['database'],
@@ -89,16 +91,22 @@ else {
 		'playerKicksTable' => $_POST['playerkickstable'],
 		'playerWarningsTable' => $_POST['playerwarningstable'],
 		'ipBansTable' => $_POST['ipbanstable'],
-		'ipBanRecordsTable' => $_POST['ipbanrecordstable']
+		'ipBanRecordsTable' => $_POST['ipbanrecordstable'],
+		'consoleId' => $_POST['consoleid']
 	);
 
-	$settings['servers'] = $servers;
-	$servers = serialize($servers);
-	$servers = "['servers'] = '".$servers;
-	$contents = file_get_contents('settings.php');
-	$contents = preg_replace("/\['servers'\] = '(.*?)/", $servers, $contents);
-	file_put_contents('settings.php', $contents);
-	$array['success'] = 'true';
+	if (!validConsole($server['consoleId'], $server)) {
+		$error = 'Console id could not be found in players table';
+	} else {
+		$servers[] = $server;
+		$settings['servers'] = $servers;
+		$servers = serialize($servers);
+		$servers = "['servers'] = '".$servers;
+		$contents = file_get_contents('settings.php');
+		$contents = preg_replace("/\['servers'\] = '(.*?)/", $servers, $contents);
+		file_put_contents('settings.php', $contents);
+		$array['success'] = 'true';
+	}
 }
 if(isset($error))
 	$array['error'] = $error;

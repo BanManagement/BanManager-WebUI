@@ -724,6 +724,15 @@ function searchIps($search, $serverID, $server, $sortByCol = 'name', $sortBy = '
 	}
 }
 
+function validConsole($id, $server) {
+	$mysqlicon = connect($server);
+
+	$id = str_replace('-', '', $id);
+	$result = mysqli_query($mysqlicon, "SELECT * FROM " . $server['playersTable'] . " WHERE id = UNHEX('$id')");
+
+	return mysqli_num_rows($result) === 1;
+}
+
 $actions = array(
 	'admin',
 	'deletecache',

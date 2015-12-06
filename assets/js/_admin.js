@@ -491,6 +491,8 @@ $(function() {
           formBody.prepend(error('Invalid response from server, try again<br />Response: ' + jqXHR.responseText));
         }
       });
+
+      return false;
    });
 });
 

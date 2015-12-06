@@ -197,6 +197,12 @@ else if(isset($_SESSION['failed_attempts']) && $_SESSION['failed_attempts'] > 4)
 									<input type="text" class="form-control required fixedWidth" name="ipbanrecordstable" id="ipbanrecordstable" value="bm_ip_ban_records">
 								</div>
 							</div>
+							<div class="form-group">
+								<label class="control-label" for="consoleid"><?= $language['admin']['addserver']['consoleid']; ?>:</label>
+								<div class="controls">
+									<input type="text" class="form-control required fixedWidth" name="consoleid" id="consoleid">
+								</div>
+							</div>
 						</div>
 					</div>
 					<div class="modal-footer">
