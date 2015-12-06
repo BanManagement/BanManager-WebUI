@@ -77,10 +77,10 @@ if (!checkCache() || !checkSettingsFileExistance() || !checkSettingsFileWriteabl
 
 					<h3>Preperation / checklist</h3>
 					<ul id="check-list-box" class="list-group checked-list-box">
-						<li class="list-group-item" data-state="<?= (checkCache()) ? 'success' : 'failed' ?>">Make sure the <kbd>cache</kbd> directory is writeable and readable.</li>
-						<li class="list-group-item" data-state="<?= (checkSettingsFileExistance()) ? 'success' : 'failed' ?>">Rename the <kbd>settingsRename.php</kbd> file to <kbd>settings.php</kbd>.</li>
-						<li class="list-group-item" data-state="<?= (checkSettingsFileWriteable()) ? 'success' : 'failed' ?>">Make sure the <kbd>settings.php</kbd> file is writeable and readable.</li>
-						<li class="list-group-item" data-state="<?= (checkWeakPassword()) ? 'success' : 'failed' ?>">Open your <kbd>settings.php</kbd> with an editor (such as Notepad++) and adjust the settings. Make sure to set a strong password!</li>
+						<li class="list-group-item list-group-item-<?= (checkCache()) ? 'success' : 'danger' ?>">Make sure the <kbd>cache</kbd> directory is writeable and readable.</li>
+						<li class="list-group-item list-group-item-<?= (checkSettingsFileExistance()) ? 'success' : 'danger' ?>">Rename the <kbd>settingsRename.php</kbd> file to <kbd>settings.php</kbd>.</li>
+						<li class="list-group-item list-group-item-<?= (checkSettingsFileWriteable()) ? 'success' : 'danger' ?>">Make sure the <kbd>settings.php</kbd> file is writeable and readable.</li>
+						<li class="list-group-item list-group-item-<?= (checkWeakPassword()) ? 'success' : 'danger' ?>">Open your <kbd>settings.php</kbd> with an editor (such as Notepad++) and adjust the settings. Make sure to set a strong password!</li>
 					</ul>
 					<a href="index.php?action=firstrun" class="btn btn-default"><i class="glyphicon glyphicon-check"></i> Run check</a>
 					<?php if(!@$failed && isset($_GET['action'])) { ?>
