@@ -83,20 +83,23 @@ if($_POST['type'] == 'mainsettings') {
 if(!isset($variables))
 	die('Could be a hacking attempt.');
 
-$contents = file_get_contents('../settings.php');
+$contents = file_get_contents(IN_PATH.'settings.php');
 
 foreach($variables as $var) {
-	if($$var == 'true' || $$var == 'false')
+	if($$var == 'true' || $$var == 'false') {
 		$$var = "['".$var."'] = ".$$var.";".PHP_EOL;
-	else
+	} else {
 		$$var = "['".$var."'] = '".$$var."';".PHP_EOL;
+	}
 
 	$contents = preg_replace("/\['".$var."'\] = (.*?)".PHP_EOL."/", $$var, $contents, -1, $count);
-	if($count == 0)
+
+	if($count == 0) {
 		$contents = str_replace("<?php".PHP_EOL, "<?php".PHP_EOL."$"."settings".$$var, $contents);
+	}
 }
 
-file_put_contents('../settings.php', $contents);
+file_put_contents(IN_PATH.'settings.php', $contents);
 
 $array['success'] = 'true';
 
