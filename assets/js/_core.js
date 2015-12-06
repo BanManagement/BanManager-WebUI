@@ -48,10 +48,10 @@ $(function() {
     errorPlacement: function(error, placement) {
       error.wrap('<span class="help-inline" />');
       $(placement).after(error.parent());
-      error.parent().parent().parent().removeClass('success').addClass('error');
+      error.parent().parent().parent().removeClass('has-success').addClass('has-error');
     }
     , success: function(label) {
-      label.parent().parent().parent().removeClass('error').addClass('success');
+      label.parent().parent().parent().removeClass('has-error').addClass('has-success');
     }
   });
   $('form').validate();
