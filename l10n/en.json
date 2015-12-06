@@ -47,7 +47,13 @@
     "date": "Date",
     "input-title-page_size": "Select page size",
     "input-title-page_number": "Select page number",
-    "date-format": "j F Y h:i:s A"
+    "date-format": "j F Y h:i:s A",
+    "types": {
+      "ban": "Ban",
+      "kick": "Kick",
+      "mute": "Mute",
+      "warning": "Warning"
+    }
   },
   "searchip": {
     "new_search": "New Search",
@@ -62,7 +68,10 @@
     "date": "Date",
     "input-title-page_size": "Select page size",
     "input-title-page_number": "Select page number",
-    "date-format": "j F Y h:i:s A"
+    "date-format": "j F Y h:i:s A",
+    "types": {
+      "ban": "Ban"
+    }
   },
   "admin": {
     "login": {

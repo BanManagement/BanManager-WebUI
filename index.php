@@ -403,7 +403,7 @@ function connect($server) {
 }
 
 function searchPlayers($search, $serverID, $server, $sortByCol = 'name', $sortBy = 'ASC', $past = true, $isAjax = false) {
-	global $settings;
+	global $language, $settings;
 
 	switch($sortByCol) {
 		default:
@@ -458,7 +458,7 @@ function searchPlayers($search, $serverID, $server, $sortByCol = 'name', $sortBy
 
 		if($result && count($result) > 0) {
 			foreach($result as $r)
-				array_push($found, array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => 'Ban', 'time' => $r['created'], 'expires' => $r['expires'], 'uuid' => $r['player_id']));
+				array_push($found, array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => $language['searchplayer']['types']['ban'], 'time' => $r['created'], 'expires' => $r['expires'], 'uuid' => $r['player_id']));
 		}
 	}
 
@@ -472,9 +472,9 @@ function searchPlayers($search, $serverID, $server, $sortByCol = 'name', $sortBy
 			if($result && count($result) > 0) {
 				foreach($result as $r) {
 					if(!isset($found[$r['player_id']]))
-						array_push($found, array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => 'Ban', 'time' => $r['created'], 'expires' => $r['expired'], 'past' => true, 'uuid' => $r['player_id']));
+						array_push($found, array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => $language['searchplayer']['types']['ban'], 'time' => $r['created'], 'expires' => $r['expired'], 'past' => true, 'uuid' => $r['player_id']));
 					else if(isset($found[$r['player_id']]['created']) && $found[$r['player_id']]['created'] < $r['created'])
-						array_push($found, array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => 'Ban', 'time' => $r['created'], 'expires' => $r['expired'], 'past' => true, 'uuid' => $r['player_id']));
+						array_push($found, array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => $language['searchplayer']['types']['ban'], 'time' => $r['created'], 'expires' => $r['expired'], 'past' => true, 'uuid' => $r['player_id']));
 				}
 			}
 		}
@@ -489,7 +489,7 @@ function searchPlayers($search, $serverID, $server, $sortByCol = 'name', $sortBy
 		if($result && count($result) > 0) {
 			foreach($result as $r) {
 				if(!isset($found[$r['player_id']]))
-					array_push($found, array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => 'Mute', 'time' => $r['created'], 'expires' => $r['expires'], 'uuid' => $r['player_id']));
+					array_push($found, array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => $language['searchplayer']['types']['mute'], 'time' => $r['created'], 'expires' => $r['expires'], 'uuid' => $r['player_id']));
 			}
 		}
 	}
@@ -504,9 +504,9 @@ function searchPlayers($search, $serverID, $server, $sortByCol = 'name', $sortBy
 			if($result && count($result) > 0) {
 				foreach($result as $r) {
 					if(!isset($found[$r['player_id']]))
-						array_push($found, array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => 'Mute', 'time' => $r['created'], 'expires' => $r['expired'], 'past' => true, 'uuid' => $r['player_id']));
+						array_push($found, array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => $language['searchplayer']['types']['mute'], 'time' => $r['created'], 'expires' => $r['expired'], 'past' => true, 'uuid' => $r['player_id']));
 					else if(isset($found[$r['player_id']]['created']) && $found[$r['player_id']]['created'] < $r['created'])
-						array_push($found, array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => 'Mute', 'time' => $r['created'], 'expires' => $r['expired'], 'past' => true, 'uuid' => $r['player_id']));
+						array_push($found, array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => $language['searchplayer']['types']['mute'], 'time' => $r['created'], 'expires' => $r['expired'], 'past' => true, 'uuid' => $r['player_id']));
 				}
 			}
 		}
@@ -520,9 +520,9 @@ function searchPlayers($search, $serverID, $server, $sortByCol = 'name', $sortBy
 			if($result && count($result) > 0) {
 				foreach($result as $r) {
 					if(!isset($found[$r['player_id']]))
-						array_push($found, array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => 'Kick', 'time' => $r['created'], 'expires' => 0, 'past' => true, 'uuid' => $r['player_id']));
+						array_push($found, array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => $language['searchplayer']['types']['kick'], 'time' => $r['created'], 'expires' => 0, 'past' => true, 'uuid' => $r['player_id']));
 					else if(isset($found[$r['player_id']]['created']) && $found[$r['player_id']]['created'] < $r['created'])
-						array_push($found, array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => 'Kick', 'time' => $r['created'], 'expires' => 0, 'past' => true, 'uuid' => $r['player_id']));
+						array_push($found, array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => $language['searchplayer']['types']['kick'], 'time' => $r['created'], 'expires' => 0, 'past' => true, 'uuid' => $r['player_id']));
 				}
 			}
 		}
@@ -537,9 +537,9 @@ function searchPlayers($search, $serverID, $server, $sortByCol = 'name', $sortBy
 		if($result && count($result) > 0) {
 			foreach($result as $r) {
 				if(!isset($found[$r['player_id']]))
-					array_push($found, array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => 'Warning', 'time' => $r['created'], 'expires' => 0, 'past' => true, 'uuid' => $r['player_id']));
+					array_push($found, array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => $language['searchplayer']['types']['warning'], 'time' => $r['created'], 'expires' => 0, 'past' => true, 'uuid' => $r['player_id']));
 				else if(isset($found[$r['player_id']]['created']) && $found[$r['player_id']]['created'] < $r['created'])
-					array_push($found, array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => 'Warning', 'time' => $r['created'], 'expires' => 0, 'past' => true, 'uuid' => $r['player_id']));
+					array_push($found, array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => $language['searchplayer']['types']['warning'], 'time' => $r['created'], 'expires' => 0, 'past' => true, 'uuid' => $r['player_id']));
 			}
 		}
 	}
@@ -621,7 +621,7 @@ function completeIPaddress($ip, $position) {
 }
 
 function searchIps($search, $serverID, $server, $sortByCol = 'name', $sortBy = 'ASC', $past = true, $isAjax = false) {
-	global $settings;
+	global $language, $settings;
 	$found = array();
 
 	switch($sortByCol) {
@@ -682,7 +682,7 @@ function searchIps($search, $serverID, $server, $sortByCol = 'name', $sortBy = '
 
 	if($result && count($result) > 0) {
 		foreach($result as $r) {
-			array_push($found, array('ip' => long2ip($r['ip']), 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => 'IP Ban', 'time' => $r['created'], 'expires' => $r['expires']));
+			array_push($found, array('ip' => long2ip($r['ip']), 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => $language['searchip']['types']['ban'], 'time' => $r['created'], 'expires' => $r['expires']));
 		}
 	}
 
@@ -695,9 +695,9 @@ function searchIps($search, $serverID, $server, $sortByCol = 'name', $sortBy = '
 		if($result && count($result) > 0) {
 			foreach($result as $r) {
 				if(!isset($found[long2ip($r['ip'])]))
-					array_push($found, array('ip' => long2ip($r['ip']), 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => 'IP Ban', 'time' => $r['created'], 'expires' => $r['expired'], 'past' => true));
+					array_push($found, array('ip' => long2ip($r['ip']), 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => $language['searchip']['types']['ban'], 'time' => $r['created'], 'expires' => $r['expired'], 'past' => true));
 				else if($found[long2ip($r['ip'])]['created'] < $r['created'])
-					array_push($found, array('ip' => long2ip($r['ip']), 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => 'IP Ban', 'time' => $r['created'], 'expires' => $r['expired'], 'past' => false));
+					array_push($found, array('ip' => long2ip($r['ip']), 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => $language['searchip']['types']['ban'], 'time' => $r['created'], 'expires' => $r['expired'], 'past' => false));
 			}
 		}
 	}
