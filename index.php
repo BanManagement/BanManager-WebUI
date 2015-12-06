@@ -655,17 +655,17 @@ function searchIps($search, $serverID, $server, $sortByCol = 'name', $sortBy = '
 			$searchIPs = explode("-", $search);
 			// Make sure we only have two IP elements
 			if (count($searchIPs) == 2) {
-				$whereStatement = "WHERE ip BETWEEN INET_ATON('".completeIPaddress($searchIPs[0], "start")."') AND INET_ATON('".completeIPaddress($searchIPs[1], "end")."')";
+				$whereStatement = "WHERE b.ip BETWEEN INET_ATON('".completeIPaddress($searchIPs[0], "start")."') AND INET_ATON('".completeIPaddress($searchIPs[1], "end")."')";
 			} else {
 				return false;
 			}
 		} else {
 			// Check if IP is complete, if not complete and turn into range query
 			if ($search != completeIPaddress($search, "start")) {
-				$whereStatement = "WHERE ip BETWEEN INET_ATON('".completeIPaddress($search, "start")."') AND INET_ATON('".completeIPaddress($search, "end")."')";
+				$whereStatement = "WHERE b.ip BETWEEN INET_ATON('".completeIPaddress($search, "start")."') AND INET_ATON('".completeIPaddress($search, "end")."')";
 			// Otherwise search for exact IP
 			} else {
-				$whereStatement = "WHERE ip = INET_ATON('".$search."')";
+				$whereStatement = "WHERE b.ip = INET_ATON('".$search."')";
 			}
 		}
 	}
