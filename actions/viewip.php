@@ -148,7 +148,7 @@ else {
 					</tr>
 					<tr>
 						<td>'.$language['viewip']['current_ban']['banned_at'].':</td>
-						<td>'.date('jS F Y h:i:s A', $currentBans['created']).'</td>
+						<td>'.date($language['viewip']['date-format'], $currentBans['created']).'</td>
 					</tr>
 					<tr>
 						<td>'.$language['viewip']['current_ban']['reason'].':</td>

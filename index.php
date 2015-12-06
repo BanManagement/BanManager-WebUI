@@ -188,12 +188,14 @@ function errors($message) {
  * http://csl.sublevel3.org/php-secs-to-human-text/
  */
 function secs_to_h($secs) {
+	global $language;
+
 	$units = array(
-		"week"   => 7*24*3600,
-		"day"    =>   24*3600,
-		"hour"   =>      3600,
-		"minute" =>        60,
-		"second" =>         1,
+		$language['general']['datetime']['week']   => 7*24*3600,
+		$language['general']['datetime']['day']    =>   24*3600,
+		$language['general']['datetime']['hour']   =>      3600,
+		$language['general']['datetime']['minute'] =>        60,
+		$language['general']['datetime']['second'] =>         1,
 	);
 
 	// specifically handle zero

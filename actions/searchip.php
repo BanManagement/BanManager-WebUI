@@ -121,7 +121,7 @@ else {
 								$skip = true;
 						break;
 						case 5:
-							$time = (!empty($player['time']) ? date('j F Y h:i:s A', $player['time']) : '');
+							$time = (!empty($player['time']) ? date($language['searchip']['date-format'], $player['time']) : '');
 							if(stripos($time, $filter) === false)
 								$skip = true;
 						break;
@@ -132,7 +132,7 @@ else {
 				}
 
 				if(!isset($time))
-					$time = (!empty($player['time']) ? date('j F Y h:i:s A', $player['time']) : '');
+					$time = (!empty($player['time']) ? date($language['searchip']['date-format'], $player['time']) : '');
 
 				$ajaxArray['rows'][] = array(
 					'<a href="index.php?action=viewip&ip='.$player['ip'].'&server='.$_GET['server'].'">'.$player['ip'].'</a>',

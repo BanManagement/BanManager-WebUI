@@ -119,7 +119,7 @@ else {
 					</tr>
 					<tr>
 						<td>'.$language['viewplayer']['current_ban']['banned_at'].':</td>
-						<td>'.date('jS F Y h:i:s A', $currentBans['created']).'</td>
+						<td>'.date($language['viewplayer']['date-format'], $currentBans['created']).'</td>
 					</tr>
 					<tr>
 						<td>'.$language['viewplayer']['current_ban']['ban_reason'].':</td>
@@ -273,7 +273,7 @@ else {
 					</tr>
 					<tr>
 						<td>'.$language['viewplayer']['current_mute']['muted_at'].':</td>
-						<td>'.date('jS F Y h:i:s A', $currentMutes['created']).'</td>
+						<td>'.date($language['viewplayer']['date-format'], $currentMutes['created']).'</td>
 					</tr>
 					<tr>
 						<td>'.$language['viewplayer']['current_mute']['mute_reason'].':</td>

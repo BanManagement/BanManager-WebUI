@@ -5,7 +5,14 @@
     "meta-description": "",
     "title": "Ban Management by Frostcast",
     "nav-home": "Home",
-    "nav-stats": "Statistics"
+    "nav-stats": "Statistics",
+    "datetime": {
+      "week": "week",
+      "day": "day",
+      "hour": "hour",
+      "minute": "minute",
+      "second": "second"
+    }
   },
   "home": {
     "header-title": "Account Status",
@@ -39,7 +46,8 @@
     "expires": "Expires",
     "date": "Date",
     "input-title-page_size": "Select page size",
-    "input-title-page_number": "Select page number"
+    "input-title-page_number": "Select page number",
+    "date-format": "j F Y h:i:s A"
   },
   "searchip": {
     "new_search": "New Search",
@@ -53,7 +61,8 @@
     "expires": "Expires",
     "date": "Date",
     "input-title-page_size": "Select page size",
-    "input-title-page_number": "Select page number"
+    "input-title-page_number": "Select page number",
+    "date-format": "j F Y h:i:s A"
   },
   "admin": {
     "login": {
@@ -125,6 +134,7 @@
     "new_search": "New Search",
     "current_server": "Current Server",
     "change_server": "Change Server",
+    "date-format": "j F Y h:i:s A",
     "current_ban": {
       "current_ban":"Current Ban",
       "none": "None",
@@ -224,6 +234,7 @@
     "new_search": "New Search",
     "server": "Server",
     "change_server": "Change Server",
+    "date-format": "j F Y h:i:s A",
     "associated_accounts": {
       "associated_accounts": "Associated Accounts",
       "id": "ID",

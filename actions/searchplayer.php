@@ -129,7 +129,7 @@ else {
 								$skip = true;
 						break;
 						case 5:
-							$time = (!empty($player['time']) ? date('j F Y h:i:s A', $player['time']) : '');
+							$time = (!empty($player['time']) ? date($language['searchplayer']['date-format'], $player['time']) : '');
 							if(stripos($time, $filter) === false)
 								$skip = true;
 						break;
@@ -139,7 +139,7 @@ else {
 						continue;
 				}
 
-				if(!isset($time)) $time = (!empty($player['time']) ? date('j F Y h:i:s A', $player['time']) : '');
+				if(!isset($time)) $time = (!empty($player['time']) ? date($language['searchplayer']['date-format'], $player['time']) : '');
 
 				$ajaxArray['rows'][] = array(
 					'<img src="'.str_replace(array('%name%', '%uuid%'), array($playerName, $player['uuid']), $settings['skin']['helm']).'" class="skin-helm" /> <a href="index.php?action=viewplayer&player='.$playerName.'&server='.$_GET['server'].'">'.$playerName.'</a>',
