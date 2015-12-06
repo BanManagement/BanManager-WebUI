@@ -509,7 +509,7 @@ function hideLoading() {
 }
 
 function error(message) {
-  return '<div id="error" class="alert alert-error"><button class="close" data-dismiss="alert">&times;</button><h4 class="alert-heading">Error</h4><ol><li>' + message + '</li></ol></div>';
+  return '<div id="error" class="alert alert-danger"><button class="close" data-dismiss="alert">&times;</button><h4 class="alert-heading">Error</h4><ol><li>' + message + '</li></ol></div>';
 }
 
 function errorRemove() {
