@@ -106,7 +106,7 @@ $(function() {
     , headerTemplate: '{content} {icon}' // new in v2.7. Needed to add the bootstrap icon!
     // widget code contained in the jquery.tablesorter.widgets.js file
     // use the zebra stripe widget if you plan on hiding any rows (filter widget)
-    , widgets: [ 'uitheme', 'filter', 'zebra', 'saveSort' ]
+    , widgets: [ 'uitheme', 'filter', 'zebra' ]
     , widgetOptions: {
       // using the default zebra striping class name, so it actually isn't included in the theme variable above
       // this is ONLY needed for bootstrap theming if you are using the filter widget, because rows are hidden
@@ -116,11 +116,13 @@ $(function() {
       // set the uitheme widget to use the bootstrap theme class names
       // uitheme : "bootstrap"
       , filter_searchDelay: 1000
+      , filter_saveFilters: false
     }
-  }).tablesorterPager({
+  }).tablesorterPager(
     // target the pager markup - see the HTML block below
-    container: $('.pager')
-    , ajaxUrl: 'index.php?action=' + $('#container form input[name="action"]').val() + '&player=' + $('#container form input[name="player"]').val() + '&server=' + $('#container form input[name="server"]').val() + '&excluderecords=' + $('#container form input[name="excluderecords"]').val() + '&ajax=true&size={size}&page={page}&sortby={sortList:column}&filter={filterList:filter}'
+    { container: $('.pager')
+    , savePages: false
+    , ajaxUrl: 'index.php?action=' + $('#container form input[name="action"]').val() + '&player=' + $('#container form input[name="player"]').val() + '&server=' + $('#container form input[name="server"]').val() + '&excluderecords=' + $('#container form input[name="excluderecords"]:checked').val() + '&ajax=true&size={size}&page={page}&sortby={sortList:column}&filter={filterList:filter}'
     , ajaxObject: {
       dataType: 'json'
       , success: function() {

@@ -16,11 +16,7 @@ else if(!isset($settings['servers'][$_GET['server']]))
 else if(!isset($_GET['player']) || empty($_GET['player']))
 	redirect('index.php');
 else {
-
-	$pastbans = true;
-	if(isset($_GET['excluderecords'])){
-		$pastbans = false;
-	}
+	$pastbans = !isset($_GET['excluderecords']) || $_GET['excluderecords'] != 1;
 
 	// Get the server details
 	$server = $settings['servers'][$_GET['server']];
@@ -143,7 +139,7 @@ else {
 
 				$ajaxArray['rows'][] = array(
 					'<img src="'.str_replace(array('%name%', '%uuid%'), array($playerName, $player['uuid']), $settings['skin']['helm']).'" class="skin-helm" /> <a href="index.php?action=viewplayer&player='.$playerName.'&server='.$_GET['server'].'">'.$playerName.'</a>',
-					$player['type'],
+					(isset($player['past']) ? $language['searchplayer']['past'] : '') . ' ' . $player['type'],
 					$player['by'],
 					$player['reason'],
 					$expires,
@@ -189,6 +185,17 @@ else {
 			<input type="hidden" name="action" value="searchplayer" />
 			<input type="hidden" name="server" value="<?php echo $_GET['server']; ?>" />
 			<input type="hidden" name="player" value="<?php echo $_GET['player']; ?>" />
+			<div class="checkbox" id="excludepast">
+				<label type="checkbox">
+					<?= $language['searchplayer']['exclude_past']; ?> <input type="checkbox" name="excluderecords" value="1"
+					<?php
+					if(isset($_GET['excluderecords']))
+						echo 'checked="checked"';
+					?>
+					/>
+				</label>
+			</div>
+			<button type="submit" class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-search"></span> <?= $language['searchplayer']['update']; ?></button>
 		</fieldset>
 	</form>
 	<table class="table table-striped table-bordered sortable">

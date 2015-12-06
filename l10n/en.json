@@ -39,6 +39,9 @@
   "searchplayer": {
     "header": "Advanced Search",
     "new_search": "New Search",
+    "exclude_past": "Exclude Past",
+    "update": "Update",
+    "past": "Past",
     "player_name": "Player Name",
     "type": "Type",
     "by": "by",
@@ -60,6 +63,7 @@
     "header": "Advanced Search",
     "exclude_past": "Exclude Past",
     "update": "Update",
+    "past": "Past",
     "ip_address": "IP Address",
     "type": "Type",
     "by": "by",

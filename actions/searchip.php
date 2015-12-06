@@ -16,9 +16,7 @@ else if(!isset($settings['servers'][$_GET['server']]))
 else if(!isset($_GET['player']) || empty($_GET['player']))
 	redirect('index.php');
 else {
-	$pastbans = true;
-	if(isset($_GET['excluderecords']))
-		$pastbans = false;
+	$pastbans = !isset($_GET['excluderecords']) || $_GET['excluderecords'] != 1;
 
 	// Get the server details
 	$server = $settings['servers'][$_GET['server']];
@@ -136,7 +134,7 @@ else {
 
 				$ajaxArray['rows'][] = array(
 					'<a href="index.php?action=viewip&ip='.$player['ip'].'&server='.$_GET['server'].'">'.$player['ip'].'</a>',
-					$player['type'],
+					(isset($player['past']) ? $language['searchip']['past'] : '') . ' ' . $player['type'],
 					$player['by'],
 					$player['reason'],
 					$expires,
@@ -176,14 +174,14 @@ else {
 			<input type="hidden" name="server" value="<?php echo $_GET['server']; ?>" />
 			<input type="hidden" name="player" value="<?php echo $_GET['player']; ?>" />
 			<div class="checkbox" id="excludepast">
-			<label type="checkbox">
-				<?= $language['searchip']['exclude_past']; ?> <input type="checkbox" name="excluderecords" value="1"
-				<?php
-				if(isset($_GET['excluderecords']))
-					echo 'checked="checked"';
-				?>
-				/>
-			</label>
+				<label type="checkbox">
+					<?= $language['searchip']['exclude_past']; ?> <input type="checkbox" name="excluderecords" value="1"
+					<?php
+					if(isset($_GET['excluderecords']))
+						echo 'checked="checked"';
+					?>
+					/>
+				</label>
 			</div>
 			<button type="submit" class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-search"></span> <?= $language['searchip']['update']; ?></button>
 		</fieldset>

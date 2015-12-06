@@ -471,10 +471,7 @@ function searchPlayers($search, $serverID, $server, $sortByCol = 'name', $sortBy
 
 			if($result && count($result) > 0) {
 				foreach($result as $r) {
-					if(!isset($found[$r['player_id']]))
-						array_push($found, array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => $language['searchplayer']['types']['ban'], 'time' => $r['created'], 'expires' => $r['expired'], 'past' => true, 'uuid' => $r['player_id']));
-					else if(isset($found[$r['player_id']]['created']) && $found[$r['player_id']]['created'] < $r['created'])
-						array_push($found, array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => $language['searchplayer']['types']['ban'], 'time' => $r['created'], 'expires' => $r['expired'], 'past' => true, 'uuid' => $r['player_id']));
+					array_push($found, array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => $language['searchplayer']['types']['ban'], 'time' => $r['created'], 'expires' => $r['expired'], 'past' => true, 'uuid' => $r['player_id']));
 				}
 			}
 		}
@@ -503,10 +500,7 @@ function searchPlayers($search, $serverID, $server, $sortByCol = 'name', $sortBy
 
 			if($result && count($result) > 0) {
 				foreach($result as $r) {
-					if(!isset($found[$r['player_id']]))
-						array_push($found, array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => $language['searchplayer']['types']['mute'], 'time' => $r['created'], 'expires' => $r['expired'], 'past' => true, 'uuid' => $r['player_id']));
-					else if(isset($found[$r['player_id']]['created']) && $found[$r['player_id']]['created'] < $r['created'])
-						array_push($found, array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => $language['searchplayer']['types']['mute'], 'time' => $r['created'], 'expires' => $r['expired'], 'past' => true, 'uuid' => $r['player_id']));
+					array_push($found, array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => $language['searchplayer']['types']['mute'], 'time' => $r['created'], 'expires' => $r['expired'], 'past' => true, 'uuid' => $r['player_id']));
 				}
 			}
 		}
@@ -519,10 +513,7 @@ function searchPlayers($search, $serverID, $server, $sortByCol = 'name', $sortBy
 
 			if($result && count($result) > 0) {
 				foreach($result as $r) {
-					if(!isset($found[$r['player_id']]))
-						array_push($found, array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => $language['searchplayer']['types']['kick'], 'time' => $r['created'], 'expires' => 0, 'past' => true, 'uuid' => $r['player_id']));
-					else if(isset($found[$r['player_id']]['created']) && $found[$r['player_id']]['created'] < $r['created'])
-						array_push($found, array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => $language['searchplayer']['types']['kick'], 'time' => $r['created'], 'expires' => 0, 'past' => true, 'uuid' => $r['player_id']));
+					array_push($found, array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => $language['searchplayer']['types']['kick'], 'time' => $r['created'], 'expires' => 0, 'past' => true, 'uuid' => $r['player_id']));
 				}
 			}
 		}
@@ -536,10 +527,7 @@ function searchPlayers($search, $serverID, $server, $sortByCol = 'name', $sortBy
 
 		if($result && count($result) > 0) {
 			foreach($result as $r) {
-				if(!isset($found[$r['player_id']]))
-					array_push($found, array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => $language['searchplayer']['types']['warning'], 'time' => $r['created'], 'expires' => 0, 'past' => true, 'uuid' => $r['player_id']));
-				else if(isset($found[$r['player_id']]['created']) && $found[$r['player_id']]['created'] < $r['created'])
-					array_push($found, array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => $language['searchplayer']['types']['warning'], 'time' => $r['created'], 'expires' => 0, 'past' => true, 'uuid' => $r['player_id']));
+				array_push($found, array('name' => $r['name'], 'by' => $r['actor_name'], 'reason' => $r['reason'], 'type' => $language['searchplayer']['types']['warning'], 'time' => $r['created'], 'expires' => 0, 'past' => true, 'uuid' => $r['player_id']));
 			}
 		}
 	}
