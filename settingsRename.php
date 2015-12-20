@@ -65,8 +65,8 @@ $settings['cache_playertouuid'] = 600;
 // Skin service options
 // ("%name%" is the placeholder for the player %name)
 // ("%uuid%" is the placeholder for the player uuid)
-$settings['skin']['helm'] = "https://crafatar.com/avatars/%uuid%?helm&size=24";
-$settings['skin']['complete'] = "https://crafatar.com/renders/body/%uuid%?helm&scale=7";
+$settings['skin']['helm'] = "https://crafatar.com/avatars/%uuid%?overlay&size=24";
+$settings['skin']['complete'] = "https://crafatar.com/renders/body/%uuid%?overlay&scale=7";
 
 /**
 * These are the settings for editing the layout of Ban Management
