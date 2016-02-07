@@ -531,14 +531,14 @@ else {
 		if((isset($settings['player_warnings']) && $settings['player_warnings']) || !isset($settings['player_warnings'])) {
 			?>
 			<br />
-			<table class="table table-striped table-bordered" id="previous-warnings">
-				<caption><?= $language['viewplayer']['previous_warnings']['previous_warnings'] ?></caption>
+			<table class="table table-striped table-bordered" id="warnings">
+				<caption><?= $language['viewplayer']['warnings']['warnings'] ?></caption>
 				<thead>
 					<tr>
-						<th><?= $language['viewplayer']['previous_warnings']['id'] ?></th>
-						<th><?= $language['viewplayer']['previous_warnings']['reason'] ?></th>
-						<th><?= $language['viewplayer']['previous_warnings']['by'] ?></th>
-						<th><?= $language['viewplayer']['previous_warnings']['on'] ?></th><?php
+						<th><?= $language['viewplayer']['warnings']['id'] ?></th>
+						<th><?= $language['viewplayer']['warnings']['reason'] ?></th>
+						<th><?= $language['viewplayer']['warnings']['by'] ?></th>
+						<th><?= $language['viewplayer']['warnings']['on'] ?></th><?php
 			if(!isset($pastWarnings[0]) || (isset($pastWarnings[0]) && !is_array($pastWarnings[0])))
 				$pastWarnings = array($pastWarnings);
 			$serverName = false;
@@ -550,7 +550,7 @@ else {
 			}
 			if($serverName) {
 				echo '
-						<th>'.$language['viewplayer']['previous_warnings']['server'].'</th>';
+						<th>'.$language['viewplayer']['warnings']['server'].'</th>';
 			}
 			if($admin)
 				echo '
@@ -563,7 +563,7 @@ else {
 			if(isset($pastWarnings[0]) && count($pastWarnings[0]) == 0) {
 				echo '
 					<tr>
-						<td colspan="8">'.$language['viewplayer']['previous_warnings']['none'].'</td>
+						<td colspan="8">'.$language['viewplayer']['warnings']['none'].'</td>
 					</tr>';
 			} else {
 				$i = 1;
@@ -578,7 +578,7 @@ else {
 						<td>'.$r['actor_name'].'</td>
 						<td>'.date('H:i:s d/m/y', $r['created']).'</td>'.($serverName ? '
 						<td>'.$r['server'].'</td>' : '').($admin ? '
-						<td class="admin-options"><a href="#" class="btn btn-danger delete btn-xs" title="'.$language['viewplayer']['previous_warnings']['admin-remove'].'" data-server="'.$_GET['server'].'" data-record-id="'.$r['id'].'"><span class="glyphicon glyphicon-trash"></span></a></td>' : '').'
+						<td class="admin-options"><a href="#" class="btn btn-danger delete btn-xs" title="'.$language['viewplayer']['warnings']['admin-remove'].'" data-server="'.$_GET['server'].'" data-record-id="'.$r['id'].'"><span class="glyphicon glyphicon-trash"></span></a></td>' : '').'
 					</tr>';
 					++$i;
 				}
