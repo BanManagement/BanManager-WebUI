@@ -388,7 +388,7 @@ $(function() {
     });
   });
 
-  $('#previous-warnings a.delete').on('click', function(e) {
+  $('#warnings a.delete').on('click', function(e) {
     e.preventDefault();
     var id = $(this).data('record-id')
     , server = $(this).data('server')

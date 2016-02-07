@@ -223,8 +223,8 @@
       "none": "None",
       "admin-remove": "Remove"
     },
-    "previous_warnings": {
-      "previous_warnings": "Previous Warnings",
+    "warnings": {
+      "warnings": "Warnings",
       "id": "ID",
       "reason": "Reason",
       "by": "By",
