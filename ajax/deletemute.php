@@ -30,7 +30,7 @@ else {
 	else {
 		$currentMute = mysqli_query($mysqlicon, "SELECT id FROM ".$server['playerMutesTable']." WHERE id = '".$_GET['id']."'");
 
-		if(mysqli_num_rows($currentBan) == 0) {
+		if(mysqli_num_rows($currentMute) == 0) {
 			$error = 'That record does not exist';
 		} else if (!$server['consoleId']) {
 			$error = 'Please specify a consoleId for this server';
