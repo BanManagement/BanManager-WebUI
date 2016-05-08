@@ -101,9 +101,9 @@ else {
 		$servers[] = $server;
 		$settings['servers'] = $servers;
 		$servers = serialize($servers);
-		$servers = "['servers'] = '".$servers;
+		$servers = "['servers'] = '".$servers."';";
 		$contents = file_get_contents('settings.php');
-		$contents = preg_replace("/\['servers'\] = '(.*?)/", $servers, $contents);
+		$contents = preg_replace("/\['servers'\] = '(.*?)';/", $servers, $contents);
 		file_put_contents('settings.php', $contents);
 		$array['success'] = 'true';
 	}
