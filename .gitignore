@@ -24,6 +24,7 @@ assets/css/libs/visualize-light.scss
 
 # Meta files
 .DS_Store
+.dashbrew
 
-#Netbeans
+# Netbeans
 /nbproject
