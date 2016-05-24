@@ -433,11 +433,11 @@ function searchPlayers($search, $serverID, $server, $sortByCol = 'name', $sortBy
 		break;
 		case 4: // Expires
 			$sort['bans'] = 'expires';
-			$sort['banrecords'] = 'expires';
+			$sort['banrecords'] = 'expired';
 			$sort['mutes'] = 'expires';
-			$sort['muterecords'] = 'expires';
-			$sort['kicks'] = 'id';
-			$sort['warnings'] = 'id';
+			$sort['muterecords'] = 'expired';
+			$sort['kicks'] = 'b.id';
+			$sort['warnings'] = 'b.id';
 		break;
 		case 5: // Date
 			$sort['bans'] = $sort['banrecords'] = 'created';
