@@ -437,7 +437,7 @@ function searchPlayers($search, $serverID, $server, $sortByCol = 'name', $sortBy
 			$sort['mutes'] = 'expires';
 			$sort['muterecords'] = 'expired';
 			$sort['kicks'] = 'b.id';
-			$sort['warnings'] = 'b.id';
+			$sort['warnings'] = 'expires';
 		break;
 		case 5: // Date
 			$sort['bans'] = $sort['banrecords'] = 'created';
@@ -494,7 +494,7 @@ function searchPlayers($search, $serverID, $server, $sortByCol = 'name', $sortBy
 	if($past) {
 		if((isset($settings['player_previous_mutes']) && $settings['player_previous_mutes']) || !isset($settings['player_previous_mutes'])) {
 			// Past Mutes
-			$result = cache("SELECT HEX(player_id) AS player_id, p.name, a.name AS actor_name, reason, created, expired FROM ".$server['playerMuteRecordsTable']." b JOIN ".$server['playersTable']." p ON b.player_id = p.id JOIN ".$server['playersTable']." a ON b.actor_id = a.id WHERE p.name LIKE '%".$search."%' ORDER BY ".$sort['mutes']." $sortBy", $settings['cache_search'], $serverID.'/search', $server);
+			$result = cache("SELECT HEX(player_id) AS player_id, p.name, a.name AS actor_name, reason, created, expired FROM ".$server['playerMuteRecordsTable']." b JOIN ".$server['playersTable']." p ON b.player_id = p.id JOIN ".$server['playersTable']." a ON b.actor_id = a.id WHERE p.name LIKE '%".$search."%' ORDER BY ".$sort['muterecords']." $sortBy", $settings['cache_search'], $serverID.'/search', $server);
 			if(isset($result[0]) && !is_array($result[0]) && !empty($result[0]))
 				$result = array($result);
 
