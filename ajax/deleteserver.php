@@ -21,7 +21,7 @@ else {
 	// Success! Remove it
 	$servers = $settings['servers'];
 	unset($servers[$_GET['id']]);
-	$servers = serialize($servers);
+	$servers = serialize(array_values($servers));
 	$servers = "['servers'] = '".$servers."';";
 	$contents = file_get_contents('settings.php');
 	$contents = preg_replace("/\['servers'\] = '(.*?)';/", $servers, $contents);
