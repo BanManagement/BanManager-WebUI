@@ -63,30 +63,22 @@ else {
 					$sortBy = ($orders[2] == 0 ? 'ASC' : 'DESC');
 			}
 		}
-		$found = searchPlayers($search, $_GET['server'], $server, $sortByCol, $sortBy, $pastbans, true);
 
-		$total = count($found);
+		$start = ($page * $size) - 1;
+
+		if(!empty($filter) || $start < 0) {
+			$start = 0;
+		}
+
+		$found = searchPlayers($search, $size, $start, $_GET['server'], $server, $sortByCol, $sortBy, $pastbans, true);
+		$total = searchPlayersTotal($search, $_GET['server'], $server);
 		$timeNow = time();
 
 		if(is_array($found)) {
-			$playerNames = array_keys($found);
-
 			$ajaxArray = array();
 			$ajaxArray['total_rows'] = $total;
 
-			$start = $page * $size;
-			$end = $start + $size;
-
-			if(!empty($filter)) {
-				$start = 0;
-				$end = $total;
-			}
-
-			for($i = $start; $i < $end; ++$i) {
-				if(!isset($playerNames[$i]))
-					break;
-
-				$player = $found[$playerNames[$i]];
+			foreach ($found as $player) {
 				$playerName = $player['name'];
 				$expireTime = ($player['expires'] + $mysqlSecs)- $timeNow;
 
@@ -113,7 +105,7 @@ else {
 								$skip = true;
 						break;
 						case 2:
-							if(stripos($player['by'], $filter) === false)
+							if(stripos($player['actor'], $filter) === false)
 								$skip = true;
 						break;
 						case 3:
@@ -125,7 +117,7 @@ else {
 								$skip = true;
 						break;
 						case 5:
-							$time = (!empty($player['time']) ? date($language['searchplayer']['date-format'], $player['time']) : '');
+							$time = (!empty($player['created']) ? date($language['searchplayer']['date-format'], $player['created']) : '');
 							if(stripos($time, $filter) === false)
 								$skip = true;
 						break;
@@ -135,12 +127,12 @@ else {
 						continue;
 				}
 
-				if(!isset($time)) $time = (!empty($player['time']) ? date($language['searchplayer']['date-format'], $player['time']) : '');
+				if(!isset($time)) $time = (!empty($player['created']) ? date($language['searchplayer']['date-format'], $player['created']) : '');
 
 				$ajaxArray['rows'][] = array(
-					'<img src="'.str_replace(array('%name%', '%uuid%'), array($playerName, $player['uuid']), $settings['skin']['helm']).'" class="skin-helm" /> <a href="index.php?action=viewplayer&player='.$playerName.'&server='.$_GET['server'].'">'.$playerName.'</a>',
-					(isset($player['past']) ? $language['searchplayer']['past'] : '') . ' ' . $player['type'],
-					$player['by'],
+					'<img src="'.str_replace(array('%name%', '%uuid%'), array($playerName, $player['player_id']), $settings['skin']['helm']).'" class="skin-helm" /> <a href="index.php?action=viewplayer&player='.$playerName.'&server='.$_GET['server'].'">'.$playerName.'</a>',
+					(isset($player['past']) ? $language['searchplayer']['past'] : '') . ' ' . $language['searchplayer']['types'][strtolower($player['type'])],
+					$player['actor'],
 					$player['reason'],
 					$expires,
 					$time
@@ -170,13 +162,7 @@ else {
 		die(json_encode($ajaxArray));
 	}
 
-	$found = searchPlayers($search, $_GET['server'], $server, $sortByCol, $sortBy, $pastbans);
-
-	if(!$found) {
-		errors('No matched players found');
-		?><a href="index.php" class="btn btn-primary"><?= $language['searchplayer']['new_search']; ?></a><?php
-	} else {
-		?>
+?>
 	<form class="form-inline" action="" method="get">
 		<fieldset>
 			<div class="page-header">
@@ -230,7 +216,6 @@ else {
 			</tr>
 		</tfoot>
 	</table>
-		<?php
-	}
+<?php
 }
 ?>
