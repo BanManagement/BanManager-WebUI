@@ -2,10 +2,18 @@
 
 module.exports = function(environment) {
   var ENV = {
-    modulePrefix: 'ban-manager-web',
+    modulePrefix: 'banmanager-web-client',
     environment: environment,
     baseURL: '/',
     locationType: 'auto',
+    googleFonts: [
+      'Sintony',
+      'Ubuntu:400,700',
+      'Oxygen'
+    ],
+    i18n: {
+      defaultLocale: 'en'
+    },
     EmberENV: {
       FEATURES: {
         // Here you can enable experimental features on an ember canary build
@@ -20,12 +28,20 @@ module.exports = function(environment) {
   };
 
   if (environment === 'development') {
-    // ENV.APP.LOG_RESOLVER = true;
-    // ENV.APP.LOG_ACTIVE_GENERATION = true;
-    // ENV.APP.LOG_TRANSITIONS = true;
-    // ENV.APP.LOG_TRANSITIONS_INTERNAL = true;
-    // ENV.APP.LOG_VIEW_LOOKUPS = true;
+    ENV.APP.LOG_RESOLVER = false;
+    ENV.APP.LOG_ACTIVE_GENERATION = false;
+    ENV.APP.LOG_TRANSITIONS = false;
+    ENV.APP.LOG_TRANSITIONS_INTERNAL = false;
+    ENV.APP.LOG_VIEW_LOOKUPS = false;
+    ENV.apiUrl = 'http://localhost:60990'
   }
+
+  ENV['simple-auth'] =
+    { store: 'simple-auth-session-store:local-storage'
+    , authorizer: 'authorizer:jwt'
+    , crossOriginWhitelist: [ ENV.apiUrl ]
+    , routeAfterAuthentication: '/'
+    }
 
   if (environment === 'test') {
     // Testem prefers this...

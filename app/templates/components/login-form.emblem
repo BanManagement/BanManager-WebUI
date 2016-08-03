@@ -1,0 +1,57 @@
+.col-md-4
+  .panel.panel-default
+    .panel-heading
+      h2.panel-title Have an account?
+    .panel-body
+
+      form submit="authenticate"
+        .input-group.margin-bottom-20
+          span.input-group-addon
+            i.glyphicon.glyphicon-envelope
+          input.form-control placeholder="Email" type="text"
+
+        .input-group
+          span.input-group-addon
+            i.glyphicon.glyphicon-lock
+          input.form-control placeholder="Password" type="password"
+
+        .input-group
+          .checkbox
+            label
+              input name="extended" type="checkbox"
+              | Remember Me
+          button.btn.btn-primary type="submit" Sign In
+
+
+.col-md-6.col-md-offset-1
+  .panel.panel-default
+    .panel-heading
+      h2.panel-title Banned? Forgot password?
+    .panel-body
+
+      form submit="authenticate"
+        .input-group.margin-bottom-20
+          span.input-group-addon
+            i.glyphicon.glyphicon-user
+          = input class="form-control" value=username placeholder="Minecraft Username" type="text"
+
+        p If you do not have a pin, generate it on a server via /bmpin
+        .input-group.margin-bottom-20
+          span.input-group-addon
+            i.glyphicon.glyphicon-lock
+          = input class="form-control" value=pin placeholder="Pin" type="text"
+
+        label Server
+        .input-group.margin-bottom-20
+          / .radio
+          /   label
+          /     radio-button checked=server value=""
+          /     | I don't know
+          each servers as |bmServer|
+            .radio
+              label
+                radio-button checked=server value=bmServer.id
+                = bmServer.name
+
+        .form-group
+          button.btn.btn-primary type="submit" Sign In

@@ -1,0 +1,182 @@
+= title model.name prepend=true
+
+= player-punishment-delete model=isDeleting deleteCancelled='deleteCancelled' deleteConfirmed='deleteConfirmed'
+
+
+.well
+  #breadcrumb.container
+    .row
+      .col-sm-8
+        .col-sm-12
+          h1.pull-left.title = model.name
+        .col-md-12
+          h4.pull-left
+            small
+              | Last seen 
+              = moment-from-now model.lastSeen interval=10000
+      .col-sm-4
+        avatar model.id
+
+.container
+  if session.isAuthenticated
+    .row
+      .col-sm-12
+        p
+          .btn.btn-default{action 'punish' 'ban'}
+            span.glyphicon.glyphicon-plus
+            |  Ban
+          | &nbsp;
+          .btn.btn-default{action 'punish' 'mute'}
+            span.glyphicon.glyphicon-plus
+            |  Mute
+          | &nbsp;
+          .btn.btn-default{action 'punish' 'warning'}
+            span.glyphicon.glyphicon-plus
+            |  Warn
+  .row
+    isotope-layout
+      each model.bans as |ban|
+        .panel.panel-danger.item.col-md-2
+          .panel-heading
+            h3.panel-title.pull-left = ban.server.name
+
+            if session.isAuthenticated
+              .btn-group.btn-group-xs.pull-right
+                .btn.btn-warning{action 'punish' 'ban' ban}
+                  .glyphicon.glyphicon-edit
+                .btn.btn-danger{action 'deleteConfirm' ban true}
+                  .glyphicon.glyphicon-trash
+            .clearfix
+          .panel-body
+            dl
+              dt Banned by
+              dd = ban.actor.name
+
+              dt Banned at
+              dd = ban.created
+
+              dt Banned for
+              dd = ban.reason
+
+              if ban.isExpiring
+                dt Expires in
+                dd
+                  moment-from-now ban.expires hideSuffix=true
+
+      each model.mutes as |mute|
+        .panel.panel-primary.item.col-md-2
+          .panel-heading
+            h3.panel-title.pull-left = mute.server.name
+
+            if session.isAuthenticated
+              .btn-group.btn-group-xs.pull-right
+                .btn.btn-warning{action 'punish' 'mute' mute}
+                  .glyphicon.glyphicon-edit
+                .btn.btn-danger{action 'deleteConfirm' mute true}
+                  .glyphicon.glyphicon-trash
+            .clearfix
+          .panel-body
+            dl
+              dt Muted by
+              dd = mute.actor.name
+
+              dt Muted at
+              dd = mute.created
+
+              dt Muted for
+              dd = mute.reason
+
+              if mute.isExpiring
+                dt Expires in
+                dd
+                  moment-from-now mute.expires hideSuffix=true
+
+      each model.banRecords as |record|
+        .panel.panel-default.item.col-md-2
+          .panel-heading
+            h3.panel-title.pull-left = record.server.name
+            
+            if session.isAuthenticated
+              .btn-group.btn-group-xs.pull-right
+                .btn.btn-danger{action 'deleteConfirm' record false}
+                  .glyphicon.glyphicon-trash
+            .clearfix
+          .panel-body
+            dl
+              dt Banned by
+              dd = record.pastActor.name
+
+              dt Banned at
+              dd = record.pastCreated
+
+              dt Banned for
+              dd = record.reason
+
+              dt Unbanned by
+              dd = record.actor.name
+
+              dt Unbanned at
+              dd = record.created
+
+              if record.createdReason
+                dt Unbanned for
+                dd = record.createdReason
+
+      each model.muteRecords as |record|
+        .panel.panel-default.item.col-md-2
+          .panel-heading
+            h3.panel-title.pull-left = record.server.name
+
+            if session.isAuthenticated
+              .btn-group.btn-group-xs.pull-right
+                .btn.btn-danger{action 'deleteConfirm' record false}
+                  .glyphicon.glyphicon-trash
+            .clearfix
+          .panel-body
+            dl
+              dt Muted by
+              dd = record.pastActor.name
+
+              dt Muted at
+              dd = record.pastCreated
+
+              dt Muted for
+              dd = record.reason
+
+              dt Unmuted by
+              dd = record.actor.name
+
+              dt Unmuted at
+              dd = record.created
+
+              if record.createdReason
+                dt Unmuted for
+                dd = record.createdReason
+
+      each model.warnings as |record|
+        .panel.panel-warning.item.col-md-2
+          .panel-heading
+            h3.panel-title.pull-left = record.server.name
+
+            if session.isAuthenticated
+              .btn-group.btn-group-xs.pull-right
+                .btn.btn-warning{action 'punish' 'warning' record}
+                  .glyphicon.glyphicon-edit
+                .btn.btn-danger{action 'deleteConfirm' record false}
+                  .glyphicon.glyphicon-trash
+            .clearfix
+          .panel-body
+            dl
+              dt Warned by
+              dd = record.actor.name
+
+              dt Warned at
+              dd = record.created
+
+              dt Warned for
+              dd = record.reason
+
+              if record.isExpiring
+                dt Expires in
+                dd
+                  moment-from-now record.expires hideSuffix=true

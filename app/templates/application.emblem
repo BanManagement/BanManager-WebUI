@@ -1,0 +1,8 @@
+= title 'BanManager' prepend=true
+
+partial 'navbar'
+
+#content
+  = outlet
+
+partial 'footer'

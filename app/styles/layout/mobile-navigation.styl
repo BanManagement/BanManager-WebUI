@@ -1,0 +1,110 @@
+#user-dropdown
+  padding-top 6px
+  padding-bottom 0
+
+.user-nav
+  li
+    a
+      padding-left 16px
+
+.snap-drawer
+  width 200px
+
+  .media
+    padding 10px 15px
+
+/* Animations */
+
+#content, .js-mobile-menu
+  -webkit-backface-visibility hidden
+  -webkit-perspective 1000
+
+.js-mobile-menu
+  display none
+  position fixed
+  top 0
+  left 0
+  width 240px
+  margin 0
+  list-style none
+  background #333
+  z-index 15
+  height 100%
+  overflow auto
+
+  ul
+    margin-top 50px
+
+  a
+    display block
+    color #fff
+    padding 15px 0
+    border-bottom 1px solid rgba( 255, 255, 255, 0.05 )
+
+  .nav > li > a
+    &:hover, &:focus
+      background lighten(#333, 60%) !important
+
+  .img-avatar
+    max-width 45px
+
+  .media
+    background lighten(#333, 10%)
+    padding-left 10px
+
+    .media-heading
+      color #fff
+      margin-top 30px
+
+    a
+      border none
+
+
+/* Prevent scrolling on main content */
+.js-mobile-menu--visible
+  height 100%
+  overflow hidden
+  width 100%
+
+/* Hide the menu unless it's animating or visible */
+.js-mobile-menu--animating .js-mobile-menu, .js-mobile-menu--visible .js-mobile-menu
+  display block
+
+/***
+* If the animating class is present then apply
+* the CSS transition to #content over 250ms.
+*/
+.js-mobile-menu--animating
+
+  #content, #footer
+    transition transform .25s ease-in-out
+
+@css {
+  .js-mobile-menu--animating-left #content, .js-mobile-menu--animating-left #footer {
+    -webkit-transform: translate3d(240px, 0, 0);
+     -moz-transform: translate3d(240px, 0, 0);
+      -ms-transform: translate3d(240px, 0, 0);
+       -o-transform: translate3d(240px, 0, 0);
+          transform: translate3d(240px, 0, 0);
+  }
+
+  .js-mobile-menu--animating-right #content, .js-mobile-menu--animating-right #footer {
+    -webkit-transform: translate3d(-240px, 0, 0);
+     -moz-transform: translate3d(-240px, 0, 0);
+      -ms-transform: translate3d(-240px, 0, 0);
+       -o-transform: translate3d(-240px, 0, 0);
+          transform: translate3d(-240px, 0, 0);
+  }
+}
+
+/***
+* If the js-mobile-menu--visible class is present then
+* shift the #content 240px from the right edge
+* via position: absolute to keep it in the
+* open position. When .js-mobile-menu--animating, .js-mobile-menu--animating-left and
+* .js-mobile-menu--animating-right classes are not present the CSS
+* transform does not apply to #content.
+*/
+.js-mobile-menu--visible
+  #content, #footer
+    left 240px

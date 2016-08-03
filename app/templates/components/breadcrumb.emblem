@@ -1,0 +1,22 @@
+.well
+  #breadcrumb.container
+    .row
+      .col-sm-8
+        .row
+          .col-md-12
+            h1.pull-left.title #{title}
+          if subtitle
+            .col-md-12
+              h4.pull-left
+                small #{subtitle}
+      .col-sm-4
+        ol.pull-right.breadcrumb
+          li
+            a href='/' Home
+
+          / each link in links
+          /   if {{@index}} === lastIndex || !link.url
+          /     li.active.hidden-xs #{link.name}
+          /   else
+          /     li
+          /       a href='{{{link.url}}}' #{link.name}

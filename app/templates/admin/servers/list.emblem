@@ -1,0 +1,99 @@
+= title 'Servers'
+
+h2 Servers
+
+.col-md-6
+  .panel.panel-default
+    .panel-heading
+      h3.panel-title Add Server
+
+    .panel-body
+      form submit="save"
+        .form-group
+          .help-block
+            .alert.alert-danger
+              ul.list-unstyled
+                each errors.messages as |error|
+                  li
+                    error
+          = input class='form-control' type='text' value=name placeholder='Name'
+
+        .form-group
+          = input class='form-control' type='text' value=console placeholder='Console UUID'
+          span.help-block Found in BanManager/console.yml
+
+        .form-group
+          = textarea class='form-control' value=yaml placeholder='Optionally paste BanManager/config.yml contents to prefill database information'
+
+        .form-group
+          h5.form-control-static Database
+
+        .form-group
+          = input class='form-control' type='text' value=host placeholder='Host'
+
+        .form-group
+          = input class='form-control' type='text' value=database placeholder='Name'
+
+        .form-group
+          = input class='form-control' type='text' value=user placeholder='User'
+
+        .form-group
+          = input class='form-control' type='password' value=password placeholder='Password'
+
+        .form-group
+          h5.form-control-static Tables
+
+        .form-group
+          = input class='form-control' type='text' value=players placeholder='players'
+        .form-group
+          = input class='form-control' type='text' value=playerBans placeholder='playerBans'
+        .form-group
+          = input class='form-control' type='text' value=playerBanRecords placeholder='playerBanRecords'
+        .form-group
+          = input class='form-control' type='text' value=playerMutes placeholder='playerMutes'
+        .form-group
+          = input class='form-control' type='text' value=playerMuteRecords placeholder='playerMuteRecords'
+        .form-group
+          = input class='form-control' type='text' value=playerKicks placeholder='playerKicks'
+        .form-group
+          = input class='form-control' type='text' value=playerNotes placeholder='playerNotes'
+        .form-group
+          = input class='form-control' type='text' value=playerHistory placeholder='playerHistory'
+        .form-group
+          = input class='form-control' type='text' value=playerPins placeholder='playerPins'
+        .form-group
+          = input class='form-control' type='text' value=playerReports placeholder='playerReports'
+        .form-group
+          = input class='form-control' type='text' value=playerReportLocations placeholder='playerReportLocations'
+        .form-group
+          = input class='form-control' type='text' value=playerReportStates placeholder='playerReportStates'
+        .form-group
+          = input class='form-control' type='text' value=playerReportCommands placeholder='playerReportCommands'
+        .form-group
+          = input class='form-control' type='text' value=playerReportComments placeholder='playerReportComments'
+        .form-group
+          = input class='form-control' type='text' value=playerWarnings placeholder='playerWarnings'
+        .form-group
+          = input class='form-control' type='text' value=ipBans placeholder='ipBans'
+        .form-group
+          = input class='form-control' type='text' value=ipBanRecords placeholder='ipBanRecords'
+        .form-group
+          = input class='form-control' type='text' value=ipMutes placeholder='ipMutes'
+        .form-group
+          = input class='form-control' type='text' value=ipMuteRecords placeholder='ipMuteRecords'
+        .form-group
+          = input class='form-control' type='text' value=ipRangeBans placeholder='ipRangeBans'
+        .form-group
+          = input class='form-control' type='text' value=ipRangeBanRecords placeholder='ipRangeBanRecords'
+
+        button.btn.btn-primary.btn-block.btn-lg type='submit' Save
+
+.col-md-6
+  .panel.panel-default
+    .list-group
+      each model as |server|
+        button.list-group-item{action 'edit' server} type='button' action='edit'
+          server.name 
+
+          button.btn.btn-sm.btn-danger.pull-right
+            span.glyphicon.glyphicon-trash

@@ -1,0 +1,2 @@
+power-select onchange=(action 'onSelect') placeholder=(t 'global.search') search=(action 'search') selected=selected as |player|
+  li = player.name

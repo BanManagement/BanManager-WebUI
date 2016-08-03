@@ -1,0 +1,17 @@
+.well
+  #breadcrumb.container
+    .row
+      .col-sm-8
+        .col-sm-12
+          h1.pull-left.title = title
+      .col-sm-4
+        if model.player_id
+          avatar model.player_id
+
+.container
+  .row
+    .col-md-4.col-md-offset-4.col-sm-6.col-sm-offset-3
+      .panel.panel-default
+        .panel-body
+          player-punishment-form item=model servers=servers action='save' buttonText=buttonText isEditing=isEditing
+
