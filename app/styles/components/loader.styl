@@ -1,0 +1,113 @@
+// Based on http://codepen.io/kaylolo/pen/EyNVLZ
+$primary-color = #264b82
+flexbox()
+  display: -webkit-box
+  display: -moz-box
+  display: -ms-flexbox
+  display: -webkit-flex
+  display: flex
+flex-vertical()
+  -webkit-box-orient: vertical
+  -webkit-box-direction: normal
+  -webkit-flex-flow: column wrap
+  -ms-flex-flow: column wrap
+  flex-flow: column wrap
+  -webkit-justify-content: center
+  justify-content: center
+flex-horizontal()
+  -webkit-box-orient: horizontal
+  -webkit-box-direction: normal
+  -webkit-flex-flow: row wrap
+  -ms-flex-flow: row wrap
+  flex-flow: row wrap
+  -webkit-justify-content: flex-start
+  justify-content: flex-start
+transform($transform)
+  -webkit-transform: $transform
+  -ms-transform: $transform
+  transform: $transform
+animation($animation)
+  -webkit-animation: $animation
+  animation: $animation
+
+.loader
+  .loader-wrapper
+    flex-horizontal()
+    position: relative
+    height: 31vw
+    margin: 0 1vw 1vw 0
+    background: #FFF
+    transition: background 0.35s
+    flexbox()
+    flex-vertical()
+    &:nth-child(3n)
+      margin-right: 0
+    @media screen and (max-width: 768px)
+      &
+        height: 46vw
+        margin: 0 3vw 3vw 0
+      &:nth-child(2n)
+        margin-right: 0
+      &:nth-child(3)
+        margin-right: 3vw
+    &:before
+      position: absolute
+      bottom: 0
+      left: 0
+      z-index: -1
+      display: block
+      height: 28vw
+      content: ""
+      @media screen and (max-width: 768px)
+        &
+          height: 43vw
+    .loader
+      position: relative
+      margin: 0 auto
+    /* Luminous Circles */
+    .pl-circles .loader
+      width: 100px
+      height: 60px
+      span,
+      &:before,
+      &:after
+        position: absolute
+        display: block
+        width: 10px
+        height: 10px
+        border-radius: 50%
+        opacity: 0.2
+        background: $primary-color
+      span
+        top: 50%
+        left: 50%
+        transform(translate(-50%, -50%))
+        animation(lightUp 1.5s linear infinite 0.5s)
+      &:before,
+      &:after
+        content: ""
+      &:before
+        top: 50%
+        left: 0
+        transform(translate(0, -50%))
+        animation(lightUp 1.5s linear infinite)
+      &:after
+        top: 50%
+        right: 0
+        transform(translate(0, -50%))
+        animation(lightUp 1.5s linear infinite 1s)
+  &:after
+    display: block
+    clear: both
+    content: ""
+    position: relative
+/* Animations */
+@keyframes lightUp
+  0%
+    opacity 0.2
+  40%
+    opacity 1
+  60%
+    opacity 0.2
+  100%
+    opacity 0.2

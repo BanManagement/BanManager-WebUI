@@ -1,0 +1,10 @@
+{ "root": true
+, "parserOptions":
+    { "ecmaVersion": 6
+    , "sourceType": "module"
+    }
+, "extends": "@confuser/eslint-config"
+, "env":
+  { "browser": true
+  }
+}

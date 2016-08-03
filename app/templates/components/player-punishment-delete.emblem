@@ -1,0 +1,8 @@
+if model
+
+  bs-modal title='Confirm Delete' body=false footer=false closeAction=(action 'deleteCancelled') submitAction=(action 'deleteConfirmed')
+    if model.hasReason
+      bs-modal-body
+        = input class='form-control' type='text' value=reason placeholder='Reason'
+
+    bs-modal-footer closeTitle='Cancel' submitTitle='Confirm'

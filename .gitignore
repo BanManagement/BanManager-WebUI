@@ -1,30 +1,17 @@
-# Configuration file for BanManager
-settings.php
+# See http://help.github.com/ignore-files/ for more about ignoring files.
 
-# Cache
-cache/*
-!cache/.gitkeep
+# compiled output
+/dist
+/tmp
 
-# Test dump
-.dump_*.sql*
+# dependencies
+/node_modules
+/bower_components
 
-# build specific
-.sass-cache
-bower_components
-node_modules
-coverage
-.coveralls.yml
+# misc
+/.sass-cache
+/connect.lock
+/coverage/*
+/libpeerconnection.log
 npm-debug.log
-
-# SASS files
-assets/css/libs/bootstrap-datetimepicker.scss
-assets/css/libs/tablesorter-theme.bootstrap.scss
-assets/css/libs/visualize.scss
-assets/css/libs/visualize-light.scss
-
-# Meta files
-.DS_Store
-.dashbrew
-
-# Netbeans
-/nbproject
+testem.log

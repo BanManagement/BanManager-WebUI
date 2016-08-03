@@ -1,0 +1,82 @@
+.col-md-6
+  .panel.panel-default
+    .panel-heading
+      h3.panel-title Edit Server
+
+    .panel-body
+      form submit="save"
+        .form-group
+          .help-block
+            .alert.alert-danger
+              ul.list-unstyled
+                each model.errors.messages as |error|
+                  li
+                    error
+          = input class='form-control' type='text' value=model.name placeholder='Name'
+
+        .form-group
+          = input class='form-control' type='text' value=model.console placeholder='Console UUID'
+          span.help-block Found in BanManager/console.yml
+
+        .form-group
+          h5.form-control-static Database
+
+        .form-group
+          = input class='form-control' type='text' value=model.host placeholder='Host'
+
+        .form-group
+          = input class='form-control' type='text' value=model.database placeholder='Name'
+
+        .form-group
+          = input class='form-control' type='text' value=model.user placeholder='User'
+
+        .form-group
+          = input class='form-control' type='password' value=model.password placeholder='Password'
+
+        .form-group
+          h5.form-control-static Tables
+
+        .form-group
+          = input class='form-control' type='text' value=model.tables.players placeholder='players'
+        .form-group
+          = input class='form-control' type='text' value=model.tables.playerBans placeholder='playerBans'
+        .form-group
+          = input class='form-control' type='text' value=model.tables.playerBanRecords placeholder='playerBanRecords'
+        .form-group
+          = input class='form-control' type='text' value=model.tables.playerMutes placeholder='playerMutes'
+        .form-group
+          = input class='form-control' type='text' value=model.tables.playerMuteRecords placeholder='playerMuteRecords'
+        .form-group
+          = input class='form-control' type='text' value=model.tables.playerKicks placeholder='playerKicks'
+        .form-group
+          = input class='form-control' type='text' value=model.tables.playerNotes placeholder='playerNotes'
+        .form-group
+          = input class='form-control' type='text' value=model.tables.playerHistory placeholder='playerHistory'
+        .form-group
+          = input class='form-control' type='text' value=model.tables.playerPins placeholder='playerPins'
+        .form-group
+          = input class='form-control' type='text' value=model.tables.playerReports placeholder='playerReports'
+        .form-group
+          = input class='form-control' type='text' value=model.tables.playerReportLocations placeholder='playerReportLocations'
+        .form-group
+          = input class='form-control' type='text' value=model.tables.playerReportStates placeholder='playerReportStates'
+        .form-group
+          = input class='form-control' type='text' value=model.tables.playerReportCommands placeholder='playerReportCommands'
+        .form-group
+          = input class='form-control' type='text' value=model.tables.playerReportComments placeholder='playerReportComments'
+        .form-group
+          = input class='form-control' type='text' value=model.tables.playerWarnings placeholder='playerWarnings'
+        .form-group
+          = input class='form-control' type='text' value=model.tables.ipBans placeholder='ipBans'
+        .form-group
+          = input class='form-control' type='text' value=model.tables.ipBanRecords placeholder='ipBanRecords'
+        .form-group
+          = input class='form-control' type='text' value=model.tables.ipMutes placeholder='ipMutes'
+        .form-group
+          = input class='form-control' type='text' value=model.tables.ipMuteRecords placeholder='ipMuteRecords'
+        .form-group
+          = input class='form-control' type='text' value=model.tables.ipRangeBans placeholder='ipRangeBans'
+        .form-group
+          = input class='form-control' type='text' value=model.tables.ipRangeBanRecords placeholder='ipRangeBanRecords'
+
+        button.btn.btn-primary.btn-block.btn-lg type='submit' Save

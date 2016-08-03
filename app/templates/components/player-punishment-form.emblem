@@ -1,0 +1,35 @@
+form submit="'save' item"
+  .form-group
+    if item.errors
+      .help-block
+        .alert.alert-danger
+          ul.list-unstyled
+            each item.errors.messages as |error|
+              li
+                error
+
+    .margin-bottom-20
+      power-select disabled=isEditing searchEnabled=false onchange=(action (mut item.server)) selected=item.server placeholder='Server' options=servers as |server|
+        = server.name
+
+    .margin-bottom-20
+      button{action 'expiresToggle'} class='btn {{typeClass}} btn-block' type='button' data-toggle='collapse' data-target='#timeExpires'
+        = type
+
+    #timeExpires.collapse
+      .help-text
+        p 
+          | Local Time: 
+          = localTime
+        p 
+          | Server Time: 
+          = serverTime
+
+      .margin-bottom-20
+        bs-datetimepicker date=item.expires updateDate=(action (mut item.expires)) minDate=minDate placeholder='Expires Server Time'
+
+    .margin-bottom-20
+      = input class='form-control' type='text' value=item.reason placeholder='Reason'
+
+  button.btn.btn-primary.btn-block.btn-lg type='submit'
+    = buttonText

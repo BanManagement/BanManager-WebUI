@@ -1,0 +1,15 @@
+= title 'Admin'
+
+.container.row
+  .col-md-2.col-sm-1.text-center
+    a href='#'
+      img.text-center src="{{t 'global.icon'}}"
+
+    ul.nav.nav-pills.nav-stacked
+      nav-link-to stats | Groups
+      nav-link-to stats | Roles
+      nav-link-to 'admin.servers' | Servers
+      nav-link-to stats | Users
+
+  .col-md-10.col-sm-11
+    = outlet 'admin'

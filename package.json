@@ -1,46 +1,60 @@
 {
-  "name": "banmanager-webui",
-  "version": "1.5.6",
-  "description": "Web interface for BanManager",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/BanManagement/BanManager-WebUI.git"
+  "name": "banmanager-web-client",
+  "version": "0.0.0",
+  "description": "Small description for ban-manager-web goes here",
+  "private": true,
+  "directories": {
+    "doc": "doc",
+    "test": "tests"
   },
-  "devDependencies": {
-    "grunt": "^0.4.5",
-    "grunt-autoprefixer": "^3.0.3",
-    "grunt-contrib-clean": "^0.7.0",
-    "grunt-contrib-compress": "^0.14.0",
-    "grunt-contrib-concat": "^0.5.1",
-    "grunt-contrib-connect": "^0.11.2",
-    "grunt-contrib-copy": "^0.8.2",
-    "grunt-contrib-cssmin": "^0.14.0",
-    "grunt-contrib-imagemin": "^1.0.0",
-    "grunt-contrib-jshint": "^0.11.3",
-    "grunt-contrib-uglify": "^0.11.0",
-    "grunt-contrib-watch": "^0.6.1",
-    "grunt-htmlhint": "^0.9.12-fix",
-    "grunt-jscs": "^2.6.0",
-    "grunt-phplint": "0.0.6",
-    "grunt-sass": "^1.1.0",
-    "load-grunt-tasks": "^3.4.0",
-    "phplint": "^1.7.0"
-  },
-  "bugs": {
-    "url": "https://github.com/BanManagement/BanManager-WebUI/issues"
-  },
-  "homepage": "https://github.com/BanManagement/BanManager-WebUI#readme",
-  "main": "Gruntfile.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "ember build",
+    "start": "ember server",
+    "test": "ember test"
   },
-  "keywords": [
-    "BanManager",
-    "Bukkit",
-    "Minecraft",
-    "Ban",
-    "Management"
-  ],
-  "author": "James Mortemore, Jonas Friedmann",
-  "license": "CC-BY-SA-2.0"
+  "repository": "",
+  "engines": {
+    "node": ">= 0.10.0"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@confuser/eslint-config": "^2.0.0",
+    "bootstrap-styl": "^5.0.5",
+    "broccoli-asset-rev": "^2.4.2",
+    "broccoli-funnel": "^1.0.2",
+    "ember-ajax": "0.7.1",
+    "ember-bootstrap": "0.8.0",
+    "ember-bootstrap-datetimepicker": "1.0.4",
+    "ember-cli": "2.5.1",
+    "ember-cli-app-version": "^1.0.0",
+    "ember-cli-babel": "^5.1.6",
+    "ember-cli-dependency-checker": "^1.2.0",
+    "ember-cli-emblem": "0.8.0",
+    "ember-cli-eslint": "1.4.1",
+    "ember-cli-google-fonts": "2.3.0",
+    "ember-cli-htmlbars": "^1.0.3",
+    "ember-cli-htmlbars-inline-precompile": "^0.3.1",
+    "ember-cli-inject-live-reload": "^1.4.0",
+    "ember-cli-jwt-decode": "0.0.2",
+    "ember-cli-moment-shim": "2.0.0",
+    "ember-cli-qunit": "^1.4.0",
+    "ember-cli-release": "0.2.8",
+    "ember-cli-sri": "^2.1.0",
+    "ember-cli-stylus": "1.0.6",
+    "ember-cli-uglify": "^1.2.0",
+    "ember-data": "^2.5.0",
+    "ember-export-application-global": "^1.0.5",
+    "ember-i18n": "4.2.1",
+    "ember-load-initializers": "^0.5.1",
+    "ember-moment": "7.0.0-beta.3",
+    "ember-page-title": "3.0.3",
+    "ember-power-select": "1.0.0-alpha.5",
+    "ember-radio-buttons": "4.0.1",
+    "ember-resolver": "^2.0.3",
+    "ember-simple-auth": "1.1.0",
+    "eonasdan-bootstrap-datetimepicker": "4.15.35",
+    "eslint-plugin-standard": "^1.3.2",
+    "loader.js": "^4.0.1"
+  }
 }

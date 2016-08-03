@@ -1,0 +1,33 @@
+.navbar.navbar-default.navbar-fixed-top
+  .container
+    .navbar-header
+
+    .collapse.navbar-collapse
+      ul.nav.navbar-nav
+        nav-link-to 'stats' | {{ t 'navigation.appeal' }}
+        nav-link-to 'stats' | {{ t 'navigation.reports' }}
+        nav-link-to 'stats' | {{ t 'navigation.stats' }}
+        
+        if session.isAuthenticated
+          nav-link-to 'admin' | Admin
+      
+      form.navbar-form.navbar-left role='search'
+        render 'player-autocomplete-search'
+      ul.nav.navbar-nav.navbar-right
+        if session.isAuthenticated
+          li.dropdown
+            a.navbar-img-avatar.dropdown-toggle data-toggle='dropdown'
+              avatar session.data.authenticated.player_id 49
+
+            ul.dropdown-menu
+              li
+                link-to 'player' session.data.authenticated.player_id
+                  = session.data.authenticated.name
+              li
+                a href='#' Settings
+              li.divider role="separator"
+              li
+                a{action 'logout'} href='#' Logout
+        else
+          nav-link-to 'login' | Login
+

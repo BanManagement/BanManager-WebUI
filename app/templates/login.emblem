@@ -1,0 +1,10 @@
+.well
+  #breadcrumb.container
+    .row
+      .col-sm-8
+        .col-sm-12
+          h1.pull-left.title Login
+
+.container
+  .row
+    login-form servers=model

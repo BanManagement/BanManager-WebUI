@@ -1,0 +1,13 @@
+#footer
+  .container
+    .row
+      .col-lg-8.col-lg-pull-5.col-md-6.col-md-offset-3.col-sm-6.col-sm-offset-3.text-center
+        ul.list-inline.copyright
+          li
+            img.server-icon src="{{t 'global.icon'}}"
+          li
+            span All Rights Reserved © ServerName {{t 'global.currentYear'}}
+      .col-lg-4.col-lg-push-4.col-md-4.col-md-offset-4.col-sm-6.col-sm-offset-3.text-center.social-icons
+        ul.list-inline
+          li
+            | CommitHashHere

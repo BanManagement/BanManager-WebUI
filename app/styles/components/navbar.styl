@@ -1,0 +1,88 @@
+$navbar-default-link-color = #fff
+$navbar-default-bg = #264b82
+$navbar-default-link-hover-color = #fff
+$navbar-default-link-hover-bg = #24467a
+$navbar-default-link-active-bg = #24467a
+$navbar-default-link-active-color = #fff
+$navbar-default-toggle-border-color = transparent
+$navbar-default-toggle-hover-bg = #264b82
+$navbar-default-toggle-icon-bar-bg = #ccc
+$navbar-default-toggle-icon-bar-bg = #fff
+
+@import 'bootstrap/navbar'
+
+.navbar-toggle
+  float left
+  border none
+  background transparent !important
+
+  &:hover
+    background transparent !important
+
+  .icon-bar
+    transition all 0.2s
+
+  .top-bar
+    transform rotate(45deg)
+    transform-origin 10% 10%
+
+  .middle-bar
+    opacity 0
+
+  .bottom-bar
+    transform rotate(-45deg)
+    transform-origin 10% 90%
+
+.collapsed
+  .top-bar, .bottom-bar
+    transform rotate(0)
+
+  .middle-bar
+    opacity 1
+
+.navbar-header
+  float left
+  text-align center
+  width 100%
+
+  a
+    display inline-block
+
+a.logo
+  img
+    margin 0 auto
+    max-height 49px
+
+  @media (min-width: $screen-sm-min)
+    padding 0 !important
+    img
+      max-height 45px
+
+.navbar
+  margin-bottom 0
+  border-color #333
+  z-index 20
+  transition transform 200ms linear
+
+.navbar-nav > li > a
+  font-family Sintony, sans-serif
+
+.navbar-right
+  margin-right -12px
+  margin-left -15px
+
+.navigation--pinned
+  transform translateY(0%)
+
+.navigation--unpinned
+  transform translateY(-100%)
+
+.navbar-nav > li > a.navbar-img-avatar
+    padding 7px
+
+    img
+      max-height 35px
+
+.navbar-nav > li > a
+  span.badge
+    margin-left 5px
