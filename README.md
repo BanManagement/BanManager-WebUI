@@ -1,6 +1,6 @@
 BanManager-WebUI
 ================
-[![Slack Status](https://banmanagement-slack.herokuapp.com/badge.svg)](https://yourdomain.com)
+[![Slack Status](https://banmanagement-slack.herokuapp.com/badge.svg)](https://banmanagement-slack.herokuapp.com/)
 
 ![](http://up.frd.mn/jaCRp.png)
 
