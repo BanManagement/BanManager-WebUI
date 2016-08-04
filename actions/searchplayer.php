@@ -79,6 +79,8 @@ else {
 			$ajaxArray['total_rows'] = $total;
 
 			foreach ($found as $player) {
+				if ($total === 1) $player = $found;
+
 				$playerName = $player['name'];
 				$expireTime = ($player['expires'] + $mysqlSecs)- $timeNow;
 
@@ -138,6 +140,8 @@ else {
 					$time
 				);
 				unset($time);
+
+				if ($total === 1) break;
 			}
 
 			if(!empty($filter) && isset($ajaxArray['rows'])) {
