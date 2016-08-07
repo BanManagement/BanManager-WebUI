@@ -42,7 +42,7 @@ export default Ember.Component.extend(
       }
     }
   }
-, getLocalTime: function() {
+, getLocalTime: function () {
     var serverId = this.get('item.server.id')
 
     if (!serverId) return

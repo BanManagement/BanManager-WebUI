@@ -1,7 +1,7 @@
 import Ember from 'ember'
 import SimpleSession from 'ember-simple-auth/services/session'
 
-const { inject: { service }, RSVP, Service, isEmpty } = Ember
+const { inject: { service }, RSVP, isEmpty } = Ember
 
 export default SimpleSession.extend(
 { session: service('session')
@@ -19,6 +19,6 @@ export default SimpleSession.extend(
       } else {
         resolve()
       }
-    });
-}
-});
+    })
+  }
+})

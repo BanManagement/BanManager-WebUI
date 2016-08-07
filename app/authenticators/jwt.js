@@ -5,7 +5,7 @@ import { jwt_decode } from 'ember-cli-jwt-decode'
 
 export default OAuth2PasswordGrant.extend(
 { serverTokenEndpoint: config.apiUrl + '/v1/auth/login'
-, authenticate: function(options) {
+, authenticate: function (options) {
     return new Ember.RSVP.Promise((resolve, reject) => {
       Ember.$.ajax(
       { url: this.get('serverTokenEndpoint')
@@ -13,14 +13,14 @@ export default OAuth2PasswordGrant.extend(
       , data: options
       // , contentType: 'application/jsoncharset=utf-8'
       , dataType: 'json'
-      }).then(function(response) {
-          Ember.run(function() {
+      }).then(function (response) {
+          Ember.run(function () {
             resolve(response)
           })
-      }, function(xhr, status, error) {
+      }, function (xhr) {
           var response = xhr.responseText
 
-          Ember.run(function() {
+          Ember.run(function () {
             reject(response)
           })
       })
@@ -54,7 +54,7 @@ export default OAuth2PasswordGrant.extend(
     })
   }
 
-, invalidate: function() {
+, invalidate: function () {
     console.log('invalidate...')
     return Ember.RSVP.resolve()
   }

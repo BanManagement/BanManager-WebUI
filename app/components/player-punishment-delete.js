@@ -4,7 +4,7 @@ export default Ember.Component.extend(
 { model: false
 , reason: ''
 , actions:
-  { deleteConfirmed(param) {
+  { deleteConfirmed() {
       this.sendAction('deleteConfirmed', this.get('model'), this.get('reason'))
     }
   , deleteCancelled() {

@@ -5,7 +5,7 @@ import { belongsTo } from 'ember-data/relationships'
 
 export default Model.extend(
 { reason: attr('string')
-, player_id: attr('string')
+, 'player_id': attr('string')
 , actor: belongsTo('player')
 , created: attr('timestamp')
 , updated: attr('timestamp')

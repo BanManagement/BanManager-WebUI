@@ -5,7 +5,7 @@ export default Ember.Controller.extend(
   { save() {
       this.model
         .save()
-        .then((result) => {
+        .then(() => {
           this.transitionToRoute('admin.servers')
         })
         .catch(() => {

@@ -1,38 +1,38 @@
 /* jshint node: true */
 
-module.exports = function(environment) {
-  var ENV = {
-    modulePrefix: 'banmanager-web-client',
-    environment: environment,
-    baseURL: '/',
-    locationType: 'auto',
-    googleFonts: [
-      'Sintony',
-      'Ubuntu:400,700',
-      'Oxygen'
-    ],
-    i18n: {
+module.exports = function (environment) {
+  var ENV =
+    { modulePrefix: 'banmanager-web-client'
+    , environment: environment
+    , baseURL: '/'
+    , locationType: 'auto'
+    , googleFonts:
+      [ 'Sintony'
+      , 'Ubuntu:400,700'
+      , 'Oxygen'
+      ]
+    , i18n: {
       defaultLocale: 'en'
-    },
-    EmberENV: {
-      FEATURES: {
-        // Here you can enable experimental features on an ember canary build
-        // e.g. 'with-controller': true
+    }
+    , EmberENV: {
+        FEATURES: {
+          // Here you can enable experimental features on an ember canary build
+          // e.g. 'with-controller': true
+        }
       }
-    },
 
-    APP: {
+    , APP: {
       // Here you can pass flags/options to your application instance
       // when it is created
+      }
     }
-  };
 
   if (environment === 'development') {
-    ENV.APP.LOG_RESOLVER = false;
-    ENV.APP.LOG_ACTIVE_GENERATION = false;
-    ENV.APP.LOG_TRANSITIONS = false;
-    ENV.APP.LOG_TRANSITIONS_INTERNAL = false;
-    ENV.APP.LOG_VIEW_LOOKUPS = false;
+    ENV.APP.LOG_RESOLVER = false
+    ENV.APP.LOG_ACTIVE_GENERATION = false
+    ENV.APP.LOG_TRANSITIONS = false
+    ENV.APP.LOG_TRANSITIONS_INTERNAL = false
+    ENV.APP.LOG_VIEW_LOOKUPS = false
     ENV.apiUrl = 'http://localhost:60990'
   }
 
@@ -45,19 +45,19 @@ module.exports = function(environment) {
 
   if (environment === 'test') {
     // Testem prefers this...
-    ENV.baseURL = '/';
-    ENV.locationType = 'none';
+    ENV.baseURL = '/'
+    ENV.locationType = 'none'
 
     // keep test console output quieter
-    ENV.APP.LOG_ACTIVE_GENERATION = false;
-    ENV.APP.LOG_VIEW_LOOKUPS = false;
+    ENV.APP.LOG_ACTIVE_GENERATION = false
+    ENV.APP.LOG_VIEW_LOOKUPS = false
 
-    ENV.APP.rootElement = '#ember-testing';
+    ENV.APP.rootElement = '#ember-testing'
   }
 
   if (environment === 'production') {
 
   }
 
-  return ENV;
-};
+  return ENV
+}

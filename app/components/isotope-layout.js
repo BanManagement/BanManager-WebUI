@@ -10,7 +10,7 @@ export default Ember.Component.extend(
     }
   }
 , _initialiseIsotope() {
-    Ember.run.scheduleOnce('afterRender', this, function() {
+    Ember.run.scheduleOnce('afterRender', this, function () {
       if (this.$()) {
         this.$().isotope(
           { itemSelector: '.item'
@@ -20,19 +20,19 @@ export default Ember.Component.extend(
           , layout: 'masonry'
           })
 
-        this.set('_initialisedIsotope', true);
+        this.set('_initialisedIsotope', true)
 
-        this.$().imagesLoaded(function() {
-          this._reloadLayout();
-        }.bind(this));
+        this.$().imagesLoaded(function () {
+          this._reloadLayout()
+        }.bind(this))
 
-        this.sendAction('onLoaded');
-        this.sendAction('onDrawn');
+        this.sendAction('onLoaded')
+        this.sendAction('onDrawn')
       }
-    });
+    })
   }
 , _reloadLayout() {
-    Ember.run.scheduleOnce('afterRender', this, function() {
+    Ember.run.scheduleOnce('afterRender', this, function () {
       if (Ember.isBlank(this.$())) return
 
       var api = this.$().data('isotope')
@@ -41,6 +41,7 @@ export default Ember.Component.extend(
         api.reloadItems()
         // disable transition
         var transitionDuration = api.options.transitionDuration
+
         api.options.transitionDuration = 0
         api.layout()
         // reset transition
@@ -48,23 +49,23 @@ export default Ember.Component.extend(
 
         this.sendAction('onDrawn')
       }
-    });
+    })
   }
-, didInsertElement: function() {
+, didInsertElement: function () {
     this._super()
 
-    this._initialiseIsotope();
+    this._initialiseIsotope()
   }
 , willDestroyElement() {
     this._super()
     this._destroyIsotope()
   }
-, itemsDidChange: function() {
-    Ember.run.scheduleOnce('afterRender', this, function() {
+, itemsDidChange: function () {
+    Ember.run.scheduleOnce('afterRender', this, function () {
       this._reloadLayout()
       if (!this.$()) return
 
-      this.$().imagesLoaded(function() {
+      this.$().imagesLoaded(function () {
         this._reloadMasonryLayout()
       }.bind(this))
     })
