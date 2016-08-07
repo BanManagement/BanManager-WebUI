@@ -17,12 +17,12 @@
         if session.isAuthenticated
           bs-dropdown tagName='li'
             bs-dropdown-toggle classNames='navbar-img-avatar'
-              avatar session.data.authenticated.player_id 49
+              avatar sessionAccount.data.id 49
 
             bs-dropdown-menu
               li
-                link-to 'player' session.data.authenticated.player_id
-                  = session.data.authenticated.name
+                link-to 'player' sessionAccount.data.id
+                  = sessionAccount.data.name
               li
                 a href='#' Settings
               li.divider role="separator"

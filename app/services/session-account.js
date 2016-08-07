@@ -11,8 +11,8 @@ export default SimpleSession.extend(
       const token = this.get('session.data.authenticated.token')
 
       if (!isEmpty(token)) {
-        return this.get('store').find('user', 'me').then((account) => {
-          this.set('account', account)
+        return this.get('store').find('user', 'me').then((data) => {
+          this.set('data', data)
 
           resolve()
         }, reject)
