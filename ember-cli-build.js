@@ -30,8 +30,6 @@ module.exports = function(defaults) {
 
   app.import('bower_components/isotope/dist/isotope.pkgd.js')
   app.import('bower_components/imagesloaded/imagesloaded.pkgd.js')
-  app.import('bower_components/bootstrap-stylus/js/dropdown.js')
-  app.import('bower_components/bootstrap-stylus/js/collapse.js')
 
   // Admin
   app.import('bower_components/yaml.js/dist/yaml.js', { outputFile: 'assets/vendor-admin.js' })

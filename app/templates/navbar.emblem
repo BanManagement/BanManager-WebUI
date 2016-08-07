@@ -4,7 +4,7 @@
 
     .collapse.navbar-collapse
       ul.nav.navbar-nav
-        nav-link-to 'stats' | {{ t 'navigation.appeal' }}
+        nav-link-to 'appeal' | {{ t 'navigation.appeal' }}
         nav-link-to 'stats' | {{ t 'navigation.reports' }}
         nav-link-to 'stats' | {{ t 'navigation.stats' }}
         
@@ -15,11 +15,11 @@
         render 'player-autocomplete-search'
       ul.nav.navbar-nav.navbar-right
         if session.isAuthenticated
-          li.dropdown
-            a.navbar-img-avatar.dropdown-toggle data-toggle='dropdown'
+          bs-dropdown tagName='li'
+            bs-dropdown-toggle classNames='navbar-img-avatar'
               avatar session.data.authenticated.player_id 49
 
-            ul.dropdown-menu
+            bs-dropdown-menu
               li
                 link-to 'player' session.data.authenticated.player_id
                   = session.data.authenticated.name
