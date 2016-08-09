@@ -1,0 +1,43 @@
+= title 'Register'
+
+.well
+  #breadcrumb.container
+    .row
+      .col-sm-8
+        .col-sm-12
+          h1.pull-left.title Register?
+
+.container
+  .col-md-4
+    .panel.panel-default
+      .panel-heading
+        h2.panel-title Benefits
+      .panel-body
+        ul
+          li Easier logins
+          li Notifications
+          li List more here...
+      .panel-footer
+        link-to 'index' tagName='a' class='btn btn-primary btn-block' | Skip
+
+  .col-md-8
+    .panel.panel-default
+      .panel-heading
+        h2.panel-title Details
+      .panel-body
+
+        form submit="register"
+          .form-group
+            .input-group
+              span.input-group-addon
+                i.glyphicon.glyphicon-envelope
+              = input class='form-control' type='email' value=email placeholder='Email'
+
+          .form-group
+            .input-group
+              span.input-group-addon
+                i.glyphicon.glyphicon-lock
+              = input class='form-control' type='password' value=password placeholder='Password'
+
+          .input-group
+            button.btn.btn-primary type="submit" Register
