@@ -28,6 +28,13 @@
 
         form submit="register"
           .form-group
+            if errors
+              .help-block
+                .alert.alert-danger
+                  ul.list-unstyled
+                    each errors as |error|
+                      li
+                        error.detail
             .input-group
               span.input-group-addon
                 i.glyphicon.glyphicon-envelope

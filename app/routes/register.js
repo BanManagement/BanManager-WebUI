@@ -6,6 +6,6 @@ const { inject: { service }, Route } = Ember
 export default Route.extend(AuthenticatedRouteMixin,
 { sessionAccount: service()
 , beforeModel() {
-    if (this.get('sessionAccount').get('data.registered')) this.transitionToRoute('index')
+    if (this.get('sessionAccount').get('data.registered')) this.transitionTo('index')
   }
 })
