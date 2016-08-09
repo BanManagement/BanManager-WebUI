@@ -8,12 +8,12 @@
         .input-group.margin-bottom-20
           span.input-group-addon
             i.glyphicon.glyphicon-envelope
-          input.form-control placeholder="Email" type="text"
+          = input class="form-control" value=email placeholder="Email" type="email"
 
         .input-group
           span.input-group-addon
             i.glyphicon.glyphicon-lock
-          input.form-control placeholder="Password" type="password"
+          = input class="form-control" value=password placeholder="Password" type="password"
 
         .input-group
           .checkbox

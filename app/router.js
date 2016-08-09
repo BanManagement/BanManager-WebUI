@@ -18,6 +18,7 @@ Router.map(function () {
     this.route('warning.edit', { path: '/warning/:punishmentId' })
   })
   this.route('login')
+  this.route('register')
   this.route('admin', { resetNamespace: true }, function () {
     this.route('servers')
     this.route('servers.edit', { path: '/server/:id' })
