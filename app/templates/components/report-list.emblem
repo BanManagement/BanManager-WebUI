@@ -1,0 +1,26 @@
+h3 = server.name
+
+table.table
+  thead
+    tr
+      th ID
+      th State
+      th Player
+      th Actor
+      th Reason
+      th Updated
+  tbody
+    each reports as |report|
+      tr
+        td
+          report.id
+        td
+          report.state.name
+        td
+          report.player.name
+        td
+          report.player.actor
+        td
+          report.reason
+        td
+          report.updated

@@ -24,6 +24,7 @@ Router.map(function () {
     this.route('servers.edit', { path: '/server/:id' })
   })
   this.route('appeal')
+  this.route('reports')
 })
 
 export default Router
