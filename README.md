@@ -40,7 +40,7 @@ Feel free to contribute if you have any suggestions or ideas.
 1. Please be aware, the mysql settings you entered are stored in settings.php in plain text, nobody else can read it unless they are able to download the file via FTP (or SSH etc) or you have an exploit in another script on your server.
 1. All done! If you have some bans, test it. Click "Home", in the search box type % and hit search. It will list all players that are currently banned or have been banned.
 
-In case you run into an `Invalid response from server` error, set `$settings['debug']['error_reporting']` to `true` and retry. Most likely it's because of a missing MySQL function within PHP or some issue with the MySQL server.
+In case you run into an `Invalid response from server` error, set `$settings['debug']['error_reporting']` in the `settings.php` file to `true` and retry. Most likely it's because of a missing MySQL function within PHP or some issue with the MySQL server.
 
 #### Development
 
