@@ -92,6 +92,10 @@ Caution: When using the `dev` argument, Grunt won't minify your JS or CSS, so it
 
 You can find a working demo over here: http://bans.yeahwh.at
 
+### License
+
+[MIT](LICENSE)
+
 ### Version
 
 1.5.7
