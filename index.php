@@ -1,13 +1,4 @@
 <?php
-/*
- *  BanManagement © 2015, a web interface for the Bukkit plugin BanManager
- *  by James Mortemore of http://www.frostcast.net
- *  is licenced under a Creative Commons
- *  Attribution-NonCommercial-ShareAlike 2.0 UK: England & Wales.
- *  Permissions beyond the scope of this licence
- *  may be available at http://creativecommons.org/licenses/by-nc-sa/2.0/uk/.
- *  Additional licence terms at https://raw.githubusercontent.com/BanManagement/BanManager-WebUI/master/LICENSE
- */
 
 session_name("BanManagement");
 session_start();
@@ -451,32 +442,32 @@ function searchPlayers($search, $limit, $offset, $serverID, $server, $sortByCol 
 
 	if((isset($settings['player_current_ban']) && $settings['player_current_ban']) || !isset($settings['player_current_ban'])) {
 		$sql = "SELECT * FROM
-	  ( SELECT 'Ban' type, HEX(p.id) AS player_id, p.name AS name, HEX(a.id) AS actor_id, a.name AS actor, created, expires, reason
-	    FROM ".$server['playerBansTable']."
-	    LEFT JOIN ".$server['playersTable']." p ON player_id = p.id
-	    LEFT JOIN ".$server['playersTable']." a ON actor_id = a.id";
+		( SELECT 'Ban' type, HEX(p.id) AS player_id, p.name AS name, HEX(a.id) AS actor_id, a.name AS actor, created, expires, reason
+			FROM ".$server['playerBansTable']."
+			LEFT JOIN ".$server['playersTable']." p ON player_id = p.id
+			LEFT JOIN ".$server['playersTable']." a ON actor_id = a.id";
 
 		if ($search !== '%') $sql .= " WHERE p.name LIKE '$search%'";
 		$sql .= "
-	    ORDER BY ".$sort['bans']." $sortBy
-	    LIMIT $offset, $limit
-	  ) AS b";
+			ORDER BY ".$sort['bans']." $sortBy
+			LIMIT $offset, $limit
+		) AS b";
 
 		array_push($query, $sql);
 	}
 
 	if((isset($settings['player_current_mute']) && $settings['player_current_mute']) || !isset($settings['player_current_mute'])) {
 		$sql = "SELECT * FROM
-	  ( SELECT 'Mute' type, HEX(p.id) AS player_id, p.name AS name, HEX(a.id) AS actor_id, a.name AS actor, created, expires, reason
-	    FROM ".$server['playerMutesTable']."
-	    LEFT JOIN ".$server['playersTable']." p ON player_id = p.id
-	    LEFT JOIN ".$server['playersTable']." a ON actor_id = a.id";
+		( SELECT 'Mute' type, HEX(p.id) AS player_id, p.name AS name, HEX(a.id) AS actor_id, a.name AS actor, created, expires, reason
+			FROM ".$server['playerMutesTable']."
+			LEFT JOIN ".$server['playersTable']." p ON player_id = p.id
+			LEFT JOIN ".$server['playersTable']." a ON actor_id = a.id";
 
 		if ($search !== '%') $sql .= " WHERE p.name LIKE '$search%'";
 		$sql .= "
-	    ORDER BY ".$sort['mutes']." $sortBy
-	    LIMIT $offset, $limit
-	  ) AS m";
+			ORDER BY ".$sort['mutes']." $sortBy
+			LIMIT $offset, $limit
+		) AS m";
 
 		array_push($query, $sql);
 	}
@@ -484,48 +475,48 @@ function searchPlayers($search, $limit, $offset, $serverID, $server, $sortByCol 
 	if($past) {
 		if(((isset($settings['player_previous_bans']) && $settings['player_previous_bans']) || !isset($settings['player_previous_bans'])) && $past) {
 			$sql = "SELECT * FROM
-		  ( SELECT 'Ban' type, HEX(p.id) AS player_id, p.name AS name, HEX(a.id) AS actor_id, a.name AS actor, created, expired AS expires, reason
-		    FROM ".$server['playerBanRecordsTable']."
-		    LEFT JOIN ".$server['playersTable']." p ON player_id = p.id
-		    LEFT JOIN ".$server['playersTable']." a ON actor_id = a.id";
+			( SELECT 'Ban' type, HEX(p.id) AS player_id, p.name AS name, HEX(a.id) AS actor_id, a.name AS actor, created, expired AS expires, reason
+				FROM ".$server['playerBanRecordsTable']."
+				LEFT JOIN ".$server['playersTable']." p ON player_id = p.id
+				LEFT JOIN ".$server['playersTable']." a ON actor_id = a.id";
 
 			if ($search !== '%') $sql .= " WHERE p.name LIKE '$search%'";
 			$sql .= "
-		    ORDER BY ".$sort['banrecords']." $sortBy
-		    LIMIT $offset, $limit
-		  ) AS br";
+				ORDER BY ".$sort['banrecords']." $sortBy
+				LIMIT $offset, $limit
+			) AS br";
 
 			array_push($query, $sql);
 		}
 
 		if((isset($settings['player_previous_mutes']) && $settings['player_previous_mutes']) || !isset($settings['player_previous_mutes'])) {
 			$sql = "SELECT * FROM
-		  ( SELECT 'Mute' type, HEX(p.id) AS player_id, p.name AS name, HEX(a.id) AS actor_id, a.name AS actor, created, expired AS expires, reason
-		    FROM ".$server['playerMuteRecordsTable']."
-		    LEFT JOIN ".$server['playersTable']." p ON player_id = p.id
-		    LEFT JOIN ".$server['playersTable']." a ON actor_id = a.id";
+			( SELECT 'Mute' type, HEX(p.id) AS player_id, p.name AS name, HEX(a.id) AS actor_id, a.name AS actor, created, expired AS expires, reason
+				FROM ".$server['playerMuteRecordsTable']."
+				LEFT JOIN ".$server['playersTable']." p ON player_id = p.id
+				LEFT JOIN ".$server['playersTable']." a ON actor_id = a.id";
 
 			if ($search !== '%') $sql .= " WHERE p.name LIKE '$search%'";
 			$sql .= "
-		    ORDER BY ".$sort['muterecords']." $sortBy
-		    LIMIT $offset, $limit
-		  ) AS mr";
+				ORDER BY ".$sort['muterecords']." $sortBy
+				LIMIT $offset, $limit
+			) AS mr";
 
 			array_push($query, $sql);
 		}
 
 		if((isset($settings['player_kicks']) && $settings['player_kicks']) || !isset($settings['player_kicks'])) {
 			$sql = "SELECT * FROM
-		  ( SELECT 'Kick' type, HEX(p.id) AS player_id, p.name AS name, HEX(a.id) AS actor_id, a.name AS actor, created, '0' expires, reason
-		    FROM ".$server['playerKicksTable']."
-		    LEFT JOIN ".$server['playersTable']." p ON player_id = p.id
-		    LEFT JOIN ".$server['playersTable']." a ON actor_id = a.id";
+			( SELECT 'Kick' type, HEX(p.id) AS player_id, p.name AS name, HEX(a.id) AS actor_id, a.name AS actor, created, '0' expires, reason
+				FROM ".$server['playerKicksTable']."
+				LEFT JOIN ".$server['playersTable']." p ON player_id = p.id
+				LEFT JOIN ".$server['playersTable']." a ON actor_id = a.id";
 
 			if ($search !== '%') $sql .= " WHERE p.name LIKE '$search%'";
 			$sql .= "
-		    ORDER BY ".$sort['kicks']." $sortBy
-		    LIMIT $offset, $limit
-		  ) AS k";
+				ORDER BY ".$sort['kicks']." $sortBy
+				LIMIT $offset, $limit
+			) AS k";
 
 			array_push($query, $sql);
 		}
@@ -533,16 +524,16 @@ function searchPlayers($search, $limit, $offset, $serverID, $server, $sortByCol 
 
 	if((isset($settings['player_warnings']) && $settings['player_warnings']) || !isset($settings['player_warnings'])) {
 		$sql = "SELECT * FROM
-		  ( SELECT 'Warning' type, HEX(p.id) AS player_id, p.name AS name, HEX(a.id) AS actor_id, a.name AS actor, created, expires, reason
-		    FROM ".$server['playerWarningsTable']."
-		    LEFT JOIN ".$server['playersTable']." p ON player_id = p.id
-		    LEFT JOIN ".$server['playersTable']." a ON actor_id = a.id";
+			( SELECT 'Warning' type, HEX(p.id) AS player_id, p.name AS name, HEX(a.id) AS actor_id, a.name AS actor, created, expires, reason
+				FROM ".$server['playerWarningsTable']."
+				LEFT JOIN ".$server['playersTable']." p ON player_id = p.id
+				LEFT JOIN ".$server['playersTable']." a ON actor_id = a.id";
 
 			if ($search !== '%') $sql .= " WHERE p.name LIKE '$search%'";
 			$sql .= "
-		    ORDER BY ".$sort['warnings']." $sortBy
-		    LIMIT $offset, $limit
-		  ) AS w";
+				ORDER BY ".$sort['warnings']." $sortBy
+				LIMIT $offset, $limit
+			) AS w";
 
 			array_push($query, $sql);
 	}
@@ -593,28 +584,28 @@ function searchPlayersTotal($search, $serverID, $server, $past = true) {
 
 	if((isset($settings['player_current_ban']) && $settings['player_current_ban']) || !isset($settings['player_current_ban'])) {
 		$sql = "SELECT * FROM
-	  ( SELECT COUNT(*)
-	    FROM ".$server['playerBansTable']."";
+		( SELECT COUNT(*)
+			FROM ".$server['playerBansTable']."";
 
 		if ($search !== '%') {
 			$sql .= " LEFT JOIN ".$server['playersTable']." p ON player_id = p.id WHERE p.name LIKE '$search%'";
 		}
 		$sql .= "
-	  ) AS b";
+		) AS b";
 
 		array_push($query, $sql);
 	}
 
 	if((isset($settings['player_current_mute']) && $settings['player_current_mute']) || !isset($settings['player_current_mute'])) {
 		$sql = "SELECT * FROM
-	  ( SELECT COUNT(*)
-	    FROM ".$server['playerMutesTable']."";
+		( SELECT COUNT(*)
+			FROM ".$server['playerMutesTable']."";
 
 		if ($search !== '%') {
 			$sql .= " LEFT JOIN ".$server['playersTable']." p ON player_id = p.id WHERE p.name LIKE '$search%'";
 		}
 		$sql .= "
-	  ) AS m";
+		) AS m";
 
 		array_push($query, $sql);
 	}
@@ -622,42 +613,42 @@ function searchPlayersTotal($search, $serverID, $server, $past = true) {
 	if($past) {
 		if(((isset($settings['player_previous_bans']) && $settings['player_previous_bans']) || !isset($settings['player_previous_bans'])) && $past) {
 			$sql = "SELECT * FROM
-		  ( SELECT COUNT(*)
-		    FROM ".$server['playerBanRecordsTable']."";
+			( SELECT COUNT(*)
+				FROM ".$server['playerBanRecordsTable']."";
 
 			if ($search !== '%') {
 				$sql .= " LEFT JOIN ".$server['playersTable']." p ON player_id = p.id WHERE p.name LIKE '$search%'";
 			}
 			$sql .= "
-		  ) AS br";
+			) AS br";
 
 			array_push($query, $sql);
 		}
 
 		if((isset($settings['player_previous_mutes']) && $settings['player_previous_mutes']) || !isset($settings['player_previous_mutes'])) {
 			$sql = "SELECT * FROM
-		  ( SELECT COUNT(*)
-		    FROM ".$server['playerMuteRecordsTable']."";
+			( SELECT COUNT(*)
+				FROM ".$server['playerMuteRecordsTable']."";
 
 			if ($search !== '%') {
 				$sql .= " LEFT JOIN ".$server['playersTable']." p ON player_id = p.id WHERE p.name LIKE '$search%'";
 			}
 			$sql .= "
-		  ) AS mr";
+			) AS mr";
 
 			array_push($query, $sql);
 		}
 
 		if((isset($settings['player_kicks']) && $settings['player_kicks']) || !isset($settings['player_kicks'])) {
 			$sql = "SELECT * FROM
-		  ( SELECT COUNT(*)
-		    FROM ".$server['playerKicksTable']."";
+			( SELECT COUNT(*)
+				FROM ".$server['playerKicksTable']."";
 
 			if ($search !== '%') {
 				$sql .= " LEFT JOIN ".$server['playersTable']." p ON player_id = p.id WHERE p.name LIKE '$search%'";
 			}
 			$sql .= "
-		  ) AS k";
+			) AS k";
 
 			array_push($query, $sql);
 		}
@@ -665,14 +656,14 @@ function searchPlayersTotal($search, $serverID, $server, $past = true) {
 
 	if((isset($settings['player_warnings']) && $settings['player_warnings']) || !isset($settings['player_warnings'])) {
 		$sql = "SELECT * FROM
-		  ( SELECT COUNT(*)
-		    FROM ".$server['playerWarningsTable']."";
+			( SELECT COUNT(*)
+				FROM ".$server['playerWarningsTable']."";
 
 			if ($search !== '%') {
 				$sql .= " LEFT JOIN ".$server['playersTable']." p ON player_id = p.id WHERE p.name LIKE '$search%'";
 			}
 			$sql .= "
-		  ) AS w";
+			) AS w";
 
 			array_push($query, $sql);
 	}
