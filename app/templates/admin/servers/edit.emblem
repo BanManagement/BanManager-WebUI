@@ -6,12 +6,13 @@
     .panel-body
       form submit="save"
         .form-group
-          .help-block
-            .alert.alert-danger
-              ul.list-unstyled
-                each model.errors.messages as |error|
-                  li
-                    error
+          if model.errors
+            .help-block
+              .alert.alert-danger
+                ul.list-unstyled
+                  each model.errors.messages as |error|
+                    li
+                      error
           = input class='form-control' type='text' value=model.name placeholder='Name'
 
         .form-group

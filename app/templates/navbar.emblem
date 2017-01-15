@@ -8,7 +8,7 @@
         nav-link-to 'reports' | {{ t 'navigation.reports' }}
         nav-link-to 'stats' | {{ t 'navigation.stats' }}
 
-        if session.isAuthenticated
+        sl-able resource='servers' activity='manage'
           nav-link-to 'admin' | Admin
 
       form.navbar-form.navbar-left role='search'

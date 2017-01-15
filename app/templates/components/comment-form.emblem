@@ -1,0 +1,11 @@
+form submit="save"
+  if errors
+    .form-group
+      .help-block
+        .alert.alert-danger
+          ul.list-unstyled
+            each errors as |error|
+              li
+                error.detail
+  .form-group
+    = input class='form-control' type='text' placeholder='Add a comment' value=comment

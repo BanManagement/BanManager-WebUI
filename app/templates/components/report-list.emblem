@@ -1,6 +1,6 @@
 h3 = server.name
 
-table.table
+table.table.table-hover
   thead
     tr
       th ID
@@ -11,15 +11,15 @@ table.table
       th Updated
   tbody
     each reports as |report|
-      tr
+      link-to 'report' report.id tagName='tr'
         td
-          report.id
+          report.displayId
         td
-          report.state.name
+          report.reportState.name
         td
           report.player.name
         td
-          report.player.actor
+          report.actor.name
         td
           report.reason
         td

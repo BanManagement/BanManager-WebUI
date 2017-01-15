@@ -10,12 +10,13 @@ h2 Servers
     .panel-body
       form submit="save"
         .form-group
-          .help-block
-            .alert.alert-danger
-              ul.list-unstyled
-                each errors.messages as |error|
-                  li
-                    error
+          if model.errors
+            .help-block
+              .alert.alert-danger
+                ul.list-unstyled
+                  each errors.messages as |error|
+                    li
+                      error
           = input class='form-control' type='text' value=name placeholder='Name'
 
         .form-group
@@ -93,7 +94,7 @@ h2 Servers
     .list-group
       each model as |server|
         button.list-group-item{action 'edit' server} type='button' action='edit'
-          server.name 
+          server.name
 
           button.btn.btn-sm.btn-danger.pull-right
             span.glyphicon.glyphicon-trash

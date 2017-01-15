@@ -22,31 +22,28 @@
     .row
       .col-sm-12
         p
-          .btn.btn-default{action 'punish' 'ban'}
-            span.glyphicon.glyphicon-plus
-            |  Ban
-          | &nbsp;
-          .btn.btn-default{action 'punish' 'mute'}
-            span.glyphicon.glyphicon-plus
-            |  Mute
-          | &nbsp;
-          .btn.btn-default{action 'punish' 'warning'}
-            span.glyphicon.glyphicon-plus
-            |  Warn
+          sl-able resource='player-bans' activity='create'
+            .btn.btn-default{action 'punish' 'ban'}
+              span.glyphicon.glyphicon-plus
+              |  Ban
+            | &nbsp;
+
+          sl-able resource='player-mutes' activity='create'
+            .btn.btn-default{action 'punish' 'mute'}
+              span.glyphicon.glyphicon-plus
+              |  Mute
+            | &nbsp;
+
+          sl-able resource='player-warnings' activity='create'
+            .btn.btn-default{action 'punish' 'warning'}
+              span.glyphicon.glyphicon-plus
+              |  Warn
   .row
     isotope-layout
       each model.bans as |ban|
         .panel.panel-danger.item.col-md-2
           .panel-heading
-            h3.panel-title.pull-left = ban.server.name
-
-            if session.isAuthenticated
-              .btn-group.btn-group-xs.pull-right
-                .btn.btn-warning{action 'punish' 'ban' ban}
-                  .glyphicon.glyphicon-edit
-                .btn.btn-danger{action 'deleteConfirm' ban true}
-                  .glyphicon.glyphicon-trash
-            .clearfix
+            h3.panel-title = ban.server.name
           .panel-body
             dl
               dt Banned by
@@ -62,19 +59,21 @@
                 dt Expires in
                 dd
                   moment-from-now ban.expires hideSuffix=true
+          sl-able resource='servers' activity='view' possible=ban.canUpdate
+            .panel-footer
+              .btn.btn-block.btn-warning{action 'punish' 'ban' ban}
+                span.glyphicon.glyphicon-edit
+                |  Edit
+          sl-able resource='servers' activity='view' possible=ban.canDelete
+            .panel-footer
+              .btn.btn-block.btn-danger{action 'deleteConfirm' ban true}
+                span.glyphicon.glyphicon-trash
+                |  Unban
 
       each model.mutes as |mute|
         .panel.panel-primary.item.col-md-2
           .panel-heading
-            h3.panel-title.pull-left = mute.server.name
-
-            if session.isAuthenticated
-              .btn-group.btn-group-xs.pull-right
-                .btn.btn-warning{action 'punish' 'mute' mute}
-                  .glyphicon.glyphicon-edit
-                .btn.btn-danger{action 'deleteConfirm' mute true}
-                  .glyphicon.glyphicon-trash
-            .clearfix
+            h3.panel-title = mute.server.name
           .panel-body
             dl
               dt Muted by
@@ -90,11 +89,21 @@
                 dt Expires in
                 dd
                   moment-from-now mute.expires hideSuffix=true
+          sl-able resource='servers' activity='view' possible=mute.canUpdate
+            .panel-footer
+              .btn.btn-block.btn-warning{action 'punish' 'mute' mute}
+                span.glyphicon.glyphicon-edit
+                |  Edit
+          sl-able resource='servers' activity='view' possible=mute.canDelete
+            .panel-footer
+              .btn.btn-block.btn-danger{action 'deleteConfirm' mute true}
+                span.glyphicon.glyphicon-trash
+                |  Unban
 
       each model.banRecords as |record|
         .panel.panel-default.item.col-md-2
           .panel-heading
-            h3.panel-title.pull-left = record.server.name
+            h3.panel-title = record.server.name
             
             if session.isAuthenticated
               .btn-group.btn-group-xs.pull-right
@@ -125,13 +134,7 @@
       each model.muteRecords as |record|
         .panel.panel-default.item.col-md-2
           .panel-heading
-            h3.panel-title.pull-left = record.server.name
-
-            if session.isAuthenticated
-              .btn-group.btn-group-xs.pull-right
-                .btn.btn-danger{action 'deleteConfirm' record false}
-                  .glyphicon.glyphicon-trash
-            .clearfix
+            h3.panel-title = record.server.name
           .panel-body
             dl
               dt Muted by
@@ -153,18 +156,16 @@
                 dt Unmuted for
                 dd = record.createdReason
 
+          sl-able resource='servers' activity='view' possible=record.canDelete
+            .panel-footer
+              .btn.btn-block.btn-danger{action 'deleteConfirm' record true}
+                span.glyphicon.glyphicon-trash
+                |  Unban
+
       each model.warnings as |record|
         .panel.panel-warning.item.col-md-2
           .panel-heading
-            h3.panel-title.pull-left = record.server.name
-
-            if session.isAuthenticated
-              .btn-group.btn-group-xs.pull-right
-                .btn.btn-warning{action 'punish' 'warning' record}
-                  .glyphicon.glyphicon-edit
-                .btn.btn-danger{action 'deleteConfirm' record false}
-                  .glyphicon.glyphicon-trash
-            .clearfix
+            h3.panel-title = record.server.name
           .panel-body
             dl
               dt Warned by
@@ -180,3 +181,14 @@
                 dt Expires in
                 dd
                   moment-from-now record.expires hideSuffix=true
+          
+          sl-able resource='servers' activity='view' possible=record.canUpdate
+            .panel-footer
+              .btn.btn-block.btn-warning{action 'punish' 'warning' record}
+                span.glyphicon.glyphicon-edit
+                |  Edit
+          sl-able resource='servers' activity='view' possible=record.canDelete
+            .panel-footer
+              .btn.btn-block.btn-danger{action 'deleteConfirm' record true}
+                span.glyphicon.glyphicon-trash
+                |  Unban

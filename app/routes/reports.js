@@ -1,7 +1,9 @@
 import Ember from 'ember'
+const { inject: { service } } = Ember
 
 export default Ember.Route.extend(
-{ model() {
+{ acl: service('sl-behavior')
+, model() {
     return this.store.findAll('server')
   }
 , queryParams:
