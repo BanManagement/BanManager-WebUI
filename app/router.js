@@ -22,8 +22,13 @@ Router.map(function () {
   this.route('admin', { resetNamespace: true }, function () {
     this.route('servers')
     this.route('servers.edit', { path: '/server/:id' })
+
+    this.route('groups')
+    this.route('groups.edit', { path: '/group/:id' })
   })
   this.route('appeal')
+  this.route('reports')
+  this.route('report', { path: '/report/:id' })
 })
 
 export default Router

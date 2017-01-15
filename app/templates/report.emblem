@@ -1,0 +1,161 @@
+= title model.id prepend=true
+
+= delete-confirm model=isDeleting deleteCancelled='deleteCancelled' deleteConfirm='deleteCommentConfirm' deleteConfirmed='deleteCommentConfirmed'
+
+.well
+  #breadcrumb.container
+    .row
+      .col-sm-8
+        .col-sm-12
+          h1.pull-left.title Report ##{model.displayId}
+        .col-md-12
+          h4.pull-left
+            small = model.server.name
+
+.container
+  .row
+    .col-md-8
+      .panel.panel-default
+        .panel-heading
+          h3.panel-title Reason
+        .panel-body
+          p = model.reason
+
+      if model.reportLogs
+        .panel.panel-default
+          .panel-heading
+            h3.panel-title Logs
+          .panel-body
+            pre
+              each model.reportLogs as |log|
+                | [
+                = moment-format log.created 'YYYY-MM-DD HH:mm:ss'
+                | ] &nbsp;
+                = log.message
+                br
+
+      if model.reportCommands
+
+        .panel.panel-default
+          .panel-heading
+            h3.panel-title Resolved Commands
+          .panel-body
+            each model.reportCommands as |cmd|
+              .media
+                .media-left
+                  avatar cmd.actor.id 40
+                .media-body
+                  h4.media-heading = cmd.actor.name
+                  pre
+                    | /
+                    = cmd.command
+                    | &nbsp;
+                    = cmd.args
+
+
+      .panel.panel-default
+        .panel-heading
+          h3.panel-title Comments
+        .panel-body
+          if model.canComment
+            comment-form servers=servers action='addComment' errors=commentErrors
+
+          each model.reportComments as |comment|
+            if comment.actor
+              .media
+                .media-left
+                  avatar comment.actor.id 40
+                .media-body
+                  h4.media-heading
+                    = comment.actor.name
+                    | &nbsp;
+                    small = moment-from-now comment.created
+                  = comment.comment
+                  if comment.canDelete
+                    button.btn.btn-sm.btn-danger.pull-right{action 'deleteCommentConfirm' comment}
+                      span.glyphicon.glyphicon-trash
+
+
+
+    .col-md-4
+      .row
+        .col-md-12
+          .panel.panel-default
+            .panel-heading
+              h3.panel-title Details
+            .panel-body
+              form.form-horizontal
+                .form-group
+                  label.col-sm-3.control-label State
+                  .col-sm-9
+                    p.form-control-static
+                      = bs-dropdown
+                        = bs-dropdown-button 
+                          = model.reportState.name
+                        = bs-dropdown-menu
+                          each states as |state|
+                            li
+                              a href='#' = state.name
+
+                .form-group
+                  label.col-sm-3.control-label Reported:
+                  .col-sm-9
+                    p.form-control-static
+                      avatar model.player.id 24
+                      | &nbsp;
+                      = model.player.name
+
+                .form-group
+                  label.col-sm-3.control-label By:
+                  .col-sm-9
+                    p.form-control-static
+                      avatar model.actor.id 24
+                      | &nbsp;
+                      = model.actor.name
+
+                .form-group
+                  label.col-sm-3.control-label Assignee:
+                  .col-sm-9
+                    p.form-control-static
+                      if model.assignee
+                        avatar model.assignee.id 24
+                        | &nbsp;
+                        = model.assignee.name
+                      else
+                        | None
+
+                .form-group
+                  label.col-sm-3.control-label Created:
+                  .col-sm-9
+                    p.form-control-static = moment-from-now model.created
+
+                .form-group
+                  label.col-sm-3.control-label Updated:
+                  .col-sm-9
+                    p.form-control-static = moment-from-now model.updated
+        .col-md-12
+          .panel.panel-default
+            .panel-heading
+              h3.panel-title Locations
+            .panel-body
+              each model.reportLocations as |location|
+                form.form-horizontal
+                  .form-group
+                    label.col-sm-3.control-label
+                      = location.player.name
+                    .col-sm-9
+                      p.form-control-static
+                        pre
+                          | /tppos&nbsp;
+                          = location.x
+                          | &nbsp;
+                          = location.y
+                          | &nbsp;
+                          = location.z
+                          | &nbsp;
+                          = location.pitch
+                          | &nbsp;
+                          = location.yaw
+                          | &nbsp;
+                          = location.world
+                          | &nbsp;

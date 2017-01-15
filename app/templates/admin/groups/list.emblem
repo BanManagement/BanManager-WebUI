@@ -1,0 +1,35 @@
+= title 'Groups'
+
+h2 Groups
+
+.col-md-6
+  .panel.panel-default
+    .panel-heading
+      h3.panel-title Add Group
+
+    .panel-body
+      form submit="save"
+        .form-group
+          if model.errors
+            .help-block
+              .alert.alert-danger
+                ul.list-unstyled
+                  each errors.messages as |error|
+                    li
+                      error
+          = input class='form-control' type='text' value=name placeholder='Name'
+
+        .form-group
+          = input class='form-control' type='text' value=parent placeholder='Parent'
+
+        button.btn.btn-primary.btn-block.btn-lg type='submit' Save
+
+.col-md-6
+  .panel.panel-default
+    .list-group
+      each model as |group|
+        button.list-group-item{action 'edit' group} type='button' action='edit'
+          group.name
+
+          button.btn.btn-sm.btn-danger.pull-right
+            span.glyphicon.glyphicon-trash

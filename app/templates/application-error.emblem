@@ -1,0 +1,12 @@
+= title 'BanManager' prepend=true
+
+partial 'navbar'
+
+#content
+  .container
+    .row
+      .col-md-4.col-md-offset-4.col-sm-6.col-sm-offset-3.text-center
+        h2 Server Error
+        img.img-responsive src="{{t 'global.error.icon'}}"
+
+partial 'footer'

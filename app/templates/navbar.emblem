@@ -5,12 +5,12 @@
     .collapse.navbar-collapse
       ul.nav.navbar-nav
         nav-link-to 'appeal' | {{ t 'navigation.appeal' }}
-        nav-link-to 'stats' | {{ t 'navigation.reports' }}
+        nav-link-to 'reports' | {{ t 'navigation.reports' }}
         nav-link-to 'stats' | {{ t 'navigation.stats' }}
-        
-        if session.isAuthenticated
+
+        sl-able resource='servers' activity='manage'
           nav-link-to 'admin' | Admin
-      
+
       form.navbar-form.navbar-left role='search'
         render 'player-autocomplete-search'
       ul.nav.navbar-nav.navbar-right

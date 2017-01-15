@@ -6,7 +6,7 @@
       img.text-center src="{{t 'global.icon'}}"
 
     ul.nav.nav-pills.nav-stacked
-      nav-link-to stats | Groups
+      nav-link-to 'admin.groups' | Groups
       nav-link-to stats | Roles
       nav-link-to 'admin.servers' | Servers
       nav-link-to stats | Users

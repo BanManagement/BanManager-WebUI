@@ -1,0 +1,26 @@
+h3 = server.name
+
+table.table.table-hover
+  thead
+    tr
+      th ID
+      th State
+      th Player
+      th Actor
+      th Reason
+      th Updated
+  tbody
+    each reports as |report|
+      link-to 'report' report.id tagName='tr'
+        td
+          report.displayId
+        td
+          report.reportState.name
+        td
+          report.player.name
+        td
+          report.actor.name
+        td
+          report.reason
+        td
+          report.updated

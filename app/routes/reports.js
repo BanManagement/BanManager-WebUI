@@ -3,7 +3,11 @@ const { inject: { service } } = Ember
 
 export default Ember.Route.extend(
 { acl: service('sl-behavior')
-, model(params) {
-    return this.store.findRecord('player', params.id)
+, model() {
+    return this.store.findAll('server')
+  }
+, queryParams:
+  { page: { refreshModel: true }
+  , size: { refreshModel: true }
   }
 })

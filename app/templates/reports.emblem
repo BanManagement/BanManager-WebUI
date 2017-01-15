@@ -1,0 +1,35 @@
+= title 'Reports'
+
+.well
+  #breadcrumb.container
+    .row
+      .col-sm-8
+        .col-sm-12
+          h1.pull-left.title Reports
+
+.container
+  .row
+    .col-md-4
+      .panel.panel-default
+        .panel-heading
+          h2.panel-title Complaints
+        .panel-body
+
+
+    .col-md-4
+      .panel.panel-default
+        .panel-heading
+          h2.panel-title Your Reports
+        .panel-body
+
+
+    .col-md-4
+      .panel.panel-default
+        .panel-heading
+          h2.panel-title Assigned
+        .panel-body
+
+  each model as |bmServer|
+    .row
+      .col-md-12
+        = report-list server=bmServer

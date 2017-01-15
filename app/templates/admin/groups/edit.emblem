@@ -1,0 +1,46 @@
+= title 'Groups'
+
+h2
+  | Edit
+  = model.name
+
+.col-md-6
+  .panel.panel-default
+    .panel-heading
+      h3.panel-title Group
+
+    .panel-body
+      form submit="save"
+        .form-group
+          if model.errors
+            .help-block
+              .alert.alert-danger
+                ul.list-unstyled
+                  each model.errors.messages as |error|
+                    li
+                      error
+          = input class='form-control' type='text' value=model.name placeholder='Name'
+
+        power-select selected=model.parent options=groups onchange=(action 'chooseParent') as |group|
+          = group.name
+
+        button.btn.btn-primary.btn-block.btn-lg type='submit' Save
+
+.col-md-6
+  .panel.panel-default
+    .panel-heading
+      h3.panel-title Permissions
+
+    .panel-body
+      form submit="save"
+        each resources as |resource|
+          dl
+            dt = resource.displayName
+            dd
+              each resource.permissions as |permission|
+                .form-group
+                  / Probably not the "ember" way
+                  .checkbox data-resource=resource.name
+                    label
+                      = input type='checkbox' name=permission.formName
+                      = permission.displayName
