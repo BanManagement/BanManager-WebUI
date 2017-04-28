@@ -12,7 +12,10 @@
       "hour": "hour",
       "minute": "minute",
       "second": "second"
-    }
+    },
+    "admin-cp": "Admin CP",
+    "logout": "Logout",
+    "toggle-navigation": "Toggle navigation"
   },
   "home": {
     "header-title": "Account Status",
