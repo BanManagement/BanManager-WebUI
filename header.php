@@ -31,7 +31,7 @@ $path = $_SERVER['HTTP_HOST'].str_replace('index.php', '', $_SERVER['SCRIPT_NAME
 		<div class="container">
 				<div class="navbar-header">
 				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-nav-collapse">
-					<span class="sr-only">Toggle navigation</span>
+					<span class="sr-only"><?php echo $language['general']['toggle-navigation']; ?></span>
 					<span class="glyphicon glyphicon-th-large"></span>
 				</button>
 				<a class="navbar-brand" href="index.php"><?php echo $language['general']['brand']; ?></a>
@@ -61,8 +61,8 @@ $path = $_SERVER['HTTP_HOST'].str_replace('index.php', '', $_SERVER['SCRIPT_NAME
 				<ul class="nav navbar-nav navbar-right">
 					<li>
 							<div class="btn-group">
-								<a class="btn <?php if(isset($theme['navbar-dark']) && $theme['navbar-dark']) {echo "btn-inverse";} else {echo "btn-info";} ?> navbar-btn" id="acp" href="index.php?action=admin">Admin CP</a>
-								<a class="btn <?php if(isset($theme['navbar-dark']) && $theme['navbar-dark']) {echo "btn-inverse";} else {echo "btn-info";} ?> navbar-btn" id="logout" href="index.php?action=logout">Logout</a>
+								<a class="btn <?php if(isset($theme['navbar-dark']) && $theme['navbar-dark']) {echo "btn-inverse";} else {echo "btn-info";} ?> navbar-btn" id="acp" href="index.php?action=admin"><?php echo $language['general']['admin-cp']; ?></a>
+								<a class="btn <?php if(isset($theme['navbar-dark']) && $theme['navbar-dark']) {echo "btn-inverse";} else {echo "btn-info";} ?> navbar-btn" id="logout" href="index.php?action=logout"><?php echo $language['general']['logout']; ?></a>
 							</div>
 						</li>
 					</ul>
