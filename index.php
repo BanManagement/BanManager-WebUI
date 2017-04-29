@@ -127,6 +127,7 @@ if($apc_status) {
 }
 
 function redirect($location, $code = '302') {
+	global $language;
 	switch($code) {
 		case '301';
 			header("HTTP/1.1 301 Moved Permanently");
@@ -142,7 +143,7 @@ function redirect($location, $code = '302') {
 	$location = str_replace('&amp;', '&', $location);
 	header("Location: $location");
 	//kill the script from running and output a link for browsers which enable turning off header redirects *cough Opera cough* :P
-	exit('<a href="'.$location.'">If you were not redirected automatically please click here</a>');
+	exit('<a href="'.$location.'">'.$language['general']['redirect'].'</a>');
 }
 
 function returnVersion(){
@@ -161,11 +162,13 @@ function returnVersion(){
 }
 
 function errors($message) {
+	global $language;
+
 	echo '
 		<div class="container">
 		<div id="error" class="alert alert-danger">
 			<button class="close" data-dismiss="alert">&times;</button>
-			<h1>Uh oh, we\'ve found an error.</h1>';
+			<h1>'. $language['general']['error']['generic'] .'</h1>';
 	if(is_array($message)) {
 		foreach($message as $e)
 			echo $e;
@@ -337,8 +340,8 @@ function createCache($query, $server, $file, $time = 0, $assoc) {
 }
 
 function rglob($pattern='*', $flags = 0, $path='') {
-		$paths = glob($path.'*', GLOB_MARK|GLOB_ONLYDIR|GLOB_NOSORT);
-		$files = glob($path.$pattern, $flags);
+	$paths = glob($path.'*', GLOB_MARK|GLOB_ONLYDIR|GLOB_NOSORT);
+	$files = glob($path.$pattern, $flags);
 	if($path !== false && $files !== false) {
 		foreach($paths as $path)
 			$files = array_merge($files, rglob($pattern, $flags, $path));
@@ -379,10 +382,10 @@ function playerNameToUUID($name, $server) {
 }
 
 function connect($server) {
-	global $settings;
+	global $language, $settings;
 
 	$mysqli = mysqli_connect($server['host'], $server['username'], $server['password'], $server['database'])
-		or print("Some error occurred during connection " . mysqli_error($mysqli));
+		or print(sprintf($language['general']['error']['mysql'], mysqli_error($mysqli)));
 
 	$settings['last_connection'] = $server;
 
@@ -895,7 +898,7 @@ if (isset($settings['debug']['functiontest']) && $settings['debug']['functiontes
 
 	foreach ($functions as $function) {
 		if (!function_exists($function)) {
-			echo '<div class="container" id="container"><pre>Caution: '.$function.' doesn\'t exist!</pre></div>'; }
+			echo '<div class="container" id="container"><pre>'.sprintf($language['general']['error']['function-error'], $function).'</pre></div>'; }
 	}
 }
 
@@ -930,7 +933,7 @@ else if(isset($_GET['action']) && in_array($_GET['action'], $ajaxactions))
 else if(!isset($_GET['action']))
 	include('actions/home.php');
 else
-	echo 'Action not found, possible hacking attempt';
+	echo $language['general']['error']['hacking'];
 if(!isset($_GET['ajax']) || (isset($_GET['ajax']) && !$_GET['ajax']))
 	include('footer.php');
 ?>
