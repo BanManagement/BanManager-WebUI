@@ -15,7 +15,14 @@
     },
     "admin-cp": "Admin CP",
     "logout": "Logout",
-    "toggle-navigation": "Toggle navigation"
+    "toggle-navigation": "Toggle navigation",
+    "redirect": "If you were not redirected automatically please click here",
+    "error": {
+      "mysql": "Some error occurred during connection %s",
+      "generic": "Uh oh, we've found an error",
+      "function-error": "Caution: %s doesn't exist!",
+      "hacking": "Action not found, possible hacking attempt"
+    }
   },
   "home": {
     "header-title": "Account Status",
