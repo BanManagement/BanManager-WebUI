@@ -18,11 +18,11 @@ Feel free to contribute if you have any suggestions or ideas.
   `git clone https://github.com/BanManagement/BanManager-WebUI.git /var/www/banmanager`
 1. Make sure cache is writeable:  
   `cd /var/www/banmanager`  
-  `chmod 777 cache/`  
+  `chmod 775 cache/`  
 1. Rename settingsRename.php to settings.php:  
   `cp settingsRename.php settings.php`
 1. Make sure settings file is writeable:  
-  `chmod 777 settings.php`
+  `chmod 775 settings.php`
 1. Open and adjust the settings and make sure you're adjusted `$settings['password']`.
 
 ##### Installation
