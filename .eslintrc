@@ -1,0 +1,26 @@
+{ "root": true
+, "parser": "babel-eslint"
+, "parserOptions":
+    { "ecmaVersion": 8
+    , "sourceType": "module"
+    , "ecmaFeatures": {
+        "jsx": true
+      }
+    }
+, "extends": [ "plugin:react/recommended", "@confuser/eslint-config" ]
+, "env":
+  { "browser": true
+  , "es6": true
+  , "node": true
+  }
+, "plugins": [ "react", "babel" ]
+, "rules":
+  { "strict": 0
+  , "babel/new-cap": 1
+  , "babel/no-invalid-this": 1
+  }
+, "globals":
+  { "GIT_COMMIT": false
+  , "GIT_TAG": false
+  }
+}

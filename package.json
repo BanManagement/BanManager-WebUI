@@ -1,46 +1,55 @@
 {
-  "name": "banmanager-webui",
-  "version": "1.5.8",
-  "description": "Web interface for BanManager",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/BanManagement/BanManager-WebUI.git"
+  "name": "bm-ui",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "next",
+    "build": "next build",
+    "start": "next start",
+    "test": "jest"
+  },
+  "dependencies": {
+    "apollo-client-preset": "^1.0.8",
+    "babel-plugin-inline-dotenv": "^1.1.2",
+    "babel-plugin-transform-inline-environment-variables": "^0.3.0",
+    "graphql": "^0.11.7",
+    "graphql-anywhere": "^3.1.0",
+    "graphql-request": "^1.4.1",
+    "graphql-tag": "^2.5.0",
+    "immutability-helper": "^2.6.5",
+    "ip": "^1.1.5",
+    "isomorphic-fetch": "^2.2.1",
+    "js-yaml": "^3.10.0",
+    "koa": "^2.4.1",
+    "lodash": "^4.17.5",
+    "moment": "^2.20.1",
+    "next": "^4.2.3",
+    "next-routes": "^1.2.0",
+    "prop-types": "^15.5.8",
+    "react": "16.2.0",
+    "react-apollo": "^2.0.0",
+    "react-datetime": "^2.14.0",
+    "react-dom": "16.2.0",
+    "react-moment": "^0.6.9",
+    "react-s-alert": "^1.4.1",
+    "semantic-ui-react": "^0.78.1",
+    "statty": "^2.0.3"
   },
   "devDependencies": {
-    "grunt": "^0.4.5",
-    "grunt-autoprefixer": "^3.0.3",
-    "grunt-contrib-clean": "^0.7.0",
-    "grunt-contrib-compress": "^0.14.0",
-    "grunt-contrib-concat": "^0.5.1",
-    "grunt-contrib-connect": "^0.11.2",
-    "grunt-contrib-copy": "^0.8.2",
-    "grunt-contrib-cssmin": "^0.14.0",
-    "grunt-contrib-imagemin": "^1.0.0",
-    "grunt-contrib-jshint": "^0.11.3",
-    "grunt-contrib-uglify": "^0.11.0",
-    "grunt-contrib-watch": "^0.6.1",
-    "grunt-htmlhint": "^0.9.12-fix",
-    "grunt-jscs": "^2.6.0",
-    "grunt-phplint": "0.0.6",
-    "grunt-sass": "^1.1.0",
-    "load-grunt-tasks": "^3.4.0",
-    "phplint": "^1.7.0"
+    "@confuser/eslint-config": "^2.0.0",
+    "babel-eslint": "^8.2.1",
+    "babel-plugin-git-version": "^0.2.0",
+    "babel-plugin-module-resolver": "^3.1.0",
+    "enzyme": "^3.3.0",
+    "enzyme-adapter-react-16": "^1.1.1",
+    "enzyme-wait": "^1.0.9",
+    "eslint": "^4.17.0",
+    "eslint-plugin-babel": "^4.1.2",
+    "eslint-plugin-react": "^7.6.1",
+    "eslint-plugin-standard": "^3.0.1",
+    "jest": "^22.1.4",
+    "react-addons-test-utils": "^15.6.2",
+    "react-test-renderer": "^16.2.0"
   },
-  "bugs": {
-    "url": "https://github.com/BanManagement/BanManager-WebUI/issues"
-  },
-  "homepage": "https://github.com/BanManagement/BanManager-WebUI#readme",
-  "main": "Gruntfile.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [
-    "BanManager",
-    "Bukkit",
-    "Minecraft",
-    "Ban",
-    "Management"
-  ],
-  "author": "James Mortemore, Jonas Friedmann",
-  "license": "CC-BY-SA-2.0"
+  "author": "",
+  "license": "ISC"
 }
