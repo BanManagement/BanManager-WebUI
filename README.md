@@ -1,4 +1,5 @@
 [![Slack Status](https://banmanagement-slack.herokuapp.com/badge.svg)](https://banmanagement-slack.herokuapp.com/)
+[![Known Vulnerabilities](https://snyk.io/test/github/banmanagement/banmanager-webui/badge.svg?targetFile=package.json)](https://snyk.io/test/github/banmanagement/banmanager-webui?targetFile=package.json)
 
 ![](http://up.frd.mn/jaCRp.png)
 
