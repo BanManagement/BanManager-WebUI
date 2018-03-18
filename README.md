@@ -3,7 +3,7 @@
 
 # BanManager-WebUI
 
-![](http://up.frd.mn/jaCRp.png)
+![](https://user-images.githubusercontent.com/1658997/37547562-5312183c-296a-11e8-91c7-8d1b9d17f4d3.png)
 
 **Caution** this project is in early alpha. It is not recommended you run this in production currently. There are bugs. Please report those via [GitHub issues](https://github.com/BanManagement/BanManager-WebUI/issues).
 
@@ -15,6 +15,7 @@ Feel free to contribute if you have any suggestions or ideas.
 - Manage punishments
 - Manage reports
 - Manage player access via custom roles and permissions
+- More coming soon...
 
 ##### Installation
 TBD
