@@ -10,6 +10,9 @@ Caution: This project is WIP. There could be still some bugs and issues that I d
 
 Feel free to contribute if you have any suggestions or ideas.
 
+### Deprecated
+This version of BanManager-WebUI is no longer maintained or supported. Please see [this issue](https://github.com/BanManagement/BanManager-WebUI/issues/215) for more information.
+
 ### Usage
 
 ##### Preperation
