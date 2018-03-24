@@ -3,12 +3,12 @@ import PropTypes from 'prop-types'
 import Head from 'next/head'
 import { withRouter } from 'next/router'
 import Alert from 'react-s-alert'
-import { Container, List, Segment } from 'semantic-ui-react'
+import { Container, Segment } from 'semantic-ui-react'
+import Footer from './Footer'
 import NavBar from './NavBar'
 import NavigationQuery from './queries/NavigationQuery'
 import SessionNavProfile from './SessionNavProfile'
 import withSession from 'lib/withSession'
-import { version } from 'package.json'
 
 class DefaultLayout extends React.Component {
   static defaultProps =
@@ -24,12 +24,6 @@ class DefaultLayout extends React.Component {
     }
 
   render() {
-    let versionStr
-
-    if (GIT_TAG && GIT_TAG !== 'unknown') versionStr = GIT_TAG
-    if (GIT_COMMIT && GIT_COMMIT !== 'unknown') versionStr = GIT_COMMIT
-    if (!versionStr) versionStr = version
-
     const { title, router: { pathname }, displayNavTitle, children, session } = this.props
     let { rightItems } = this.props
 
@@ -68,14 +62,7 @@ class DefaultLayout extends React.Component {
                 style={{ margin: '5em 0em 0em', padding: '1em 0em', flex: 1 }}
               >
                 <Container>
-                  <List horizontal inverted divided link>
-                    <List.Item as='a' href='#'>&copy; Server Name Here</List.Item>
-                    <List.Item as='a' href='#'>Contact Us</List.Item>
-                    <List.Item as='a' href='#'>Link Example</List.Item>
-                  </List>
-                  <List floated='right' horizontal>
-                    <List.Item as='a' href='https://github.com/BanManagement/BanManager-WebUI' floated='right'>v{versionStr}</List.Item>
-                  </List>
+                  <Footer />
                 </Container>
               </Segment>
             </NavBar>
