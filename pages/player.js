@@ -49,7 +49,7 @@ export class PlayerPage extends React.Component {
                 style={{ padding: '1em 0em', marginLeft: '-1em', marginRight: '-1em' }}
                 vertical
               >
-                <PlayerHeader id={this.props.player.id} />
+                <PlayerHeader player={player} />
               </Segment>
               <Container style={{ marginTop: '1em' }}>
                 <Button.Group size='large' widths='4'>

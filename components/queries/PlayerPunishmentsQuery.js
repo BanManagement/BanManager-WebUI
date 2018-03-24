@@ -11,6 +11,7 @@ const query = gql`
     player(id: $id) {
       id
       name
+      lastSeen
       servers {
         id
         lastSeen

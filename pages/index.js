@@ -1,16 +1,13 @@
-import App from '../components/App'
-import withData from '../lib/withData'
-import withSession from '../lib/withSession'
-import DefaultLayout from '../components/DefaultLayout'
+import React from 'react'
+import withData from 'lib/withData'
+import DefaultLayout from 'components/DefaultLayout'
 import {
-  Button,
   Container,
   Header,
-  Icon,
   Segment
 } from 'semantic-ui-react'
-import PlayerSearch from '../components/PlayerSearch'
-import { Router } from '../routes'
+import PlayerSearch from 'components/PlayerSearch'
+import { Router } from 'routes'
 
 export class HomePage extends React.Component {
   handlePlayerSelect = (e, { result }) => {
