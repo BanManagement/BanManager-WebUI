@@ -50,6 +50,6 @@
     "react-addons-test-utils": "^15.6.2",
     "react-test-renderer": "^16.2.0"
   },
-  "author": "",
+  "author": "James Mortemore (jamesmortemore@gmail.com)",
   "license": "ISC"
 }
