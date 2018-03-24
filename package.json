@@ -5,6 +5,7 @@
     "dev": "next",
     "build": "next build",
     "start": "node server.js",
+    "heroku-postbuild": "npm run build",
     "test": "jest"
   },
   "dependencies": {
