@@ -5,6 +5,7 @@ import {
   Loader
 } from 'semantic-ui-react'
 import GraphQlErrorMessage from '../GraphQLErrorMessage'
+import ErrorLayout from '../ErrorLayout'
 
 const query = gql`
   query player($id: UUID!) {
@@ -101,7 +102,7 @@ const query = gql`
 
 class PlayerPunishmentsQuery extends Component {
   render() {
-    if (this.props.data && this.props.data.error) return <GraphQlErrorMessage error={this.props.data.error} />
+    if (this.props.data && this.props.data.error) return <ErrorLayout error={this.props.data.error} />
     if (this.props.data && !this.props.data.player) return <Loader active />
 
     return this.props.children(this.props.data)
