@@ -51,5 +51,8 @@
     "react-test-renderer": "^16.2.0"
   },
   "author": "James Mortemore (jamesmortemore@gmail.com)",
-  "license": "ISC"
+  "license": "ISC",
+  "engines": {
+    "node": ">=8.0.0"
+  }
 }
