@@ -21,9 +21,8 @@ class AssignPlayersRoleForm extends React.Component {
     this.setState({ loading: true })
 
     try {
-      await this.props.client.mutate({ mutation, variables: { players, role } })
+      await this.props.client.mutate({ mutation, variables: { players, role: parseInt(role, 10) } })
     } catch (error) {
-      console.error(error)
       this.setState({ error })
     }
 
