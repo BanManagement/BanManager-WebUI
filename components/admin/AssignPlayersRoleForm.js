@@ -9,9 +9,11 @@ import GraphQLErrorMessage from 'components/GraphQLErrorMessage'
 class AssignPlayersRoleForm extends React.Component {
   state = { loading: false, error: null }
 
-  handleChange = (value) => {
+  handlePlayerChange = (value) => {
     this.setState({ players: value })
   }
+
+  handleChange = (e, { name, value }) => this.setState({ [name]: value })
 
   onSubmit = async () => {
     const { players, role } = this.state
@@ -21,6 +23,7 @@ class AssignPlayersRoleForm extends React.Component {
     try {
       await this.props.client.mutate({ mutation, variables: { players, role } })
     } catch (error) {
+      console.error(error)
       this.setState({ error })
     }
 
@@ -35,7 +38,7 @@ class AssignPlayersRoleForm extends React.Component {
         <Grid.Row columns={3}>
           <Grid.Column width={10}>
             <GraphQLErrorMessage error={error} />
-            <PlayerSelector handleChange={this.handleChange} />
+            <PlayerSelector handleChange={this.handlePlayerChange} />
           </Grid.Column>
           <Grid.Column width={4}>
             <RolesQuery>

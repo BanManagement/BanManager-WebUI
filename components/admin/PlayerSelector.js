@@ -17,8 +17,6 @@ class PlayerSelector extends React.Component {
 
     if (!value) value = props.multiple ? [] : null
 
-    console.log(value, props.value)
-
     this.state = { loading: false, value, options: props.options || [] }
   }
 
