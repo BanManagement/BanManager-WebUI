@@ -4,7 +4,7 @@ import {
   Form,
   Segment
 } from 'semantic-ui-react'
-import GraphQLErrorMessage from './GraphQLErrorMessage'
+import ErrorMessage from './ErrorMessage'
 
 class PlayerLoginPasswordForm extends Component {
   handleChange = (e, { name, value }) => this.setState({ [name]: value })
@@ -38,7 +38,7 @@ class PlayerLoginPasswordForm extends Component {
     return (
       <Form size='large' onSubmit={this.onSubmit} error loading={loading}>
         <Segment>
-          <GraphQLErrorMessage error={error} />
+          <ErrorMessage error={error} />
           <Form.Input
             required
             name='email'
