@@ -21,14 +21,12 @@ Feel free to contribute if you have any suggestions or ideas.
 TBD
 
 #### Development
+```
+npm install
+API_HOST=http://localhost:3001 node server.js
+```
 
-TBD
-
-### Adjustments so far
-
-### Demo
-
-TBD
+### [Demo](https://demo.banmanagement.com)
 
 ### License
 
