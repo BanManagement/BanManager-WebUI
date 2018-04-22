@@ -1,5 +1,5 @@
 import React from 'react'
-import { List } from 'semantic-ui-react'
+import { List, Responsive } from 'semantic-ui-react'
 import { version } from 'package.json'
 
 export default function Footer() {
@@ -16,9 +16,13 @@ export default function Footer() {
         <List.Item as='a' href='#'>Contact Us</List.Item>
         <List.Item as='a' href='#'>Link Example</List.Item>
       </List>
-      <List floated='right' horizontal>
-        <List.Item as='a' href='https://github.com/BanManagement/BanManager-WebUI' floated='right'>v{versionStr}</List.Item>
-      </List>
+      <Responsive
+        minWidth={Responsive.onlyTablet.minWidth}
+        as={List}
+        floated='right'
+        horizontal>
+          <List.Item as='a' href='https://github.com/BanManagement/BanManager-WebUI' floated='right'>v{versionStr}</List.Item>
+      </Responsive>
     </React.Fragment>
   )
 }
