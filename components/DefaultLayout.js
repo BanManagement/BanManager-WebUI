@@ -9,6 +9,8 @@ import NavBar from './NavBar'
 import NavigationQuery from './queries/NavigationQuery'
 import SessionNavProfile from './SessionNavProfile'
 import withSession from 'lib/withSession'
+import 'semantic-ui-css/semantic.min.css'
+import 'react-s-alert/dist/s-alert-default.css'
 
 class DefaultLayout extends React.Component {
   static defaultProps =
@@ -37,12 +39,6 @@ class DefaultLayout extends React.Component {
       <div>
         <Head>
           <title>{ title }</title>
-          <meta charSet='utf-8' />
-          <meta name='viewport' content='initial-scale=1.0, width=device-width' />
-          <meta name='author' content='BanManager-WebUI' />
-          <link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.12/semantic.min.css' />
-          <link rel='stylesheet' href='/static/css/s-alert-default.css' />
-          <link rel='stylesheet' href='/static/css/react-datetime.css' />
         </Head>
         <Alert position='bottom' stack={false} timeout='none' />
         <NavigationQuery>
@@ -59,7 +55,7 @@ class DefaultLayout extends React.Component {
               <Segment
                 inverted
                 vertical
-                style={{ margin: '5em 0em 0em', padding: '1em 0em', flex: 1 }}
+                style={{ marginLeft: '-1em', marginRight: '-1em', marginTop: '5em', padding: '1em 0em', flex: 1 }}
               >
                 <Container>
                   <Footer />
