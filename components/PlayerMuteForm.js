@@ -143,8 +143,8 @@ class PlayerMuteForm extends React.Component {
 }
 
 PlayerMuteForm.propTypes = {
-  onSubmit: PropTypes.func.required
-, data: PropTypes.object.required
+  onSubmit: PropTypes.func.isRequired
+, data: PropTypes.object.isRequired
 }
 
 export default PlayerMuteForm

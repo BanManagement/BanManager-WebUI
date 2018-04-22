@@ -134,8 +134,8 @@ class PlayerBanForm extends React.Component {
 }
 
 PlayerBanForm.propTypes = {
-  onSubmit: PropTypes.func.required
-, data: PropTypes.object.required
+  onSubmit: PropTypes.func.isRequired
+, data: PropTypes.object
 }
 
 export default PlayerBanForm

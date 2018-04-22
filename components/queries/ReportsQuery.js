@@ -42,8 +42,8 @@ class ReportsQuery extends React.Component {
 }
 
 ReportsQuery.propTypes = {
-  data: PropTypes.object.required
-, children: PropTypes.func.required
+  data: PropTypes.object.isRequired
+, children: PropTypes.func.isRequired
 }
 
 export default graphql(query)(ReportsQuery)

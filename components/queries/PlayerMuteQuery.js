@@ -95,9 +95,9 @@ class PlayerMuteQuery extends React.Component {
 }
 
 PlayerMuteQuery.propTypes = {
-  data: PropTypes.object.required
-, server: PropTypes.string.required
-, children: PropTypes.array.required
+  data: PropTypes.object.isRequired
+, server: PropTypes.string.isRequired
+, children: PropTypes.array.isRequired
 , onUpdate: PropTypes.func
 , updatePlayerMuteMutation: PropTypes.func
 , createPlayerMuteMutation: PropTypes.func

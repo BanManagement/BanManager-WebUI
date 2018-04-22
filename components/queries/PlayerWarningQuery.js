@@ -95,9 +95,9 @@ class PlayerWarningQuery extends React.Component {
 }
 
 PlayerWarningQuery.propTypes = {
-  data: PropTypes.object.required
-, server: PropTypes.string.required
-, children: PropTypes.array.required
+  data: PropTypes.object.isRequired
+, server: PropTypes.string.isRequired
+, children: PropTypes.array.isRequired
 , onUpdate: PropTypes.func
 , updatePlayerWarningMutation: PropTypes.func
 , createPlayerWarningMutation: PropTypes.func
