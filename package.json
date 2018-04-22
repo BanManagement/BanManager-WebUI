@@ -45,7 +45,7 @@
     "enzyme-wait": "1.0.9",
     "eslint": "4.17.0",
     "eslint-plugin-babel": "4.1.2",
-    "eslint-plugin-react": "7.6.1",
+    "eslint-plugin-react": "7.7.0",
     "eslint-plugin-standard": "3.0.1",
     "jest": "22.1.4",
     "react-addons-test-utils": "15.6.2",
