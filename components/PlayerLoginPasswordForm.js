@@ -1,12 +1,11 @@
-import { Component } from 'react'
+import React from 'react'
 import {
-  Button,
   Form,
   Segment
 } from 'semantic-ui-react'
 import ErrorMessage from './ErrorMessage'
 
-class PlayerLoginPasswordForm extends Component {
+class PlayerLoginPasswordForm extends React.Component {
   handleChange = (e, { name, value }) => this.setState({ [name]: value })
 
   constructor(props) {
