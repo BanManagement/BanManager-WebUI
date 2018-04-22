@@ -134,7 +134,9 @@ class PlayerMuteForm extends React.Component {
               <label>Created</label><Moment unix fromNow>{created}</Moment>
             </Form.Group>
           }
-          <Checkbox label='Soft' name='soft' toggle checked={soft} onChange={this.handleChange} />
+          <Form.Group inline>
+            <Checkbox label='Soft' name='soft' toggle checked={soft} onChange={this.handleChange} />
+          </Form.Group>
           <Form.Button fluid primary size='large' content='Save' />
         </Segment>
       </Form>
