@@ -6,7 +6,8 @@ import {
   Comment,
   Grid,
   Header,
-  Image
+  Image,
+  Responsive
 } from 'semantic-ui-react'
 import Moment from 'react-moment'
 import PlayerReportCommentList from 'components/PlayerReportCommentList'
@@ -17,6 +18,8 @@ import PlayerReportState from 'components/PlayerReportState'
 import PlayerReportCommands from 'components/PlayerReportCommands'
 
 export class PlayerPage extends React.Component {
+  state = {}
+
   static async getInitialProps({ query }) {
     return {
       report: { id: query.id }
@@ -24,7 +27,11 @@ export class PlayerPage extends React.Component {
     }
   }
 
+  handleOnScreenUpdate = (e, { width }) => this.setState({ width })
+
   render() {
+    const { width } = this.state
+
     return (
       <DefaultLayout title={`#${this.props.report.id} Report`}>
         <ReportQuery id={this.props.report.id} server={this.props.server.id}>
@@ -38,8 +45,12 @@ export class PlayerPage extends React.Component {
             const { id, actor, commands, player, assignee, reason, created, updated, state, locations, serverLogs, comments } = report
 
             return (
-              <Container style={{ marginTop: '1em' }}>
-                <Grid>
+              <Container style={{ marginTop: '3em' }}>
+                <Responsive
+                  as={Grid}
+                  fireOnMount
+                  onUpdate={this.handleOnScreenUpdate}
+                >
                   <Grid.Row>
                     <Grid.Column width={12}>
                       <Comment.Group>
@@ -62,8 +73,8 @@ export class PlayerPage extends React.Component {
                         <PlayerReportCommands commands={commands} />
                       }
                     </Grid.Column>
-                    <Grid.Column width={4}>
-                      <Grid.Row>
+                    <Grid.Column computer={4} mobile={16}>
+                      <Grid.Row style={{ marginTop: width <= Responsive.onlyComputer.minWidth ? '1em' : 0 }}>
                         <Grid.Column width={16}>
                           <Header dividing>Details</Header>
                           <Grid.Row>
@@ -110,7 +121,7 @@ export class PlayerPage extends React.Component {
                       </Grid.Column>
                     </Grid.Row>
                   }
-                </Grid>
+                </Responsive>
               </Container>
             )
           }}
