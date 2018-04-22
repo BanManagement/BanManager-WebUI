@@ -93,7 +93,7 @@ class PlayerBanQuery extends React.Component {
 
 PlayerBanQuery.propTypes = {
   data: PropTypes.object.isRequired
-, server: PropTypes.string.isRequired
+, server: PropTypes.string
 , children: PropTypes.func.isRequired
 , onUpdate: PropTypes.func
 , updatePlayerBanMutation: PropTypes.func
