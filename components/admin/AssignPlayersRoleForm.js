@@ -18,7 +18,7 @@ class AssignPlayersRoleForm extends React.Component {
   onSubmit = async () => {
     const { players, role } = this.state
 
-    this.setState({ loading: true })
+    this.setState({ loading: true, error: null })
 
     try {
       await this.props.client.mutate({ mutation, variables: { players, role: parseInt(role, 10) } })
@@ -26,7 +26,7 @@ class AssignPlayersRoleForm extends React.Component {
       this.setState({ error })
     }
 
-    this.setState({ loading: false })
+    this.setState({ loading: false, players: [] })
   }
 
   render() {
