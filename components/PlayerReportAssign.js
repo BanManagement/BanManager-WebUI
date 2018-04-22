@@ -2,6 +2,7 @@ import React from 'react'
 import { Loader } from 'semantic-ui-react'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
+import Alert from 'react-s-alert'
 import PlayerSelector from 'components/admin/PlayerSelector'
 
 class PlayerReportAssign extends React.Component {
@@ -21,6 +22,7 @@ class PlayerReportAssign extends React.Component {
         variables: { serverId: this.props.server, report: this.props.id, player: id }
       })
     } catch (e) {
+      Alert.error(e.message)
     }
 
     this.setState({ loading: false })
