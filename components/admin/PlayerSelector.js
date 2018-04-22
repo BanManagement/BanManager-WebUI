@@ -2,6 +2,7 @@ import React from 'react'
 import gql from 'graphql-tag'
 import { withApollo } from 'react-apollo'
 import { Dropdown } from 'semantic-ui-react'
+import { uniqBy } from 'lodash'
 
 class PlayerSelector extends React.Component {
   static defaultProps = {
@@ -31,9 +32,15 @@ class PlayerSelector extends React.Component {
     this.setState({ loading: true })
 
     const results = await this.props.client.query({ query, variables: { name: searchQuery, limit: 5 } })
-    const options = results.data.searchPlayers.map((result) => ({
+    let options = results.data.searchPlayers.map(result => ({
       key: result.id, text: result.name, value: result.id, image: `https://crafatar.com/avatars/${result.id}?size=128&overlay=true`
-    })).concat(this.state.options.filter(opt => this.state.value.indexOf(opt.value) !== -1))
+    })).concat(this.state.options.filter(opt => {
+      if (!this.state.value) return true
+
+      return this.state.value.indexOf(opt.value) !== -1
+    }))
+
+    options = uniqBy(options, 'key')
 
     this.setState({ options, loading: false })
   }
