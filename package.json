@@ -14,7 +14,7 @@
     "babel-plugin-inline-dotenv": "1.1.2",
     "babel-plugin-transform-inline-environment-variables": "0.4.0",
     "file-loader": "1.1.11",
-    "graphql": "0.11.7",
+    "graphql": "0.13.2",
     "graphql-tag": "2.6.1",
     "ip": "1.1.5",
     "isomorphic-fetch": "2.2.1",
