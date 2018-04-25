@@ -88,7 +88,7 @@ class PlayerMuteQuery extends React.Component {
 
   render() {
     if (this.props.data && this.props.data.error) return <GraphQlErrorMessage error={this.props.data.error} />
-    if (this.props.data && !(this.props.data.playerBan || this.props.data.player)) return <Loader active />
+    if (this.props.data && !(this.props.data.playerMute || this.props.data.player)) return <Loader active />
 
     return this.props.children(this.props.data, { handleCreate: this.handleCreate, handleUpdate: this.handleUpdate })
   }
