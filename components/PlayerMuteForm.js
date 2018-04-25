@@ -64,7 +64,7 @@ class PlayerMuteForm extends React.Component {
     { id
     , player: player
     , reason: reason || ''
-    , soft
+    , soft: soft || false
     , created
     , expires: expires || 0
     , error: null
