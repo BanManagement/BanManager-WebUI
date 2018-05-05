@@ -4,12 +4,14 @@ import DefaultLayout from 'components/DefaultLayout'
 import {
   Container,
   Header,
-  Message
+  Message,
+  Loader
 } from 'semantic-ui-react'
 import { Router } from 'routes'
 import PlayerLoginPasswordForm from 'components/PlayerLoginPasswordForm'
 import PlayerLoginPinForm from 'components/PlayerLoginPinForm'
 import ServersQuery from 'components/queries/ServersQuery'
+import withSession from 'lib/withSession'
 
 export class LoginPage extends React.Component {
   async handleOnSubmit(e, { email, password, server, name, pin }) {
@@ -45,6 +47,11 @@ export class LoginPage extends React.Component {
   }
 
   render() {
+    if (this.props.session.exists && Router.router) {
+      window.location.replace('/')
+      return <Loader />
+    }
+
     return (
       <DefaultLayout title='Login' displayNavTitle>
         <Container style={{ marginTop: '2em' }}>
@@ -71,4 +78,4 @@ export class LoginPage extends React.Component {
   }
 }
 
-export default withData(LoginPage)
+export default withData(withSession(LoginPage))
