@@ -29,7 +29,7 @@ export class LoginPage extends React.Component {
       })
 
     if (email && response.status === 204) {
-      Router.replace('/')
+      window.location.replace('/')
     } else if ((email && response.status !== 204) || response.status !== 200) {
       const responseData = await response.json()
 
@@ -37,9 +37,9 @@ export class LoginPage extends React.Component {
     } else {
       const responseData = await response.json()
 
-      if (responseData.hasAccount) return Router.replace('/')
+      if (responseData.hasAccount) return window.location.replace('/')
 
-      Router.replace('/register')
+      window.location.replace('/register')
     }
 
   }
