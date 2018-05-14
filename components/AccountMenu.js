@@ -9,7 +9,7 @@ export default function AccountMenu({ session }) {
       {!session.hasAccount &&
         <MenuLink href='/register'>Register</MenuLink>
       }
-      <MenuLink disabled={!session.hasAccount}>Email</MenuLink>
+      <MenuLink href='/account/email' disabled={!session.hasAccount}>Email</MenuLink>
       <MenuLink href='/account/password' disabled={!session.hasAccount}>Password</MenuLink>
     </Menu>
   )
