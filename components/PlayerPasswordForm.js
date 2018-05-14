@@ -1,12 +1,13 @@
 import React from 'react'
 import {
   Form,
-  Segment,
-  Select
+  Segment
 } from 'semantic-ui-react'
-import ErrorMessage from './ErrorMessage'
+import GraphQLErrorMessage from './GraphQLErrorMessage'
 
 class PlayerPasswordForm extends React.Component {
+  static defaultProps = { showCurrentPassword: false }
+
   handleChange = (e, { name, value }) => this.setState({ [name]: value })
 
   constructor(props) {
@@ -15,6 +16,7 @@ class PlayerPasswordForm extends React.Component {
     this.state =
     { password: ''
     , confirmPassword: ''
+    , currentPassword: ''
     , error: null
     , loading: false
     }
@@ -25,26 +27,44 @@ class PlayerPasswordForm extends React.Component {
       return this.setState({ error: new Error('Passwords do not match') })
     }
 
+    if (this.props.showCurrentPassword && !this.state.currentPassword) {
+      return this.setState({ error: new Error('Please provide your current password') })
+    }
+
     this.setState({ error: null, loading: true })
 
     try {
       await this.props.onSubmit(e, this.state)
     } catch (error) {
-      this.setState({ error, loading: false })
+      this.setState({ error })
     }
+
+    this.setState({ loading: false })
   }
 
   render() {
+    const { showCurrentPassword } = this.props
     const { error, loading } = this.state
 
     return (
       <Form size='large' onSubmit={this.onSubmit} error loading={loading}>
         <Segment>
-          <ErrorMessage error={error} />
+          <GraphQLErrorMessage error={error} />
+          { showCurrentPassword &&
+            <Form.Input
+              required
+              name='currentPassword'
+              placeholder='Current Password'
+              type='password'
+              icon='lock'
+              iconPosition='left'
+              onChange={this.handleChange}
+            />
+          }
           <Form.Input
             required
             name='password'
-            placeholder='Password'
+            placeholder='New Password'
             type='password'
             icon='lock'
             iconPosition='left'
@@ -53,7 +73,7 @@ class PlayerPasswordForm extends React.Component {
           <Form.Input
             required
             name='confirmPassword'
-            placeholder='Confirm Password'
+            placeholder='Confirm New Password'
             type='password'
             icon='lock'
             iconPosition='left'

@@ -49,6 +49,7 @@ class SessionNavProfile extends React.Component {
       >
         <Dropdown.Menu>
           <MenuLink name={session.name} href={'/player/' + session.id} />
+          <MenuLink name='Settings' href='/account' />
           <Menu.Item name='Logout' onClick={this.handleLogout} disabled={loggingOut} />
         </Dropdown.Menu>
       </Dropdown>
