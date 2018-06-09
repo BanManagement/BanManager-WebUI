@@ -25,9 +25,10 @@ routes
   .add('add-player-warning', '/player/:id/warning')
   .add('player-warning', '/player-warning/:server/:id')
 
+  .add('appeal', '/appeal/:server/:id/:type')
+
   .add('reports', '/reports')
   .add('report', '/report/:server/:id')
-
 
   .add('admin', '/admin')
 
@@ -38,3 +39,6 @@ routes
   .add('admin-roles', '/admin/roles', '/admin/roles')
   .add('admin-add-role', '/admin/roles/role', '/admin/roles/add-role')
   .add('admin-edit-role', '/admin/roles/:id', '/admin/roles/edit-role')
+
+  .add('admin-page-layouts', '/admin/page-layouts', '/admin/page-layouts')
+  .add('admin-edit-page-layout', '/admin/page-layouts/:id', '/admin/page-layouts/edit-layout')

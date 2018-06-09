@@ -29,6 +29,7 @@
     "react-apollo": "2.1.4",
     "react-datetime": "2.14.0",
     "react-dom": "16.4.0",
+    "react-grid-layout": "^0.16.6",
     "react-moment": "0.7.0",
     "react-s-alert": "1.4.1",
     "react-table": "6.8.6",
