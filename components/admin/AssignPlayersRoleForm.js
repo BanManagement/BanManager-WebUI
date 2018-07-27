@@ -1,5 +1,4 @@
 import React from 'react'
-import gql from 'graphql-tag'
 import { withApollo } from 'react-apollo'
 import { Form, Grid, Select } from 'semantic-ui-react'
 import RolesQuery from 'components/queries/RolesQuery'
@@ -7,6 +6,7 @@ import PlayerSelector from './PlayerSelector'
 import GraphQLErrorMessage from 'components/GraphQLErrorMessage'
 
 class AssignPlayersRoleForm extends React.Component {
+  static defaultProps = { servers: [] }
   state = { loading: false, error: null }
 
   handlePlayerChange = (value) => {
@@ -20,8 +20,14 @@ class AssignPlayersRoleForm extends React.Component {
 
     this.setState({ loading: true, error: null })
 
+    const variables = { players, role: parseInt(role, 10) }
+
+    if (this.props.servers.length) {
+      variables.serverId = this.state.server
+    }
+
     try {
-      await this.props.client.mutate({ mutation, variables: { players, role: parseInt(role, 10) } })
+      await this.props.client.mutate({ mutation: this.props.mutation, variables })
     } catch (error) {
       this.setState({ error })
     }
@@ -31,18 +37,19 @@ class AssignPlayersRoleForm extends React.Component {
 
   render() {
     const { error, loading } = this.state
+    const servers = this.props.servers.map(server => ({ key: server.id, value: server.id, text: server.name }))
 
     return (
-      <Grid>
-        <Grid.Row columns={3}>
-          <Grid.Column width={10}>
+      <Grid doubling>
+        <Grid.Row>
+          <Grid.Column width={4} mobile={16}>
             <GraphQLErrorMessage error={error} />
             <PlayerSelector handleChange={this.handlePlayerChange} />
           </Grid.Column>
-          <Grid.Column width={4}>
+          <Grid.Column width={4} mobile={16}>
             <RolesQuery>
               {({ roles }) => {
-                const data = roles.map(role => ({ key: role.id, text: role.name, value: role.id } ))
+                const data = roles.map(role => ({ key: role.id, text: role.name, value: role.id }))
 
                 return (
                   <Form.Field
@@ -52,13 +59,36 @@ class AssignPlayersRoleForm extends React.Component {
                     options={data}
                     placeholder='Role'
                     onChange={this.handleChange}
+                    fluid
                   />
                 )
               }}
             </RolesQuery>
           </Grid.Column>
-          <Grid.Column width={2}>
-            <Form.Button loading={loading} disabled={loading} fluid primary size='large' content='Add' onClick={this.onSubmit} />
+          {!!servers.length &&
+            <Grid.Column width={4} mobile={16}>
+              <Form.Field
+                required
+                name='server'
+                control={Select}
+                options={servers}
+                placeholder='Server'
+                onChange={this.handleChange}
+                defaultValue={servers.length ? servers[0].value : null}
+                fluid
+              />
+            </Grid.Column>
+          }
+          <Grid.Column width={2} mobile={6}>
+            <Form.Button
+              loading={loading}
+              disabled={loading}
+              fluid
+              primary
+              size='large'
+              content='Add'
+              onClick={this.onSubmit}
+            />
           </Grid.Column>
         </Grid.Row>
       </Grid>
@@ -67,11 +97,3 @@ class AssignPlayersRoleForm extends React.Component {
 }
 
 export default withApollo(AssignPlayersRoleForm)
-
-export const mutation = gql`
-  mutation assignRole($players: [UUID!], $role: Int!) {
-    assignRole(players: $players, role: $role) {
-      id
-    }
-  }
-`
