@@ -34,7 +34,7 @@
     "react-s-alert": "1.4.1",
     "react-table": "6.8.6",
     "semantic-ui-css": "2.3.3",
-    "semantic-ui-react": "0.82.4"
+    "semantic-ui-react": "0.82.5"
   },
   "devDependencies": {
     "@confuser/eslint-config": "2.0.0",
