@@ -25,10 +25,10 @@
     "next": "6.1.2",
     "next-routes": "1.4.2",
     "prop-types": "15.6.2",
-    "react": "16.5.0",
+    "react": "16.5.1",
     "react-apollo": "2.1.11",
     "react-datetime": "2.15.0",
-    "react-dom": "16.5.0",
+    "react-dom": "16.5.1",
     "react-grid-layout": "0.16.6",
     "react-moment": "0.7.9",
     "react-s-alert": "1.4.1",
@@ -50,7 +50,7 @@
     "eslint-plugin-standard": "3.1.0",
     "jest": "23.6.0",
     "react-addons-test-utils": "15.6.2",
-    "react-test-renderer": "16.5.0"
+    "react-test-renderer": "16.5.1"
   },
   "author": "James Mortemore (jamesmortemore@gmail.com)",
   "license": "ISC",
