@@ -20,7 +20,7 @@ export class LoginPage extends React.Component {
     if (email) {
       data = { email, password }
     } else {
-      data = { server, name, pin }
+      data = { serverId: server, name, pin }
     }
 
     const response = await fetch(process.env.API_HOST + '/session',
