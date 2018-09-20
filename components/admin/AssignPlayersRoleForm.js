@@ -7,7 +7,16 @@ import GraphQLErrorMessage from 'components/GraphQLErrorMessage'
 
 class AssignPlayersRoleForm extends React.Component {
   static defaultProps = { servers: [] }
-  state = { loading: false, error: null }
+
+  constructor(props) {
+    super(props)
+
+    const defaultState = { loading: false, error: null }
+
+    if (props.servers.length) defaultState.server = props.servers[0].id
+
+    this.state = defaultState
+  }
 
   handlePlayerChange = (value) => {
     this.setState({ players: value })
