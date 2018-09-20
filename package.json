@@ -13,7 +13,7 @@
     "apollo-client-preset": "1.0.8",
     "babel-plugin-inline-dotenv": "1.1.2",
     "babel-plugin-transform-inline-environment-variables": "0.4.3",
-    "file-loader": "1.1.11",
+    "file-loader": "2.0.0",
     "graphql": "0.13.2",
     "graphql-tag": "2.9.2",
     "ip": "1.1.5",
