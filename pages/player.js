@@ -1,7 +1,7 @@
 import React from 'react'
 import withData from 'lib/withData'
 import DefaultLayout from 'components/DefaultLayout'
-import { Button, Container } from 'semantic-ui-react'
+import { Button } from 'semantic-ui-react'
 import { Router } from 'routes'
 import PropTypes from 'prop-types'
 import PlayerHeader from 'components/PlayerHeader'
@@ -12,6 +12,7 @@ import PlayerIpList from 'components/PlayerIpList'
 import PlayerAlts from 'components/PlayerAlts'
 import PageLayoutQuery from 'components/queries/PageLayoutQuery'
 import PageLayout from 'components/PageLayout'
+import PageContentContainer from 'components/PageContentContainer'
 
 const availableComponents = {
   PlayerHeader, PlayerPunishmentList, PlayerIpList, PlayerHistoryList, PlayerAlts
@@ -57,7 +58,7 @@ export class PlayerPage extends React.Component {
                     pageLayout={pageLayout}
                     player={player}
                   />
-                  <Container style={{ marginTop: '1em' }}>
+                  <PageContentContainer>
                     <Button.Group size='large' widths='4'>
                     { canCreateBan &&
                       <Button circular icon='ban' color='green' onClick={this.clickAddHandler('add-player-ban')} />
@@ -82,7 +83,7 @@ export class PlayerPage extends React.Component {
                       />
                     }
                     </Button.Group>
-                  </Container>
+                  </PageContentContainer>
                 </DefaultLayout>
               )
             }}

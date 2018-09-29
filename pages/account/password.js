@@ -4,9 +4,10 @@ import { Mutation } from 'react-apollo'
 import withData from 'lib/withData'
 import withSession from 'lib/withSession'
 import DefaultLayout from 'components/DefaultLayout'
-import { Container, Grid, Message } from 'semantic-ui-react'
+import { Grid, Message } from 'semantic-ui-react'
 import AccountMenu from 'components/AccountMenu'
 import PlayerPasswordForm from 'components/PlayerPasswordForm'
+import PageContentContainer from 'components/PageContentContainer'
 
 const setPassword = gql`
   mutation setPassword($currentPassword: String!, $newPassword: String!) {
@@ -37,8 +38,8 @@ class AccountPasswordPage extends React.Component {
 
     return (
       <DefaultLayout title={title} displayNavTitle>
-        <Container style={{ marginTop: '1em' }}>
-          <Grid columns={2}>
+        <PageContentContainer>
+          <Grid columns={2} stackable>
             <Grid.Row>
               <Grid.Column width={4}>
                 <AccountMenu session={session} />
@@ -55,7 +56,7 @@ class AccountPasswordPage extends React.Component {
               </Grid.Column>
             </Grid.Row>
           </Grid>
-        </Container>
+        </PageContentContainer>
       </DefaultLayout>
     )
   }

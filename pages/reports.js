@@ -8,25 +8,18 @@ import {
 } from 'semantic-ui-react'
 import MyReports from 'components/MyReports'
 import AssignedReports from 'components/AssignedReports'
+import PageContentContainer from 'components/PageContentContainer'
 
 export class ReportsPage extends React.Component {
-  render() {
+  render () {
     const { session } = this.props
 
     return (
       <DefaultLayout title='Reports'>
-        <Segment
-          inverted
-          color='blue'
-          textAlign='center'
-          style={{ padding: '1em 0em', marginLeft: '-1em', marginRight: '-1em' }}
-          vertical
-        >
-        </Segment>
-        <Container style={{ marginTop: '1em' }}>
+        <PageContentContainer>
           <MyReports session={session} />
           <AssignedReports session={session} />
-        </Container>
+        </PageContentContainer>
       </DefaultLayout>
     )
   }

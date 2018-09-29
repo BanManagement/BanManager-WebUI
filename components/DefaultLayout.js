@@ -36,7 +36,7 @@ class DefaultLayout extends React.Component {
     }
 
     return (
-      <div>
+      <React.Fragment>
         <Head>
           <title>{ title }</title>
         </Head>
@@ -55,7 +55,7 @@ class DefaultLayout extends React.Component {
               <Segment
                 inverted
                 vertical
-                style={{ marginLeft: '-1em', marginRight: '-1em', marginTop: '5em', padding: '1em 0em', flex: 1 }}
+                style={{ marginLeft: '-1em', marginRight: '-1em', padding: '1em 0em', flex: 1 }}
               >
                 <Container>
                   <Footer />
@@ -64,8 +64,7 @@ class DefaultLayout extends React.Component {
             </NavBar>
           )}
         </NavigationQuery>
-
-      </div>
+      </React.Fragment>
     )
   }
 }

@@ -34,7 +34,7 @@ const NavBarMobile = ({
     <Sidebar.Pusher
       dimmed={visible}
       onClick={onPusherClick}
-      style={{ minHeight: '100vh', paddingTop: '2em' }}
+      style={{ minHeight: '100vh', paddingTop: '4em' }}
     >
       <Menu
         fixed='top'
@@ -99,7 +99,7 @@ NavBarDesktop.propTypes =
 }
 
 const NavBarChildren = ({ children }) => (
-  <Container fluid style={{display:"flex", minHeight:"100vh", flexDirection:"column"}}>{children}</Container>
+  <Container fluid>{children}</Container>
 )
 
 NavBarChildren.propTypes = {

@@ -8,6 +8,7 @@ import {
 } from 'semantic-ui-react'
 import { Router } from 'routes'
 import PlayerRegisterForm from 'components/PlayerRegisterForm'
+import PageContentContainer from 'components/PageContentContainer'
 
 export class register extends React.Component {
   async handleOnSubmit(e, { email, password, confirmPassword }) {
@@ -37,18 +38,18 @@ export class register extends React.Component {
   render() {
     return (
       <DefaultLayout title='Register' displayNavTitle>
-        <Container style={{ marginTop: '2em' }}>
+        <PageContentContainer>
           <Header>Register an account?</Header>
           <Message>
             <Message.Header>Benefits</Message.Header>
             <Message.List>
               <Message.Item>Quicker login</Message.Item>
-              <Message.Item>Notifications (Coming Soon)</Message.Item>
+              <Message.Item>Push Notifications (Coming Soon)</Message.Item>
               <Message.Item>Manage multiple player accounts (Coming Soon)</Message.Item>
             </Message.List>
           </Message>
           <PlayerRegisterForm onSubmit={this.handleOnSubmit} onSkip={this.handleSkip} />
-        </Container>
+        </PageContentContainer>
       </DefaultLayout>
     )
   }

@@ -2,11 +2,12 @@ import React from 'react'
 import withData from 'lib/withData'
 import withSession from 'lib/withSession'
 import DefaultLayout from 'components/DefaultLayout'
-import { Container, Form, Grid, Message, Segment } from 'semantic-ui-react'
+import { Form, Grid, Message, Segment } from 'semantic-ui-react'
 import gql from 'graphql-tag'
 import { Mutation } from 'react-apollo'
 import AccountMenu from 'components/AccountMenu'
 import GraphQLErrorMessage from 'components/GraphQLErrorMessage'
+import PageContentContainer from 'components/PageContentContainer'
 
 const setEmail = gql`
   mutation setEmail($currentPassword: String!, $email: String!) {
@@ -35,12 +36,12 @@ class AccountEmailPage extends React.Component {
     // @TODO Ensure logged in
     const { session } = this.props
     const { success } = this.state
-    const title = `Settings for ${session.name}`
+    const title = 'Settings'
 
     return (
       <DefaultLayout title={title} displayNavTitle>
-        <Container style={{ marginTop: '1em' }}>
-          <Grid columns={2}>
+        <PageContentContainer>
+          <Grid columns={2} stackable>
             <Grid.Row>
               <Grid.Column width={4}>
                 <AccountMenu session={session} />
@@ -80,7 +81,7 @@ class AccountEmailPage extends React.Component {
               </Grid.Column>
             </Grid.Row>
           </Grid>
-        </Container>
+        </PageContentContainer>
       </DefaultLayout>
     )
   }

@@ -62,10 +62,10 @@ export default class PageLayout extends React.Component {
     const { availableComponents, pageLayout } = this.props
     const devices = Object.keys(pageLayout.devices).filter(name => name !== '__typename')
     const rowCounts = Object.assign({}, ...devices.map(device => {
-      return { [device]: calculateRowCount(pageLayout.devices[device]) }
+      return { [device]: calculateRowCount(pageLayout.devices[device].components) }
     }))
     const rows = Object.assign({}, ...devices.map(device => {
-      return { [device]: createRows(rowCounts[device], pageLayout.devices[device]) }
+      return { [device]: createRows(rowCounts[device], pageLayout.devices[device].components) }
     }))
     const deviceComponents = Object.assign({}, ...devices.map(device => {
       return { [device]: createComponents(rows[device], availableComponents, this.props) }
@@ -73,10 +73,10 @@ export default class PageLayout extends React.Component {
 
     const components = <React.Fragment>
       <Responsive {...Responsive.onlyMobile}>
-        <Grid style={{ marginTop: '1em' }}>{deviceComponents.mobile}</Grid>
+        <Grid>{deviceComponents.mobile}</Grid>
       </Responsive>
       <Responsive {...Responsive.onlyTablet}>
-        <Grid style={{ marginTop: '1em' }}>{deviceComponents.tablet}</Grid>
+        <Grid>{deviceComponents.tablet}</Grid>
       </Responsive>
       <Responsive {...Responsive.onlyComputer}>
         <Grid >{deviceComponents.desktop}</Grid>

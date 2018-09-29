@@ -2,7 +2,6 @@ import React from 'react'
 import withData from 'lib/withData'
 import DefaultLayout from 'components/DefaultLayout'
 import {
-  Container,
   Header,
   Message,
   Loader
@@ -11,10 +10,11 @@ import { Router } from 'routes'
 import PlayerLoginPasswordForm from 'components/PlayerLoginPasswordForm'
 import PlayerLoginPinForm from 'components/PlayerLoginPinForm'
 import ServersQuery from 'components/queries/ServersQuery'
+import PageContentContainer from 'components/PageContentContainer'
 import withSession from 'lib/withSession'
 
 export class LoginPage extends React.Component {
-  async handleOnSubmit(e, { email, password, server, name, pin }) {
+  async handleOnSubmit (e, { email, password, server, name, pin }) {
     let data
 
     if (email) {
@@ -24,10 +24,10 @@ export class LoginPage extends React.Component {
     }
 
     const response = await fetch(process.env.API_HOST + '/session',
-      { method: 'POST'
-      , body: JSON.stringify(data)
-      , headers: new Headers({ 'Content-Type': 'application/json' })
-      , credentials: 'include'
+      { method: 'POST',
+        body: JSON.stringify(data),
+        headers: new Headers({ 'Content-Type': 'application/json' }),
+        credentials: 'include'
       })
 
     if (email && response.status === 204) {
@@ -43,10 +43,9 @@ export class LoginPage extends React.Component {
 
       window.location.replace('/register')
     }
-
   }
 
-  render() {
+  render () {
     if (this.props.session.exists && Router.router) {
       window.location.replace('/')
       return <Loader />
@@ -54,7 +53,7 @@ export class LoginPage extends React.Component {
 
     return (
       <DefaultLayout title='Login' displayNavTitle>
-        <Container style={{ marginTop: '2em' }}>
+        <PageContentContainer>
           <Header>Have an account?</Header>
           <PlayerLoginPasswordForm onSubmit={this.handleOnSubmit} />
           <Message
@@ -72,7 +71,7 @@ export class LoginPage extends React.Component {
               <PlayerLoginPinForm servers={servers} onSubmit={this.handleOnSubmit} />
             )}
           </ServersQuery>
-        </Container>
+        </PageContentContainer>
       </DefaultLayout>
     )
   }

@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Label, Menu } from 'semantic-ui-react'
-import MenuLink from './MenuLink'
+import MenuLink from 'components/MenuLink'
 
 export default class AdminSideTabletNav extends React.Component {
   static propTypes =
