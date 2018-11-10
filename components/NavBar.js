@@ -27,10 +27,11 @@ const NavBarMobile = ({
       animation="overlay"
       icon="labeled"
       inverted
-      items={leftItems.map(item => <MenuLink {...item} key={item.id || item.name || item.icon} />)}
       vertical
       visible={visible}
-    />
+    >
+      {leftItems.map(item => <MenuLink {...item} key={item.id || item.name || item.icon} />)}
+    </Sidebar>
     <Sidebar.Pusher
       dimmed={visible}
       onClick={onPusherClick}
