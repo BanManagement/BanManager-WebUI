@@ -51,11 +51,11 @@ class AssignPlayersRoleForm extends React.Component {
     return (
       <Grid doubling>
         <Grid.Row>
-          <Grid.Column width={4} mobile={16}>
+          <Grid.Column desktop={4} mobile={16}>
             <GraphQLErrorMessage error={error} />
             <PlayerSelector handleChange={this.handlePlayerChange} />
           </Grid.Column>
-          <Grid.Column width={4} mobile={16}>
+          <Grid.Column desktop={4} mobile={16}>
             <RolesQuery>
               {({ roles }) => {
                 const data = roles.map(role => ({ key: role.id, text: role.name, value: role.id }))
@@ -75,7 +75,7 @@ class AssignPlayersRoleForm extends React.Component {
             </RolesQuery>
           </Grid.Column>
           {!!servers.length &&
-            <Grid.Column width={4} mobile={16}>
+            <Grid.Column desktop={4} mobile={16}>
               <Form.Field
                 required
                 name='server'
@@ -88,7 +88,7 @@ class AssignPlayersRoleForm extends React.Component {
               />
             </Grid.Column>
           }
-          <Grid.Column width={2} mobile={6}>
+          <Grid.Column desktop={2} mobile={6}>
             <Form.Button
               loading={loading}
               disabled={loading}
