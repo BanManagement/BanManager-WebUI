@@ -1,12 +1,10 @@
 import React from 'react'
 import withData from 'lib/withData'
 import DefaultLayout from 'components/DefaultLayout'
-import {
-  Container
-} from 'semantic-ui-react'
 import { Router } from 'routes'
 import PlayerBanForm from 'components/PlayerBanForm'
 import PlayerBanQuery from 'components/queries/PlayerBanQuery'
+import PageContentContainer from 'components/PageContentContainer'
 
 export class PlayerBanPage extends React.Component {
   static async getInitialProps({ query }) {
@@ -25,13 +23,13 @@ export class PlayerBanPage extends React.Component {
 
     return (
       <DefaultLayout title={title} displayNavTitle>
-        <Container style={{ marginTop: '2em' }}>
+        <PageContentContainer>
           <PlayerBanQuery id={id} server={server} onUpdate={this.onUpdate}>
             {({ playerBan }, { handleUpdate }) => (
               <PlayerBanForm data={playerBan} onSubmit={handleUpdate} />
             )}
           </PlayerBanQuery>
-        </Container>
+        </PageContentContainer>
 
       </DefaultLayout>
     )

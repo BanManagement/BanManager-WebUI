@@ -1,12 +1,10 @@
 import React from 'react'
 import withData from 'lib/withData'
 import DefaultLayout from 'components/DefaultLayout'
-import {
-  Container
-} from 'semantic-ui-react'
 import { Router } from 'routes'
 import PlayerWarningForm from 'components/PlayerWarningForm'
 import PlayerWarningQuery from 'components/queries/PlayerWarningQuery'
+import PageContentContainer from 'components/PageContentContainer'
 
 export class PlayerWarningPage extends React.Component {
   static async getInitialProps({ query }) {
@@ -25,13 +23,13 @@ export class PlayerWarningPage extends React.Component {
 
     return (
       <DefaultLayout title={title} displayNavTitle>
-        <Container style={{ marginTop: '2em' }}>
+        <PageContentContainer>
           <PlayerWarningQuery id={id} onUpdate={this.onUpdate}>
             {(data, { handleCreate }) => (
               <PlayerWarningForm data={data} onSubmit={handleCreate} />
             )}
           </PlayerWarningQuery>
-        </Container>
+        </PageContentContainer>
 
       </DefaultLayout>
     )

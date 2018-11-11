@@ -1,12 +1,10 @@
 import React from 'react'
 import withData from 'lib/withData'
 import DefaultLayout from 'components/DefaultLayout'
-import {
-  Container
-} from 'semantic-ui-react'
 import { Router } from 'routes'
 import PlayerNoteForm from 'components/PlayerNoteForm'
 import PlayerNoteQuery from 'components/queries/PlayerNoteQuery'
+import PageContentContainer from 'components/PageContentContainer'
 
 export class PlayerNotePage extends React.Component {
   static async getInitialProps({ query }) {
@@ -25,13 +23,13 @@ export class PlayerNotePage extends React.Component {
 
     return (
       <DefaultLayout title={title} displayNavTitle>
-        <Container style={{ marginTop: '2em' }}>
+        <PageContentContainer>
           <PlayerNoteQuery id={id} onUpdate={this.onUpdate}>
             {(data, { handleCreate }) => (
               <PlayerNoteForm data={data} onSubmit={handleCreate} />
             )}
           </PlayerNoteQuery>
-        </Container>
+        </PageContentContainer>
 
       </DefaultLayout>
     )

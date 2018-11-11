@@ -1,12 +1,10 @@
 import React from 'react'
 import withData from 'lib/withData'
 import DefaultLayout from 'components/DefaultLayout'
-import {
-  Container
-} from 'semantic-ui-react'
 import { Router } from 'routes'
 import PlayerMuteForm from 'components/PlayerMuteForm'
 import PlayerMuteQuery from 'components/queries/PlayerMuteQuery'
+import PageContentContainer from 'components/PageContentContainer'
 
 export class PlayerMutePage extends React.Component {
   static async getInitialProps({ query }) {
@@ -25,13 +23,13 @@ export class PlayerMutePage extends React.Component {
 
     return (
       <DefaultLayout title={title} displayNavTitle>
-        <Container style={{ marginTop: '2em' }}>
+        <PageContentContainer>
           <PlayerMuteQuery id={id} onUpdate={this.onUpdate}>
             {(data, { handleCreate }) => (
               <PlayerMuteForm data={data} onSubmit={handleCreate} />
             )}
           </PlayerMuteQuery>
-        </Container>
+        </PageContentContainer>
 
       </DefaultLayout>
     )
