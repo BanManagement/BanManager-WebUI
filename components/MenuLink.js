@@ -2,7 +2,7 @@ import { withRouter } from 'next/router'
 import { Menu } from 'semantic-ui-react'
 
 const MenuLink = ({ children, router, name, href, icon, disabled }) => {
-	const handleClick = (e) => {
+  const handleClick = (e) => {
     if (e.button !== 0 || !href) return // Allow middle clicks to open in new tab
     e.preventDefault()
 
