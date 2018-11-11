@@ -34,7 +34,7 @@ class AdminLayout extends React.Component {
     }
 
     return (
-      <div>
+      <React.Fragment>
         <Head>
           <title>{ title }</title>
         </Head>
@@ -54,7 +54,7 @@ class AdminLayout extends React.Component {
             </AdminNavBar>
           )}
         </AdminNavigationQuery>
-      </div>
+      </React.Fragment>
     )
   }
 }
