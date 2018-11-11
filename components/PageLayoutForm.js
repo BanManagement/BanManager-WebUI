@@ -3,12 +3,13 @@ import {
   Button,
   Form,
   Label,
+  Header,
   Segment,
   Responsive as ResponsiveUtil
 } from 'semantic-ui-react'
 import GraphQLErrorMessage from 'components/GraphQLErrorMessage'
 import { COLORS as COLOURS, TEXT_ALIGNMENTS } from 'semantic-ui-react/dist/commonjs/lib/SUI'
-import { capitalize, findIndex, find } from 'lodash'
+import { capitalize, find, pick } from 'lodash'
 import PropTypes from 'prop-types'
 import GridLayout from 'react-grid-layout'
 import 'react-grid-layout/css/styles.css'
@@ -30,6 +31,10 @@ const textAlignmentOptions = TEXT_ALIGNMENTS.map(alignment => {
 
 textAlignmentOptions.unshift({ key: 'none', text: 'None', value: 'none' })
 
+const cleanUpComponent = (component) => {
+  return pick(component, [ 'x', 'y', 'w', 'component', 'colour', 'textAlign', 'id' ])
+}
+
 class PageLayoutForm extends React.Component {
   constructor(props) {
     super(props)
@@ -37,8 +42,7 @@ class PageLayoutForm extends React.Component {
     const { pathname, pageLayout } = props
 
     this.state =
-      {
-        pathname
+      { pathname
       , pageLayout
       , currentLayout: pageLayout.devices.desktop
       , device: 'desktop'
@@ -55,91 +59,153 @@ class PageLayoutForm extends React.Component {
       })
   }
 
-  onSelectComponent(name) {
-    this.setState({ selectedComponent: find(this.state.currentLayout, { component: name }) })
+  onSelectComponent(index) {
+    this.setState({ selectedComponent: index })
   }
 
-  updateColour = (e, { value }) => {
-    const { currentLayout, device, pageLayout, selectedComponent } = this.state
-    const newLayout = currentLayout.slice()
+  addComponent(component) {
+    const { currentLayout, device, pageLayout } = this.state
 
-    // Update currentLayout
-    const index = findIndex(currentLayout, { component: selectedComponent.component })
+    const updatedComponent = { ...component, y: currentLayout.components.length }
 
-    newLayout[index] = { ...currentLayout[index], colour: value }
-
-    // Update pageLayout
-    const newPageLayout = { ...pageLayout }
-
-    newPageLayout.devices = { ...pageLayout.devices, [device]: newLayout }
-
-    const state = {
-      selectedComponent: { ...selectedComponent, colour: value }
-    , currentLayout: newLayout
-    , pageLayout: newPageLayout
+    const unusedComponents = currentLayout.unusedComponents.filter(({ component: name }) => name !== component.component)
+    const updatedComponents = [ ...currentLayout.components.slice(), updatedComponent ]
+    const newState = {
+      currentLayout:
+        { ...currentLayout
+        , components: updatedComponents
+        , unusedComponents
+        }
+    , pageLayout:
+      { ...pageLayout
+      , devices:
+        { ...pageLayout.devices
+        , [device]:
+          { ...pageLayout.devices[device]
+          , components: updatedComponents
+          , unusedComponents
+          }
+        }
+      }
     }
 
-    this.setState(state)
+    this.setState(newState)
   }
 
-  updateTextAlignment = (e, { value }) => {
+  removeComponent(index, e) {
+    e.stopPropagation()
+
     const { currentLayout, device, pageLayout, selectedComponent } = this.state
-    const newLayout = currentLayout.slice()
-
-    // Update currentLayout
-    const index = findIndex(currentLayout, { component: selectedComponent.component })
-
-    newLayout[index] = { ...currentLayout[index], textAlign: value }
-
-    // Update pageLayout
-    const newPageLayout = { ...pageLayout }
-
-    newPageLayout.devices = { ...pageLayout.devices, [device]: newLayout }
-
-    const state = {
-      selectedComponent: { ...selectedComponent, textAlign: value }
-      , currentLayout: newLayout
-      , pageLayout: newPageLayout
+    const updatedComponents = currentLayout.components.filter((component, i) => i !== index)
+    const unusedComponents = [ ...currentLayout.unusedComponents.slice(), currentLayout.components[index] ]
+    const newState = {
+      currentLayout:
+        { ...currentLayout
+        , components: updatedComponents
+        , unusedComponents
+        }
+    , pageLayout:
+      { ...pageLayout
+      , devices:
+        { ...pageLayout.devices
+        , [device]:
+          { ...pageLayout.devices[device]
+          , components: updatedComponents
+          , unusedComponents
+          }
+        }
+      }
     }
 
-    this.setState(state)
+    if (selectedComponent === index) newState.selectedComponent = null
+
+    this.setState(newState)
+  }
+
+  handleComponentChange = (e, { name, value }) => {
+    const { currentLayout, device, pageLayout, selectedComponent } = this.state
+    const updatedComponents = currentLayout.components.map((component, index) => {
+      if (selectedComponent !== null && selectedComponent === index) {
+        return { ...component, [name]: value === 'none' ? null : value }
+      }
+
+      return component
+    })
+
+    const newState = {
+      currentLayout:
+        { ...currentLayout
+        , components: updatedComponents
+        }
+    , pageLayout:
+      { ...pageLayout
+      , devices:
+        { ...pageLayout.devices
+        , [device]:
+          { ...pageLayout.devices[device]
+          , components: updatedComponents
+          }
+        }
+      }
+    }
+
+    this.setState(newState)
   }
 
   onLayoutChange = (layout) => {
-    const { currentLayout, device, pageLayout, selectedComponent } = this.state
-    const newLayout = []
     let newSelectedComponent
-
-    // Update currentLayout
-    layout.forEach(component => {
-      const oldComponent = find(currentLayout, { component: component.i })
+    const { currentLayout, device, pageLayout, selectedComponent } = this.state
+    const updatedComponents = layout.map((component, index) => {
+      const oldComponent = find(currentLayout.components, { component: component.i })
       const newComponent = { ...oldComponent, ...component }
 
-      if (selectedComponent && selectedComponent.component === component.i) newSelectedComponent = newComponent
-
-      newLayout.push(newComponent)
-    })
-
-    // Update pageLayout
-    const newPageLayout = { ...pageLayout }
-
-    newPageLayout.devices = { ...pageLayout.devices, [device]: newLayout }
-
-    const state =
-      { currentLayout: newLayout
-      , pageLayout: newPageLayout
+      if (currentLayout.components[selectedComponent] &&
+        currentLayout.components[selectedComponent].i === component.i) {
+        newSelectedComponent = index
       }
 
-    if (newSelectedComponent) state.selectedComponent = newSelectedComponent
+      return newComponent
+    })
 
-    this.setState(state)
+    const newState = {
+      currentLayout:
+        { ...currentLayout
+        , components: updatedComponents
+        }
+    , pageLayout:
+      { ...pageLayout
+      , devices:
+        { ...pageLayout.devices
+        , [device]:
+          { ...pageLayout.devices[device]
+          , components: updatedComponents
+          }
+        }
+      }
+    }
+
+    if (newSelectedComponent) newState.selectedComponent = newSelectedComponent
+
+    this.setState(newState)
   }
 
   onSubmit = async (e) => {
     this.setState({ loading: true })
 
+    const pageLayout = { ...this.state.pageLayout }
+
+    Object.keys(pageLayout.devices).forEach(device => {
+      if (!pageLayout.devices[device].components) return
+
+      pageLayout.devices[device] =
+        { ...pageLayout.devices[device]
+        , components: pageLayout.devices[device].components.map(cleanUpComponent)
+        , unusedComponents: pageLayout.devices[device].unusedComponents.map(cleanUpComponent)
+        }
+    })
+
     try {
-      await this.props.onSubmit(e, this.state.pageLayout)
+      await this.props.onSubmit(e, pageLayout)
     } catch (error) {
       console.error(error)
       this.setState({ error, loading: false })
@@ -148,15 +214,33 @@ class PageLayoutForm extends React.Component {
 
   render() {
     const { error } = this.props
-    const { currentLayout, device, deviceWidth, selectedComponent, loading } = this.state
-    const currentLayoutData = currentLayout.map(layout => ({ ...layout, h: 1, i: layout.component }))
-    const layoutComponents = currentLayoutData.map(component => {
+    const { currentLayout, device, deviceWidth, selectedComponent: selectedComponentIndex, loading } = this.state
+    const selectedComponent = currentLayout.components[selectedComponentIndex]
+    const currentLayoutData = currentLayout.components.map(layout => ({ ...layout, h: 1, i: layout.component }))
+    const layoutComponents = currentLayoutData.map((component, index) => {
       const colour = component.colour && component.colour !== 'none' ? { inverted: true, color: component.colour } : {}
 
       return (
-        <div key={component.i} onClick={this.onSelectComponent.bind(this, component.i)}>
-          <Segment {...colour}>{component.i}</Segment>
+        <div key={component.i} onClick={this.onSelectComponent.bind(this, index)}>
+          <Segment clearing {...colour}>
+            {component.i}
+            <Button floated='right' icon='trash' size='mini' onClick={this.removeComponent.bind(this, index)} />
+          </Segment>
         </div>
+      )
+    })
+    const unusedComponents = currentLayout.unusedComponents.map(component => {
+      return (
+        <Segment key={component.component}>
+          {component.component}
+          <Button
+            floated='right'
+            color='green'
+            icon='plus'
+            size='mini'
+            onClick={this.addComponent.bind(this, component)}
+          />
+        </Segment>
       )
     })
 
@@ -189,17 +273,19 @@ class PageLayoutForm extends React.Component {
               <Form.Field>
                 <Form.Select
                   options={colourOptions}
+                  name='colour'
                   label='Colour:'
-                  value={selectedComponent ? selectedComponent.colour : 'none'}
-                  onChange={this.updateColour}
+                  value={selectedComponent && selectedComponent.colour ? selectedComponent.colour : 'none'}
+                  onChange={this.handleComponentChange}
                 />
               </Form.Field>
               <Form.Field>
                 <Form.Select
                   options={textAlignmentOptions}
                   label='Text Align:'
-                  value={selectedComponent ? selectedComponent.textAlign : 'none'}
-                  onChange={this.updateTextAlignment}
+                  name='textAlign'
+                  value={selectedComponent && selectedComponent.textAlign ? selectedComponent.textAlign : 'none'}
+                  onChange={this.handleComponentChange}
                 />
               </Form.Field>
               <Form.Field>
@@ -207,6 +293,10 @@ class PageLayoutForm extends React.Component {
               </Form.Field>
             </Form.Group>
           </Form>
+        </Segment>
+        <Segment>
+          <Header>Available Components</Header>
+          {unusedComponents}
         </Segment>
         <Segment.Group style={{ width: deviceWidth }}>
           <GridLayout
