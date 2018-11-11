@@ -2,7 +2,6 @@ import React from 'react'
 import withData from 'lib/withData'
 import DefaultLayout from 'components/DefaultLayout'
 import {
-  Container,
   Comment,
   Grid,
   Header,
@@ -16,6 +15,7 @@ import PlayerReportServerLogs from 'components/PlayerReportServerLogs'
 import PlayerReportAssign from 'components/PlayerReportAssign'
 import PlayerReportState from 'components/PlayerReportState'
 import PlayerReportCommands from 'components/PlayerReportCommands'
+import PageContentContainer from 'components/PageContentContainer'
 
 export class PlayerPage extends React.Component {
   state = {}
@@ -45,7 +45,7 @@ export class PlayerPage extends React.Component {
             const { id, actor, commands, player, assignee, reason, created, updated, state, locations, serverLogs, comments } = report
 
             return (
-              <Container style={{ marginTop: '3em' }}>
+              <PageContentContainer>
                 <Responsive
                   as={Grid}
                   fireOnMount
@@ -122,7 +122,7 @@ export class PlayerPage extends React.Component {
                     </Grid.Row>
                   }
                 </Responsive>
-              </Container>
+              </PageContentContainer>
             )
           }}
         </ReportQuery>
