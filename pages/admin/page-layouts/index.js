@@ -11,7 +11,7 @@ export class PageLayoutsPage extends React.Component {
   render() {
     return (
       <AdminLayout title='Page Layouts' displayNavTitle>
-        <List celled verticalAlign='bottom'>
+        <List celled verticalAlign='bottom' size='large'>
           <PageLayoutsQuery>
             {({ pageLayouts }) => {
               return pageLayouts.map(layout => (

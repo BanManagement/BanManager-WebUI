@@ -5,6 +5,7 @@ import AdminLayout from 'components/AdminLayout'
 import PageLayoutQuery from 'components/queries/PageLayoutQuery'
 import { Router } from 'routes'
 import gql from 'graphql-tag'
+import { Message } from 'semantic-ui-react'
 import { Mutation } from 'react-apollo'
 import PageLayoutForm from 'components/PageLayoutForm'
 
@@ -29,28 +30,7 @@ export class EditPageLayoutPage extends React.Component {
 
   onSubmit = (mutation) => {
     return async (e, pageLayout) => {
-      // Clean up
-      const deviceNames = Object.keys(pageLayout.devices)
-      const input = {}
-
-      deviceNames.forEach(device => {
-        if (device === '__typename') return
-
-        input[device] = pageLayout.devices[device].map(component => {
-          return {
-            id: component.id
-          , component: component.component
-          , x: component.x
-          , y: component.y
-          , w: component.w
-          , textAlign: component.textAlign
-          , colour: component.colour
-          , meta: component.meta
-          }
-        })
-      })
-
-      await mutation({ variables: { pathname: this.props.data.id, input } })
+      await mutation({ variables: { pathname: this.props.data.id, input: pageLayout.devices } })
 
       Router.pushRoute('admin-page-layouts')
     }
@@ -67,13 +47,16 @@ export class EditPageLayoutPage extends React.Component {
             <AdminLayout title={title} displayNavTitle>
               <Mutation mutation={updatePageLayout}>
                 {(updatePageLayout, { error, loading }) => (
-                  <PageLayoutForm
-                    pageLayout={data.pageLayout}
-                    pathname={data.variables.pathname}
-                    onSubmit={this.onSubmit(updatePageLayout)}
-                    error={error}
-                    loading={loading}
-                  />
+                  <React.Fragment>
+                    <Message info content="Components are permission aware. If you wish to hide information from certain users, please use Roles" />
+                    <PageLayoutForm
+                      pageLayout={data.pageLayout}
+                      pathname={data.variables.pathname}
+                      onSubmit={this.onSubmit(updatePageLayout)}
+                      error={error}
+                      loading={loading}
+                    />
+                  </React.Fragment>
                 )}
               </Mutation>
             </AdminLayout>
