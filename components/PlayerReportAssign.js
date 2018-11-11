@@ -18,9 +18,11 @@ class PlayerReportAssign extends React.Component {
     this.setState({ loading: true })
 
     try {
-      await this.props.mutate({
+      const res = await this.props.mutate({
         variables: { serverId: this.props.server, report: this.props.id, player: id }
       })
+
+      this.setState({ assignee: res.data.assignReport.assignee })
     } catch (e) {
       Alert.error(e.message)
     }
@@ -61,6 +63,10 @@ const mutation = gql`
     assignReport(report: $report, serverId: $serverId, player: $player) {
       updated
       state {
+        id
+        name
+      }
+      assignee {
         id
         name
       }
