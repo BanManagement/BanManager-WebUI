@@ -9,7 +9,26 @@ import {
 } from 'semantic-ui-react'
 import RoleItem from 'components/admin/RoleItem'
 import { Router } from 'routes'
+import gql from 'graphql-tag'
 import AssignPlayersRoleForm from 'components/admin/AssignPlayersRoleForm'
+import PlayersTable from 'components/admin/PlayersTable'
+import ServersQuery from 'components/queries/ServersQuery'
+
+const globalRoleMutation = gql`
+  mutation assignRole($players: [UUID!]!, $role: Int!) {
+    assignRole(players: $players, role: $role) {
+      id
+    }
+  }
+`
+
+const serverRoleMutation = gql`
+  mutation assignRole($players: [UUID!]!, $serverId: ID!, $role: Int!) {
+    assignServerRole(players: $players, serverId: $serverId, role: $role) {
+      id
+    }
+  }
+`
 
 export class RolesPage extends React.Component {
   clickRouteHandler = (route, params) => () => Router.pushRoute(route, params)
@@ -29,11 +48,20 @@ export class RolesPage extends React.Component {
             }}
           </RolesQuery>
         </List>
-        <Header>Assign Player Roles</Header>
+        <Header>Assign Global Player Roles</Header>
         <p>Takes priority over server roles, and applies globally across the site</p>
-        <AssignPlayersRoleForm />
-        <Header>Assign Player Server Roles</Header>
-        <p>Only affects certain actions where a server is available, e.g. bans</p>
+        <AssignPlayersRoleForm mutation={globalRoleMutation} />
+        <Header>Assign Server Player Roles</Header>
+        <p>Only affects certain actions where a server is applicable, e.g. bans</p>
+        <ServersQuery>
+          {({ servers }) => (
+            <>
+              <AssignPlayersRoleForm mutation={serverRoleMutation} servers={servers} />
+              <Header>Players</Header>
+              <PlayersTable servers={servers} />
+            </>
+          )}
+        </ServersQuery>
       </AdminLayout>
     )
   }
