@@ -105,6 +105,8 @@ class RoleForm extends React.Component {
       ))
     }
 
+    console.log(resourceInputs)
+
     return (
       <Form size='large' onSubmit={this.onSubmit} error loading={loading}>
         <Segment>
@@ -129,7 +131,7 @@ class RoleForm extends React.Component {
             />
           }
           <Header>Resources</Header>
-          {id === 3 &&
+          {id === '3' &&
             <p>{name} has access to all resources</p>
           }
           {(!id || id !== '3') && resourceInputs}
