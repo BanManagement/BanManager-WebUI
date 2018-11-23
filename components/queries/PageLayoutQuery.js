@@ -5,43 +5,50 @@ import { graphql } from 'react-apollo'
 import { Loader } from 'semantic-ui-react'
 import GraphQLErrorMessage from '../GraphQLErrorMessage'
 
+const fragment = gql`
+  fragment Component on DeviceComponent {
+    id
+    component
+    x
+    y
+    w
+    colour
+    textAlign
+    meta
+  }
+`
 const query = gql`
   query pageLayout($pathname: String!) {
     pageLayout(pathname: $pathname) {
       devices {
         mobile {
-          id
-          component
-          x
-          y
-          w
-          colour
-          textAlign
-          meta
+          components {
+            ...Component
+          }
+          unusedComponents {
+            ...Component
+          }
         }
         tablet {
-          id
-          component
-          x
-          y
-          w
-          colour
-          textAlign
-          meta
+          components {
+            ...Component
+          }
+          unusedComponents {
+            ...Component
+          }
         }
         desktop {
-          id
-          component
-          x
-          y
-          w
-          colour
-          textAlign
-          meta
+          components {
+            ...Component
+          }
+          unusedComponents {
+            ...Component
+          }
         }
       }
     }
   }
+  ${fragment}
 `
 
 class PageLayoutQuery extends React.Component {
