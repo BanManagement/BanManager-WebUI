@@ -37,6 +37,8 @@ export const mutation = gql`
 mutation setRoles($player: ID!, $input: SetRolesInput!) {
   setRoles(player: $player, input: $input) {
     id
+    name
+    email
     roles {
       id
       name
@@ -55,7 +57,7 @@ mutation setRoles($player: ID!, $input: SetRolesInput!) {
 `
 
 class PlayersTable extends React.Component {
-  state = { data: [], loading: false, pages: -1, playerEditOpen: false }
+  state = { data: [], loading: false, pages: -1, playerEditOpen: false, currentPlayer: {} }
 
   onPlayerUpdate = async (e, player, input) => {
     try {
@@ -67,33 +69,18 @@ class PlayersTable extends React.Component {
     this.handleClose()
   }
 
-  handleOpen = () => this.setState({ playerEditOpen: true })
-  handleClose = () => this.setState({ playerEditOpen: false })
+  handleOpen = player => () => this.setState({ playerEditOpen: true, currentPlayer: player })
+  handleClose = () => this.setState({ playerEditOpen: false, currentPlayer: {} })
 
   render() {
     const { servers } = this.props
     const columns = [{
-      Header: 'Name', accessor: 'name', filterable: false, Cell: row => {
-        return <Modal
-          open={this.state.playerEditOpen}
-          onClose={this.handleClose}
-          trigger={
-            <a onClick={this.handleOpen}>
-              <Image src={`https://crafatar.com/avatars/${row.original.id}?size=26&overlay=true`} fluid avatar></Image>
-              {row.value}
-            </a>
-          }
-        >
-          <Header content={row.value} />
-          <Modal.Content>
-            <RolesQuery>
-              {({ roles }) => (
-                <PlayerEditForm player={row.original} servers={servers} roles={roles} onSubmit={this.onPlayerUpdate} />
-              )}
-            </RolesQuery>
-          </Modal.Content>
-        </Modal>
-      }
+      Header: 'Name', accessor: 'name', filterable: false, Cell: row => (
+        <a onClick={this.handleOpen(row.original)}>
+          <Image src={`https://crafatar.com/avatars/${row.original.id}?size=26&overlay=true`} fluid avatar></Image>
+          {row.value}
+        </a>
+      )
     }, {
       Header: 'Email', accessor: 'email', filterable: true
     }, {
@@ -102,43 +89,58 @@ class PlayersTable extends React.Component {
       Header: 'Server Roles', accessor: 'serverRole', filterable: true
     }]
 
-    const { data, loading, pages } = this.state
+    const { currentPlayer, data, loading, pages } = this.state
 
     return (
-      <ReactTable
-        data={data}
-        loading={loading}
-        columns={columns}
-        pages={pages}
-        manual
-        minRows={0}
-        showPageSizeOptions={false}
-        showPageJump={false}
-        resolveData={data => data.map(row => {
-          return { ...row, role: row.roles.map(r => r.name).join(', '), serverRole: row.serverRoles.map(r => r.role.name).join(', ') }
-        })}
-        onFetchData={(state) => {
-          this.setState({ loading: true })
+      <React.Fragment>
+        <Modal
+          open={this.state.playerEditOpen}
+          onClose={this.handleClose}
+        >
+          <Header content={currentPlayer.name} />
+          <Modal.Content>
+            <RolesQuery>
+              {({ roles }) => (
+                <PlayerEditForm player={currentPlayer} servers={servers} roles={roles} onSubmit={this.onPlayerUpdate} />
+              )}
+            </RolesQuery>
+          </Modal.Content>
+        </Modal>
+        <ReactTable
+          data={data}
+          loading={loading}
+          columns={columns}
+          pages={pages}
+          manual
+          minRows={0}
+          showPageSizeOptions={false}
+          showPageJump={false}
+          resolveData={data => data.map(row => {
+            return { ...row, role: row.roles.map(r => r.name).join(', '), serverRole: row.serverRoles.map(r => r.role.name).join(', ') }
+          })}
+          onFetchData={(state) => {
+            this.setState({ loading: true })
 
-          const { filtered, pageSize, page } = state
-          const variables = { limit: pageSize, offset: page * pageSize }
+            const { filtered, pageSize, page } = state
+            const variables = { limit: pageSize, offset: page * pageSize }
 
-          if (filtered.length) {
-            filtered.forEach(filter => {
-              variables[filter.id] = filter.value
-            })
-          }
-
-          this.props.client.query({ query, variables })
-            .then(({ data }) => {
-              this.setState({
-                data: data.listPlayers.players,
-                pages: Math.ceil(data.listPlayers.total / pageSize),
-                loading: false
+            if (filtered.length) {
+              filtered.forEach(filter => {
+                variables[filter.id] = filter.value
               })
-            })
-        }}
-      />
+            }
+
+            this.props.client.query({ query, variables })
+              .then(({ data }) => {
+                this.setState({
+                  data: data.listPlayers.players,
+                  pages: Math.ceil(data.listPlayers.total / pageSize),
+                  loading: false
+                })
+              })
+          }}
+        />
+      </React.Fragment>
     )
   }
 }
