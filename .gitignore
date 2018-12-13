@@ -7,3 +7,4 @@ typings*
 .env
 .nyc_output/
 .next
+bundles

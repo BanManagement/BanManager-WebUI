@@ -9,6 +9,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@zeit/next-bundle-analyzer": "^0.1.2",
     "@zeit/next-css": "1.0.1",
     "apollo-client-preset": "1.0.8",
     "babel-plugin-inline-dotenv": "1.2.0",
@@ -23,6 +24,7 @@
     "lodash": "4.17.11",
     "moment": "2.22.2",
     "next": "7.0.2",
+    "next-compose-plugins": "^2.1.1",
     "next-routes": "1.4.2",
     "prop-types": "15.6.2",
     "react": "16.6.3",
