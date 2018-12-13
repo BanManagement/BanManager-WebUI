@@ -1,5 +1,5 @@
 import React from 'react'
-import { cloneDeep, find } from 'lodash'
+import { cloneDeep, find } from 'lodash-es'
 import {
   Form,
   Header,

@@ -1,6 +1,6 @@
 import React from 'react'
 import { safeLoad } from 'js-yaml'
-import { pick } from 'lodash'
+import { pick } from 'lodash-es'
 import {
   Form,
   Header,

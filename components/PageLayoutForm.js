@@ -9,7 +9,7 @@ import {
 } from 'semantic-ui-react'
 import GraphQLErrorMessage from 'components/GraphQLErrorMessage'
 import { COLORS as COLOURS, TEXT_ALIGNMENTS } from 'semantic-ui-react/dist/commonjs/lib/SUI'
-import { capitalize, find, pick } from 'lodash'
+import { capitalize, find, pick } from 'lodash-es'
 import PropTypes from 'prop-types'
 import GridLayout from 'react-grid-layout'
 import 'react-grid-layout/css/styles.css'

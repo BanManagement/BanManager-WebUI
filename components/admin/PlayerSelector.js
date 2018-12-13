@@ -2,7 +2,7 @@ import React from 'react'
 import gql from 'graphql-tag'
 import { withApollo } from 'react-apollo'
 import { Dropdown } from 'semantic-ui-react'
-import { uniqBy } from 'lodash'
+import { uniqBy } from 'lodash-es'
 
 class PlayerSelector extends React.Component {
   static defaultProps = {
