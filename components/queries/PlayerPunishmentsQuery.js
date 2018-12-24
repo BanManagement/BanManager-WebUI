@@ -52,6 +52,7 @@ const query = gql`
           acl {
             update
             delete
+            yours
           }
         }
         warnings {
@@ -66,6 +67,7 @@ const query = gql`
           acl {
             update
             delete
+            yours
           }
         }
         notes {
@@ -79,6 +81,7 @@ const query = gql`
           acl {
             update
             delete
+            yours
           }
         }
         acl {
