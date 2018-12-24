@@ -1,13 +1,9 @@
 import React from 'react'
 import { List, Responsive } from 'semantic-ui-react'
-import { version } from 'package.json'
+import currentVersion from 'lib/currentVersion'
 
 export default function Footer() {
-  let versionStr
-
-  if (GIT_TAG && GIT_TAG !== 'unknown') versionStr = GIT_TAG
-  if (GIT_COMMIT && GIT_COMMIT !== 'unknown') versionStr = GIT_COMMIT
-  if (!versionStr) versionStr = version
+  const versionStr = currentVersion()
 
   return (
     <React.Fragment>
