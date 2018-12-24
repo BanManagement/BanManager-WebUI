@@ -14,7 +14,7 @@ export default class MyReports extends React.Component {
           <Card.Content>
             {this.props.session.exists &&
               <ReportsQuery player={this.props.session.id}>
-                {({ reports }) => {
+                {({ listReports: { reports } }) => {
                   reports = reports.map(report => {
                     return (
                       <List.Item key={report.id}>

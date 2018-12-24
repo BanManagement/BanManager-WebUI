@@ -7,27 +7,34 @@ import {
 } from 'semantic-ui-react'
 import GraphQLErrorMessage from 'components/GraphQLErrorMessage'
 
-const query = gql`
-  query reports($actor: UUID, $assigned: UUID, $player: UUID, $state: ID, $limit: Int) {
-    reports(actor: $actor, assigned: $assigned, player: $player, state: $state, limit: $limit) {
-      id
-      reason
-      created
-      updated
-      server {
+export const query = gql`
+  query listReports($actor: UUID, $assigned: UUID, $player: UUID, $state: ID, $limit: Int) {
+    listReports(actor: $actor, assigned: $assigned, player: $player, state: $state, limit: $limit) {
+      total
+      reports {
         id
-      }
-      actor {
-        id
-        name
-      }
-      state {
-        id
-        name
-      }
-      player {
-        id
-        name
+        reason
+        created
+        updated
+        server {
+          id
+        }
+        actor {
+          id
+          name
+        }
+        state {
+          id
+          name
+        }
+        player {
+          id
+          name
+        }
+        assignee {
+          id
+          name
+        }
       }
     }
   }
@@ -36,7 +43,7 @@ const query = gql`
 class ReportsQuery extends React.Component {
   render() {
     if (this.props.data && this.props.data.error) return <GraphQLErrorMessage error={this.props.data.error} />
-    if (this.props.data && !this.props.data.reports) return <Loader active />
+    if (this.props.data && !this.props.data.listReports) return <Loader active />
 
     return this.props.children(this.props.data)
   }
