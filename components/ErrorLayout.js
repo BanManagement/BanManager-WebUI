@@ -7,7 +7,6 @@ import NavBar from './NavBar'
 const leftItems = [ { name: 'Home', href: '/' } ]
 
 class ErrorLayout extends React.Component {
-
   render() {
     const { router: { pathname } } = this.props
 
@@ -15,12 +14,6 @@ class ErrorLayout extends React.Component {
       <React.Fragment>
         <Head>
           <title>Internal Server Error</title>
-          <meta charSet='utf-8' />
-          <meta name='viewport' content='initial-scale=1.0, width=device-width' />
-          <meta name='author' content='BanManager-WebUI' />
-          <link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.12/semantic.min.css' />
-          <link rel='stylesheet' href='/static/css/s-alert-default.css' />
-          <link rel='stylesheet' href='/static/css/react-datetime.css' />
         </Head>
         <NavBar
           pathname={pathname}
