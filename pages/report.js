@@ -34,18 +34,18 @@ export class PlayerPage extends React.Component {
 
     return (
       <DefaultLayout title={`#${this.props.report.id} Report`}>
-        <ReportQuery id={this.props.report.id} server={this.props.server.id}>
-          {({ report, reportStates }, { handleCommentCreate }) => {
-            const stateOptions = reportStates.map(state => ({ key: state.id, value: state.id, text: state.name }))
-            const canComment = report.acl.comment
-            const canUpdateState = report.acl.state
-            const canDelete = report.acl.delete
-            const canAssign = report.acl.assign
+        <PageContentContainer>
+          <ReportQuery id={this.props.report.id} server={this.props.server.id}>
+            {({ report, reportStates }, { handleCommentCreate }) => {
+              const stateOptions = reportStates.map(state => ({ key: state.id, value: state.id, text: state.name }))
+              const canComment = report.acl.comment
+              const canUpdateState = report.acl.state
+              const canDelete = report.acl.delete
+              const canAssign = report.acl.assign
 
-            const { id, actor, commands, player, assignee, reason, created, updated, state, locations, serverLogs, comments } = report
+              const { id, actor, commands, player, assignee, reason, created, updated, state, locations, serverLogs, comments } = report
 
-            return (
-              <PageContentContainer>
+              return (
                 <Responsive
                   as={Grid}
                   fireOnMount
@@ -122,10 +122,10 @@ export class PlayerPage extends React.Component {
                     </Grid.Row>
                   }
                 </Responsive>
-              </PageContentContainer>
-            )
-          }}
-        </ReportQuery>
+              )
+            }}
+          </ReportQuery>
+        </PageContentContainer>
       </DefaultLayout>
     )
   }
