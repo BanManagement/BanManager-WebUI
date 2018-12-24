@@ -25,6 +25,7 @@
     "moment": "2.23.0",
     "next": "7.0.2",
     "next-compose-plugins": "2.1.1",
+    "next-plugin-transpile-modules": "^1.0.0",
     "next-routes": "1.4.2",
     "prop-types": "15.6.2",
     "react": "16.7.0",

@@ -1,5 +1,6 @@
 const withPlugins = require('next-compose-plugins')
 const withCSS = require('@zeit/next-css')
+const withTM = require('next-plugin-transpile-modules')
 const withBundleAnalyzer = require('@zeit/next-bundle-analyzer')
 const nextConfig = {
   webpack(config) {
@@ -32,6 +33,8 @@ module.exports = withPlugins([ withCSS,
           reportFilename: '../bundles/client.html'
         }
       }
-    }
+    },
+  ],
+  [ withTM, { transpileModules: ['lodash-es'] }
   ]
 ], nextConfig)
