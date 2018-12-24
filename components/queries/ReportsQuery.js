@@ -22,6 +22,7 @@ const query = gql`
         name
       }
       state {
+        id
         name
       }
       player {
