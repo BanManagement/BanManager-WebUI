@@ -16,7 +16,8 @@ const nextConfig = {
       })
 
     return config
-  }
+  },
+  poweredByHeader: false
 }
 
 module.exports = withPlugins([ withCSS,
