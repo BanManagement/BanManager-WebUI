@@ -12,7 +12,7 @@
     "@zeit/next-bundle-analyzer": "0.1.2",
     "@zeit/next-css": "1.0.1",
     "apollo-client-preset": "1.0.8",
-    "babel-plugin-inline-dotenv": "1.2.0",
+    "babel-plugin-inline-dotenv": "1.2.1",
     "babel-plugin-transform-inline-environment-variables": "0.4.3",
     "compare-versions": "3.4.0",
     "file-loader": "2.0.0",
