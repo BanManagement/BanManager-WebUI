@@ -38,7 +38,7 @@
     "react-grid-layout": "0.16.6",
     "react-moment": "0.8.4",
     "react-s-alert": "1.4.1",
-    "react-table": "6.9.0",
+    "react-table": "6.9.2",
     "semantic-ui-css": "2.4.1",
     "semantic-ui-react": "0.85.0"
   },
