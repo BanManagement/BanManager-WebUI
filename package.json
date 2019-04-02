@@ -16,7 +16,7 @@
     "babel-plugin-transform-inline-environment-variables": "0.4.3",
     "compare-versions": "3.4.0",
     "file-loader": "2.0.0",
-    "graphql": "14.2.0",
+    "graphql": "14.2.1",
     "graphql-tag": "2.10.1",
     "install": "0.12.2",
     "ip": "1.1.5",
