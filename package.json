@@ -44,7 +44,7 @@
   },
   "devDependencies": {
     "@confuser/eslint-config": "2.0.0",
-    "babel-eslint": "9.0.0",
+    "babel-eslint": "10.0.1",
     "babel-plugin-git-version": "0.2.0",
     "babel-plugin-module-resolver": "3.2.0",
     "enzyme": "3.9.0",
