@@ -20,11 +20,11 @@ const availableComponents = {
 
 export class PlayerPage extends React.Component {
   static propTypes =
-    { player: PropTypes.object.isRequired
-    , pathname: PropTypes.string.isRequired
+    { player: PropTypes.object.isRequired,
+      pathname: PropTypes.string.isRequired
     }
 
-  static async getInitialProps({ query, pathname }) {
+  static async getInitialProps ({ query, pathname }) {
     return {
       player: { id: query.id }, pathname
     }
@@ -32,7 +32,7 @@ export class PlayerPage extends React.Component {
 
   clickAddHandler = (route) => () => Router.pushRoute(route, { id: this.props.player.id })
 
-  render() {
+  render () {
     return (
       <PageLayoutQuery pathname={this.props.pathname}>
         {({ pageLayout }) => (
@@ -60,28 +60,28 @@ export class PlayerPage extends React.Component {
                   />
                   <PageContentContainer>
                     <Button.Group size='large' widths='4'>
-                    { canCreateBan &&
+                      { canCreateBan &&
                       <Button circular icon='ban' color='green' onClick={this.clickAddHandler('add-player-ban')} />
-                    }
-                    { canCreateMute &&
+                      }
+                      { canCreateMute &&
                       <Button circular icon='mute' color='green' onClick={this.clickAddHandler('add-player-mute')} />
-                    }
-                    { canCreateNote &&
+                      }
+                      { canCreateNote &&
                       <Button
                         circular
                         icon='sticky note outline'
                         color='green'
                         onClick={this.clickAddHandler('add-player-note')}
                       />
-                    }
-                    { canCreateWarning &&
+                      }
+                      { canCreateWarning &&
                       <Button
                         circular
                         icon='warning'
                         color='green'
                         onClick={this.clickAddHandler('add-player-warning')}
                       />
-                    }
+                      }
                     </Button.Group>
                   </PageContentContainer>
                 </DefaultLayout>

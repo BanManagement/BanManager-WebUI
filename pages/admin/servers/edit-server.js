@@ -11,7 +11,7 @@ export class EditServerPage extends React.Component {
     data: PropTypes.object.isRequired
   }
 
-  static async getInitialProps({ query }) {
+  static async getInitialProps ({ query }) {
     return {
       data: { id: query.id }
     }
@@ -21,7 +21,7 @@ export class EditServerPage extends React.Component {
     return Router.pushRoute('admin-servers')
   }
 
-  render() {
+  render () {
     const { data: { id } } = this.props
     const title = 'Edit Server'
 

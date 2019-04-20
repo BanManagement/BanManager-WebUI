@@ -10,15 +10,15 @@ class PlayerPasswordForm extends React.Component {
 
   handleChange = (e, { name, value }) => this.setState({ [name]: value })
 
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state =
-    { password: ''
-    , confirmPassword: ''
-    , currentPassword: ''
-    , error: null
-    , loading: false
+    { password: '',
+      confirmPassword: '',
+      currentPassword: '',
+      error: null,
+      loading: false
     }
   }
 
@@ -42,7 +42,7 @@ class PlayerPasswordForm extends React.Component {
     this.setState({ loading: false })
   }
 
-  render() {
+  render () {
     const { showCurrentPassword } = this.props
     const { error, loading } = this.state
 

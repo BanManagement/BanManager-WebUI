@@ -16,7 +16,7 @@ const query = gql`
 `
 
 class ServersQuery extends Component {
-  render() {
+  render () {
     if (this.props.data && this.props.data.error) return <GraphQLErrorMessage error={this.props.data.error} />
     if (this.props.data && !this.props.data.servers) return <Loader active />
 

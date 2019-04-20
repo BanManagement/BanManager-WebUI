@@ -8,14 +8,14 @@ import ErrorMessage from './ErrorMessage'
 class PlayerLoginPasswordForm extends React.Component {
   handleChange = (e, { name, value }) => this.setState({ [name]: value })
 
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state =
-    { email: ''
-    , password: ''
-    , error: null
-    , loading: false
+    { email: '',
+      password: '',
+      error: null,
+      loading: false
     }
   }
 
@@ -31,7 +31,7 @@ class PlayerLoginPasswordForm extends React.Component {
     this.setState({ loading: false })
   }
 
-  render() {
+  render () {
     const { error, loading } = this.state
 
     return (

@@ -4,7 +4,7 @@ import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
 
 class PlayerReportState extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = { loading: false, currentState: props.currentState }
@@ -28,7 +28,7 @@ class PlayerReportState extends React.Component {
     this.setState({ loading: false })
   }
 
-  render() {
+  render () {
     const { states } = this.props
     const { currentState, loading } = this.state
 

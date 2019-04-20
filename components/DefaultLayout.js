@@ -17,15 +17,15 @@ class DefaultLayout extends React.Component {
     { title: 'Default Title'
     }
   static propTypes =
-    { title: PropTypes.string
-    , router: PropTypes.object.isRequired
-    , displayNavTitle: PropTypes.bool
-    , children: PropTypes.node.isRequired
-    , session: PropTypes.object.isRequired
-    , rightItems: PropTypes.node
+    { title: PropTypes.string,
+      router: PropTypes.object.isRequired,
+      displayNavTitle: PropTypes.bool,
+      children: PropTypes.node.isRequired,
+      session: PropTypes.object.isRequired,
+      rightItems: PropTypes.node
     }
 
-  render() {
+  render () {
     const { title, router: { pathname }, displayNavTitle, children, session } = this.props
     let { rightItems } = this.props
 

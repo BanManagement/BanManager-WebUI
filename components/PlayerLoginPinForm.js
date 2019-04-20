@@ -9,15 +9,15 @@ import ErrorMessage from './ErrorMessage'
 class PlayerLoginPinForm extends React.Component {
   handleChange = (e, { name, value }) => this.setState({ [name]: value })
 
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state =
-    { name: ''
-    , pin: ''
-    , error: null
-    , server: props.servers && props.servers.length ? props.servers[0].id : null
-    , loading: false
+    { name: '',
+      pin: '',
+      error: null,
+      server: props.servers && props.servers.length ? props.servers[0].id : null,
+      loading: false
     }
   }
 
@@ -33,7 +33,7 @@ class PlayerLoginPinForm extends React.Component {
     this.setState({ loading: false })
   }
 
-  render() {
+  render () {
     const { error, loading } = this.state
     const servers = this.props.servers.map(server => ({ key: server.id, value: server.id, text: server.name }))
 

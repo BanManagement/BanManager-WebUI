@@ -24,7 +24,7 @@ class PlayerCommentForm extends React.Component {
     this.setState({ loading: false, message: '' })
   }
 
-  render() {
+  render () {
     const { error, loading } = this.props
 
     return (

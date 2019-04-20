@@ -83,7 +83,7 @@ class PlayerBanQuery extends React.Component {
     return this.props.onUpdate(player)
   }
 
-  render() {
+  render () {
     if (this.props.data && this.props.data.error) return <GraphQlErrorMessage error={this.props.data.error} />
     if (this.props.data && !(this.props.data.playerBan || this.props.data.player)) return <Loader active />
 
@@ -92,23 +92,23 @@ class PlayerBanQuery extends React.Component {
 }
 
 PlayerBanQuery.propTypes = {
-  data: PropTypes.object.isRequired
-, server: PropTypes.string
-, children: PropTypes.func.isRequired
-, onUpdate: PropTypes.func
-, updatePlayerBanMutation: PropTypes.func
-, createPlayerBanMutation: PropTypes.func
+  data: PropTypes.object.isRequired,
+  server: PropTypes.string,
+  children: PropTypes.func.isRequired,
+  onUpdate: PropTypes.func,
+  updatePlayerBanMutation: PropTypes.func,
+  createPlayerBanMutation: PropTypes.func
 }
 
 export default compose(
   graphql(createMutation, { name: 'createPlayerBanMutation' })
-, graphql(editMutation, { name: 'updatePlayerBanMutation' })
-, graphql(createQuery,
-  { options: ({ id }) => ({ variables: { id } })
-  , skip: ({ server }) => !!server
-  })
-, graphql(editQuery,
-  { options: ({ id, server }) => ({ variables: { id, serverId: server } })
-  , skip: ({ server }) => !server
-  })
+  , graphql(editMutation, { name: 'updatePlayerBanMutation' })
+  , graphql(createQuery,
+    { options: ({ id }) => ({ variables: { id } }),
+      skip: ({ server }) => !!server
+    })
+  , graphql(editQuery,
+    { options: ({ id, server }) => ({ variables: { id, serverId: server } }),
+      skip: ({ server }) => !server
+    })
 )(PlayerBanQuery)

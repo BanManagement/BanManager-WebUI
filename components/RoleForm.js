@@ -22,7 +22,7 @@ class RoleForm extends React.Component {
     this.setState({ resources })
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     const { data: { role } } = props
@@ -59,13 +59,13 @@ class RoleForm extends React.Component {
     }
 
     this.state =
-    { id
-    , name: name || ''
-    , resources
-    , parent
-    , error: null
-    , loading: false
-    , roles
+    { id,
+      name: name || '',
+      resources,
+      parent,
+      error: null,
+      loading: false,
+      roles
     }
   }
 
@@ -92,7 +92,7 @@ class RoleForm extends React.Component {
     ))
   }
 
-  render() {
+  render () {
     const { id, name, resources, parent, roles, error, loading } = this.state
     let resourceInputs = []
 

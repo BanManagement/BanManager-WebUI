@@ -80,7 +80,7 @@ class RoleQuery extends React.Component {
     return this.props.onUpdate()
   }
 
-  render() {
+  render () {
     if (this.props.data && this.props.data.error) return <GraphQlErrorMessage error={this.props.data.error} />
     if (this.props.data && !(this.props.data.roles || this.props.data.role)) return <Loader active />
 
@@ -90,10 +90,10 @@ class RoleQuery extends React.Component {
 
 export default compose(
   graphql(createQuery, { skip: ({ id }) => !!id })
-, graphql(createMutation, { name: 'CreateRoleMutation' })
-, graphql(editMutation, { name: 'UpdateRoleMutation' })
-, graphql(editQuery,
-  { options: ({ id }) => ({ variables: { id } })
-  , skip: ({ id }) => !id
-  })
+  , graphql(createMutation, { name: 'CreateRoleMutation' })
+  , graphql(editMutation, { name: 'UpdateRoleMutation' })
+  , graphql(editQuery,
+    { options: ({ id }) => ({ variables: { id } }),
+      skip: ({ id }) => !id
+    })
 )(RoleQuery)

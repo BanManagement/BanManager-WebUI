@@ -11,7 +11,7 @@ import GraphQLErrorMessage from './GraphQLErrorMessage'
 class PlayerNoteForm extends React.Component {
   handleChange = (e, { name, value }) => this.setState({ [name]: value })
 
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     const { data: { id, created, message, player } } = props
@@ -28,14 +28,14 @@ class PlayerNoteForm extends React.Component {
     }
 
     this.state =
-    { id
-    , player: player
-    , message: message || ''
-    , created: created
-    , error: null
-    , server: servers && servers.length ? servers[0].value : null
-    , loading: false
-    , servers
+    { id,
+      player: player,
+      message: message || '',
+      created: created,
+      error: null,
+      server: servers && servers.length ? servers[0].value : null,
+      loading: false,
+      servers
     }
   }
 
@@ -49,7 +49,7 @@ class PlayerNoteForm extends React.Component {
     }
   }
 
-  render() {
+  render () {
     const { created, message, player, servers, server, error, loading } = this.state
 
     return (

@@ -2,7 +2,7 @@ import React from 'react'
 import { Header, Segment } from 'semantic-ui-react'
 import Moment from 'react-moment'
 
-export default function PlayerReportServerLogs({ logs }) {
+export default function PlayerReportServerLogs ({ logs }) {
   const serverLogs = logs.map(log => (
     <Segment key={log.id}>
       [<Moment unix format='YYYY-MM-DD HH:mm:ss'>{log.created}</Moment>] {log.message}

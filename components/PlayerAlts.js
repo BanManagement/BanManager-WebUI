@@ -20,7 +20,7 @@ const PlayerAlts = ({ player }) => {
 
   if (!players.length) return null
 
-  const uniq = players.filter((s1, pos, arr) => arr.findIndex((s2)=> s2.id === s1.id) === pos )
+  const uniq = players.filter((s1, pos, arr) => arr.findIndex((s2) => s2.id === s1.id) === pos)
   const alts = uniq.map(alt => {
     return (
       <List.Item key={alt.id}>

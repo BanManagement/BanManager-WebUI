@@ -27,8 +27,8 @@ const AdminNavBarMobile = ({
   <Sidebar.Pushable>
     <Sidebar
       as={Menu}
-      animation="overlay"
-      icon="labeled"
+      animation='overlay'
+      icon='labeled'
       inverted
       vertical
       visible={visible}
@@ -66,15 +66,15 @@ const AdminNavBarMobile = ({
 )
 
 AdminNavBarMobile.propTypes =
-{ children: PropTypes.node.isRequired
-, colour: PropTypes.string
-, displayNavTitle: PropTypes.bool
-, leftItems: PropTypes.array.isRequired
-, rightItems: PropTypes.array.isRequired
-, onPusherClick: PropTypes.func.isRequired
-, onToggle: PropTypes.func.isRequired
-, title: PropTypes.string
-, visible: PropTypes.bool
+{ children: PropTypes.node.isRequired,
+  colour: PropTypes.string,
+  displayNavTitle: PropTypes.bool,
+  leftItems: PropTypes.array.isRequired,
+  rightItems: PropTypes.array.isRequired,
+  onPusherClick: PropTypes.func.isRequired,
+  onToggle: PropTypes.func.isRequired,
+  title: PropTypes.string,
+  visible: PropTypes.bool
 }
 
 const AdminNavBarDesktop = ({ colour, topItems, rightItems }) => (
@@ -97,9 +97,9 @@ const AdminNavBarDesktop = ({ colour, topItems, rightItems }) => (
 )
 
 AdminNavBarDesktop.propTypes =
-{ colour: PropTypes.string
-, topItems: PropTypes.array
-, rightItems: PropTypes.array
+{ colour: PropTypes.string,
+  topItems: PropTypes.array,
+  rightItems: PropTypes.array
 }
 
 const AdminNavBarChildren = ({ children }) => (
@@ -116,12 +116,12 @@ export default class AdminNavBar extends React.Component {
   }
   static defaultProps = { topItems: [], leftItems: [], rightItems: [], colour: 'blue' }
   static propTypes =
-  { leftItems: PropTypes.array
-  , topItems: PropTypes.array
-  , rightItems: PropTypes.array
-  , children: PropTypes.node
-  , displayNavTitle: PropTypes.bool
-  , title: PropTypes.string
+  { leftItems: PropTypes.array,
+    topItems: PropTypes.array,
+    rightItems: PropTypes.array,
+    children: PropTypes.node,
+    displayNavTitle: PropTypes.bool,
+    title: PropTypes.string
   }
 
   handlePusher = () => {
@@ -132,7 +132,7 @@ export default class AdminNavBar extends React.Component {
 
   handleToggle = () => this.setState({ visible: !this.state.visible })
 
-  render() {
+  render () {
     const { children, displayNavTitle, title } = this.props
     const { visible } = this.state
 
@@ -147,7 +147,7 @@ export default class AdminNavBar extends React.Component {
           >
             <Container fluid style={{ marginTop: '2em' }}>
               {children
-            }</Container>
+              }</Container>
           </AdminNavBarMobile>
         </Responsive>
         <Responsive minWidth={Responsive.onlyTablet.minWidth}>
@@ -156,7 +156,7 @@ export default class AdminNavBar extends React.Component {
             <Grid columns={2}>
               <Grid.Row>
                 <Grid.Column width={4}>
-                  <AdminSideTabletNav {...this.props}/>
+                  <AdminSideTabletNav {...this.props} />
                 </Grid.Column>
                 <Grid.Column width={12}>
                   { displayNavTitle &&

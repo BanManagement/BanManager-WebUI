@@ -7,13 +7,13 @@ import {
 } from 'semantic-ui-react'
 
 // @TODO Component needs optimising, try and avoid numerous loops
-function calculateRowCount(components) {
+function calculateRowCount (components) {
   return components.reduce(function (x, y) {
     return (x.y > y.y) ? x.y : y.y
   })
 }
 
-function createRows(rowCount, components) {
+function createRows (rowCount, components) {
   const rows = []
 
   for (let i = 0; i <= rowCount; i++) {
@@ -27,7 +27,7 @@ function createRows(rowCount, components) {
   return rows
 }
 
-function createComponents(rows, availableComponents, props) {
+function createComponents (rows, availableComponents, props) {
   return rows.map((row, i) => {
     const components = row.sort((a, b) => a.x - b.x).map((deviceComponent, index) => {
       const Component = availableComponents[deviceComponent.component]
@@ -54,11 +54,11 @@ function createComponents(rows, availableComponents, props) {
 
 export default class PageLayout extends React.Component {
   static propTypes =
-    { availableComponents: PropTypes.object.isRequired
-    , pageLayout: PropTypes.object.isRequired
+    { availableComponents: PropTypes.object.isRequired,
+      pageLayout: PropTypes.object.isRequired
     }
 
-  render() {
+  render () {
     const { availableComponents, pageLayout } = this.props
     const devices = Object.keys(pageLayout.devices).filter(name => name !== '__typename')
     const rowCounts = Object.assign({}, ...devices.map(device => {

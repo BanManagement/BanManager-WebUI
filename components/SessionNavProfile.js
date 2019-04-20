@@ -17,9 +17,9 @@ class SessionNavProfile extends React.Component {
     // Using cookies for SSR instead of local storage, which are set to HttpOnly
     // requires server to delete cookie
     const response = await fetch(process.env.API_HOST + '/logout',
-      { method: 'POST'
-      , headers: new Headers({ 'Content-Type': 'application/json' })
-      , credentials: 'include'
+      { method: 'POST',
+        headers: new Headers({ 'Content-Type': 'application/json' }),
+        credentials: 'include'
       })
 
     if (response.status !== 204) {
@@ -36,7 +36,7 @@ class SessionNavProfile extends React.Component {
     Router.replace('/')
   }
 
-  render() {
+  render () {
     const { session } = this.props
     const { loggingOut } = this.state
 

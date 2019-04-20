@@ -8,7 +8,7 @@ import GraphQLErrorMessage from 'components/GraphQLErrorMessage'
 class AssignPlayersRoleForm extends React.Component {
   static defaultProps = { servers: [] }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     const defaultState = { loading: false, error: null }
@@ -44,7 +44,7 @@ class AssignPlayersRoleForm extends React.Component {
     this.setState({ loading: false, players: [] })
   }
 
-  render() {
+  render () {
     const { error, loading } = this.state
     const servers = this.props.servers.map(server => ({ key: server.id, value: server.id, text: server.name }))
 

@@ -11,7 +11,7 @@ class PlayerSearch extends React.Component {
     if (value) {
       this.setState({ loading: true })
 
-      const results = await this.props.client.query({ query, variables: { name: value, limit: 5 }})
+      const results = await this.props.client.query({ query, variables: { name: value, limit: 5 } })
       const data = results.data.searchPlayers.map((result) => ({
         id: result.id, title: result.name, image: `https://crafatar.com/avatars/${result.id}?size=128&overlay=true`
       }))
@@ -20,7 +20,7 @@ class PlayerSearch extends React.Component {
     }
   }
 
-  render() {
+  render () {
     return (
       <Fragment>
         <Search

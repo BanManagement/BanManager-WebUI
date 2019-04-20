@@ -12,7 +12,7 @@ import {
 export class AdminPage extends React.Component {
   clickRouteHandler = (route, params) => () => Router.pushRoute(route, params)
 
-  render() {
+  render () {
     return (
       <AdminLayout title='Servers' displayNavTitle>
         <Button.Group size='medium' widths='1'>

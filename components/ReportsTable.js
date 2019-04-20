@@ -8,30 +8,42 @@ import { query } from 'components/queries/ReportsQuery'
 class ReportsTable extends React.Component {
   state = { data: [], loading: false, pages: -1 }
 
-  render() {
+  render () {
     const columns = [{
-      Header: 'ID', accessor: 'id', filterable: false, Cell: row => (
+      Header: 'ID',
+      accessor: 'id',
+      filterable: false,
+      Cell: row => (
         <a href={`/report/${row.original.server.id}/${row.value}`}>#{row.value}</a>)
     }, {
-      Header: 'Reporter', accessor: 'actor', filterable: false, Cell: row => (
-      <a href={`player/${row.value.id}`}>
-        <Image src={`https://crafatar.com/avatars/${row.value.id}?size=26&overlay=true`} fluid avatar />
-        {row.value.name}
-      </a>)
-    }, {
-      Header: 'Reported', accessor: 'player', filterable: false, Cell: row => (
+      Header: 'Reporter',
+      accessor: 'actor',
+      filterable: false,
+      Cell: row => (
         <a href={`player/${row.value.id}`}>
-        <Image src={`https://crafatar.com/avatars/${row.value.id}?size=26&overlay=true`} fluid avatar />
-        {row.value.name}
-      </a>)
+          <Image src={`https://crafatar.com/avatars/${row.value.id}?size=26&overlay=true`} fluid avatar />
+          {row.value.name}
+        </a>)
+    }, {
+      Header: 'Reported',
+      accessor: 'player',
+      filterable: false,
+      Cell: row => (
+        <a href={`player/${row.value.id}`}>
+          <Image src={`https://crafatar.com/avatars/${row.value.id}?size=26&overlay=true`} fluid avatar />
+          {row.value.name}
+        </a>)
     }, {
       Header: 'State', accessor: 'state.name', filterable: false
     }, {
-      Header: 'Assigned', accessor: 'assignee', filterable: false, Cell: row => (
-      row.value ? <a href={`player/${row.value.id}`}>
-        <Image src={`https://crafatar.com/avatars/${row.value.id}?size=26&overlay=true`} fluid avatar />
-        {row.value.name}
-      </a> : null)
+      Header: 'Assigned',
+      accessor: 'assignee',
+      filterable: false,
+      Cell: row => (
+        row.value ? <a href={`player/${row.value.id}`}>
+          <Image src={`https://crafatar.com/avatars/${row.value.id}?size=26&overlay=true`} fluid avatar />
+          {row.value.name}
+        </a> : null)
     }]
 
     const { data, loading, pages } = this.state

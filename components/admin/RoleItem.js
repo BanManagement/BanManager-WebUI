@@ -31,8 +31,8 @@ class RoleItem extends React.Component {
 
     try {
       await this.props.mutate(
-        { variables: { id }
-        , refetchQueries: [ 'roles' ]
+        { variables: { id },
+          refetchQueries: [ 'roles' ]
         })
     } catch (e) {
       Alert.error('An error occurred')
@@ -42,7 +42,7 @@ class RoleItem extends React.Component {
   }
   handleDeleteCancel = () => this.setState({ deleteConfirmShow: false })
 
-  render() {
+  render () {
     const { id, name } = this.props
 
     return (

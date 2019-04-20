@@ -20,16 +20,16 @@ import PageContentContainer from 'components/PageContentContainer'
 export class PlayerPage extends React.Component {
   state = {}
 
-  static async getInitialProps({ query }) {
+  static async getInitialProps ({ query }) {
     return {
-      report: { id: query.id }
-    , server: { id: query.server }
+      report: { id: query.id },
+      server: { id: query.server }
     }
   }
 
   handleOnScreenUpdate = (e, { width }) => this.setState({ width })
 
-  render() {
+  render () {
     const { width } = this.state
 
     return (

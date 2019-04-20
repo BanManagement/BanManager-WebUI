@@ -36,8 +36,8 @@ const PlayerHistory = ({ server, history }) => {
 }
 
 PlayerHistory.propTypes =
-{ server: PropTypes.object.isRequired
-, history: PropTypes.array.isRequired
+{ server: PropTypes.object.isRequired,
+  history: PropTypes.array.isRequired
 }
 
 export default PlayerHistory

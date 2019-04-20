@@ -7,7 +7,7 @@ import PlayerBanQuery from 'components/queries/PlayerBanQuery'
 import PageContentContainer from 'components/PageContentContainer'
 
 export class PlayerBanPage extends React.Component {
-  static async getInitialProps({ query }) {
+  static async getInitialProps ({ query }) {
     return {
       data: { id: query.id, server: query.server }
     }
@@ -17,7 +17,7 @@ export class PlayerBanPage extends React.Component {
     return Router.pushRoute('player', { id: playerId })
   }
 
-  render() {
+  render () {
     const { data: { id, server } } = this.props
     const title = 'Edit Player Ban'
 

@@ -18,19 +18,18 @@ class PlayerReportComment extends React.Component {
 
     try {
       await this.props.mutate(
-        { variables: { id, serverId: server }
-        , refetchQueries: [ 'report' ] // @TODO Only refetch comments
+        { variables: { id, serverId: server },
+          refetchQueries: [ 'report' ] // @TODO Only refetch comments
         })
     } catch (e) {
       this.setState({ error: 'An error occurred' })
     } finally {
       this.setState({ deleting: false })
     }
-
   }
   handleDeleteCancel = () => this.setState({ deleteConfirmShow: false })
 
-  render() {
+  render () {
     const { actor, created, message, acl } = this.props
     const { deleteConfirmShow, deleting, error } = this.state
 

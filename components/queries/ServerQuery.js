@@ -87,7 +87,7 @@ class ServerQuery extends React.Component {
     return this.props.onUpdate()
   }
 
-  render() {
+  render () {
     if (this.props.data && this.props.data.error) return <GraphQlErrorMessage error={this.props.data.error} />
     if (this.props.data && !(this.props.data.serverTables || this.props.data.server)) return <Loader active />
 
@@ -97,10 +97,10 @@ class ServerQuery extends React.Component {
 
 export default compose(
   graphql(createQuery)
-, graphql(createMutation, { name: 'CreateServerMutation' })
-, graphql(editMutation, { name: 'UpdateServerMutation' })
-, graphql(editQuery,
-  { options: ({ id }) => ({ variables: { id } })
-  , skip: ({ id }) => !id
-  })
+  , graphql(createMutation, { name: 'CreateServerMutation' })
+  , graphql(editMutation, { name: 'UpdateServerMutation' })
+  , graphql(editQuery,
+    { options: ({ id }) => ({ variables: { id } }),
+      skip: ({ id }) => !id
+    })
 )(ServerQuery)

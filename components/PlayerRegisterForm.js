@@ -9,15 +9,15 @@ import ErrorMessage from './ErrorMessage'
 class PlayerRegisterForm extends React.Component {
   handleChange = (e, { name, value }) => this.setState({ [name]: value })
 
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state =
-    { email: ''
-    , password: ''
-    , confirmPassword: ''
-    , error: null
-    , loading: false
+    { email: '',
+      password: '',
+      confirmPassword: '',
+      error: null,
+      loading: false
     }
   }
 
@@ -35,7 +35,7 @@ class PlayerRegisterForm extends React.Component {
     }
   }
 
-  render() {
+  render () {
     const { error, loading } = this.state
 
     return (

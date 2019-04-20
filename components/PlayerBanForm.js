@@ -37,7 +37,7 @@ class PlayerBanForm extends React.Component {
     return current.isAfter(new Date())
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     const { data: { id, created, reason, expires, player } } = props
@@ -54,16 +54,16 @@ class PlayerBanForm extends React.Component {
     }
 
     this.state =
-    { id
-    , player: player
-    , reason: reason || ''
-    , created
-    , expires: expires || 0
-    , error: null
-    , server: servers && servers.length ? servers[0].value : null
-    , loading: false
-    , servers
-    , expiryType: expires ? 'temporary' : 'permanent'
+    { id,
+      player: player,
+      reason: reason || '',
+      created,
+      expires: expires || 0,
+      error: null,
+      server: servers && servers.length ? servers[0].value : null,
+      loading: false,
+      servers,
+      expiryType: expires ? 'temporary' : 'permanent'
     }
   }
 
@@ -77,7 +77,7 @@ class PlayerBanForm extends React.Component {
     }
   }
 
-  render() {
+  render () {
     const { created, expires, reason, player, servers, server, error, loading, expiryType } = this.state
     const expiryColour = expiryType === 'permanent' ? 'red' : 'yellow'
     const expiryLabel = expiryType === 'permanent' ? 'Permanent' : 'Temporary'
@@ -134,8 +134,8 @@ class PlayerBanForm extends React.Component {
 }
 
 PlayerBanForm.propTypes = {
-  onSubmit: PropTypes.func.isRequired
-, data: PropTypes.object
+  onSubmit: PropTypes.func.isRequired,
+  data: PropTypes.object
 }
 
 export default PlayerBanForm

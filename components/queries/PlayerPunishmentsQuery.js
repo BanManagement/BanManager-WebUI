@@ -104,7 +104,7 @@ const query = gql`
 `
 
 class PlayerPunishmentsQuery extends Component {
-  render() {
+  render () {
     if (this.props.data && this.props.data.error) return <ErrorLayout error={this.props.data.error} />
     if (this.props.data && !this.props.data.player) return <Loader active />
 

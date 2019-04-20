@@ -7,7 +7,7 @@ import PlayerNoteQuery from 'components/queries/PlayerNoteQuery'
 import PageContentContainer from 'components/PageContentContainer'
 
 export class PlayerNotePage extends React.Component {
-  static async getInitialProps({ query }) {
+  static async getInitialProps ({ query }) {
     return {
       data: { id: query.id }
     }
@@ -17,7 +17,7 @@ export class PlayerNotePage extends React.Component {
     return Router.pushRoute('player', { id: playerId })
   }
 
-  render() {
+  render () {
     const { data: { id } } = this.props
     const title = 'Add Player Note'
 

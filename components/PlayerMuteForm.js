@@ -44,7 +44,7 @@ class PlayerMuteForm extends React.Component {
     return current.isAfter(new Date())
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     const { data: { id, created, reason, expires, player, soft } } = props
@@ -61,17 +61,17 @@ class PlayerMuteForm extends React.Component {
     }
 
     this.state =
-    { id
-    , player: player
-    , reason: reason || ''
-    , soft: soft || false
-    , created
-    , expires: expires || 0
-    , error: null
-    , server: servers && servers.length ? servers[0].value : null
-    , loading: false
-    , servers
-    , expiryType: expires ? 'temporary' : 'permanent'
+    { id,
+      player: player,
+      reason: reason || '',
+      soft: soft || false,
+      created,
+      expires: expires || 0,
+      error: null,
+      server: servers && servers.length ? servers[0].value : null,
+      loading: false,
+      servers,
+      expiryType: expires ? 'temporary' : 'permanent'
     }
   }
 
@@ -85,7 +85,7 @@ class PlayerMuteForm extends React.Component {
     }
   }
 
-  render() {
+  render () {
     const { created, expires, reason, player, servers, server, error, loading, expiryType, soft } = this.state
     const expiryColour = expiryType === 'permanent' ? 'red' : 'yellow'
     const expiryLabel = expiryType === 'permanent' ? 'Permanent' : 'Temporary'
@@ -145,8 +145,8 @@ class PlayerMuteForm extends React.Component {
 }
 
 PlayerMuteForm.propTypes = {
-  onSubmit: PropTypes.func.isRequired
-, data: PropTypes.object.isRequired
+  onSubmit: PropTypes.func.isRequired,
+  data: PropTypes.object.isRequired
 }
 
 export default PlayerMuteForm

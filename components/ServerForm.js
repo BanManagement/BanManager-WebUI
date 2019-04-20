@@ -15,7 +15,7 @@ class ServerForm extends React.Component {
     this.setState({ tables: { ...this.state.tables, [name]: value } })
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     const { data: { server } } = props
@@ -28,17 +28,17 @@ class ServerForm extends React.Component {
     }
 
     this.state =
-    { id
-    , name: name || ''
-    , host: host || ''
-    , port: port || 3306
-    , database: database || ''
-    , user: user || ''
-    , console: server && server.console ? server.console.id : ''
-    , tables
-    , error: null
-    , loading: false
-    , yaml: ''
+    { id,
+      name: name || '',
+      host: host || '',
+      port: port || 3306,
+      database: database || '',
+      user: user || '',
+      console: server && server.console ? server.console.id : '',
+      tables,
+      error: null,
+      loading: false,
+      yaml: ''
     }
   }
 
@@ -67,17 +67,17 @@ class ServerForm extends React.Component {
     const tables = pick(config.databases.local.tables, this.props.data.serverTables)
 
     this.setState(
-      { tables
-      , host: config.databases.local.host
-      , port: config.databases.local.port
-      , database: config.databases.local.name
-      , user: config.databases.local.user
-      , password: config.databases.local.password
-      , yaml: ''
+      { tables,
+        host: config.databases.local.host,
+        port: config.databases.local.port,
+        database: config.databases.local.name,
+        user: config.databases.local.user,
+        password: config.databases.local.password,
+        yaml: ''
       })
   }
 
-  render() {
+  render () {
     const { name, console, host, port, database, user, password, tables, error, loading, yaml } = this.state
     const { data: { serverTables } } = this.props
     let tableInputs = []

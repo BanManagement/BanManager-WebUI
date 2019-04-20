@@ -41,7 +41,7 @@ export const query = gql`
 `
 
 class ReportsQuery extends React.Component {
-  render() {
+  render () {
     if (this.props.data && this.props.data.error) return <GraphQLErrorMessage error={this.props.data.error} />
     if (this.props.data && !this.props.data.listReports) return <Loader active />
 
@@ -50,8 +50,8 @@ class ReportsQuery extends React.Component {
 }
 
 ReportsQuery.propTypes = {
-  data: PropTypes.object.isRequired
-, children: PropTypes.func.isRequired
+  data: PropTypes.object.isRequired,
+  children: PropTypes.func.isRequired
 }
 
 export default graphql(query)(ReportsQuery)

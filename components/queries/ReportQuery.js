@@ -114,23 +114,23 @@ class ReportQuery extends React.Component {
     e.preventDefault()
 
     await this.props.CreateCommentMutation(
-      { createCommentMutation
-      , variables: { report: this.props.id, serverId: this.props.server, input: { message } }
-      , refetchQueries: [ 'report' ]
+      { createCommentMutation,
+        variables: { report: this.props.id, serverId: this.props.server, input: { message } },
+        refetchQueries: [ 'report' ]
       })
   }
 
-  render() {
+  render () {
     if (this.props.data && this.props.data.error) return <GraphQLErrorMessage error={this.props.data.error} />
     if (this.props.data && !this.props.data.report) return <Loader active />
 
     return this.props.children(this.props.data
       , { handleCommentCreate: this.handleCommentCreate
-        })
+      })
   }
 }
 
 export default compose(
-  graphql(editQuery, { options: ({ id, server }) => ({ variables: { id, serverId: server } })})
-, graphql(createCommentMutation, { name: 'CreateCommentMutation' })
+  graphql(editQuery, { options: ({ id, server }) => ({ variables: { id, serverId: server } }) })
+  , graphql(createCommentMutation, { name: 'CreateCommentMutation' })
 )(ReportQuery)

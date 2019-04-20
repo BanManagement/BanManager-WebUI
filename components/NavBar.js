@@ -24,8 +24,8 @@ const NavBarMobile = ({
   <Sidebar.Pushable>
     <Sidebar
       as={Menu}
-      animation="overlay"
-      icon="labeled"
+      animation='overlay'
+      icon='labeled'
       inverted
       vertical
       visible={visible}
@@ -63,15 +63,15 @@ const NavBarMobile = ({
 )
 
 NavBarMobile.propTypes =
-{ children: PropTypes.node.isRequired
-, colour: PropTypes.string
-, displayNavTitle: PropTypes.bool
-, leftItems: PropTypes.array.isRequired
-, rightItems: PropTypes.array.isRequired
-, onPusherClick: PropTypes.func.isRequired
-, onToggle: PropTypes.func.isRequired
-, title: PropTypes.string
-, visible: PropTypes.bool
+{ children: PropTypes.node.isRequired,
+  colour: PropTypes.string,
+  displayNavTitle: PropTypes.bool,
+  leftItems: PropTypes.array.isRequired,
+  rightItems: PropTypes.array.isRequired,
+  onPusherClick: PropTypes.func.isRequired,
+  onToggle: PropTypes.func.isRequired,
+  title: PropTypes.string,
+  visible: PropTypes.bool
 }
 
 const NavBarDesktop = ({ colour, leftItems, rightItems }) => (
@@ -94,9 +94,9 @@ const NavBarDesktop = ({ colour, leftItems, rightItems }) => (
 )
 
 NavBarDesktop.propTypes =
-{ colour: PropTypes.string
-, leftItems: PropTypes.array
-, rightItems: PropTypes.array
+{ colour: PropTypes.string,
+  leftItems: PropTypes.array,
+  rightItems: PropTypes.array
 }
 
 const NavBarChildren = ({ children }) => (
@@ -113,9 +113,9 @@ export default class NavBar extends React.Component {
   }
   static defaultProps = { leftItems: [], rightItems: [], colour: 'blue' }
   static propTypes =
-  { leftItems: PropTypes.array
-  , rightItems: PropTypes.array
-  , children: PropTypes.node
+  { leftItems: PropTypes.array,
+    rightItems: PropTypes.array,
+    children: PropTypes.node
   }
 
   handlePusher = () => {
@@ -126,7 +126,7 @@ export default class NavBar extends React.Component {
 
   handleToggle = () => this.setState({ visible: !this.state.visible })
 
-  render() {
+  render () {
     const { children } = this.props
     const { visible } = this.state
 

@@ -22,7 +22,7 @@ export class EditPageLayoutPage extends React.Component {
     data: PropTypes.object.isRequired
   }
 
-  static async getInitialProps({ query }) {
+  static async getInitialProps ({ query }) {
     return {
       data: { id: query.id }
     }
@@ -36,7 +36,7 @@ export class EditPageLayoutPage extends React.Component {
     }
   }
 
-  render() {
+  render () {
     const { data: { id } } = this.props
     const title = `Edit ${id} Layout`
 
@@ -48,7 +48,7 @@ export class EditPageLayoutPage extends React.Component {
               <Mutation mutation={updatePageLayout}>
                 {(updatePageLayout, { error, loading }) => (
                   <React.Fragment>
-                    <Message info content="Components are permission aware. If you wish to hide information from certain users, please use Roles" />
+                    <Message info content='Components are permission aware. If you wish to hide information from certain users, please use Roles' />
                     <PageLayoutForm
                       pageLayout={data.pageLayout}
                       pathname={data.variables.pathname}

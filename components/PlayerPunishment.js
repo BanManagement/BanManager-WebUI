@@ -13,19 +13,19 @@ import { Router } from 'routes'
 import Alert from 'react-s-alert'
 
 const icons =
-{ PlayerBan: 'ban'
-, PlayerKick: 'hand paper'
-, PlayerMute: 'mute'
-, PlayerNote: 'sticky note outline'
-, PlayerWarning: 'warning'
+{ PlayerBan: 'ban',
+  PlayerKick: 'hand paper',
+  PlayerMute: 'mute',
+  PlayerNote: 'sticky note outline',
+  PlayerWarning: 'warning'
 }
 
 const editPaths =
-{ PlayerBan: 'edit-player-ban'
-, PlayerKick: 'edit-player-kick'
-, PlayerMute: 'edit-player-mute'
-, PlayerNote: 'edit-player-note'
-, PlayerWarning: 'edit-player-warning'
+{ PlayerBan: 'edit-player-ban',
+  PlayerKick: 'edit-player-kick',
+  PlayerMute: 'edit-player-mute',
+  PlayerNote: 'edit-player-note',
+  PlayerWarning: 'edit-player-warning'
 }
 
 const buttonWords = { 1: 'one', 2: 'two', 3: 'three' }
@@ -49,26 +49,25 @@ class PlayerPunishment extends React.Component {
     this.setState({ deleteConfirmShow: false })
 
     const { data, server } = this.props
-    const { id: id, __typename: type } = data
+    const { id, __typename: type } = data
     const { id: serverId } = server
 
     this.setState({ deleting: true })
 
     try {
       await this.props.mutate(
-        { variables: { id, serverId, type, keepHistory: true }
-        , refetchQueries: [ 'player' ]
+        { variables: { id, serverId, type, keepHistory: true },
+          refetchQueries: [ 'player' ]
         })
     } catch (e) {
       Alert.error('An error occurred')
     } finally {
       this.setState({ deleting: false })
     }
-
   }
   handleDeleteCancel = () => this.setState({ deleteConfirmShow: false })
 
-  render() {
+  render () {
     const { data, server } = this.props
     let label = ''
 
@@ -80,7 +79,7 @@ class PlayerPunishment extends React.Component {
     return (
       <Card fluid>
         <Card.Content>
-          <Icon name={ icons[data.__typename] } style={{ float: 'right' }} size='large' />
+          <Icon name={icons[data.__typename]} style={{ float: 'right' }} size='large' />
           <Card.Header>{server.name}</Card.Header>
           <Card.Meta>
             {label} {data.actor.name}

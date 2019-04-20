@@ -7,7 +7,7 @@ import NavBar from './NavBar'
 const leftItems = [ { name: 'Home', href: '/' } ]
 
 class ErrorLayout extends React.Component {
-  render() {
+  render () {
     const { router: { pathname } } = this.props
 
     return (

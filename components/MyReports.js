@@ -4,7 +4,7 @@ import ReportsQuery from 'components/queries/ReportsQuery'
 import Moment from 'react-moment'
 
 export default class MyReports extends React.Component {
-  render() {
+  render () {
     return (
       <Card>
         <Card.Content>

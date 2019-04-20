@@ -6,12 +6,12 @@ import { uniqBy } from 'lodash-es'
 
 class PlayerSelector extends React.Component {
   static defaultProps = {
-    multiple: true
-  , fluid: true
-  , placeholder: 'Select players'
+    multiple: true,
+    fluid: true,
+    placeholder: 'Select players'
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     let value = props.value
@@ -45,7 +45,7 @@ class PlayerSelector extends React.Component {
     this.setState({ options, loading: false })
   }
 
-  render() {
+  render () {
     const { fluid, multiple, placeholder } = this.props
     const { options, loading, value } = this.state
 

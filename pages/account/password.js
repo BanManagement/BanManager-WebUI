@@ -30,7 +30,7 @@ class AccountPasswordPage extends React.Component {
     }
   }
 
-  render() {
+  render () {
     // @TODO Ensure logged in
     const { session } = this.props
     const { success } = this.state

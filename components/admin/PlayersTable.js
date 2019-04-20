@@ -72,12 +72,15 @@ class PlayersTable extends React.Component {
   handleOpen = player => () => this.setState({ playerEditOpen: true, currentPlayer: player })
   handleClose = () => this.setState({ playerEditOpen: false, currentPlayer: {} })
 
-  render() {
+  render () {
     const { servers } = this.props
     const columns = [{
-      Header: 'Name', accessor: 'name', filterable: false, Cell: row => (
+      Header: 'Name',
+      accessor: 'name',
+      filterable: false,
+      Cell: row => (
         <a onClick={this.handleOpen(row.original)}>
-          <Image src={`https://crafatar.com/avatars/${row.original.id}?size=26&overlay=true`} fluid avatar></Image>
+          <Image src={`https://crafatar.com/avatars/${row.original.id}?size=26&overlay=true`} fluid avatar />
           {row.value}
         </a>
       )

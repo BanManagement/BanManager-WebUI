@@ -16,7 +16,7 @@ const query = gql`
 `
 
 class RolesQuery extends React.Component {
-  render() {
+  render () {
     if (this.props.data && this.props.data.error) return <GraphQLErrorMessage error={this.props.data.error} />
     if (this.props.data && !this.props.data.roles) return <Loader active />
 

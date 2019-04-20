@@ -36,34 +36,34 @@ const cleanUpComponent = (component) => {
 }
 
 class PageLayoutForm extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     const { pathname, pageLayout } = props
 
     this.state =
-      { pathname
-      , pageLayout
-      , currentLayout: pageLayout.devices.desktop
-      , device: 'desktop'
-      , deviceWidth: ResponsiveUtil.onlyComputer.minWidth
-      , selectedComponent: null
+      { pathname,
+        pageLayout,
+        currentLayout: pageLayout.devices.desktop,
+        device: 'desktop',
+        deviceWidth: ResponsiveUtil.onlyComputer.minWidth,
+        selectedComponent: null
       }
   }
 
-  changeDevice(device, widthName) {
+  changeDevice (device, widthName) {
     this.setState(
-      { device
-      , deviceWidth: ResponsiveUtil[widthName].minWidth
-      , currentLayout: this.state.pageLayout.devices[device]
+      { device,
+        deviceWidth: ResponsiveUtil[widthName].minWidth,
+        currentLayout: this.state.pageLayout.devices[device]
       })
   }
 
-  onSelectComponent(index) {
+  onSelectComponent (index) {
     this.setState({ selectedComponent: index })
   }
 
-  addComponent(component) {
+  addComponent (component) {
     const { currentLayout, device, pageLayout } = this.state
 
     const updatedComponent = { ...component, y: currentLayout.components.length }
@@ -72,18 +72,18 @@ class PageLayoutForm extends React.Component {
     const updatedComponents = [ ...currentLayout.components.slice(), updatedComponent ]
     const newState = {
       currentLayout:
-        { ...currentLayout
-        , components: updatedComponents
-        , unusedComponents
-        }
-    , pageLayout:
-      { ...pageLayout
-      , devices:
-        { ...pageLayout.devices
-        , [device]:
-          { ...pageLayout.devices[device]
-          , components: updatedComponents
-          , unusedComponents
+        { ...currentLayout,
+          components: updatedComponents,
+          unusedComponents
+        },
+      pageLayout:
+      { ...pageLayout,
+        devices:
+        { ...pageLayout.devices,
+          [device]:
+          { ...pageLayout.devices[device],
+            components: updatedComponents,
+            unusedComponents
           }
         }
       }
@@ -92,7 +92,7 @@ class PageLayoutForm extends React.Component {
     this.setState(newState)
   }
 
-  removeComponent(index, e) {
+  removeComponent (index, e) {
     e.stopPropagation()
 
     const { currentLayout, device, pageLayout, selectedComponent } = this.state
@@ -100,18 +100,18 @@ class PageLayoutForm extends React.Component {
     const unusedComponents = [ ...currentLayout.unusedComponents.slice(), currentLayout.components[index] ]
     const newState = {
       currentLayout:
-        { ...currentLayout
-        , components: updatedComponents
-        , unusedComponents
-        }
-    , pageLayout:
-      { ...pageLayout
-      , devices:
-        { ...pageLayout.devices
-        , [device]:
-          { ...pageLayout.devices[device]
-          , components: updatedComponents
-          , unusedComponents
+        { ...currentLayout,
+          components: updatedComponents,
+          unusedComponents
+        },
+      pageLayout:
+      { ...pageLayout,
+        devices:
+        { ...pageLayout.devices,
+          [device]:
+          { ...pageLayout.devices[device],
+            components: updatedComponents,
+            unusedComponents
           }
         }
       }
@@ -134,16 +134,16 @@ class PageLayoutForm extends React.Component {
 
     const newState = {
       currentLayout:
-        { ...currentLayout
-        , components: updatedComponents
-        }
-    , pageLayout:
-      { ...pageLayout
-      , devices:
-        { ...pageLayout.devices
-        , [device]:
-          { ...pageLayout.devices[device]
-          , components: updatedComponents
+        { ...currentLayout,
+          components: updatedComponents
+        },
+      pageLayout:
+      { ...pageLayout,
+        devices:
+        { ...pageLayout.devices,
+          [device]:
+          { ...pageLayout.devices[device],
+            components: updatedComponents
           }
         }
       }
@@ -169,16 +169,16 @@ class PageLayoutForm extends React.Component {
 
     const newState = {
       currentLayout:
-        { ...currentLayout
-        , components: updatedComponents
-        }
-    , pageLayout:
-      { ...pageLayout
-      , devices:
-        { ...pageLayout.devices
-        , [device]:
-          { ...pageLayout.devices[device]
-          , components: updatedComponents
+        { ...currentLayout,
+          components: updatedComponents
+        },
+      pageLayout:
+      { ...pageLayout,
+        devices:
+        { ...pageLayout.devices,
+          [device]:
+          { ...pageLayout.devices[device],
+            components: updatedComponents
           }
         }
       }
@@ -198,9 +198,9 @@ class PageLayoutForm extends React.Component {
       if (!pageLayout.devices[device].components) return
 
       pageLayout.devices[device] =
-        { ...pageLayout.devices[device]
-        , components: pageLayout.devices[device].components.map(cleanUpComponent)
-        , unusedComponents: pageLayout.devices[device].unusedComponents.map(cleanUpComponent)
+        { ...pageLayout.devices[device],
+          components: pageLayout.devices[device].components.map(cleanUpComponent),
+          unusedComponents: pageLayout.devices[device].unusedComponents.map(cleanUpComponent)
         }
     })
 
@@ -212,7 +212,7 @@ class PageLayoutForm extends React.Component {
     }
   }
 
-  render() {
+  render () {
     const { error } = this.props
     const { currentLayout, device, deviceWidth, selectedComponent: selectedComponentIndex, loading } = this.state
     const selectedComponent = currentLayout.components[selectedComponentIndex]
@@ -316,9 +316,9 @@ class PageLayoutForm extends React.Component {
 }
 
 PageLayoutForm.propTypes = {
-  pageLayout: PropTypes.object.isRequired
-, pathname: PropTypes.string.isRequired
-, error: PropTypes.object
+  pageLayout: PropTypes.object.isRequired,
+  pathname: PropTypes.string.isRequired,
+  error: PropTypes.object
 }
 
 export default PageLayoutForm

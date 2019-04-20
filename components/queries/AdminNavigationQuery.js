@@ -29,11 +29,11 @@ const query = gql`
 
 class AdminNavigationQuery extends React.Component {
   static propTypes =
-  { data: PropTypes.object.isRequired
-  , children: PropTypes.func.isRequired
+  { data: PropTypes.object.isRequired,
+    children: PropTypes.func.isRequired
   }
 
-  render() {
+  render () {
     if (this.props.data && this.props.data.error) return <GraphQLErrorMessage error={this.props.data.error} />
     if (this.props.data && !this.props.data.adminNavigation) return <Loader active />
 

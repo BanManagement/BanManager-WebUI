@@ -33,7 +33,7 @@ const serverRoleMutation = gql`
 export class RolesPage extends React.Component {
   clickRouteHandler = (route, params) => () => Router.pushRoute(route, params)
 
-  render() {
+  render () {
     return (
       <AdminLayout title='Roles' displayNavTitle>
         <Button.Group size='medium' widths='1'>

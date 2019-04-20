@@ -53,12 +53,12 @@ const query = gql`
 
 class PageLayoutQuery extends React.Component {
   static propTypes =
-  { data: PropTypes.object.isRequired
-  , children: PropTypes.func.isRequired
-  , pathname: PropTypes.string.isRequired
+  { data: PropTypes.object.isRequired,
+    children: PropTypes.func.isRequired,
+    pathname: PropTypes.string.isRequired
   }
 
-  render() {
+  render () {
     if (this.props.data && this.props.data.error) return <GraphQLErrorMessage error={this.props.data.error} />
     if (this.props.data && !this.props.data.pageLayout) return <Loader active />
 

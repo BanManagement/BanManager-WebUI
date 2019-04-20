@@ -24,7 +24,7 @@ class AccountEmailPage extends React.Component {
 
   onSubmit = (mutation) => {
     return async () => {
-     this.setState({ success: false })
+      this.setState({ success: false })
 
       await mutation({ variables: { currentPassword: this.state.currentPassword, email: this.state.email } })
 
@@ -32,7 +32,7 @@ class AccountEmailPage extends React.Component {
     }
   }
 
-  render() {
+  render () {
     // @TODO Ensure logged in
     const { session } = this.props
     const { success } = this.state

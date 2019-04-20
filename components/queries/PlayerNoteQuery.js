@@ -78,7 +78,7 @@ class PlayerNoteQuery extends Component {
     return this.props.onUpdate(player)
   }
 
-  render() {
+  render () {
     if (this.props.data && this.props.data.error) return <GraphQlErrorMessage error={this.props.data.error} />
     if (this.props.data && !(this.props.data.playerNote || this.props.data.player)) return <Loader active />
 
@@ -88,13 +88,13 @@ class PlayerNoteQuery extends Component {
 
 export default compose(
   graphql(createMutation, { name: 'CreatePlayerNoteMutation' })
-, graphql(editMutation, { name: 'UpdatePlayerNoteMutation' })
-, graphql(createQuery,
-  { options: ({ id }) => ({ variables: { id }})
-  , skip: ({ server }) => !!server
-  })
-, graphql(editQuery,
-  { options: ({ id, server }) => ({ variables: { id, serverId: server } })
-  , skip: ({ server }) => !server
-  })
+  , graphql(editMutation, { name: 'UpdatePlayerNoteMutation' })
+  , graphql(createQuery,
+    { options: ({ id }) => ({ variables: { id } }),
+      skip: ({ server }) => !!server
+    })
+  , graphql(editQuery,
+    { options: ({ id, server }) => ({ variables: { id, serverId: server } }),
+      skip: ({ server }) => !server
+    })
 )(PlayerNoteQuery)

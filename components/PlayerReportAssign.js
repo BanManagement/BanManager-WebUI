@@ -6,7 +6,7 @@ import Alert from 'react-s-alert'
 import PlayerSelector from 'components/admin/PlayerSelector'
 
 class PlayerReportAssign extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = { loading: false, assignee: props.assignee }
@@ -30,7 +30,7 @@ class PlayerReportAssign extends React.Component {
     this.setState({ loading: false })
   }
 
-  render() {
+  render () {
     const { assignee, loading } = this.state
 
     if (loading) return <Loader active />
@@ -39,10 +39,10 @@ class PlayerReportAssign extends React.Component {
 
     if (assignee) {
       options = [
-        { key: assignee.id
-        , value: assignee.id
-        , text: assignee.name
-        , image: `https://crafatar.com/avatars/${assignee.id}?size=128&overlay=true`
+        { key: assignee.id,
+          value: assignee.id,
+          text: assignee.name,
+          image: `https://crafatar.com/avatars/${assignee.id}?size=128&overlay=true`
         } ]
     }
 
@@ -50,7 +50,7 @@ class PlayerReportAssign extends React.Component {
       <PlayerSelector
         fluid={false}
         multiple={false}
-        value={assignee ? assignee.id : null }
+        value={assignee ? assignee.id : null}
         options={options}
         handleChange={this.handleChange}
       />

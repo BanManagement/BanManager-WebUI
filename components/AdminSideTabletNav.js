@@ -8,7 +8,7 @@ export default class AdminSideTabletNav extends React.Component {
     { leftItems: PropTypes.array.isRequired
     }
 
-  render() {
+  render () {
     const { leftItems } = this.props
     const items = leftItems.map(item => {
       if (item.label) {

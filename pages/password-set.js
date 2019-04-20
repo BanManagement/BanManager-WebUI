@@ -10,13 +10,13 @@ import { Router } from 'routes'
 import PlayerPasswordForm from 'components/PlayerPasswordForm'
 
 export class PasswordSet extends React.Component {
-  async handleOnSubmit(e, { password, confirmPassword }) {
+  async handleOnSubmit (e, { password, confirmPassword }) {
     const data = { password, confirmPassword }
     const response = await fetch(process.env.API_HOST + '/session/password-set',
-      { method: 'POST'
-      , body: JSON.stringify(data)
-      , headers: new Headers({ 'Content-Type': 'application/json' })
-      , credentials: 'include'
+      { method: 'POST',
+        body: JSON.stringify(data),
+        headers: new Headers({ 'Content-Type': 'application/json' }),
+        credentials: 'include'
       })
 
     if (response.status !== 204) {
@@ -28,7 +28,7 @@ export class PasswordSet extends React.Component {
     Router.replace('/')
   }
 
-  render() {
+  render () {
     return (
       <DefaultLayout title='Login' displayNavTitle>
         <Container style={{ marginTop: '2em' }}>

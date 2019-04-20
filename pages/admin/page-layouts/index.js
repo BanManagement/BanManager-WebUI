@@ -8,7 +8,7 @@ import { Router } from 'routes'
 export class PageLayoutsPage extends React.Component {
   clickRouteHandler = (route, params) => () => Router.pushRoute(route, params)
 
-  render() {
+  render () {
     return (
       <AdminLayout title='Page Layouts' displayNavTitle>
         <List celled verticalAlign='bottom' size='large'>

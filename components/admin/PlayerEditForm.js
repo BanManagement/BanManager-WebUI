@@ -34,7 +34,7 @@ class PlayerEditForm extends React.Component {
     }
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     const { email, roles, serverRoles } = this.props.player
@@ -42,7 +42,7 @@ class PlayerEditForm extends React.Component {
     this.state = { roles: roles.map(role => role.id), serverRoles, email: email || undefined }
   }
 
-  render() {
+  render () {
     const servers = this.props.servers.map(server => ({ key: server.id, value: server.id, text: server.name }))
     const { email, roles, serverRoles, error, loading } = this.state
     const options = this.props.roles.map(role => ({ key: role.id, text: role.name, value: role.id }))
@@ -59,38 +59,38 @@ class PlayerEditForm extends React.Component {
             readOnly
           />
           <Header>Global Roles</Header>
-            <Select
-              required
-              name='roles'
-              options={options}
-              value={roles}
-              placeholder='Role'
-              onChange={this.handleChange}
-              fluid
-              multiple
-            />
-            <Header>Server Roles</Header>
-            {servers.map(server => {
-              const value = serverRoles
-                .filter(r => r.server.id === server.value)
-                .map(({ role }) => role.id)
+          <Select
+            required
+            name='roles'
+            options={options}
+            value={roles}
+            placeholder='Role'
+            onChange={this.handleChange}
+            fluid
+            multiple
+          />
+          <Header>Server Roles</Header>
+          {servers.map(server => {
+            const value = serverRoles
+              .filter(r => r.server.id === server.value)
+              .map(({ role }) => role.id)
 
-              return (
-                <React.Fragment key={server.value}>
-                  <Header size='small'>{server.text}</Header>
-                  <Select
-                    required
-                    name={server.value}
-                    options={options}
-                    value={value}
-                    placeholder='Role'
-                    onChange={this.handleServerRoleChange}
-                    fluid
-                    multiple
-                  />
-                </React.Fragment>
-              )
-            })}
+            return (
+              <React.Fragment key={server.value}>
+                <Header size='small'>{server.text}</Header>
+                <Select
+                  required
+                  name={server.value}
+                  options={options}
+                  value={value}
+                  placeholder='Role'
+                  onChange={this.handleServerRoleChange}
+                  fluid
+                  multiple
+                />
+              </React.Fragment>
+            )
+          })}
           <Form.Button fluid primary size='large' content='Save' />
         </Segment>
       </Form>

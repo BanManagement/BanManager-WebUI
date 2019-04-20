@@ -8,7 +8,7 @@ import PageContentContainer from 'components/PageContentContainer'
 import ReportsTable from 'components/ReportsTable'
 
 export class ReportsPage extends React.Component {
-  render() {
+  render () {
     const { session } = this.props
 
     return (

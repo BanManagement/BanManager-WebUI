@@ -16,7 +16,7 @@ export class HomePage extends React.Component {
     Router.pushRoute('player', { id: result.id })
   }
 
-  render() {
+  render () {
     return (
       <DefaultLayout title='Welcome'>
         <Segment

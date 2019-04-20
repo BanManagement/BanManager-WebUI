@@ -8,7 +8,7 @@ import {
 import PlayerCommentForm from 'components/PlayerCommentForm'
 
 class PlayerReportCommentList extends React.Component {
-  render() {
+  render () {
     const { showReply } = this.props
     const comments = this.props.comments ? this.props.comments.map(comment => {
       return <PlayerReportComment server={this.props.server} key={comment.id} {...comment} />

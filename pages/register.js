@@ -11,13 +11,13 @@ import PlayerRegisterForm from 'components/PlayerRegisterForm'
 import PageContentContainer from 'components/PageContentContainer'
 
 export class register extends React.Component {
-  async handleOnSubmit(e, { email, password, confirmPassword }) {
+  async handleOnSubmit (e, { email, password, confirmPassword }) {
     const data = { email, password, confirmPassword }
     const response = await fetch(process.env.API_HOST + '/register',
-      { method: 'POST'
-      , body: JSON.stringify(data)
-      , headers: new Headers({ 'Content-Type': 'application/json' })
-      , credentials: 'include'
+      { method: 'POST',
+        body: JSON.stringify(data),
+        headers: new Headers({ 'Content-Type': 'application/json' }),
+        credentials: 'include'
       })
 
     if (response.status !== 204) {
@@ -35,7 +35,7 @@ export class register extends React.Component {
     Router.replace('/')
   }
 
-  render() {
+  render () {
     return (
       <DefaultLayout title='Register' displayNavTitle>
         <PageContentContainer>

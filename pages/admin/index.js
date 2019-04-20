@@ -7,7 +7,7 @@ let latestVersion
 let latestVersionCheck = 0
 
 export class AdminPage extends React.Component {
-  static async getInitialProps() {
+  static async getInitialProps () {
     // Cache the lookup so we're not always hitting GitHub
     if (!process.browser) {
       const expired = (Date.now() - latestVersionCheck) > 3600000 // 1 hour
@@ -21,14 +21,14 @@ export class AdminPage extends React.Component {
     return { latestVersion }
   }
 
-  static async getReleaseVersion() {
+  static async getReleaseVersion () {
     const response = await fetch('https://api.github.com/repos/BanManagement/BanManager-WebUI/releases')
     const data = await response.json()
 
     return data[0].tag_name
   }
 
-  render() {
+  render () {
     return (
       <AdminLayout title='Admin' displayNavTitle>
         <VersionChecker latestVersion={this.props.latestVersion} />

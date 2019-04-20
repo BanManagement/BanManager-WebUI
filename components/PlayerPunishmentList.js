@@ -4,7 +4,7 @@ import PlayerPunishment from './PlayerPunishment'
 
 const types = [ 'bans', 'kicks', 'mutes', 'notes', 'warnings' ]
 
-export default function PlayerPunishmentList({ player }) {
+export default function PlayerPunishmentList ({ player }) {
   if (player && player.servers) {
     let activePunishments = []
 

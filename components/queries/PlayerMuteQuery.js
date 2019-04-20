@@ -86,7 +86,7 @@ class PlayerMuteQuery extends React.Component {
     return this.props.onUpdate(player)
   }
 
-  render() {
+  render () {
     if (this.props.data && this.props.data.error) return <GraphQlErrorMessage error={this.props.data.error} />
     if (this.props.data && !(this.props.data.playerMute || this.props.data.player)) return <Loader active />
 
@@ -95,23 +95,23 @@ class PlayerMuteQuery extends React.Component {
 }
 
 PlayerMuteQuery.propTypes = {
-  data: PropTypes.object.isRequired
-, server: PropTypes.string
-, children: PropTypes.func.isRequired
-, onUpdate: PropTypes.func
-, updatePlayerMuteMutation: PropTypes.func
-, createPlayerMuteMutation: PropTypes.func
+  data: PropTypes.object.isRequired,
+  server: PropTypes.string,
+  children: PropTypes.func.isRequired,
+  onUpdate: PropTypes.func,
+  updatePlayerMuteMutation: PropTypes.func,
+  createPlayerMuteMutation: PropTypes.func
 }
 
 export default compose(
   graphql(createMutation, { name: 'createPlayerMuteMutation' })
-, graphql(editMutation, { name: 'updatePlayerMuteMutation' })
-, graphql(createQuery,
-  { options: ({ id }) => ({ variables: { id } })
-  , skip: ({ server }) => !!server
-  })
-, graphql(editQuery,
-  { options: ({ id, server }) => ({ variables: { id, serverId: server } })
-  , skip: ({ server }) => !server
-  })
+  , graphql(editMutation, { name: 'updatePlayerMuteMutation' })
+  , graphql(createQuery,
+    { options: ({ id }) => ({ variables: { id } }),
+      skip: ({ server }) => !!server
+    })
+  , graphql(editQuery,
+    { options: ({ id, server }) => ({ variables: { id, serverId: server } }),
+      skip: ({ server }) => !server
+    })
 )(PlayerMuteQuery)
