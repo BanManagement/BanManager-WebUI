@@ -8,3 +8,5 @@ typings*
 .nyc_output/
 .next
 bundles
+.travis/*.key
+.travis/*.key.pub
