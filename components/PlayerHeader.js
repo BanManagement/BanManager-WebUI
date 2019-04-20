@@ -6,7 +6,7 @@ import {
 } from 'semantic-ui-react'
 import Moment from 'react-moment'
 
-export default function PlayerHeader({ player }) {
+export default function PlayerHeader ({ player }) {
   return (
     <Container text>
       <Header

@@ -91,13 +91,27 @@ class PlayerPunishment extends React.Component {
           <Card.Content extra>
             <div className={`ui ${extraButtonAmountWord} buttons`}>
               {data.acl.yours &&
-                <Button basic color='blue'>Appeal</Button>
+                <Button
+                  basic
+                  color='blue'
+                  href={`/appeal/${server.id}/${data.id}/${editPaths[data.__typename].replace('edit-', '')}`}
+                >
+                  Appeal
+                </Button>
               }
               {data.acl.update &&
                 <Button basic color='green' onClick={this.handleEdit}>Edit</Button>
               }
               {data.acl.delete &&
-                <Button basic color='red' loading={this.state.deleting} disabled={this.state.deleting} onClick={this.showConfirmDelete}>Delete</Button>
+                <Button
+                  basic
+                  color='red'
+                  loading={this.state.deleting}
+                  disabled={this.state.deleting}
+                  onClick={this.showConfirmDelete}
+                >
+                  Delete
+                </Button>
               }
               <Confirm
                 open={this.state.deleteConfirmShow}
