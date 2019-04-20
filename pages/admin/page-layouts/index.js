@@ -15,7 +15,7 @@ export class PageLayoutsPage extends React.Component {
           <PageLayoutsQuery>
             {({ pageLayouts }) => {
               return pageLayouts.map(layout => (
-                <List.Item key={layout.pathname}>
+                <List.Item as='a' key={layout.pathname}>
                   <List.Content onClick={this.clickRouteHandler('admin-edit-page-layout', { id: layout.pathname })}>
                     {layout.pathname}
                   </List.Content>
