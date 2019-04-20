@@ -1,6 +1,6 @@
 const withPlugins = require('next-compose-plugins')
 const withCSS = require('@zeit/next-css')
-const withTM = require('next-plugin-transpile-modules')
+const withTM = require('next-transpile-modules')
 const withBundleAnalyzer = require('@zeit/next-bundle-analyzer')
 const nextConfig = {
   webpack (config) {
