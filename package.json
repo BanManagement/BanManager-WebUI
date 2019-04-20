@@ -8,7 +8,7 @@
     "start": "node server.js",
     "heroku-postbuild": "npm run build",
     "lint": "standard",
-    "test": "npm run lint && jest"
+    "test": "npm run lint"
   },
   "dependencies": {
     "@zeit/next-bundle-analyzer": "0.1.2",
