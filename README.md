@@ -18,7 +18,7 @@ Feel free to contribute if you have any suggestions or ideas.
 - More coming soon...
 
 ##### Installation
-TBD
+See [setup instructions](https://banmanagement.com/setup)
 
 #### Development
 ```
