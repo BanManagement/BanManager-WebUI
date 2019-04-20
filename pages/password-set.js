@@ -8,6 +8,8 @@ import {
 } from 'semantic-ui-react'
 import { Router } from 'routes'
 import PlayerPasswordForm from 'components/PlayerPasswordForm'
+import ServersQuery from 'components/queries/ServersQuery'
+import PlayerLoginPinForm from 'components/PlayerLoginPinForm'
 
 export class PasswordSet extends React.Component {
   async handleOnSubmit (e, { password, confirmPassword }) {

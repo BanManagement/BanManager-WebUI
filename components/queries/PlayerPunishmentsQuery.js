@@ -4,7 +4,6 @@ import { graphql } from 'react-apollo'
 import {
   Loader
 } from 'semantic-ui-react'
-import GraphQlErrorMessage from '../GraphQLErrorMessage'
 import ErrorLayout from '../ErrorLayout'
 
 const query = gql`

@@ -1,9 +1,5 @@
 import React from 'react'
-import PlayerReportComment from './PlayerReportComment'
-import {
-  Button,
-  Form
-} from 'semantic-ui-react'
+import { Form } from 'semantic-ui-react'
 import GraphQLErrorMessage from 'components/GraphQLErrorMessage'
 
 class PlayerCommentForm extends React.Component {

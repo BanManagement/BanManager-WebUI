@@ -1,7 +1,6 @@
 import React from 'react'
 import { Search } from 'semantic-ui-react'
 import { withApollo } from 'react-apollo'
-import { Fragment } from 'react'
 import gql from 'graphql-tag'
 
 class PlayerSearch extends React.Component {
@@ -22,7 +21,7 @@ class PlayerSearch extends React.Component {
 
   render () {
     return (
-      <Fragment>
+      <React.Fragment>
         <Search
           loading={this.state.loading}
           onSearchChange={this.handleSearchChange}
@@ -38,7 +37,7 @@ class PlayerSearch extends React.Component {
             margin-right: auto;
           }
         `}</style>
-      </Fragment>
+      </React.Fragment>
     )
   }
 }

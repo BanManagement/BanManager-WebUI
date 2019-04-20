@@ -1,9 +1,8 @@
 import React from 'react'
-import withData from '../../../lib/withData'
-import withSession from '../../../lib/withSession'
-import AdminLayout from '../../../components/AdminLayout'
-import ServersQuery from '../../../components/queries/ServersQuery'
-import { Router } from '../../../routes'
+import withData from 'lib/withData'
+import AdminLayout from 'components/AdminLayout'
+import ServersQuery from 'components/queries/ServersQuery'
+import { Router } from 'routes'
 import {
   Button,
   List

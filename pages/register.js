@@ -2,7 +2,6 @@ import React from 'react'
 import withData from 'lib/withData'
 import DefaultLayout from 'components/DefaultLayout'
 import {
-  Container,
   Header,
   Message
 } from 'semantic-ui-react'

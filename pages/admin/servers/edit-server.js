@@ -1,10 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import withData from '../../../lib/withData'
-import AdminLayout from '../../../components/AdminLayout'
-import { Router } from '../../../routes'
-import ServerForm from '../../../components/ServerForm'
-import ServerQuery from '../../../components/queries/ServerQuery'
+import withData from 'lib/withData'
+import AdminLayout from 'components/AdminLayout'
+import { Router } from 'routes'
+import ServerForm from 'components/ServerForm'
+import ServerQuery from 'components/queries/ServerQuery'
 
 export class EditServerPage extends React.Component {
   static propTypes = {

@@ -1,10 +1,6 @@
 import React from 'react'
 import PlayerReportComment from 'components/PlayerReportComment'
-import {
-  Button,
-  Comment,
-  Form
-} from 'semantic-ui-react'
+import { Comment } from 'semantic-ui-react'
 import PlayerCommentForm from 'components/PlayerCommentForm'
 
 class PlayerReportCommentList extends React.Component {
