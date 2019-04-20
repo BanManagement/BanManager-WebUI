@@ -1,6 +1,7 @@
 {
   "name": "bm-ui",
   "version": "1.0.0",
+  "private": true,
   "scripts": {
     "dev": "next",
     "build": "next build",
@@ -53,7 +54,14 @@
     "standard": "12.0.1"
   },
   "author": "James Mortemore (jamesmortemore@gmail.com)",
-  "license": "ISC",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:BanManagement/BanManager-WebUI.git"
+  },
+  "bugs": {
+    "url": "https://github.com/BanManagement/BanManager-WebUI/issues"
+  },
   "engines": {
     "node": ">=8.0.0"
   },
