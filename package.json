@@ -53,7 +53,8 @@
     "jest": "24.7.1",
     "react-addons-test-utils": "15.6.2",
     "react-test-renderer": "16.8.6",
-    "standard": "12.0.1"
+    "standard": "12.0.1",
+    "webpack": "4.28.4"
   },
   "author": "James Mortemore (jamesmortemore@gmail.com)",
   "license": "MIT",
@@ -76,5 +77,8 @@
       "GIT_COMMIT",
       "GIT_TAG"
     ]
+  },
+  "browser": {
+    "mobile-detect": false
   }
 }
