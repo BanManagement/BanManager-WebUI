@@ -18,7 +18,6 @@ class DefaultLayout extends React.Component {
     }
   static propTypes =
     { title: PropTypes.string,
-      router: PropTypes.object.isRequired,
       displayNavTitle: PropTypes.bool,
       children: PropTypes.node.isRequired,
       heading: PropTypes.func,
