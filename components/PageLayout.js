@@ -5,6 +5,8 @@ import {
   Grid,
   Responsive
 } from 'semantic-ui-react'
+import getWidthFactory from 'lib/widthFactory'
+import GlobalContext from 'lib/GlobalContext'
 
 // @TODO Component needs optimising, try and avoid numerous loops
 function calculateRowCount (components) {
@@ -71,17 +73,23 @@ export default class PageLayout extends React.Component {
       return { [device]: createComponents(rows[device], availableComponents, this.props) }
     }))
 
-    const components = <React.Fragment>
-      <Responsive {...Responsive.onlyMobile}>
-        <Grid>{deviceComponents.mobile}</Grid>
-      </Responsive>
-      <Responsive {...Responsive.onlyTablet}>
-        <Grid>{deviceComponents.tablet}</Grid>
-      </Responsive>
-      <Responsive {...Responsive.onlyComputer}>
-        <Grid >{deviceComponents.desktop}</Grid>
-      </Responsive>
-    </React.Fragment>
+    const components = <GlobalContext.Consumer>
+      {context => {
+        const getWidth = getWidthFactory(context.isMobileFromSSR)
+
+        return (<React.Fragment>
+          <Responsive {...Responsive.onlyMobile} fireOnMount getWidth={getWidth} maxWidth={Responsive.onlyMobile.maxWidth}>
+            <Grid>{deviceComponents.mobile}</Grid>
+          </Responsive>
+          <Responsive {...Responsive.onlyTablet} fireOnMount getWidth={getWidth} minWidth={Responsive.onlyTablet.minWidth}>
+            <Grid>{deviceComponents.tablet}</Grid>
+          </Responsive>
+          <Responsive {...Responsive.onlyComputer} fireOnMount getWidth={getWidth} minWidth={Responsive.onlyComputer.minWidth}>
+            <Grid >{deviceComponents.desktop}</Grid>
+          </Responsive>
+        </React.Fragment>)
+      }}
+    </GlobalContext.Consumer>
 
     return components
   }

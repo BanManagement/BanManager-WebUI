@@ -23,7 +23,7 @@ export class HomePage extends React.Component {
           inverted
           color='blue'
           textAlign='center'
-          style={{ minHeight: 700, padding: '1em 0em', marginLeft: '-1em', marginRight: '-1em' }}
+          style={{ padding: '1em 0em', marginLeft: '-1em', marginRight: '-1em', display: 'flex', minHeight: '100vh', flexDirection: 'column' }}
           vertical
         >
           <Container>

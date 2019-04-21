@@ -1,38 +1,32 @@
 import React from 'react'
 import Head from 'next/head'
-import { withRouter } from 'next/router'
 import { Grid, Message } from 'semantic-ui-react'
-import NavBar from './NavBar'
-
-const leftItems = [ { name: 'Home', href: '/' } ]
+import DefaultLayout from 'components/DefaultLayout'
+import PageContentContainer from 'components/PageContentContainer'
 
 class ErrorLayout extends React.Component {
   render () {
-    const { router: { pathname } } = this.props
-
     return (
       <React.Fragment>
         <Head>
           <title>Internal Server Error</title>
         </Head>
-        <NavBar
-          pathname={pathname}
-          colour='blue'
-          leftItems={leftItems}
-        >
-          <Grid
-            textAlign='center'
-            style={{ height: '100%' }}
-            verticalAlign='middle'
-          >
-            <Grid.Column style={{ maxWidth: 450, marginTop: '15%' }}>
-              <Message error>An Error Occured</Message>
-            </Grid.Column>
-          </Grid>
-        </NavBar>
+        <DefaultLayout>
+          <PageContentContainer>
+            <Grid
+              textAlign='center'
+              style={{ height: '100%' }}
+              verticalAlign='middle'
+            >
+              <Grid.Column style={{ maxWidth: 450, marginTop: '25%' }}>
+                <Message error>An Error Occured</Message>
+              </Grid.Column>
+            </Grid>
+          </PageContentContainer>
+        </DefaultLayout>
       </React.Fragment>
     )
   }
 }
 
-export default withRouter(ErrorLayout)
+export default ErrorLayout

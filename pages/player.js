@@ -33,8 +33,10 @@ export class PlayerPage extends React.Component {
   clickAddHandler = (route) => () => Router.pushRoute(route, { id: this.props.player.id })
 
   render () {
+    const { pathname } = this.props
+
     return (
-      <PageLayoutQuery pathname={this.props.pathname}>
+      <PageLayoutQuery pathname={pathname}>
         {({ pageLayout }) => (
           <PlayerPunishmentsQuery id={this.props.player.id}>
             {({ player }) => {

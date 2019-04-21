@@ -1,14 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Head from 'next/head'
-import { withRouter } from 'next/router'
 import Alert from 'react-s-alert'
-import { Container, Segment } from 'semantic-ui-react'
 import Footer from './Footer'
-import NavBar from './NavBar'
+import ResponsiveContainer from 'components/ResponsiveContainer'
 import NavigationQuery from './queries/NavigationQuery'
 import SessionNavProfile from './SessionNavProfile'
 import withSession from 'lib/withSession'
+import getWidthFactory from 'lib/widthFactory'
+import GlobalContext from 'lib/GlobalContext'
 import 'semantic-ui-css/semantic.min.css'
 import 'react-s-alert/dist/s-alert-default.css'
 
@@ -21,12 +21,13 @@ class DefaultLayout extends React.Component {
       router: PropTypes.object.isRequired,
       displayNavTitle: PropTypes.bool,
       children: PropTypes.node.isRequired,
+      heading: PropTypes.func,
       session: PropTypes.object.isRequired,
       rightItems: PropTypes.node
     }
 
   render () {
-    const { title, router: { pathname }, displayNavTitle, children, session } = this.props
+    const { title, displayNavTitle, children, session, heading } = this.props
     let { rightItems } = this.props
 
     if (!rightItems && !session.exists) {
@@ -41,32 +42,21 @@ class DefaultLayout extends React.Component {
           <title>{ title }</title>
         </Head>
         <Alert position='bottom' stack={false} timeout='none' />
-        <NavigationQuery>
-          {({ navigation: { left } }) => (
-            <NavBar
-              pathname={pathname}
-              colour='blue'
-              leftItems={left}
-              rightItems={rightItems}
-              title={title}
-              displayNavTitle={displayNavTitle}
-            >
-              {children}
-              <Segment
-                inverted
-                vertical
-                style={{ marginLeft: '-1em', marginRight: '-1em', padding: '1em 0em', flex: 1 }}
-              >
-                <Container>
-                  <Footer />
-                </Container>
-              </Segment>
-            </NavBar>
-          )}
-        </NavigationQuery>
+        <GlobalContext.Consumer>
+          {({ isMobileFromSSR }) =>
+            <NavigationQuery>
+              {({ navigation: { left } }) => (
+                <ResponsiveContainer heading={heading} leftItems={left} rightItems={rightItems} getWidth={getWidthFactory(isMobileFromSSR)} mobile={isMobileFromSSR} displayNavTitle={displayNavTitle} title={title}>
+                  {children}
+                  <Footer getWidth={getWidthFactory(isMobileFromSSR)} />
+                </ResponsiveContainer>
+              )}
+            </NavigationQuery>
+          }
+        </GlobalContext.Consumer>
       </React.Fragment>
     )
   }
 }
 
-export default withRouter(withSession(DefaultLayout))
+export default withSession(DefaultLayout)
