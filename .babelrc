@@ -6,7 +6,7 @@
     },
     "production": {
       "presets": ["next/babel"],
-      "plugins": ["transform-inline-environment-variables", "git-version"]
+      "plugins": ["git-version"]
     },
     "test": {
       "presets": [[ "next/babel", { "preset-env": { "modules": "commonjs" } }]],
