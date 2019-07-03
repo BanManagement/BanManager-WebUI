@@ -8,7 +8,9 @@
     "start": "node server.js",
     "heroku-postbuild": "npm run build",
     "lint": "standard",
-    "test": "npm run lint"
+    "test": "npm run lint",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "dependencies": {
     "@zeit/next-bundle-analyzer": "0.1.2",
@@ -42,7 +44,8 @@
     "react-s-alert": "1.4.1",
     "react-table": "6.10.0",
     "semantic-ui-css": "2.4.1",
-    "semantic-ui-react": "0.87.2"
+    "semantic-ui-react": "0.87.2",
+    "snyk": "^1.189.0"
   },
   "devDependencies": {
     "babel-eslint": "10.0.2",
@@ -79,5 +82,6 @@
   },
   "browser": {
     "mobile-detect": false
-  }
+  },
+  "snyk": true
 }
