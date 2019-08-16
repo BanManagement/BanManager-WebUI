@@ -49,7 +49,7 @@
     "enzyme": "3.10.0",
     "enzyme-adapter-react-16": "1.14.0",
     "enzyme-wait": "1.0.9",
-    "jest": "24.8.0",
+    "jest": "24.9.0",
     "react-addons-test-utils": "15.6.2",
     "react-test-renderer": "16.9.0",
     "standard": "12.0.1",
