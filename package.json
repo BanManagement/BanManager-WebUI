@@ -26,7 +26,7 @@
     "js-yaml": "3.13.1",
     "koa": "2.8.1",
     "lodash-es": "4.17.15",
-    "mobile-detect": "1.4.3",
+    "mobile-detect": "1.4.4",
     "moment": "2.24.0",
     "next": "8.1.0",
     "next-compose-plugins": "2.2.0",
