@@ -40,7 +40,7 @@
     "react-grid-layout": "0.17.1",
     "react-moment": "0.9.6",
     "react-s-alert": "1.4.1",
-    "react-table": "6.11.2",
+    "react-table": "6.11.4",
     "semantic-ui-css": "2.4.1",
     "semantic-ui-react": "0.88.1"
   },
