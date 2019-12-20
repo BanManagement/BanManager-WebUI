@@ -47,7 +47,7 @@
   "devDependencies": {
     "babel-eslint": "10.0.2",
     "enzyme": "3.10.0",
-    "enzyme-adapter-react-16": "1.15.1",
+    "enzyme-adapter-react-16": "1.15.2",
     "enzyme-wait": "1.0.9",
     "jest": "24.9.0",
     "react-addons-test-utils": "15.6.2",
