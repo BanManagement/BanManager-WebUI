@@ -45,7 +45,7 @@
     "semantic-ui-react": "0.88.2"
   },
   "devDependencies": {
-    "babel-eslint": "10.0.2",
+    "babel-eslint": "10.1.0",
     "enzyme": "3.11.0",
     "enzyme-adapter-react-16": "1.15.2",
     "enzyme-wait": "1.0.9",
