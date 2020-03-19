@@ -2,18 +2,18 @@ import {
   Message
 } from 'semantic-ui-react'
 import React from 'react'
-import PropTypes from 'prop-types'
 
-const GraphQLErrorMessage = ({ error }) => {
-  const { graphQLErrors = [] } = error || {}
+const GraphQLErrorMessage = ({ error = {} }) => {
   let content
   let hidden = false
 
   if (error && error.networkError) {
-    content = [ <Message.Item key='network-error'>An error occured, please try again</Message.Item> ]
+    content = [<Message.Item key='network-error'>An error occured, please try again</Message.Item>]
+  } else if (error && error.length) {
+    content = error.map((e, i) => <Message.Item key={i}>{e.message}</Message.Item>)
+    hidden = !error.length
   } else {
-    content = graphQLErrors.map((error, i) => <Message.Item key={i}>{error.message}</Message.Item>)
-    hidden = !graphQLErrors.length
+    return null
   }
 
   return (
@@ -22,10 +22,6 @@ const GraphQLErrorMessage = ({ error }) => {
       <Message.List children={content} />
     </Message>
   )
-}
-
-GraphQLErrorMessage.propTypes =
-{ error: PropTypes.instanceOf(Error)
 }
 
 export default GraphQLErrorMessage

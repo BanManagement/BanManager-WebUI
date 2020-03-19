@@ -1,36 +1,50 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Form } from 'semantic-ui-react'
-import GraphQLErrorMessage from 'components/GraphQLErrorMessage'
+import GraphQLErrorMessage from './GraphQLErrorMessage'
+import { useApi } from '../utils'
 
-class PlayerCommentForm extends React.Component {
-  state = { error: null, loading: false, message: '' }
+export default function PlayerCommentForm ({ onFinish, parseVariables, query }) {
+  const [loading, setLoading] = useState(false)
+  const [variables, setVariables] = useState({})
+  const [inputState, setInputState] = useState({
+    message: ''
+  })
 
-  handleChange = (e, { name, value }) => this.setState({ [name]: value })
+  useEffect(() => setVariables(parseVariables(inputState)), [inputState])
 
-  onSubmit = async (e) => {
-    this.setState({ loading: true })
+  const { load, data, graphQLErrors } = useApi({ query, variables }, {
+    loadOnMount: false,
+    loadOnReload: false,
+    loadOnReset: false,
+    reloadOnLoad: true
+  })
 
-    try {
-      await this.props.onSubmit(e, this.state)
-    } catch (error) {
-      console.error(error)
-      this.setState({ error })
+  useEffect(() => {
+    setLoading(false)
+  }, [graphQLErrors])
+  useEffect(() => {
+    if (!data) return
+    if (Object.keys(data).some(key => !!data[key].id)) {
+      setLoading(false)
+      onFinish(data)
     }
+  }, [data])
 
-    this.setState({ loading: false, message: '' })
+  const onSubmit = (e) => {
+    e.preventDefault()
+
+    setLoading(true)
+    load()
+  }
+  const handleChange = async (e, { name, value }) => {
+    setInputState({ ...inputState, [name]: value })
   }
 
-  render () {
-    const { error, loading } = this.props
-
-    return (
-      <Form onSubmit={this.onSubmit} error loading={loading}>
-        <GraphQLErrorMessage error={error} />
-        <Form.TextArea name='message' maxLength='250' value={this.state.message} onChange={this.handleChange} />
-        <Form.Button content='Reply' labelPosition='left' icon='edit' primary />
-      </Form>
-    )
-  }
+  return (
+    <Form size='large' onSubmit={onSubmit} error loading={loading}>
+      <GraphQLErrorMessage error={graphQLErrors} />
+      <Form.TextArea name='message' maxLength='250' value={inputState.message} onChange={handleChange} />
+      <Form.Button content='Reply' labelPosition='left' icon='edit' primary />
+    </Form>
+  )
 }
-
-export default PlayerCommentForm

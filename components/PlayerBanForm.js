@@ -1,141 +1,109 @@
-import React from 'react'
-import {
-  Button,
-  Form,
-  Image,
-  Segment,
-  Select
-} from 'semantic-ui-react'
-import Moment from 'react-moment'
-import PropTypes from 'prop-types'
-import DateTimePicker from 'components/DateTimePicker'
+import React, { useEffect, useState } from 'react'
+import { Button, Form, Image, Select, Header } from 'semantic-ui-react'
 import GraphQLErrorMessage from './GraphQLErrorMessage'
+import DateTimePicker from './DateTimePicker'
+import { fromNow, useApi } from '../utils'
 
-class PlayerBanForm extends React.Component {
-  handleChange = (e, { name, value }) => this.setState({ [name]: value })
+export default function PlayerBanForm ({ player, servers, onFinished, query, parseVariables, disableServers = false, defaults = {} }) {
+  const [loading, setLoading] = useState(false)
+  const [variables, setVariables] = useState({})
+  const [typeState, setTypeState] = useState(defaults.expires ? 'temporary' : 'permanent')
+  const [inputState, setInputState] = useState({
+    reason: defaults.reason || '',
+    expires: defaults.expires * 1000 || 0,
+    server: defaults?.server?.id
+  })
 
-  toggleExpiry = (e) => {
+  useEffect(() => setVariables(parseVariables(inputState)), [inputState])
+
+  const { load, data, graphQLErrors } = useApi({ query, variables }, {
+    loadOnMount: false,
+    loadOnReload: false,
+    loadOnReset: false,
+    reloadOnLoad: true
+  })
+
+  useEffect(() => setLoading(false), [graphQLErrors])
+  useEffect(() => {
+    if (!data) return
+    if (Object.keys(data).some(key => !!data[key].id)) onFinished()
+  }, [data])
+
+  const serversDropdown = servers.map(({ server }) => ({ key: server.id, value: server.id, text: server.name }))
+
+  const onSubmit = (e) => {
+    e.preventDefault()
+    setLoading(true)
+
+    load()
+  }
+  const toggleExpiry = (e) => {
     e.preventDefault()
 
-    let expiryType
-    let expires
+    let type = 'permanent'
+    let expires = 0
 
-    if (this.state.expiryType === 'permanent') {
-      expiryType = 'temporary'
-      expires = Math.floor(Date.now() / 1000)
-    } else {
-      expiryType = 'permanent'
-      expires = 0
+    if (typeState === 'permanent') {
+      type = 'temporary'
+      expires = Date.now()
     }
 
-    this.setState({ expiryType, expires })
+    setTypeState(type)
+    setInputState({ ...inputState, expires })
   }
-
-  onExpiryChange = dateTime => this.setState({ expires: dateTime.unix() })
-
-  disablePast = (current) => {
-    return current.isAfter(new Date())
+  const onExpiryChange = expires => {
+    setInputState({ ...inputState, expires: expires.getTime() })
   }
+  const disablePast = current => current > new Date()
+  const expiryColour = typeState === 'permanent' ? 'red' : 'yellow'
+  const expiryLabel = typeState === 'permanent' ? 'Permanent' : 'Temporary'
 
-  constructor (props) {
-    super(props)
-
-    const { data: { id, created, reason, expires, player } } = props
-    let servers = null
-
-    if (player && player.servers) {
-      servers = player.servers.reduce((filtered, { acl, server }) => {
-        if (acl.bans.create) {
-          filtered.push({ key: server.id, value: server.id, text: server.name })
-        }
-
-        return filtered
-      }, [])
-    }
-
-    this.state =
-    { id,
-      player: player,
-      reason: reason || '',
-      created,
-      expires: expires || 0,
-      error: null,
-      server: servers && servers.length ? servers[0].value : null,
-      loading: false,
-      servers,
-      expiryType: expires ? 'temporary' : 'permanent'
-    }
-  }
-
-  onSubmit = async (e) => {
-    this.setState({ loading: true })
-
-    try {
-      await this.props.onSubmit(e, this.state)
-    } catch (error) {
-      this.setState({ error, loading: false })
-    }
-  }
-
-  render () {
-    const { created, expires, reason, player, servers, server, error, loading, expiryType } = this.state
-    const expiryColour = expiryType === 'permanent' ? 'red' : 'yellow'
-    const expiryLabel = expiryType === 'permanent' ? 'Permanent' : 'Temporary'
-
-    return (
-      <Form size='large' onSubmit={this.onSubmit} error loading={loading}>
-        <Segment>
-          <GraphQLErrorMessage error={error} />
-          <Form.Group inline>
-            <label><Image fluid inline src={`https://crafatar.com/avatars/${player.id}?size=50&overlay=true`} /></label>
-            {player.name}
-          </Form.Group>
-          { servers &&
-            <Form.Field
-              required
-              name='server'
-              control={Select}
-              options={servers}
-              placeholder='Server'
-              onChange={this.handleChange}
-              defaultValue={server}
-            />
-          }
-          <Form.Input
-            fluid
-            required
-            placeholder='Reason'
-            value={reason}
-            name='reason'
-            onChange={this.handleChange}
-          />
-          <Form.Group inline>
-            <label>Expires</label>
-            <Button color={expiryColour} onClick={this.toggleExpiry}>{expiryLabel}</Button>
-            {expires !== 0 &&
-              <DateTimePicker
-                value={expires * 1000}
-                utc
-                isValidDate={this.disablePast}
-                onChange={this.onExpiryChange}
-              />
-            }
-          </Form.Group>
-          {created &&
-            <Form.Group inline>
-              <label>Created</label><Moment unix fromNow>{created}</Moment>
-            </Form.Group>
-          }
-          <Form.Button fluid primary size='large' content='Save' />
-        </Segment>
-      </Form>
-    )
-  }
+  return (
+    <Form size='large' onSubmit={onSubmit} error loading={loading}>
+      <Header>Ban</Header>
+      <GraphQLErrorMessage error={graphQLErrors} />
+      <Form.Group inline>
+        <label>
+          <Image fluid inline src={`https://crafatar.com/avatars/${player.id}?size=50&overlay=true`} />
+        </label>
+        <a href={`/player/${player.id}`}>{player.name}</a>
+      </Form.Group>
+      <Form.Field
+        required
+        name='server'
+        control={Select}
+        options={serversDropdown}
+        placeholder='Server'
+        onChange={async (e, { value }) => {
+          setInputState({ ...inputState, server: value })
+        }}
+        defaultValue={inputState.server}
+        disabled={disableServers}
+      />
+      <Form.Input
+        required
+        name='reason'
+        placeholder='Reason'
+        onChange={async (e, { value }) => {
+          setInputState({ ...inputState, reason: value })
+        }}
+        value={inputState.reason}
+      />
+      <Form.Group inline>
+        <label>Expires</label>
+        <Button color={expiryColour} onClick={toggleExpiry}>{expiryLabel}</Button>
+        {inputState.expires !== 0 &&
+          <DateTimePicker
+            value={new Date(inputState.expires)}
+            isValidDate={disablePast}
+            onChange={onExpiryChange}
+          />}
+      </Form.Group>
+      {defaults.created &&
+        <Form.Group inline>
+          <label>Created</label>{fromNow(defaults.created)}
+        </Form.Group>}
+      <Form.Button fluid primary size='large' content='Save' />
+    </Form>
+  )
 }
-
-PlayerBanForm.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
-  data: PropTypes.object
-}
-
-export default PlayerBanForm

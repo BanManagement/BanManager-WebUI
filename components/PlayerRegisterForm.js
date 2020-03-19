@@ -1,80 +1,84 @@
-import React from 'react'
-import {
-  Button,
-  Form,
-  Segment
-} from 'semantic-ui-react'
+import React, { useEffect, useState } from 'react'
+import { Form } from 'semantic-ui-react'
+import { useRouter } from 'next/router'
 import ErrorMessage from './ErrorMessage'
 
-class PlayerRegisterForm extends React.Component {
-  handleChange = (e, { name, value }) => this.setState({ [name]: value })
+export default function PlayerRegisterForm () {
+  const router = useRouter()
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
+  const [inputState, setInputState] = useState({
+    email: '',
+    password: '',
+    confirmPassword: ''
+  })
 
-  constructor (props) {
-    super(props)
+  useEffect(() => setLoading(false), [error])
 
-    this.state =
-    { email: '',
-      password: '',
-      confirmPassword: '',
-      error: null,
-      loading: false
+  const onSubmit = async (e) => {
+    e.preventDefault()
+    setLoading(true)
+
+    if (inputState.password !== inputState.confirmPassword) {
+      return setError(new Error('Passwords do not match'))
     }
-  }
-
-  onSubmit = async (e) => {
-    if (this.state.password !== this.state.confirmPassword) {
-      return this.setState({ error: new Error('Passwords do not match') })
-    }
-
-    this.setState({ error: null, loading: true })
 
     try {
-      await this.props.onSubmit(e, this.state)
-    } catch (error) {
-      this.setState({ error, loading: false })
+      const response = await fetch(process.env.API_HOST + '/register',
+        {
+          method: 'POST',
+          body: JSON.stringify(inputState),
+          headers: new Headers({ 'Content-Type': 'application/json' }),
+          credentials: 'include'
+        })
+
+      if (response.status !== 204) {
+        const responseData = await response.json()
+
+        throw new Error(responseData.error)
+      }
+
+      router.push('/')
+    } catch (e) {
+      setError(e)
     }
   }
-
-  render () {
-    const { error, loading } = this.state
-
-    return (
-      <Segment>
-        <Form size='large' onSubmit={this.onSubmit} error loading={loading}>
-          <ErrorMessage error={error} />
-          <Form.Input
-            required
-            name='email'
-            placeholder='Email Address'
-            type='text'
-            icon='mail'
-            iconPosition='left'
-            onChange={this.handleChange}
-          />
-          <Form.Input
-            required
-            name='password'
-            placeholder='Password'
-            type='password'
-            icon='lock'
-            iconPosition='left'
-            onChange={this.handleChange}
-          />
-          <Form.Input
-            required
-            name='confirmPassword'
-            placeholder='Confirm Password'
-            type='password'
-            icon='lock'
-            iconPosition='left'
-            onChange={this.handleChange}
-          />
-          <Form.Button fluid primary size='large' content='Confirm' />
-        </Form>
-        <Button fluid size='large' content='Skip' onClick={this.props.onSkip} />
-      </Segment>
-    )
+  const handleChange = async (e, { name, value }) => {
+    setInputState({ ...inputState, [name]: value })
   }
-}
 
-export default PlayerRegisterForm
+  return (
+    <Form size='large' onSubmit={onSubmit} error loading={loading}>
+      <ErrorMessage error={error} />
+      <Form.Input
+        required
+        name='email'
+        placeholder='Email Address'
+        type='text'
+        icon='mail'
+        iconPosition='left'
+        onChange={handleChange}
+      />
+      <Form.Input
+        required
+        name='password'
+        placeholder='Password'
+        type='password'
+        icon='lock'
+        iconPosition='left'
+        onChange={handleChange}
+      />
+      <Form.Input
+        required
+        name='confirmPassword'
+        placeholder='Confirm Password'
+        type='password'
+        icon='lock'
+        iconPosition='left'
+        onChange={handleChange}
+      />
+      <Form.Button fluid primary size='large' content='Confirm' />
+      <Form.Button fluid size='large' content='Skip' onClick={() => router.push('/')} />
+    </Form>
+  )
+}

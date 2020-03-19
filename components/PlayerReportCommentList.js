@@ -1,24 +1,47 @@
-import React from 'react'
-import PlayerReportComment from 'components/PlayerReportComment'
+import React, { useState } from 'react'
 import { Comment } from 'semantic-ui-react'
-import PlayerCommentForm from 'components/PlayerCommentForm'
+import PlayerReportComment from './PlayerReportComment'
+import PlayerCommentForm from './PlayerCommentForm'
 
-class PlayerReportCommentList extends React.Component {
-  render () {
-    const { showReply } = this.props
-    const comments = this.props.comments ? this.props.comments.map(comment => {
-      return <PlayerReportComment server={this.props.server} key={comment.id} {...comment} />
-    }) : []
-
-    return (
-      <Comment.Group>
-        {showReply &&
-          <PlayerCommentForm onSubmit={this.props.handleCommentCreate} />
-        }
-        {comments}
-      </Comment.Group>
-    )
+const query = `mutation createReportComment($report: ID!, $serverId: ID!, $input: ReportCommentInput!) {
+  createReportComment(report: $report, serverId: $serverId, input: $input) {
+    id
+    message
+    created
+    actor {
+      id
+      name
+    }
+    acl {
+      delete
+    }
   }
-}
+}`
 
-export default PlayerReportCommentList
+export default function PlayerReportCommentList ({ id, comments: defaultComments, handleCommentCreate, showReply, serverId }) {
+  const [comments, setComments] = useState(defaultComments)
+
+  const items = comments ? comments.map(comment => (
+    <PlayerReportComment
+      serverId={serverId}
+      key={comment.id}
+      {...comment}
+      onFinish={(data) => {
+        const currentComments = [...comments].filter(c => c.id !== data.deleteReportComment.id)
+        setComments(currentComments)
+      }}
+    />
+  )) : []
+
+  return (
+    <Comment.Group>
+      {showReply &&
+        <PlayerCommentForm
+          parseVariables={(input) => ({ report: id, serverId, input: { message: input.message } })}
+          onFinish={(data) => setComments([...comments, data.createReportComment])}
+          query={query}
+        />}
+      {items}
+    </Comment.Group>
+  )
+}

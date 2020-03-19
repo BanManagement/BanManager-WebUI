@@ -1,128 +1,118 @@
-import React from 'react'
-import {
-  Button,
-  Card,
-  Confirm,
-  Icon,
-  Label
-} from 'semantic-ui-react'
-import Moment from 'react-moment'
-import { graphql } from 'react-apollo'
-import gql from 'graphql-tag'
-import { Router } from 'routes'
-import Alert from 'react-s-alert'
+import React, { useState } from 'react'
+import { Button, Card, Confirm, Icon, Label } from 'semantic-ui-react'
+import { fromNow, useApi } from '../utils'
 
-const icons =
-{ PlayerBan: 'ban',
-  PlayerKick: 'hand paper',
-  PlayerMute: 'mute',
-  PlayerNote: 'sticky note outline',
-  PlayerWarning: 'warning'
+const metaMap = {
+  bans: {
+    icon: 'ban',
+    editPath: 'ban',
+    recordType: 'PlayerBan'
+  },
+  kicks: {
+    icon: 'hand paper',
+    editPath: 'kick',
+    recordType: 'PlayerKick'
+  },
+  mutes: {
+    icon: 'mute',
+    editPath: 'mute',
+    recordType: 'PlayerMute'
+  },
+  notes: {
+    icon: 'sticky note outline',
+    editPath: 'note',
+    recordType: 'PlayerNote'
+  },
+  warnings: {
+    icon: 'warning',
+    editPath: 'warning',
+    recordType: 'PlayerWarning'
+  }
 }
-
-const editPaths =
-{ PlayerBan: 'edit-player-ban',
-  PlayerKick: 'edit-player-kick',
-  PlayerMute: 'edit-player-mute',
-  PlayerNote: 'edit-player-note',
-  PlayerWarning: 'edit-player-warning'
-}
-
 const buttonWords = { 1: 'one', 2: 'two', 3: 'three' }
-
-const deletePunishmentRecordMutation = gql`
+const query = `
   mutation deletePunishmentRecord($id: ID!, $serverId: ID!, $type: RecordType!, $keepHistory: Boolean!) {
     deletePunishmentRecord(id: $id, serverId: $serverId, type: $type, keepHistory: $keepHistory)
+  }`
+
+export default function PlayerPunishment ({ punishment, server, type }) {
+  const meta = metaMap[type]
+  const [state, setState] = useState({ deleteConfirmShow: false, deleting: false })
+
+  const { load, loading } = useApi({
+    query,
+    variables: { id: punishment.id, serverId: server.id, type: meta.recordType, keepHistory: true }
+  }, {
+    loadOnMount: false,
+    loadOnReload: false,
+    loadOnReset: false,
+    reloadOnLoad: true
+  })
+
+  const showConfirmDelete = () => setState({ deleteConfirmShow: true })
+  const handleConfirmDelete = async () => {
+    if (state.deleting) return
+
+    setState({ deleteConfirmShow: false, deleting: true })
+
+    load()
+
+    if (!loading) setState({ deleting: false })
   }
-`
+  const handleDeleteCancel = () => setState({ deleteConfirmShow: false })
 
-class PlayerPunishment extends React.Component {
-  state = { deleteConfirmShow: false, deleting: false }
+  let label = ''
 
-  handleEdit = () => {
-    const { data: { id, __typename: type }, server: { id: server } } = this.props
+  if (punishment.expires === 0) label = <Label color='red' horizontal>Permanent</Label>
+  if (punishment.expires) label = <Label color='yellow' horizontal>{fromNow(punishment.expires)}</Label>
+  const extraButtonsAmount = [punishment.acl.yours, punishment.acl.update, punishment.acl.delete].filter(x => x).length
+  const extraButtonAmountWord = buttonWords[extraButtonsAmount]
 
-    Router.pushRoute(editPaths[type], { server, id })
-  }
-  showConfirmDelete = () => this.setState({ deleteConfirmShow: true })
-  handleConfirmDelete = async () => {
-    this.setState({ deleteConfirmShow: false })
-
-    const { data, server } = this.props
-    const { id, __typename: type } = data
-    const { id: serverId } = server
-
-    this.setState({ deleting: true })
-
-    try {
-      await this.props.mutate(
-        { variables: { id, serverId, type, keepHistory: true },
-          refetchQueries: [ 'player' ]
-        })
-    } catch (e) {
-      Alert.error('An error occurred')
-    } finally {
-      this.setState({ deleting: false })
-    }
-  }
-  handleDeleteCancel = () => this.setState({ deleteConfirmShow: false })
-
-  render () {
-    const { data, server } = this.props
-    let label = ''
-
-    if (data.expires === 0) label = <Label color='red' horizontal>Permanent</Label>
-    if (data.expires) label = <Label color='yellow' horizontal><Moment unix fromNow>{data.expires}</Moment></Label>
-    const extraButtonsAmount = [ data.acl.yours, data.acl.update, data.acl.delete ].filter(x => x).length
-    const extraButtonAmountWord = buttonWords[extraButtonsAmount]
-
-    return (
-      <Card fluid>
-        <Card.Content>
-          <Icon name={icons[data.__typename]} style={{ float: 'right' }} size='large' />
-          <Card.Header>{server.name}</Card.Header>
-          <Card.Meta>
-            {label} {data.actor.name}
-          </Card.Meta>
-          <Card.Description>{ data.reason || data.message }</Card.Description>
-        </Card.Content>
-        {!!extraButtonsAmount &&
-          <Card.Content extra>
-            <div className={`ui ${extraButtonAmountWord} buttons`}>
-              {data.acl.yours &&
-                <Button
-                  basic
-                  color='blue'
-                  href={`/appeal/${server.id}/${data.id}/${editPaths[data.__typename].replace('edit-', '')}`}
-                >
-                  Appeal
-                </Button>
-              }
-              {data.acl.update &&
-                <Button basic color='green' onClick={this.handleEdit}>Edit</Button>
-              }
-              {data.acl.delete &&
-                <Button
-                  basic
-                  color='red'
-                  loading={this.state.deleting}
-                  disabled={this.state.deleting}
-                  onClick={this.showConfirmDelete}
-                >
-                  Delete
-                </Button>
-              }
-              <Confirm
-                open={this.state.deleteConfirmShow}
-                onConfirm={this.handleConfirmDelete}
-                onCancel={this.handleDeleteCancel}
-              />
-            </div>
-          </Card.Content>
-        }
-      </Card>
-    )
-  }
+  return (
+    <Card fluid>
+      <Card.Content>
+        <Icon name={meta.icon} style={{ float: 'right' }} size='large' />
+        <Card.Header>{server.name}</Card.Header>
+        <Card.Meta>
+          {label} {punishment.actor.name}
+        </Card.Meta>
+        <Card.Description>{punishment.reason || punishment.message}</Card.Description>
+      </Card.Content>
+      {!!extraButtonsAmount &&
+        <Card.Content extra>
+          <div className={`ui ${extraButtonAmountWord} buttons`}>
+            {punishment.acl.yours &&
+              <Button
+                basic
+                color='blue'
+                href={`/appeal/${server.id}/${punishment.id}/${meta.editPath.replace('edit-', '')}`}
+              >
+                Appeal
+              </Button>}
+            {punishment.acl.update &&
+              <Button
+                basic
+                color='green'
+                href={`/player/${meta.editPath}/${server.id}-${punishment.id}`}
+              >Edit
+              </Button>}
+            {punishment.acl.delete &&
+              <Button
+                basic
+                color='red'
+                loading={state.deleting}
+                disabled={state.deleting}
+                onClick={showConfirmDelete}
+              >
+                Delete
+              </Button>}
+            <Confirm
+              open={state.deleteConfirmShow}
+              onConfirm={handleConfirmDelete}
+              onCancel={handleDeleteCancel}
+            />
+          </div>
+        </Card.Content>}
+    </Card>
+  )
 }
-
-export default graphql(deletePunishmentRecordMutation)(PlayerPunishment)

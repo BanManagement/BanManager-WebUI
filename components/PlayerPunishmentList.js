@@ -1,33 +1,104 @@
-import React from 'react'
-import { Container, Card, Loader } from 'semantic-ui-react'
+import { Card, Loader } from 'semantic-ui-react'
 import PlayerPunishment from './PlayerPunishment'
+import GraphQLErrorMessage from './GraphQLErrorMessage'
+import { useApi } from '../utils'
 
-const types = [ 'bans', 'kicks', 'mutes', 'notes', 'warnings' ]
+const types = ['bans', 'kicks', 'mutes', 'notes', 'warnings']
 
-export default function PlayerPunishmentList ({ player }) {
-  if (player && player.servers) {
-    let activePunishments = []
+export default function PlayerPunishmentList ({ id }) {
+  const { loading, data, graphQLErrors } = useApi({
+    variables: { id }, query: `
+    query player($id: UUID!) {
+      player(id: $id) {
+        servers {
+          server {
+            id
+            name
+          }
+          bans {
+            id
+            reason
+            created
+            expires
+            actor {
+              id
+              name
+            }
+            acl {
+              update
+              delete
+              yours
+            }
+          }
+          mutes {
+            id
+            reason
+            created
+            expires
+            actor {
+              id
+              name
+            }
+            acl {
+              update
+              delete
+              yours
+            }
+          }
+          warnings {
+            id
+            reason
+            created
+            expires
+            actor {
+              id
+              name
+            }
+            acl {
+              update
+              delete
+              yours
+            }
+          }
+          notes {
+            id
+            message
+            created
+            actor {
+              id
+              name
+            }
+            acl {
+              update
+              delete
+              yours
+            }
+          }
+        }
+      }
+    }
+  `
+  })
 
-    player.servers.forEach((server) => {
-      types.forEach((type) => {
-        if (!server[type] || !Array.isArray(server[type])) return
+  if (loading) return <Loader active />
+  if (graphQLErrors) return <GraphQLErrorMessage error={graphQLErrors} />
+  if (!data || !data.player || !data.player.servers) return null
 
-        const items = server[type].map(data => <PlayerPunishment data={data} server={server.server} key={data.__typename + server.id + data.id} />)
+  let activePunishments = []
 
-        activePunishments = activePunishments.concat(items)
-      })
+  data.player.servers.forEach((server) => {
+    types.forEach((type) => {
+      if (!server[type] || !Array.isArray(server[type])) return
+
+      const items = server[type].map(punishment => <PlayerPunishment punishment={punishment} type={type} server={server.server} key={server.id + data.id + type} />)
+
+      activePunishments = activePunishments.concat(items)
     })
-
-    return (
-      <Card.Group>
-        { activePunishments }
-      </Card.Group>
-    )
-  }
+  })
 
   return (
-    <Container text>
-      <Loader active inline />
-    </Container>
+    <Card.Group>
+      {activePunishments}
+    </Card.Group>
   )
 }

@@ -1,78 +1,61 @@
-import React from 'react'
-import gql from 'graphql-tag'
-import { withApollo } from 'react-apollo'
+import React, { useEffect, useState } from 'react'
 import { Dropdown } from 'semantic-ui-react'
-import { uniqBy } from 'lodash-es'
+import { useApi } from '../../utils'
 
-class PlayerSelector extends React.Component {
-  static defaultProps = {
-    multiple: true,
-    fluid: true,
-    placeholder: 'Select players'
-  }
-
-  constructor (props) {
-    super(props)
-
-    let value = props.value
-
-    if (!value) value = props.multiple ? [] : null
-
-    this.state = { loading: false, value, options: props.options || [] }
-  }
-
-  handleChange = (e, { value }) => {
-    this.setState({ value })
-    this.props.handleChange(value)
-  }
-
-  handleSearchChange = async (e, { searchQuery }) => {
-    if (!searchQuery) return
-
-    this.setState({ loading: true })
-
-    const results = await this.props.client.query({ query, variables: { name: searchQuery, limit: 5 } })
-    let options = results.data.searchPlayers.map(result => ({
-      key: result.id, text: result.name, value: result.id, image: `https://crafatar.com/avatars/${result.id}?size=128&overlay=true`
-    })).concat(this.state.options.filter(opt => {
-      if (!this.state.value) return true
-
-      return this.state.value.indexOf(opt.value) !== -1
-    }))
-
-    options = uniqBy(options, 'key')
-
-    this.setState({ options, loading: false })
-  }
-
-  render () {
-    const { fluid, multiple, placeholder } = this.props
-    const { options, loading, value } = this.state
-
-    return (
-      <Dropdown
-        fluid={fluid}
-        selection
-        multiple={multiple}
-        search
-        options={options}
-        value={value}
-        placeholder={placeholder}
-        onChange={this.handleChange}
-        onSearchChange={this.handleSearchChange}
-        disabled={loading}
-        loading={loading}
-      />
-    )
-  }
-}
-
-export const query = gql`
-  query searchPlayers($name: String!, $limit: Int!) {
+export default function PlayerSelector ({ clearable = false, handleChange, multiple = true, value, options: defaultOptions = [], fluid = true, placeholder = 'Select players', limit = 5 }) {
+  const [loading, setLoading] = useState(false)
+  const [name, setName] = useState('')
+  const [selected, setSelected] = useState(multiple ? [] : value || null)
+  const query = `query searchPlayers($name: String!, $limit: Int!) {
     searchPlayers(name: $name, limit: $limit) {
       id
       name
     }
+  }`
+
+  const { load, data, graphQLErrors } = useApi({ query, variables: { limit, name } }, {
+    loadOnMount: false,
+    loadOnReload: false,
+    loadOnReset: false,
+    reloadOnLoad: true
+  })
+
+  useEffect(() => setLoading(false), [data, graphQLErrors])
+  useEffect(() => {
+    if (!name) return
+
+    setLoading(true)
+    load()
+  }, [name])
+  useEffect(() => handleChange(selected), [selected])
+
+  const handlePlayerChange = (e, { value }) => setSelected(value)
+  const handleSearchChange = (e, { searchQuery }) => {
+    setName(searchQuery)
   }
+
+  const options = data ? data.searchPlayers.map(result => ({
+    key: result.id, text: result.name, value: result.id, image: `https://crafatar.com/avatars/${result.id}?size=128&overlay=true`
+  })) : defaultOptions
+
+  return (
+    <Dropdown
+      fluid={fluid}
+      selection
+      clearable={clearable}
+      multiple={multiple}
+      search
+      options={options}
+      value={selected}
+      placeholder={placeholder}
+      onChange={handlePlayerChange}
+      onSearchChange={handleSearchChange}
+      disabled={loading}
+      loading={loading}
+    />
+  )
+}
+
+export const query = `
+
 `
-export default withApollo(PlayerSelector)

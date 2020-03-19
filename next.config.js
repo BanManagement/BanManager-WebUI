@@ -1,19 +1,25 @@
 const withPlugins = require('next-compose-plugins')
-const withCSS = require('@zeit/next-css')
-const withTM = require('next-transpile-modules')
-const withBundleAnalyzer = require('@zeit/next-bundle-analyzer')
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.BUNDLE_ANALYZE === 'true'
+})
+const withTM = require('next-transpile-modules')(['lodash-es'])
+const { withGraphQLConfig } = require('next-graphql-react/server')
+
 const nextConfig = {
   webpack (config) {
-    config.module.rules.push(
-      { test: /\.(png|svg|eot|otf|ttf|woff|woff2)$/,
-        use:
-          { loader: 'file-loader',
-            options:
-            { publicPath: '/_next/static/',
-              outputPath: 'static/'
-            }
-          }
-      })
+    config.module.rules.push({
+      test: /\.(png|svg)$/i,
+      use: [{
+        loader: 'url-loader',
+        options: {
+          limit: 8192,
+          publicPath: './',
+          outputPath: 'static/css/',
+          name: '[name].[ext]',
+          esModule: false
+        }
+      }]
+    })
 
     return config
   },
@@ -23,22 +29,8 @@ const nextConfig = {
   }
 }
 
-module.exports = withPlugins([ withCSS,
-  [ withBundleAnalyzer,
-    { analyzeServer: ['server', 'both'].includes(process.env.BUNDLE_ANALYZE),
-      analyzeBrowser: ['browser', 'both'].includes(process.env.BUNDLE_ANALYZE),
-      bundleAnalyzerConfig: {
-        server: {
-          analyzerMode: 'static',
-          reportFilename: '../bundles/server.html'
-        },
-        browser: {
-          analyzerMode: 'static',
-          reportFilename: '../bundles/client.html'
-        }
-      }
-    }
-  ],
-  [ withTM, { transpileModules: ['lodash-es'] }
-  ]
+module.exports = withPlugins([
+  [withBundleAnalyzer],
+  [withTM],
+  [withGraphQLConfig]
 ], nextConfig)

@@ -1,16 +1,29 @@
-import {
-  Header,
-  Image,
-  List
-} from 'semantic-ui-react'
-import React from 'react'
-import PropTypes from 'prop-types'
+import { Header, Image, List, Loader } from 'semantic-ui-react'
+import GraphQLErrorMessage from './GraphQLErrorMessage'
+import { useApi } from '../utils'
 
-const PlayerAlts = ({ player }) => {
-  if (!player || !player.servers) return null
+export default function PlayerAlts ({ id }) {
+  const { loading, data, graphQLErrors } = useApi({
+    variables: { id }, query: `
+    query player($id: UUID!) {
+      player(id: $id) {
+        servers {
+          alts {
+            id
+            name
+          }
+        }
+      }
+    }
+  `
+  })
+
+  if (loading) return <Loader active />
+  if (graphQLErrors) return <GraphQLErrorMessage error={graphQLErrors} />
+  if (!data || !data.player || !data.player.servers) return null
 
   // @TODO Clean up, iterating mutliple times
-  const players = player.servers.reduce((data, server) => {
+  const players = data.player.servers.reduce((data, server) => {
     if (!server.alts) return data
 
     data = data.concat(server.alts)
@@ -33,17 +46,11 @@ const PlayerAlts = ({ player }) => {
   })
 
   return (
-    <React.Fragment>
+    <>
       <Header>Possible Alts</Header>
       <List divided>
         {alts}
       </List>
-    </React.Fragment>
+    </>
   )
 }
-
-PlayerAlts.propTypes =
-{ player: PropTypes.object
-}
-
-export default PlayerAlts

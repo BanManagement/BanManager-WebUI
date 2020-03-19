@@ -1,108 +1,91 @@
-import React from 'react'
-import { withApollo } from 'react-apollo'
+import React, { useEffect, useState } from 'react'
 import { Form, Grid, Select } from 'semantic-ui-react'
-import RolesQuery from 'components/queries/RolesQuery'
 import PlayerSelector from './PlayerSelector'
-import GraphQLErrorMessage from 'components/GraphQLErrorMessage'
+import GraphQLErrorMessage from '../GraphQLErrorMessage'
+import { useApi } from '../../utils'
 
-class AssignPlayersRoleForm extends React.Component {
-  static defaultProps = { servers: [] }
+export default function AssignPlayersRoleForm ({ query, roles, servers = [] }) {
+  const [loading, setLoading] = useState(false)
+  const [variables, setVariables] = useState({})
+  const [inputState, setInputState] = useState({
+    players: [],
+    serverId: servers.length ? servers[0].id : ''
+  })
 
-  constructor (props) {
-    super(props)
+  useEffect(() => setVariables(inputState), [inputState])
 
-    const defaultState = { loading: false, error: null }
+  const { data, load, graphQLErrors } = useApi({ query, variables }, {
+    loadOnMount: false,
+    loadOnReload: false,
+    loadOnReset: false,
+    reloadOnLoad: true
+  })
 
-    if (props.servers.length) defaultState.server = props.servers[0].id
-
-    this.state = defaultState
-  }
-
-  handlePlayerChange = (value) => {
-    this.setState({ players: value })
-  }
-
-  handleChange = (e, { name, value }) => this.setState({ [name]: value })
-
-  onSubmit = async () => {
-    const { players, role } = this.state
-
-    this.setState({ loading: true, error: null })
-
-    const variables = { players, role: parseInt(role, 10) }
-
-    if (this.props.servers.length) {
-      variables.serverId = this.state.server
+  useEffect(() => setLoading(false), [graphQLErrors])
+  useEffect(() => {
+    if (!data) return
+    if (Object.keys(data).some(key => data[key] && data[key].id)) {
+      setLoading(false)
     }
+  }, [data])
 
-    try {
-      await this.props.client.mutate({ mutation: this.props.mutation, variables })
-    } catch (error) {
-      this.setState({ error })
-    }
+  const handlePlayerChange = (value) => {
+    setInputState({ ...inputState, players: value })
+  }
+  const handleChange = (e, { name, value }) => setInputState({ ...inputState, [name]: value })
+  const onSubmit = async (e) => {
+    e.preventDefault()
+    setLoading(true)
 
-    this.setState({ loading: false, players: [] })
+    load()
   }
 
-  render () {
-    const { error, loading } = this.state
-    const servers = this.props.servers.map(server => ({ key: server.id, value: server.id, text: server.name }))
+  const serversDropdown = servers.map(server => ({ key: server.id, value: server.id, text: server.name }))
+  const rolesDropdown = roles.map(role => ({ key: role.id, text: role.name, value: role.id }))
 
-    return (
-      <Grid doubling>
-        <Grid.Row>
+  return (
+    <Grid doubling>
+      <Grid.Row>
+        <Grid.Column desktop={4} mobile={16}>
+          <GraphQLErrorMessage error={graphQLErrors} />
+          <PlayerSelector handleChange={handlePlayerChange} />
+        </Grid.Column>
+        <Grid.Column desktop={4} mobile={16}>
+          <Form.Field
+            required
+            name='role'
+            control={Select}
+            options={rolesDropdown}
+            placeholder='Role'
+            onChange={handleChange}
+            fluid
+          />
+        </Grid.Column>
+        {!!servers.length &&
           <Grid.Column desktop={4} mobile={16}>
-            <GraphQLErrorMessage error={error} />
-            <PlayerSelector handleChange={this.handlePlayerChange} />
-          </Grid.Column>
-          <Grid.Column desktop={4} mobile={16}>
-            <RolesQuery>
-              {({ roles }) => {
-                const data = roles.map(role => ({ key: role.id, text: role.name, value: role.id }))
-
-                return (
-                  <Form.Field
-                    required
-                    name='role'
-                    control={Select}
-                    options={data}
-                    placeholder='Role'
-                    onChange={this.handleChange}
-                    fluid
-                  />
-                )
-              }}
-            </RolesQuery>
-          </Grid.Column>
-          {!!servers.length &&
-            <Grid.Column desktop={4} mobile={16}>
-              <Form.Field
-                required
-                name='server'
-                control={Select}
-                options={servers}
-                placeholder='Server'
-                onChange={this.handleChange}
-                defaultValue={servers.length ? servers[0].value : null}
-                fluid
-              />
-            </Grid.Column>
-          }
-          <Grid.Column desktop={2} mobile={6}>
-            <Form.Button
-              loading={loading}
-              disabled={loading}
+            <Form.Field
+              required
+              name='serverId'
+              control={Select}
+              options={serversDropdown}
+              placeholder='Server'
+              onChange={handleChange}
+              defaultValue={serversDropdown.length ? serversDropdown[0].value : null}
               fluid
-              primary
-              size='large'
-              content='Add'
-              onClick={this.onSubmit}
             />
-          </Grid.Column>
-        </Grid.Row>
-      </Grid>
-    )
-  }
+          </Grid.Column>}
+        <Grid.Column desktop={2} mobile={6}>
+          <Form.Button
+            loading={loading}
+            disabled={loading}
+            fluid
+            primary
+            size='large'
+            content='Add'
+            onClick={onSubmit}
+          />
+        </Grid.Column>
+      </Grid.Row>
+    </Grid>
+  )
 }
-
-export default withApollo(AssignPlayersRoleForm)

@@ -1,80 +1,34 @@
-import React from 'react'
-import withData from 'lib/withData'
-import DefaultLayout from 'components/DefaultLayout'
-import {
-  Header,
-  Message,
-  Loader
-} from 'semantic-ui-react'
-import { Router } from 'routes'
-import PlayerLoginPasswordForm from 'components/PlayerLoginPasswordForm'
-import PlayerLoginPinForm from 'components/PlayerLoginPinForm'
-import ServersQuery from 'components/queries/ServersQuery'
-import PageContentContainer from 'components/PageContentContainer'
-import withSession from 'lib/withSession'
+import { Header, Message, Segment } from 'semantic-ui-react'
+import DefaultLayout from '../components/DefaultLayout'
+import PageContainer from '../components/PageContainer'
+import PlayerLoginPasswordForm from '../components/PlayerLoginPasswordForm'
+import PlayerLoginPinForm from '../components/PlayerLoginPinForm'
 
-export class LoginPage extends React.Component {
-  async handleOnSubmit (e, { email, password, server, name, pin }) {
-    let data
+function Page () {
+  return (
+    <DefaultLayout title='Login'>
+      <PageContainer>
+        <Header>Have an account?</Header>
+        <Segment>
+          <PlayerLoginPasswordForm />
+        </Segment>
 
-    if (email) {
-      data = { email, password }
-    } else {
-      data = { serverId: server, name, pin }
-    }
-
-    const response = await fetch(process.env.API_HOST + '/session',
-      { method: 'POST',
-        body: JSON.stringify(data),
-        headers: new Headers({ 'Content-Type': 'application/json' }),
-        credentials: 'include'
-      })
-
-    if (email && response.status === 204) {
-      window.location.replace('/')
-    } else if ((email && response.status !== 204) || response.status !== 200) {
-      const responseData = await response.json()
-
-      throw new Error(responseData.error)
-    } else {
-      const responseData = await response.json()
-
-      if (responseData.hasAccount) return window.location.replace('/')
-
-      window.location.replace('/register')
-    }
-  }
-
-  render () {
-    if (this.props.session.exists && Router.router) {
-      window.location.replace('/')
-      return <Loader />
-    }
-
-    return (
-      <DefaultLayout title='Login' displayNavTitle>
-        <PageContentContainer>
-          <Header>Have an account?</Header>
-          <PlayerLoginPasswordForm onSubmit={this.handleOnSubmit} />
-          <Message
-            info
-            header='Banned?'
-            content='Attempt to join the server in Minecraft, type in the pin number contained within your ban message'
-          />
-          <Message
-            info
-            header='Forgot password?'
-            content='Join the server in Minecraft, type /bmpin in chat and type the generated pin number below'
-          />
-          <ServersQuery>
-            {({ servers }) => (
-              <PlayerLoginPinForm servers={servers} onSubmit={this.handleOnSubmit} />
-            )}
-          </ServersQuery>
-        </PageContentContainer>
-      </DefaultLayout>
-    )
-  }
+        <Message
+          info
+          header='Banned?'
+          content='Attempt to join the server in Minecraft, type in the pin number contained within your ban message'
+        />
+        <Message
+          info
+          header='Forgot password?'
+          content='Join the server in Minecraft, type /bmpin in chat and type the generated pin number below'
+        />
+        <Segment>
+          <PlayerLoginPinForm />
+        </Segment>
+      </PageContainer>
+    </DefaultLayout>
+  )
 }
 
-export default withData(withSession(LoginPage))
+export default Page

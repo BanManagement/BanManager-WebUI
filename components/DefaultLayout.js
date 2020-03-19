@@ -1,61 +1,61 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import Head from 'next/head'
-import Alert from 'react-s-alert'
+import { withRouter } from 'next/router'
+import { NextSeo } from 'next-seo'
+import { Loader } from 'semantic-ui-react'
 import Footer from './Footer'
-import ResponsiveContainer from 'components/ResponsiveContainer'
-import NavigationQuery from './queries/NavigationQuery'
+import ResponsiveContainer from './ResponsiveContainer'
+import GraphQLErrorMessage from './GraphQLErrorMessage'
 import SessionNavProfile from './SessionNavProfile'
-import withSession from 'lib/withSession'
-import getWidthFactory from 'lib/widthFactory'
-import GlobalContext from 'lib/GlobalContext'
-import 'semantic-ui-css/semantic.min.css'
-import 'react-s-alert/dist/s-alert-default.css'
+import { getWidthFactory, useApi } from '../utils'
+import { GlobalStore } from '../components/GlobalContext'
 
-class DefaultLayout extends React.Component {
-  static defaultProps =
-    { title: 'Default Title'
-    }
-  static propTypes =
-    { title: PropTypes.string,
-      displayNavTitle: PropTypes.bool,
-      children: PropTypes.node.isRequired,
-      heading: PropTypes.func,
-      session: PropTypes.object.isRequired,
-      rightItems: PropTypes.node
-    }
+function DefaultLayout ({ title = 'Default Title', children, heading, description }) {
+  const store = GlobalStore()
+  const user = store.get('user')
+  const { mobile, tablet } = store.get('deviceInfo')
+  const { loading, data } = useApi({
+    query: `{
+      navigation {
+        left {
+          id
+          name
+          href
+        }
+      }
+    }`
+  }, {
+    loadOnReload: false,
+    loadOnReset: false
+  })
 
-  render () {
-    const { title, displayNavTitle, children, session, heading } = this.props
-    let { rightItems } = this.props
+  if (loading) return <Loader active />
+  if (!data) return <GraphQLErrorMessage error={{ networkError: true }} />
 
-    if (!rightItems && !session.exists) {
-      rightItems = [ { icon: 'user', href: '/login' } ]
-    } else {
-      rightItems = [ <SessionNavProfile key='session-nav-profile' session={session} /> ]
-    }
+  let right = [{ icon: 'user', href: '/login' }]
 
-    return (
-      <React.Fragment>
-        <Head>
-          <title>{ title }</title>
-        </Head>
-        <Alert position='bottom' stack={false} timeout='none' />
-        <GlobalContext.Consumer>
-          {({ isMobileFromSSR }) =>
-            <NavigationQuery>
-              {({ navigation: { left } }) => (
-                <ResponsiveContainer heading={heading} leftItems={left} rightItems={rightItems} getWidth={getWidthFactory(isMobileFromSSR)} mobile={isMobileFromSSR} displayNavTitle={displayNavTitle} title={title}>
-                  {children}
-                  <Footer getWidth={getWidthFactory(isMobileFromSSR)} />
-                </ResponsiveContainer>
-              )}
-            </NavigationQuery>
-          }
-        </GlobalContext.Consumer>
-      </React.Fragment>
-    )
+  if (user.id) {
+    right = [<SessionNavProfile key='session-nav-profile' />]
   }
+
+  const { left } = data.navigation
+
+  return (
+    <>
+      <Head>
+        <title>{title}</title>
+      </Head>
+      <NextSeo description={description} title={title} />
+      <ResponsiveContainer heading={heading} leftItems={left} rightItems={right} getWidth={getWidthFactory(mobile, tablet)} mobile={mobile}>
+        <div style={{ display: 'flex', minHeight: '100vh', flexDirection: 'column' }}>
+          <div style={{ flex: 1 }}>
+            {children}
+          </div>
+          <Footer isMobileFromSSR={mobile} />
+        </div>
+      </ResponsiveContainer>
+    </>
+  )
 }
 
-export default withSession(DefaultLayout)
+export default withRouter(DefaultLayout)

@@ -1,27 +1,43 @@
-import {
-  Table
-} from 'semantic-ui-react'
-import React from 'react'
-import Moment from 'react-moment'
-import { fromLong } from 'ip'
+import { Loader, Table } from 'semantic-ui-react'
+import GraphQLErrorMessage from './GraphQLErrorMessage'
+import { fromNow, useApi } from '../utils'
 
-const PlayerIpList = ({ player }) => {
-  if (!player || !player.servers) return null
+export default function PlayerIpList ({ id }) {
+  const { loading, data, graphQLErrors } = useApi({
+    variables: { id }, query: `
+    query player($id: UUID!) {
+      player(id: $id) {
+        servers {
+          id
+          ip
+          lastSeen
+          server {
+            name
+          }
+        }
+      }
+    }
+  `
+  })
 
-  const ips = player.servers.reduce((data, server) => {
-    if (!server.ip) return data
+  if (loading) return <Loader active />
+  if (graphQLErrors) return <GraphQLErrorMessage error={graphQLErrors} />
+  if (!data || !data.player || !data.player.servers) return null
 
-    const row = <Table.Row key={server.id}>
-      <Table.Cell>{server.server.name}</Table.Cell>
-      <Table.Cell>{fromLong(server.ip)}</Table.Cell>
-      <Table.Cell collapsing textAlign='right'>
-        <Moment unix fromNow>{server.lastSeen}</Moment>
-      </Table.Cell>
-    </Table.Row>
+  const ips = data.player.servers.reduce((rows, server) => {
+    if (!server.ip) return rows
 
-    data.push(row)
+    const row = (
+      <Table.Row key={server.id}>
+        <Table.Cell>{server.server.name}</Table.Cell>
+        <Table.Cell>{server.ip}</Table.Cell>
+        <Table.Cell collapsing textAlign='right'>{fromNow(server.lastSeen)}</Table.Cell>
+      </Table.Row>
+    )
 
-    return data
+    rows.push(row)
+
+    return rows
   }, [])
 
   if (!ips.length) return null
@@ -37,5 +53,3 @@ const PlayerIpList = ({ player }) => {
     </Table>
   )
 }
-
-export default PlayerIpList

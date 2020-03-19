@@ -1,26 +1,8 @@
 {
-  "env": {
-    "development": {
-      "presets": ["next/babel"],
-      "plugins": ["inline-dotenv", "git-version"]
-    },
-    "production": {
-      "presets": ["next/babel"],
-      "plugins": ["git-version"]
-    },
-    "test": {
-      "presets": [[ "next/babel", { "preset-env": { "modules": "commonjs" } }]],
-      "plugins": ["inline-dotenv", "git-version"]
-    }
-  },
+  "presets": [
+    "next/babel"
+  ],
   "plugins": [
-    ["module-resolver", {
-      "root": ["."],
-      "alias": {
-        "components": "./components",
-        "routes": "./routes.js",
-        "lib": "./lib"
-      }
-    }]
+    "git-version"
   ]
 }

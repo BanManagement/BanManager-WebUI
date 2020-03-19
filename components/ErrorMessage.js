@@ -1,6 +1,4 @@
-import {
-  Message
-} from 'semantic-ui-react'
+import { Message } from 'semantic-ui-react'
 
 export default ({ error }) => {
   if (!error) return null
