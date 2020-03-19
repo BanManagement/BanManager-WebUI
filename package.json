@@ -19,6 +19,7 @@
     "@nateradebaugh/react-datetime": "4.3.4",
     "@next/bundle-analyzer": "9.3.1",
     "babel-plugin-git-version": "0.2.0",
+    "babel-runtime": "6.26.0",
     "compare-versions": "3.6.0",
     "cross-fetch": "3.0.4",
     "date-fns": "2.10.0",
