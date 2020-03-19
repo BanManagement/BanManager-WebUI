@@ -1,65 +1,72 @@
-import React from 'react'
-import {
-  Form,
-  Segment
-} from 'semantic-ui-react'
+import React, { useEffect, useState } from 'react'
+import { Form } from 'semantic-ui-react'
 import ErrorMessage from './ErrorMessage'
 
-class PlayerLoginPasswordForm extends React.Component {
-  handleChange = (e, { name, value }) => this.setState({ [name]: value })
+export default function PlayerLoginPasswordForm () {
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
+  const [inputState, setInputState] = useState({
+    email: '',
+    password: ''
+  })
 
-  constructor (props) {
-    super(props)
+  useEffect(() => setLoading(false), [error])
 
-    this.state =
-    { email: '',
-      password: '',
-      error: null,
-      loading: false
-    }
-  }
-
-  onSubmit = async (e) => {
-    this.setState({ loading: true })
+  const onSubmit = async (e) => {
+    e.preventDefault()
+    setLoading(true)
 
     try {
-      await this.props.onSubmit(e, this.state)
-    } catch (error) {
-      this.setState({ error })
+      const response = await fetch(process.env.API_HOST + '/session',
+        {
+          method: 'POST',
+          body: JSON.stringify(inputState),
+          headers: new Headers({ 'Content-Type': 'application/json' }),
+          credentials: 'include'
+        })
+
+      if (response.status === 204) {
+        window.location.replace('/')
+      } else if (response.status !== 204) {
+        const responseData = await response.json()
+
+        throw new Error(responseData.error)
+      } else {
+        const responseData = await response.json()
+
+        if (responseData.hasAccount) return window.location.replace('/')
+
+        window.location.replace('/register')
+      }
+    } catch (e) {
+      setError(e)
     }
-
-    this.setState({ loading: false })
+  }
+  const handleChange = async (e, { name, value }) => {
+    setInputState({ ...inputState, [name]: value })
   }
 
-  render () {
-    const { error, loading } = this.state
-
-    return (
-      <Form size='large' onSubmit={this.onSubmit} error loading={loading}>
-        <Segment>
-          <ErrorMessage error={error} />
-          <Form.Input
-            required
-            name='email'
-            placeholder='Email address'
-            icon='user'
-            iconPosition='left'
-            onChange={this.handleChange}
-          />
-          <Form.Input
-            required
-            name='password'
-            placeholder='Password'
-            type='password'
-            icon='lock'
-            iconPosition='left'
-            onChange={this.handleChange}
-          />
-          <Form.Button fluid primary size='large' content='Login' />
-        </Segment>
-      </Form>
-    )
-  }
+  return (
+    <Form size='large' onSubmit={onSubmit} error loading={loading}>
+      <ErrorMessage error={error} />
+      <Form.Input
+        required
+        name='email'
+        placeholder='Email address'
+        icon='user'
+        iconPosition='left'
+        onChange={handleChange}
+      />
+      <Form.Input
+        required
+        name='password'
+        placeholder='Password'
+        type='password'
+        icon='lock'
+        iconPosition='left'
+        onChange={handleChange}
+      />
+      <Form.Button fluid primary size='large' content='Login' />
+    </Form>
+  )
 }
-
-export default PlayerLoginPasswordForm

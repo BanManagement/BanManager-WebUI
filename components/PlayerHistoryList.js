@@ -1,16 +1,64 @@
-import {
-  Header
-} from 'semantic-ui-react'
-import React from 'react'
-import PlayerHistory from 'components/PlayerHistory'
+import { Header, Loader, Table } from 'semantic-ui-react'
+import GraphQLErrorMessage from './GraphQLErrorMessage'
+import { fromNow, useApi } from '../utils'
 
-const PlayerHistoryList = ({ player }) => {
-  if (!player || !player.servers) return null
+const PlayerHistory = ({ server, history }) => {
+  if (!history || !history.length) return null
 
-  const history = player.servers.reduce((data, server) => {
+  const ips = history.map((item, i) => {
+    return (
+      <Table.Row key={i}>
+        <Table.Cell>
+          {fromNow(item.join)}
+        </Table.Cell>
+        <Table.Cell>
+          {fromNow(item.leave)}
+        </Table.Cell>
+        <Table.Cell>{item.ip}</Table.Cell>
+      </Table.Row>
+    )
+  })
+
+  return (
+    <Table celled striped>
+      <Table.Header>
+        <Table.Row>
+          <Table.HeaderCell colSpan='3'>{server.server.name}</Table.HeaderCell>
+        </Table.Row>
+      </Table.Header>
+      <Table.Body>{ips}</Table.Body>
+    </Table>
+  )
+}
+
+export default function PlayerHistoryList ({ id }) {
+  const { loading, data, graphQLErrors } = useApi({
+    variables: { id }, query: `
+    query player($id: UUID!) {
+      player(id: $id) {
+        servers {
+          server {
+            name
+          }
+          history {
+            ip
+            join
+            leave
+          }
+        }
+      }
+    }
+  `
+  })
+
+  if (loading) return <Loader active />
+  if (graphQLErrors) return <GraphQLErrorMessage error={graphQLErrors} />
+  if (!data || !data.player || !data.player.servers) return null
+
+  const history = data.player.servers.reduce((data, server, i) => {
     if (!server.history) return data
 
-    const row = <PlayerHistory server={server} history={server.history} />
+    const row = <PlayerHistory server={server} history={server.history} key={i} />
 
     data.push(row)
 
@@ -20,11 +68,9 @@ const PlayerHistoryList = ({ player }) => {
   if (!history.length) return null
 
   return (
-    <React.Fragment>
+    <>
       <Header>Player History</Header>
       {history}
-    </React.Fragment>
+    </>
   )
 }
-
-export default PlayerHistoryList

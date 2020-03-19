@@ -1,60 +1,79 @@
-import React from 'react'
-import {
-  Form,
-  Header,
-  Segment,
-  Select
-} from 'semantic-ui-react'
-import GraphQLErrorMessage from 'components/GraphQLErrorMessage'
+import React, { useEffect, useState } from 'react'
+import { Button, Form, Header, Image, Modal, Select } from 'semantic-ui-react'
+import GraphQLErrorMessage from '../GraphQLErrorMessage'
+import { useApi } from '../../utils'
 
-class PlayerEditForm extends React.Component {
-  handleChange = (e, { name, value }) => this.setState({ [name]: value })
+export default function PlayerEditForm ({ open, onFinished, player, roles, servers }) {
+  if (!player) return null
 
-  handleServerRoleChange = (e, { name, value }) => {
-    const newRoles = this.props.roles
+  const [loading, setLoading] = useState(false)
+  const [inputState, setInputState] = useState({
+    email: player.email || '',
+    roles: player.roles.map(role => role.id),
+    serverRoles: player.serverRoles
+  })
+  const [variables, setVariables] = useState({})
+  const { load, data, graphQLErrors } = useApi({
+    query: `mutation setRoles($player: ID!, $input: SetRolesInput!) {
+      setRoles(player: $player, input: $input) {
+        id
+      }
+    }`,
+    variables
+  }, {
+    loadOnMount: false,
+    loadOnReload: false,
+    loadOnReset: false,
+    reloadOnLoad: true
+  })
+
+  useEffect(() => setVariables({
+    player: player.id,
+    input: {
+      roles: inputState.roles.map(id => ({ id })),
+      serverRoles: inputState.serverRoles.map(role => ({ role: { id: role.role.id }, server: { id: role.server.id } }))
+    }
+  }), [inputState])
+  useEffect(() => setLoading(false), [graphQLErrors])
+  useEffect(() => {
+    if (!data) return
+    if (Object.keys(data).some(key => !!data[key].id)) onFinished(true)
+  }, [data])
+
+  const onSubmit = (e) => {
+    e.preventDefault()
+    setLoading(true)
+
+    load()
+  }
+  const handleChange = (e, { name, value }) => setInputState({ ...inputState, [name]: value })
+  const handleServerRoleChange = (e, { name, value }) => {
+    const newRoles = roles
       .filter(role => value.includes(role.id))
       .map(role => ({ role: { id: role.id, name: role.name }, server: { id: name } }))
 
-    this.setState({ serverRoles: newRoles })
+    setInputState({ ...inputState, serverRoles: newRoles })
   }
 
-  onSubmit = async (e) => {
-    this.setState({ loading: true })
+  const serversDropdown = servers.map(server => ({ key: server.id, value: server.id, text: server.name }))
+  const rolesDropdown = roles.map(role => ({ key: role.id, text: role.name, value: role.id }))
 
-    const data = {
-      serverRoles: this.state.serverRoles.map(role => ({ role: { id: role.role.id }, server: { id: role.server.id } })),
-      roles: this.state.roles.map(id => ({ id }))
-    }
-
-    try {
-      await this.props.onSubmit(e, this.props.player.id, data)
-    } catch (error) {
-      console.error(error)
-      this.setState({ error, loading: false })
-    }
-  }
-
-  constructor (props) {
-    super(props)
-
-    const { email, roles, serverRoles } = this.props.player
-
-    this.state = { roles: roles.map(role => role.id), serverRoles, email: email || undefined }
-  }
-
-  render () {
-    const servers = this.props.servers.map(server => ({ key: server.id, value: server.id, text: server.name }))
-    const { email, roles, serverRoles, error, loading } = this.state
-    const options = this.props.roles.map(role => ({ key: role.id, text: role.name, value: role.id }))
-
-    return (
-      <Form size='large' onSubmit={this.onSubmit} error loading={loading}>
-        <Segment>
-          <GraphQLErrorMessage error={error} />
+  return (
+    <Modal
+      open={open}
+      onClose={onFinished}
+    >
+      <Header>
+        <Image src={`https://crafatar.com/avatars/${player.id}?size=45&overlay=true`} fluid avatar />
+        {player.name}
+      </Header>
+      <Modal.Content>
+        <Form size='large' error loading={loading}>
+          <GraphQLErrorMessage error={graphQLErrors} />
           <Form.Input
             fluid
             placeholder='Email'
-            value={email}
+            value={inputState.email}
             name='email'
             readOnly
           />
@@ -62,16 +81,16 @@ class PlayerEditForm extends React.Component {
           <Select
             required
             name='roles'
-            options={options}
-            value={roles}
+            options={rolesDropdown}
+            value={inputState.roles}
             placeholder='Role'
-            onChange={this.handleChange}
+            onChange={handleChange}
             fluid
             multiple
           />
           <Header>Server Roles</Header>
-          {servers.map(server => {
-            const value = serverRoles
+          {serversDropdown.map(server => {
+            const value = inputState.serverRoles
               .filter(r => r.server.id === server.value)
               .map(({ role }) => role.id)
 
@@ -81,21 +100,20 @@ class PlayerEditForm extends React.Component {
                 <Select
                   required
                   name={server.value}
-                  options={options}
+                  options={rolesDropdown}
                   value={value}
                   placeholder='Role'
-                  onChange={this.handleServerRoleChange}
+                  onChange={handleServerRoleChange}
                   fluid
                   multiple
                 />
               </React.Fragment>
             )
           })}
-          <Form.Button fluid primary size='large' content='Save' />
-        </Segment>
-      </Form>
-    )
-  }
+        </Form>
+      </Modal.Content>
+      <Modal.Actions>
+        <Button fluid primary size='large' content='Save' loading={loading} onClick={onSubmit} />
+      </Modal.Actions>
+    </Modal>)
 }
-
-export default PlayerEditForm

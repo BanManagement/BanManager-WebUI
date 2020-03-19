@@ -1,27 +1,42 @@
 import React from 'react'
-import { List, Responsive, Segment, Container } from 'semantic-ui-react'
-import currentVersion from 'lib/currentVersion'
+import { Container, Grid, Header, List, Segment } from 'semantic-ui-react'
 
-export default function Footer ({ getWidth }) {
-  const versionStr = currentVersion()
+export default function Footer ({ isMobileFromSSR }) {
+  const yearNow = new Date().getFullYear()
 
   return (
-    <Segment inverted vertical>
+    <Segment inverted vertical style={{ padding: '5em 0em' }}>
       <Container>
-        <List horizontal inverted divided link>
-          <List.Item as='a' href='#'>&copy; Server Name Here</List.Item>
-          <List.Item as='a' href='#'>Contact Us</List.Item>
-          <List.Item as='a' href='#'>Link Example</List.Item>
-        </List>
-        <Responsive
-          minWidth={Responsive.onlyTablet.minWidth}
-          as={List}
-          floated='right'
-          horizontal
-          getWidth={getWidth}
-        >
-          <List.Item as='a' href='https://github.com/BanManagement/BanManager-WebUI' floated='right'>v{versionStr}</List.Item>
-        </Responsive>
+        <Grid divided inverted stackable>
+          <Grid.Row>
+            <Grid.Column width={3}>
+              <Header inverted as='h4' content='About' />
+              <List link inverted>
+                <List.Item as='a' href='https://dev.bukkit.org/projects/ban-management'>Bukkit Plugin</List.Item>
+                <List.Item as='a' href='https://ore.spongepowered.org/confuser/BanManager'>Sponge Plugin</List.Item>
+                <List.Item as='a' href='https://github.com/BanManagement/banmanagement.com'>Source</List.Item>
+                <List.Item as='a' href='https://github.com/BanManagement/banmanagement.com/issues'>Report Issues</List.Item>
+              </List>
+            </Grid.Column>
+            {/* <Grid.Column width={3}>
+              <Header inverted as='h4' content='Services' />
+              <List link inverted>
+                <List.Item as='a'>Banana Pre-Order</List.Item>
+                <List.Item as='a'>DNA FAQ</List.Item>
+                <List.Item as='a'>How To Access</List.Item>
+                <List.Item as='a'>Favorite X-Men</List.Item>
+              </List>
+            </Grid.Column> */}
+            <Grid.Column width={7}>
+              <Header as='h4' inverted>
+                BanManagement
+              </Header>
+              <p>
+                James Mortemore &copy; 2012 - {yearNow}
+              </p>
+            </Grid.Column>
+          </Grid.Row>
+        </Grid>
       </Container>
     </Segment>
   )

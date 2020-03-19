@@ -6,49 +6,64 @@ import {
   Menu,
   Responsive,
   Segment,
-  Sidebar
+  Sidebar,
+  Visibility
 } from 'semantic-ui-react'
-import MenuLink from 'components/MenuLink'
+import MenuLink from '../components/MenuLink'
 
-const renderMenu = (items) => items.map(item => {
-  if (React.isValidElement(item)) {
+const renderMenu = (items = []) => items.map(item => {
+  if (item.as === 'a') {
+    return <a key={item.name} href={item.href}>{item.name}</a>
+  } else if (React.isValidElement(item)) {
     return item
   } else {
-    return <MenuLink key={item.id || item.name || item.icon} {...item} />
+    return <MenuLink key={item.name || item.icon} {...item} />
   }
 })
 
 class DesktopContainer extends Component {
+  state = {}
+
+  handleHideFixedMenu = () => this.setState({ fixed: false })
+  handleShowFixedMenu = () => this.setState({ fixed: true })
+
   render () {
     const { children, getWidth, heading, leftItems, rightItems } = this.props
-    const style = heading ? { minHeight: 500, padding: '1em 0em' } : { padding: 0 }
+    const { fixed } = this.state
+    const style = heading ? { minHeight: 500, padding: '1em 0em', display: 'flex', flexDirection: 'column' } : {}
 
     return (
       <Responsive getWidth={getWidth} minWidth={Responsive.onlyTablet.minWidth} fireOnMount>
-        <Segment
-          inverted
-          color='blue'
-          textAlign='center'
-          style={style}
-          vertical
+        <Visibility
+          once={false}
+          onBottomPassed={this.handleShowFixedMenu}
+          onBottomPassedReverse={this.handleHideFixedMenu}
         >
-          <Menu
+          <Segment
             inverted
-            pointing
-            secondary
-            borderless
-            size='large'
-            style={{ border: 0 }}
+            color='blue'
+            textAlign='center'
+            style={style}
+            vertical
           >
-            <Container>
-              {renderMenu(leftItems)}
-              <Menu.Item position='right' style={{ padding: 0 }}>
-                {renderMenu(rightItems)}
-              </Menu.Item>
-            </Container>
-          </Menu>
-          { heading }
-        </Segment>
+            <Menu
+              fixed={fixed ? 'top' : null}
+              inverted={!fixed}
+              secondary={!fixed}
+              size='large'
+              style={{ borderTop: 0 }}
+            >
+              <Container>
+                {renderMenu(leftItems)}
+                <Menu.Menu position='right' style={{ padding: 0 }}>
+                  {renderMenu(rightItems)}
+                </Menu.Menu>
+              </Container>
+            </Menu>
+            {heading}
+          </Segment>
+        </Visibility>
+
         {children}
       </Responsive>
     )
@@ -68,9 +83,9 @@ class MobileContainer extends Component {
   handleToggle = () => this.setState({ sidebarOpened: true })
 
   render () {
-    const { children, getWidth, heading, leftItems, rightItems, displayNavTitle, title } = this.props
+    const { children, getWidth, heading, leftItems, rightItems } = this.props
     const { sidebarOpened } = this.state
-    const style = heading ? { minHeight: 350, padding: '1em 0em' } : { padding: 0 }
+    const style = heading ? { minHeight: 350, padding: '1em 0em', display: 'flex', flexDirection: 'column' } : { padding: 0 }
 
     return (
       <Responsive
@@ -103,11 +118,6 @@ class MobileContainer extends Component {
                 <Menu.Item onClick={this.handleToggle}>
                   <Icon name='sidebar' />
                 </Menu.Item>
-                {displayNavTitle &&
-                  <Menu.Item>
-                    {title}
-                  </Menu.Item>
-                }
                 <Menu.Menu position='right'>
                   {renderMenu(rightItems)}
                 </Menu.Menu>

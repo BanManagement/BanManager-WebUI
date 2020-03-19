@@ -1,62 +1,54 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import Head from 'next/head'
-import { withRouter } from 'next/router'
-import Alert from 'react-s-alert'
-import AdminNavBar from './AdminNavBar'
-import AdminNavigationQuery from './queries/AdminNavigationQuery'
-import SessionNavProfile from './SessionNavProfile'
-import withSession from '../lib/withSession'
-import 'semantic-ui-css/semantic.min.css'
-import 'react-s-alert/dist/s-alert-default.css'
+import { Grid, Label, Loader, Menu } from 'semantic-ui-react'
+import DefaultLayout from './DefaultLayout'
+import MenuLink from './MenuLink'
+import GraphQLErrorMessage from './GraphQLErrorMessage'
+import PageContainer from './PageContainer'
+import { useApi } from '../utils'
 
-class AdminLayout extends React.Component {
-  static defaultProps =
-    { title: 'Default Title'
-    }
-  static propTypes =
-    { title: PropTypes.string,
-      router: PropTypes.object.isRequired,
-      displayNavTitle: PropTypes.bool,
-      children: PropTypes.node.isRequired,
-      session: PropTypes.object.isRequired,
-      rightItems: PropTypes.node
-    }
+export default function AdminLayout ({ children, title }) {
+  const { loading, data } = useApi({
+    query: `query adminNavigation {
+      adminNavigation {
+        left {
+          id
+          name
+          href
+          label
+        }
+      }
+    }`
+  }, {
+    loadOnReload: false,
+    loadOnReset: false
+  })
 
-  render () {
-    const { title, router: { pathname }, displayNavTitle, children, session } = this.props
-    let { rightItems } = this.props
+  if (loading) return <Loader active />
+  if (!data) return <GraphQLErrorMessage error={{ networkError: true }} />
 
-    if (!rightItems && !session.exists) {
-      rightItems = [ { icon: 'user', href: '/login' } ]
-    } else {
-      rightItems = [ <SessionNavProfile key='session-nav-profile' session={session} /> ]
+  const items = data.adminNavigation.left.map(item => {
+    if (item.label) {
+      return <MenuLink key={item.name} name={item.name} href={item.href}><Label color='blue'>{item.label}</Label>{item.name}</MenuLink>
     }
 
-    return (
-      <React.Fragment>
-        <Head>
-          <title>{ title }</title>
-        </Head>
-        <Alert position='bottom' stack={false} timeout='none' />
-        <AdminNavigationQuery>
-          {({ navigation: { left: top }, adminNavigation: { left } }) => (
-            <AdminNavBar
-              pathname={pathname}
-              colour='blue'
-              topItems={top}
-              leftItems={left}
-              rightItems={rightItems}
-              title={title}
-              displayNavTitle={displayNavTitle}
-            >
+    return <MenuLink key={item.name} name={item.name} href={item.href}>{item.name}</MenuLink>
+  })
+
+  return (
+    <DefaultLayout title={title}>
+      <PageContainer>
+        <Grid columns={2}>
+          <Grid.Row>
+            <Grid.Column width={4}>
+              <Menu vertical>
+                {items}
+              </Menu>
+            </Grid.Column>
+            <Grid.Column width={12}>
               {children}
-            </AdminNavBar>
-          )}
-        </AdminNavigationQuery>
-      </React.Fragment>
-    )
-  }
+            </Grid.Column>
+          </Grid.Row>
+        </Grid>
+      </PageContainer>
+    </DefaultLayout>
+  )
 }
-
-export default withRouter(withSession(AdminLayout))

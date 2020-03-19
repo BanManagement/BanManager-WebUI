@@ -1,94 +1,76 @@
-import React from 'react'
-import {
-  Form,
-  Image,
-  Segment,
-  Select
-} from 'semantic-ui-react'
-import Moment from 'react-moment'
+import React, { useEffect, useState } from 'react'
+import { Form, Image, Select, Header } from 'semantic-ui-react'
 import GraphQLErrorMessage from './GraphQLErrorMessage'
+import { fromNow, useApi } from '../utils'
 
-class PlayerNoteForm extends React.Component {
-  handleChange = (e, { name, value }) => this.setState({ [name]: value })
+export default function PlayerNoteForm ({ player, servers, onFinished, query, parseVariables, disableServers = false, defaults = {} }) {
+  const [loading, setLoading] = useState(false)
+  const [variables, setVariables] = useState({})
+  const [inputState, setInputState] = useState({
+    message: defaults.message || '',
+    server: defaults?.server?.id
+  })
 
-  constructor (props) {
-    super(props)
+  useEffect(() => setVariables(parseVariables(inputState)), [inputState])
 
-    const { data: { id, created, message, player } } = props
-    let servers = null
+  const { load, data, graphQLErrors } = useApi({ query, variables }, {
+    loadOnMount: false,
+    loadOnReload: false,
+    loadOnReset: false,
+    reloadOnLoad: true
+  })
 
-    if (player && player.servers) {
-      servers = player.servers.reduce((filtered, { acl, server }) => {
-        if (acl.notes.create) {
-          filtered.push({ key: server.id, value: server.id, text: server.name })
-        }
+  useEffect(() => setLoading(false), [graphQLErrors])
+  useEffect(() => {
+    if (!data) return
+    if (Object.keys(data).some(key => !!data[key].id)) onFinished()
+  }, [data])
 
-        return filtered
-      }, [])
-    }
+  const serversDropdown = servers.map(({ server }) => ({ key: server.id, value: server.id, text: server.name }))
 
-    this.state =
-    { id,
-      player: player,
-      message: message || '',
-      created: created,
-      error: null,
-      server: servers && servers.length ? servers[0].value : null,
-      loading: false,
-      servers
-    }
+  const onSubmit = (e) => {
+    e.preventDefault()
+    setLoading(true)
+
+    load()
   }
 
-  onSubmit = async (e) => {
-    this.setState({ loading: true })
-
-    try {
-      await this.props.onSubmit(e, this.state)
-    } catch (error) {
-      this.setState({ error, loading: false })
-    }
-  }
-
-  render () {
-    const { created, message, player, servers, server, error, loading } = this.state
-
-    return (
-      <Form size='large' onSubmit={this.onSubmit} error loading={loading}>
-        <Segment>
-          <GraphQLErrorMessage error={error} />
-          <Form.Group inline>
-            <label><Image fluid inline src={`https://crafatar.com/avatars/${player.id}?size=50&overlay=true`} /></label>
-            {player.name}
-          </Form.Group>
-          { servers &&
-            <Form.Field
-              required
-              name='server'
-              control={Select}
-              options={servers}
-              placeholder='Server'
-              onChange={this.handleChange}
-              defaultValue={server}
-            />
-          }
-          <Form.Input
-            fluid
-            required
-            placeholder='Message'
-            value={message}
-            name='message'
-            onChange={this.handleChange}
-          />
-          {created &&
-            <Form.Group inline>
-              <label>Created</label><Moment unix fromNow>{created}</Moment>
-            </Form.Group>
-          }
-          <Form.Button fluid primary size='large' content='Save' />
-        </Segment>
-      </Form>
-    )
-  }
+  return (
+    <Form size='large' onSubmit={onSubmit} error loading={loading}>
+      <Header>Note</Header>
+      <GraphQLErrorMessage error={graphQLErrors} />
+      <Form.Group inline>
+        <label>
+          <Image fluid inline src={`https://crafatar.com/avatars/${player.id}?size=50&overlay=true`} />
+        </label>
+        <a href={`/player/${player.id}`}>{player.name}</a>
+      </Form.Group>
+      <Form.Field
+        required
+        name='server'
+        control={Select}
+        options={serversDropdown}
+        placeholder='Server'
+        onChange={async (e, { value }) => {
+          setInputState({ ...inputState, server: value })
+        }}
+        defaultValue={inputState.server}
+        disabled={disableServers}
+      />
+      <Form.Input
+        required
+        name='message'
+        placeholder='Message'
+        onChange={async (e, { value }) => {
+          setInputState({ ...inputState, message: value })
+        }}
+        value={inputState.message}
+      />
+      {defaults.created &&
+        <Form.Group inline>
+          <label>Created</label>{fromNow(defaults.created)}
+        </Form.Group>}
+      <Form.Button fluid primary size='large' content='Save' />
+    </Form>
+  )
 }
-
-export default PlayerNoteForm

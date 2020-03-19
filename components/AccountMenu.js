@@ -1,16 +1,14 @@
-import React from 'react'
 import { Menu } from 'semantic-ui-react'
-import MenuLink from 'components/MenuLink'
+import MenuLink from './MenuLink'
 
-export default function AccountMenu ({ session }) {
+export default function AccountMenu ({ user }) {
   return (
     <Menu vertical fluid>
       <MenuLink href='/account'>Account</MenuLink>
-      {!session.hasAccount &&
-        <MenuLink href='/register'>Register</MenuLink>
-      }
-      <MenuLink href='/account/email' disabled={!session.hasAccount}>Email</MenuLink>
-      <MenuLink href='/account/password' disabled={!session.hasAccount}>Password</MenuLink>
+      {!user.hasAccount &&
+        <MenuLink href='/register'>Register</MenuLink>}
+      <MenuLink href='/account/email' disabled={!user.hasAccount}>Email</MenuLink>
+      <MenuLink href='/account/password' disabled={!user.hasAccount}>Password</MenuLink>
     </Menu>
   )
 }

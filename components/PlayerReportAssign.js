@@ -1,65 +1,14 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Loader } from 'semantic-ui-react'
-import { graphql } from 'react-apollo'
-import gql from 'graphql-tag'
-import Alert from 'react-s-alert'
-import PlayerSelector from 'components/admin/PlayerSelector'
+import PlayerSelector from '../components/admin/PlayerSelector'
+import { useApi } from '../utils'
 
-class PlayerReportAssign extends React.Component {
-  constructor (props) {
-    super(props)
+export default function PlayerReportAssign ({ id, player, server, onChange }) {
+  const [loading, setLoading] = useState(false)
+  const [variables, setVariables] = useState({ serverId: server, report: id, player: player ? player.id : null })
 
-    this.state = { loading: false, assignee: props.assignee }
-  }
-
-  handleChange = async (id) => {
-    if (this.state.assignee && this.state.assignee.id === id) return
-
-    this.setState({ loading: true })
-
-    try {
-      const res = await this.props.mutate({
-        variables: { serverId: this.props.server, report: this.props.id, player: id }
-      })
-
-      this.setState({ assignee: res.data.assignReport.assignee })
-    } catch (e) {
-      Alert.error(e.message)
-    }
-
-    this.setState({ loading: false })
-  }
-
-  render () {
-    const { assignee, loading } = this.state
-
-    if (loading) return <Loader active />
-
-    let options = null
-
-    if (assignee) {
-      options = [
-        { key: assignee.id,
-          value: assignee.id,
-          text: assignee.name,
-          image: `https://crafatar.com/avatars/${assignee.id}?size=128&overlay=true`
-        } ]
-    }
-
-    return (
-      <PlayerSelector
-        fluid={false}
-        multiple={false}
-        value={assignee ? assignee.id : null}
-        options={options}
-        handleChange={this.handleChange}
-      />
-    )
-  }
-}
-
-const mutation = gql`
-  mutation assignReport($report: ID!, $serverId: ID!, $player: UUID!) {
+  const { load, data, graphQLErrors } = useApi({
+    query: `mutation assignReport($report: ID!, $serverId: ID!, $player: UUID!) {
     assignReport(report: $report, serverId: $serverId, player: $player) {
       updated
       state {
@@ -71,7 +20,58 @@ const mutation = gql`
         name
       }
     }
-  }
-`
+  }`,
+    variables
+  }, {
+    loadOnMount: false,
+    loadOnReload: false,
+    loadOnReset: false,
+    reloadOnLoad: true
+  })
 
-export default graphql(mutation)(PlayerReportAssign)
+  useEffect(() => setLoading(false), [graphQLErrors])
+  useEffect(() => {
+    if (!data) return
+    if (Object.keys(data).some(key => !!data[key].updated)) {
+      setLoading(false)
+      onChange(data)
+    }
+  }, [data])
+  useEffect(() => {
+    const playerId = player ? player.id : null
+
+    if (variables && variables.player !== playerId) {
+      load()
+    }
+  }, [variables])
+
+  const handleChange = (player) => {
+    setLoading(true)
+
+    setVariables({ serverId: server, report: id, player: player || null })
+  }
+
+  if (loading) return <Loader active />
+
+  const options = []
+
+  if (player) {
+    options.push({
+      key: player.id,
+      value: player.id,
+      text: player.name,
+      image: `https://crafatar.com/avatars/${player.id}?size=128&overlay=true`
+    })
+  }
+
+  return (
+    <PlayerSelector
+      fluid={false}
+      multiple={false}
+      // clearable
+      value={player ? player.id : null}
+      options={options}
+      handleChange={handleChange}
+    />
+  )
+}

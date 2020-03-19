@@ -1,13 +1,9 @@
-import 'react-table/react-table.css'
-import React from 'react'
-import ReactTable from 'react-table'
-import { withApollo } from 'react-apollo'
-import gql from 'graphql-tag'
-import { Header, Image, Modal } from 'semantic-ui-react'
-import PlayerEditForm from 'components/admin/PlayerEditForm'
-import RolesQuery from 'components/queries/RolesQuery'
+import React, { useEffect, useState } from 'react'
+import { Form, Image, Loader, Pagination, Table } from 'semantic-ui-react'
+import PlayerEditForm from './PlayerEditForm'
+import { useApi } from '../../utils'
 
-export const query = gql`
+const query = `
 query listPlayers($email: String, $role: String, $serverRole: String, $limit: Int, $offset: Int) {
   listPlayers(email: $email, role: $role, serverRole: $serverRole, limit: $limit, offset: $offset) {
     total
@@ -30,122 +26,82 @@ query listPlayers($email: String, $role: String, $serverRole: String, $limit: In
       }
     }
   }
-}
-`
+}`
 
-export const mutation = gql`
-mutation setRoles($player: ID!, $input: SetRolesInput!) {
-  setRoles(player: $player, input: $input) {
-    id
-    name
-    email
-    roles {
-      id
-      name
-    }
-    serverRoles {
-      role {
-        id
-        name
-      }
-      server {
-        id
-      }
-    }
+export default function PlayersTable ({ limit = 30, roles, servers }) {
+  const [tableState, setTableState] = useState({ activePage: 1, limit, offset: 0, email: '', role: '', serverRole: '' })
+  const [editState, setEditState] = useState({ playerEditOpen: false, currentPlayer: null })
+  const { load, loading, data } = useApi({ query, variables: tableState }, {
+    loadOnMount: false,
+    loadOnReload: false,
+    loadOnReset: false,
+    reloadOnLoad: true
+  })
+
+  useEffect(() => {
+    load()
+  }, [tableState])
+
+  const handlePageChange = (e, { activePage }) => setTableState({ ...tableState, activePage, offset: activePage * limit })
+  const handleOpen = player => () => setEditState({ playerEditOpen: true, currentPlayer: player })
+  const handleplayerEditFinished = (updated) => {
+    setEditState({ playerEditOpen: false, currentPlayer: null })
+
+    if (updated) load()
   }
+  const handleFilter = (e, { name, value }) => setTableState({ ...tableState, [name]: value })
+  const rows = data?.listPlayers?.players || []
+  const total = data?.listPlayers.total || 0
+  const totalPages = Math.ceil(total / limit)
+
+  return (
+    <>
+      <PlayerEditForm
+        player={editState.currentPlayer}
+        roles={roles}
+        servers={servers}
+        open={editState.playerEditOpen}
+        onFinished={handleplayerEditFinished}
+      />
+      <Table selectable>
+        <Table.Header>
+          <Table.Row>
+            <Table.HeaderCell>Name</Table.HeaderCell>
+            <Table.HeaderCell><Form.Input name='email' placeholder='Email' value={tableState.email} onChange={handleFilter} /></Table.HeaderCell>
+            <Table.HeaderCell><Form.Input name='role' placeholder='Global Roles' value={tableState.role} onChange={handleFilter} /></Table.HeaderCell>
+            <Table.HeaderCell><Form.Input name='serverRole' placeholder='Server Roles' value={tableState.serverRole} onChange={handleFilter} /></Table.HeaderCell>
+          </Table.Row>
+        </Table.Header>
+        <Table.Body>
+          {loading
+            ? <Table.Row><Table.Cell colSpan='4'><Loader active inline='centered' /></Table.Cell></Table.Row>
+            : rows.map((row, i) => (
+              <Table.Row key={i}>
+                <Table.Cell>
+                  <a onClick={handleOpen(row)}>
+                    <Image src={`https://crafatar.com/avatars/${row.id}?size=26&overlay=true`} fluid avatar />
+                    {row.name}
+                  </a>
+                </Table.Cell>
+                <Table.Cell>{row.email}</Table.Cell>
+                <Table.Cell>{row.roles.map(role => role.name).join(', ')}</Table.Cell>
+                <Table.Cell>{row.serverRoles.map(({ role }) => role.name).join(', ')}</Table.Cell>
+              </Table.Row>
+            ))}
+        </Table.Body>
+        <Table.Footer>
+          <Table.Row>
+            <Table.HeaderCell colSpan='4'>
+              <Pagination
+                fluid
+                totalPages={totalPages}
+                activePage={tableState.activePage}
+                onPageChange={handlePageChange}
+              />
+            </Table.HeaderCell>
+          </Table.Row>
+        </Table.Footer>
+      </Table>
+    </>
+  )
 }
-`
-
-class PlayersTable extends React.Component {
-  state = { data: [], loading: false, pages: -1, playerEditOpen: false, currentPlayer: {} }
-
-  onPlayerUpdate = async (e, player, input) => {
-    try {
-      await this.props.client.mutate({ mutation, variables: { player, input } })
-    } catch (error) {
-      console.error(error)
-    }
-
-    this.handleClose()
-  }
-
-  handleOpen = player => () => this.setState({ playerEditOpen: true, currentPlayer: player })
-  handleClose = () => this.setState({ playerEditOpen: false, currentPlayer: {} })
-
-  render () {
-    const { servers } = this.props
-    const columns = [{
-      Header: 'Name',
-      accessor: 'name',
-      filterable: false,
-      Cell: row => (
-        <a onClick={this.handleOpen(row.original)}>
-          <Image src={`https://crafatar.com/avatars/${row.original.id}?size=26&overlay=true`} fluid avatar />
-          {row.value}
-        </a>
-      )
-    }, {
-      Header: 'Email', accessor: 'email', filterable: true
-    }, {
-      Header: 'Global Roles', accessor: 'role', filterable: true
-    }, {
-      Header: 'Server Roles', accessor: 'serverRole', filterable: true
-    }]
-
-    const { currentPlayer, data, loading, pages } = this.state
-
-    return (
-      <React.Fragment>
-        <Modal
-          open={this.state.playerEditOpen}
-          onClose={this.handleClose}
-        >
-          <Header content={currentPlayer.name} />
-          <Modal.Content>
-            <RolesQuery>
-              {({ roles }) => (
-                <PlayerEditForm player={currentPlayer} servers={servers} roles={roles} onSubmit={this.onPlayerUpdate} />
-              )}
-            </RolesQuery>
-          </Modal.Content>
-        </Modal>
-        <ReactTable
-          data={data}
-          loading={loading}
-          columns={columns}
-          pages={pages}
-          manual
-          minRows={0}
-          showPageSizeOptions={false}
-          showPageJump={false}
-          resolveData={data => data.map(row => {
-            return { ...row, role: row.roles.map(r => r.name).join(', '), serverRole: row.serverRoles.map(r => r.role.name).join(', ') }
-          })}
-          onFetchData={(state) => {
-            this.setState({ loading: true })
-
-            const { filtered, pageSize, page } = state
-            const variables = { limit: pageSize, offset: page * pageSize }
-
-            if (filtered.length) {
-              filtered.forEach(filter => {
-                variables[filter.id] = filter.value
-              })
-            }
-
-            this.props.client.query({ query, variables })
-              .then(({ data }) => {
-                this.setState({
-                  data: data.listPlayers.players,
-                  pages: Math.ceil(data.listPlayers.total / pageSize),
-                  loading: false
-                })
-              })
-          }}
-        />
-      </React.Fragment>
-    )
-  }
-}
-
-export default withApollo(PlayersTable)

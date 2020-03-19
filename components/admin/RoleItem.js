@@ -1,68 +1,56 @@
-import React from 'react'
-import Alert from 'react-s-alert'
-import { Router } from 'routes'
-import {
-  Button,
-  Confirm,
-  List
-} from 'semantic-ui-react'
-import { graphql } from 'react-apollo'
-import gql from 'graphql-tag'
+import React, { useState } from 'react'
+import { Button, Confirm, List } from 'semantic-ui-react'
+import { useApi } from '../../utils'
 
-const deleteMutation = gql`
-  mutation deleteRole($id: ID!) {
-    deleteRole(id: $id) {
-      id
-    }
-  }
-`
-
-class RoleItem extends React.Component {
-  state = { deleteConfirmShow: false, deleting: false }
-
-  clickRouteHandler = (route, params) => () => Router.pushRoute(route, params)
-  showConfirmDelete = () => this.setState({ deleteConfirmShow: true })
-  handleConfirmDelete = async () => {
-    this.setState({ deleteConfirmShow: false })
-
-    const { id } = this.props
-
-    this.setState({ deleting: true })
-
-    try {
-      await this.props.mutate(
-        { variables: { id },
-          refetchQueries: [ 'roles' ]
-        })
-    } catch (e) {
-      Alert.error('An error occurred')
-    } finally {
-      this.setState({ deleting: false })
-    }
-  }
-  handleDeleteCancel = () => this.setState({ deleteConfirmShow: false })
-
-  render () {
-    const { id, name } = this.props
-
-    return (
-      <List.Item>
-        <Confirm
-          open={this.state.deleteConfirmShow}
-          onConfirm={this.handleConfirmDelete}
-          onCancel={this.handleDeleteCancel}
-        />
-        { id > 3 &&
-          <List.Content floated='right'>
-            <Button color='red' icon='trash' loading={this.state.deleting} disabled={this.state.deleting} onClick={this.showConfirmDelete} />
-          </List.Content>
+export default function RoleItem ({ role }) {
+  const [state, setState] = useState({ deleteConfirmShow: false, deleting: false })
+  const { load, loading } = useApi({
+    query: `mutation deleteRole($id: ID!) {
+        deleteRole(id: $id) {
+          id
         }
-        <List.Content onClick={this.clickRouteHandler('admin-edit-role', { id })}>
-          {name}
-        </List.Content>
-      </List.Item>
-    )
-  }
-}
+      }`,
+    variables: { id: role.id }
+  }, {
+    loadOnMount: false,
+    loadOnReload: false,
+    loadOnReset: false,
+    reloadOnLoad: true
+  })
+  const showConfirmDelete = () => setState({ deleteConfirmShow: true })
+  const handleConfirmDelete = async () => {
+    if (state.deleting) return
 
-export default graphql(deleteMutation)(RoleItem)
+    setState({ deleteConfirmShow: false, deleting: true })
+
+    load()
+
+    if (!loading) setState({ deleting: false, deleted: true })
+  }
+  const handleDeleteCancel = () => setState({ deleteConfirmShow: false })
+
+  if (state.deleted) return null
+
+  return (
+    <List.Item key={role.id}>
+      {role.id > 3 &&
+        <List.Content floated='right'>
+          <Confirm
+            open={state.deleteConfirmShow}
+            onConfirm={handleConfirmDelete}
+            onCancel={handleDeleteCancel}
+          />
+          <Button
+            color='red'
+            icon='trash'
+            loading={state.deleting}
+            disabled={state.deleting}
+            onClick={showConfirmDelete}
+          />
+        </List.Content>}
+      <List.Content as='a' href={`/admin/roles/${role.id}`}>
+        {role.name}
+      </List.Content>
+    </List.Item>
+  )
+}

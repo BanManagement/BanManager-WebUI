@@ -1,45 +1,33 @@
-import React from 'react'
-import withData from 'lib/withData'
-import AdminLayout from 'components/AdminLayout'
-import ServersQuery from 'components/queries/ServersQuery'
-import { Router } from 'routes'
-import {
-  Button,
-  List
-} from 'semantic-ui-react'
+import { Button, List, Loader } from 'semantic-ui-react'
+import GraphQLErrorMessage from '../../../components/GraphQLErrorMessage'
+import AdminLayout from '../../../components/AdminLayout'
+import ServerItem from '../../../components/admin/ServerItem'
+import { useApi } from '../../../utils'
 
-export class AdminPage extends React.Component {
-  clickRouteHandler = (route, params) => () => Router.pushRoute(route, params)
+export default function Page () {
+  const { loading, data } = useApi({
+    query: `query servers {
+      servers {
+        id
+        name
+      }
+    }`
+  })
 
-  render () {
-    return (
-      <AdminLayout title='Servers' displayNavTitle>
-        <Button.Group size='medium' widths='1'>
-          <Button circular icon='plus' color='green' onClick={this.clickRouteHandler('admin-add-server')} />
-        </Button.Group>
-        <List celled verticalAlign='bottom'>
-          <ServersQuery>
-            {({ servers }) => {
-              const canDelete = servers.length !== 1
+  if (loading) return <Loader active />
+  if (!data) return <GraphQLErrorMessage error={{ networkError: true }} />
 
-              return servers.map(server => (
-                <List.Item key={server.id} onClick={this.clickRouteHandler('admin-edit-server', { id: server.id })}>
-                  { canDelete &&
-                    <List.Content floated='right'>
-                      <Button color='red' icon='trash' />
-                    </List.Content>
-                  }
-                  <List.Content>
-                    {server.name}
-                  </List.Content>
-                </List.Item>
-              ))
-            }}
-          </ServersQuery>
-        </List>
-      </AdminLayout>
-    )
-  }
+  const canDelete = data.servers.length !== 1
+  const items = data.servers.map(server => <ServerItem key={server.id} server={server} canDelete={canDelete} />)
+
+  return (
+    <AdminLayout title='Servers'>
+      <Button.Group size='medium' widths='1'>
+        <Button circular icon='plus' color='green' as='a' href='/admin/servers/add' />
+      </Button.Group>
+      <List celled verticalAlign='bottom'>
+        {items}
+      </List>
+    </AdminLayout>
+  )
 }
-
-export default withData(AdminPage)

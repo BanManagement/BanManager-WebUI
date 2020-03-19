@@ -1,32 +1,36 @@
-import React from 'react'
-import withData from 'lib/withData'
-import AdminLayout from 'components/AdminLayout'
-import PageLayoutsQuery from 'components/queries/PageLayoutsQuery'
-import { List } from 'semantic-ui-react'
-import { Router } from 'routes'
+import { List, Loader } from 'semantic-ui-react'
+import GraphQLErrorMessage from '../../../components/GraphQLErrorMessage'
+import AdminLayout from '../../../components/AdminLayout'
+import { useApi } from '../../../utils'
 
-export class PageLayoutsPage extends React.Component {
-  clickRouteHandler = (route, params) => () => Router.pushRoute(route, params)
+export default function Page () {
+  const { loading, data } = useApi({
+    query: `query {
+      pageLayouts {
+        pathname
+      }
+    }`
+  }, {
+    loadOnMount: true,
+    loadOnReload: false,
+    loadOnReset: false,
+    reloadOnLoad: false
+  })
 
-  render () {
-    return (
-      <AdminLayout title='Page Layouts' displayNavTitle>
-        <List celled verticalAlign='bottom' size='large'>
-          <PageLayoutsQuery>
-            {({ pageLayouts }) => {
-              return pageLayouts.map(layout => (
-                <List.Item as='a' key={layout.pathname}>
-                  <List.Content onClick={this.clickRouteHandler('admin-edit-page-layout', { id: layout.pathname })}>
-                    {layout.pathname}
-                  </List.Content>
-                </List.Item>
-              ))
-            }}
-          </PageLayoutsQuery>
-        </List>
-      </AdminLayout>
-    )
-  }
+  if (loading) return <Loader active />
+  if (!data || !data.pageLayouts) return <GraphQLErrorMessage error={{ networkError: true }} />
+
+  const items = data.pageLayouts.map(layout => (
+    <List.Item as='a' key={layout.pathname} href={`/admin/page-layouts/${layout.pathname}`}>
+      {layout.pathname}
+    </List.Item>
+  ))
+
+  return (
+    <AdminLayout title='Page Layouts'>
+      <List celled verticalAlign='bottom' size='large'>
+        {items}
+      </List>
+    </AdminLayout>
+  )
 }
-
-export default withData(PageLayoutsPage)
