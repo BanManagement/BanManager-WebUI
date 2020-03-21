@@ -1,5 +1,5 @@
 // Based on https://github.com/kvz/locutus/blob/master/test/languages/php/network/test-inet_ntop.js
-function inet_top(a) {
+function inetTop (a) {
   var i = 0
   var m = ''
   var c = []
@@ -30,4 +30,4 @@ function inet_top(a) {
   }
 }
 
-module.exports = { inet_top }
+module.exports = { inetTop }

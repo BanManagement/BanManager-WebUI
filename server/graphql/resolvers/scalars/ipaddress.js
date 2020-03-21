@@ -2,7 +2,7 @@ const { GraphQLScalarType } = require('graphql')
 const { GraphQLError } = require('graphql/error')
 const { Kind } = require('graphql/language')
 const { isIP } = require('validator')
-const { inet_top } = require('../../../data/ip')
+const { inetTop } = require('../../../data/ip')
 
 module.exports = new GraphQLScalarType(
   {
@@ -10,7 +10,7 @@ module.exports = new GraphQLScalarType(
     serialize: value => {
       if (!Buffer.isBuffer(value)) return value
 
-      return inet_top(value)
+      return inetTop(value)
     },
     parseValue: value => {
       if (!isIP(value)) {

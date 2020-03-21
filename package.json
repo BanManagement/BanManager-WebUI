@@ -5,7 +5,8 @@
   "description": "Documentation for BanManager WebUI",
   "scripts": {
     "lint": "standard",
-    "test": "jest",
+    "test": "npm run lint && jest",
+    "coveralls": "jest --coverage && cat ./tests/coverage/lcov.info | coveralls",
     "dev": "node server.js",
     "build": "next build",
     "heroku-postbuild": "npm run build",
@@ -68,6 +69,7 @@
   },
   "devDependencies": {
     "babel-eslint": "10.1.0",
+    "coveralls": "3.0.11",
     "eslint-plugin-react": "7.18.3",
     "faker": "4.1.0",
     "jest": "25.1.0",
@@ -85,7 +87,11 @@
     },
     "globals": [
       "GIT_COMMIT",
-      "GIT_TAG"
+      "GIT_TAG",
+      "describe",
+      "test",
+      "beforeAll",
+      "afterAll"
     ]
   },
   "browser": {

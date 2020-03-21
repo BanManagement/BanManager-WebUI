@@ -2,7 +2,7 @@ require('dotenv').config()
 const requireEnv = require('require-environment-variables')
 
 requireEnv(
-  [ 'ENCRYPTION_KEY',
+  ['ENCRYPTION_KEY',
     'SESSION_KEY',
     'DB_HOST',
     'DB_PORT',
@@ -35,7 +35,7 @@ const dbConfig = {
     const serversPool = await setupServersPool({ dbPool, logger })
     const app = await createApp({ dbPool, logger, serversPool, disableUI: process.env.DISABLE_UI === 'true' })
 
-    app.listen(port, () =>  logger.info(`Listening on ${port}`))
+    app.listen(port, () => logger.info(`Listening on ${port}`))
   } catch (error) {
     logger.error(error)
     process.exit(1)

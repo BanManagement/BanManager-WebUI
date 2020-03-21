@@ -4,18 +4,18 @@ const { valid } = require('../../data/session')
 const ExposedError = require('../../data/exposed-error')
 
 module.exports = class AllowIfLoggedInDirective extends SchemaDirectiveVisitor {
-  visitObject(type) {
+  visitObject (type) {
     this.ensureFieldsWrapped(type)
   }
 
   // Visitor methods for nested types like fields and arguments
   // also receive a details object that provides information about
   // the parent and grandparent types.
-  visitFieldDefinition(field, details) {
+  visitFieldDefinition (field, details) {
     this.ensureFieldsWrapped(details.objectType)
   }
 
-  ensureFieldsWrapped(objectType) {
+  ensureFieldsWrapped (objectType) {
     // Mark the GraphQLObjectType object to avoid re-wrapping:
     if (objectType._allowIfLoggedInFieldsWrapped) return
 
@@ -40,7 +40,6 @@ module.exports = class AllowIfLoggedInDirective extends SchemaDirectiveVisitor {
     })
   }
 }
-
 
 // module.exports = async function allowIfLoggedIn (next, src, args, { session }) {
 //   if (!valid(session)) {

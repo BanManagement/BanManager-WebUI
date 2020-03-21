@@ -14,7 +14,6 @@ function importFunctions (...dir) {
   }, {})
 }
 
-
 const mutations = importFunctions(__dirname, 'mutations')
 
 const queries = importFunctions(__dirname, 'queries')

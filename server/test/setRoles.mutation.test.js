@@ -18,7 +18,8 @@ describe('Mutation setRoles', () => {
   }, 20000)
 
   afterAll(async () => {
-    await setup.teardown()  })
+    await setup.teardown()
+  })
 
   test('should error if unauthenticated', async () => {
     const { pool } = setup.serversPool.values().next().value

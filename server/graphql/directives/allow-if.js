@@ -5,7 +5,7 @@ const { get } = require('lodash')
 const ExposedError = require('../../data/exposed-error')
 
 module.exports = class AllowIfDirective extends SchemaDirectiveVisitor {
-  visitObject(type) {
+  visitObject (type) {
     this.ensureFieldsWrapped(type)
 
     type._resource = this.args.resource
@@ -17,7 +17,7 @@ module.exports = class AllowIfDirective extends SchemaDirectiveVisitor {
   // Visitor methods for nested types like fields and arguments
   // also receive a details object that provides information about
   // the parent and grandparent types.
-  visitFieldDefinition(field, details) {
+  visitFieldDefinition (field, details) {
     this.ensureFieldsWrapped(details.objectType)
 
     field._resource = this.args.resource
@@ -26,7 +26,7 @@ module.exports = class AllowIfDirective extends SchemaDirectiveVisitor {
     field._serverSrc = this.args.serverSrc
   }
 
-  ensureFieldsWrapped(objectType) {
+  ensureFieldsWrapped (objectType) {
     // Mark the GraphQLObjectType object to avoid re-wrapping:
     if (objectType._allowIfFieldsWrapped) return
 

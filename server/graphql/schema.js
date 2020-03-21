@@ -17,7 +17,7 @@ module.exports = ({ logger }) => {
     typeDefs,
     resolvers,
     schemaDirectives,
-    context: ({ ctx: { log, session, state }}) => ({
+    context: ({ ctx: { log, session, state } }) => ({
       log,
       session,
       state

@@ -1,4 +1,4 @@
 module.exports = {
   collectCoverage: true,
-  testMatch: [ '/**/test/*.test.js' ]
+  testMatch: ['/**/test/*.test.js']
 }

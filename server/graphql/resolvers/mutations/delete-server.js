@@ -5,7 +5,7 @@ module.exports = async function deleteServer (obj, { id }, { state }) {
 
   await state.dbPool.execute('DELETE FROM bm_web_servers WHERE id = ?', [id])
 
-  state.serversPool.get(id).pool.end().catch((error) => logger.error(error, 'servers-pool'))
+  state.serversPool.get(id).pool.end()
   state.serversPool.delete(id)
 
   return id
