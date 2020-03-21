@@ -22,7 +22,7 @@ branches:
   only:
     - master
 after_success:
-  - npm run coverage
+  - npm run coveralls
 jobs:
   include:
     - stage: deploy

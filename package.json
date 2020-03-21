@@ -5,8 +5,8 @@
   "description": "Documentation for BanManager WebUI",
   "scripts": {
     "lint": "standard",
-    "test": "npm run lint && jest",
-    "coverage": "jest --coverage && cat ./tests/coverage/lcov.info | coveralls",
+    "test": "npm run lint && jest --coverage",
+    "coveralls": "cat ./coverage/lcov.info | coveralls",
     "dev": "node server.js",
     "build": "next build",
     "heroku-postbuild": "npm run build",
