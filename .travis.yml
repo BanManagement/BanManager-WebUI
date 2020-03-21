@@ -10,6 +10,8 @@ cache: npm
 branches:
   only:
     - master
+after_success:
+  - npm run coverage
 jobs:
   include:
     - stage: deploy

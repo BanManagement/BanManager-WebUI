@@ -6,7 +6,7 @@
   "scripts": {
     "lint": "standard",
     "test": "npm run lint && jest",
-    "coveralls": "jest --coverage && cat ./tests/coverage/lcov.info | coveralls",
+    "coverage": "jest --coverage && cat ./tests/coverage/lcov.info | coveralls",
     "dev": "node server.js",
     "build": "next build",
     "heroku-postbuild": "npm run build",
