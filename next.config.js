@@ -23,10 +23,7 @@ const nextConfig = {
 
     return config
   },
-  poweredByHeader: false,
-  env: {
-    API_HOST: process.env.API_HOST
-  }
+  poweredByHeader: false
 }
 
 module.exports = withPlugins([
