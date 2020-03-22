@@ -1,3 +1,4 @@
+const depthLimit = require('graphql-depth-limit')
 const typeDefs = require('./types')
 const resolvers = require('./resolvers')
 const schemaDirectives = {
@@ -17,6 +18,7 @@ module.exports = ({ logger }) => {
     typeDefs,
     resolvers,
     schemaDirectives,
+    validationRules: [depthLimit(10)],
     context: ({ ctx: { log, session, state } }) => ({
       log,
       session,
