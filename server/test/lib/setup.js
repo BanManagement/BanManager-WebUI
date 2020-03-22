@@ -38,15 +38,14 @@ module.exports = async () => { // eslint-disable-line max-statements
   dbPool = await setupPool(dbConfig)
 
   // Run migrations, then 'test' migrations
-  let dbmOpts = { config: { dev: { ...dbConfig, driver: 'mysql' } }, cwd: path.join(__dirname, '..', '..', 'data') }
+  let dbmOpts = { config: { dev: { ...dbConfig, driver: 'mysql' } }, cmdOptions: { 'migrations-dir': path.join(__dirname, '..', '..', 'data', 'migrations') } }
   let dbm = DBMigrate.getInstance(true, dbmOpts)
 
   await dbm.up()
 
-  dbmOpts = { config: { dev: { ...dbConfig, driver: 'mysql' } }, cwd: path.join(__dirname, '..') }
+  dbmOpts = { config: { dev: { ...dbConfig, driver: 'mysql' } }, cmdOptions: { 'migrations-dir': path.join(__dirname, '..', 'migrations') } }
   dbm = DBMigrate.getInstance(true, dbmOpts)
 
-  // dbm.internals.argv['migrations-dir'] = './test/migrations' // @TODO see if official way of setting this?
   await dbm.up()
 
   // Create player console
