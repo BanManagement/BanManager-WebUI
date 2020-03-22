@@ -108,8 +108,8 @@ class MyApp extends App {
             openGraph={{
               type: 'website',
               locale: 'en_UK',
-              url: 'https://banmanagement.com/',
-              site_name: 'BanManagement'
+              url: pageProps.origin,
+              site_name: 'Ban Management'
             }}
           />
           <Component {...pageProps} />
