@@ -3,6 +3,9 @@
   "description": "Documentation for BanManager WebUI",
   "version": "1.0.0",
   "author": "James Mortemore (jamesmortemore@gmail.com)",
+  "bin": {
+    "bm-cli": "./bin/run"
+  },
   "browser": {
     "mobile-detect": false
   },
