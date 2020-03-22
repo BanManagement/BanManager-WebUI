@@ -31,7 +31,7 @@ describe('/api/logout', () => {
     const { statusCode } = await request
       .post('/api/logout')
       .set('Cookie', cookie)
-      .expect('Set-Cookie', /bm-ui-sess/)
+      .expect('Set-Cookie', /bm-webui-sess/)
       .set('Accept', 'application/json')
 
     assert.strictEqual(statusCode, 204)

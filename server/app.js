@@ -53,7 +53,7 @@ module.exports = async function ({ dbPool, logger, serversPool, disableUI = fals
   })
   server.use(reqLogger({ logger }))
   server.use(session({
-    key: process.env.SESSION_NAME || 'bm-web-ui',
+    key: process.env.SESSION_NAME || 'bm-webui-sess',
     renew: true,
     httpOnly: true,
     decode (str) {

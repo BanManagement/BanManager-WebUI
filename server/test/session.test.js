@@ -130,7 +130,7 @@ describe('/api/session', () => {
       const { statusCode } = await request
         .post('/api/session')
         .set('Accept', 'application/json')
-        .expect('Set-Cookie', /bm-ui-sess/)
+        .expect('Set-Cookie', /bm-webui-sess/)
         .send({ email: 'admin@banmanagement.com', password: 'testing' })
 
       assert.strictEqual(statusCode, 204)
@@ -263,7 +263,7 @@ describe('/api/session', () => {
       const { body, statusCode } = await request
         .post('/api/session')
         .set('Accept', 'application/json')
-        .expect('Set-Cookie', /bm-ui-sess/)
+        .expect('Set-Cookie', /bm-webui-sess/)
         .send({ name: player.name, pin: '123456', serverId: server.id })
 
       assert.strictEqual(statusCode, 200)

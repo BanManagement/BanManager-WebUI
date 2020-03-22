@@ -1,26 +1,18 @@
 {
   "name": "bm-ui",
-  "version": "1.0.0",
-  "private": true,
   "description": "Documentation for BanManager WebUI",
-  "scripts": {
-    "lint": "standard",
-    "test": "npm run lint && jest --coverage",
-    "coveralls": "cat ./coverage/lcov.info | coveralls",
-    "dev": "node server.js",
-    "build": "next build",
-    "heroku-postbuild": "npm run build",
-    "start": "node server.js"
-  },
+  "version": "1.0.0",
   "author": "James Mortemore (jamesmortemore@gmail.com)",
-  "license": "MIT",
-  "engines": {
-    "node": ">=10.13.0 <13"
+  "browser": {
+    "mobile-detect": false
   },
   "dependencies": {
     "@koa/router": "8.0.8",
     "@nateradebaugh/react-datetime": "4.3.4",
     "@next/bundle-analyzer": "9.3.1",
+    "@oclif/command": "1.5.19",
+    "@oclif/config": "1.14.0",
+    "@oclif/plugin-help": "2.2.3",
     "apollo-server-koa": "2.11.0",
     "argon2-ffi": "1.1.2",
     "babel-plugin-git-version": "0.2.0",
@@ -32,12 +24,14 @@
     "db-migrate": "0.11.6",
     "db-migrate-mysql": "2.1.1",
     "dotenv": "8.2.0",
+    "edit-dotenv": "1.0.4",
     "file-loader": "6.0.0",
     "graphql": "14.6.0",
     "graphql-constraint-directive": "1.4.1",
     "graphql-react": "9.1.0",
     "graphql-tools": "4.0.7",
     "hibp": "9.0.0",
+    "inquirer": "7.1.0",
     "js-yaml": "3.13.1",
     "koa": "2.11.0",
     "koa-bodyparser": "4.2.1",
@@ -65,9 +59,11 @@
     "semver": "7.1.3",
     "url-loader": "4.0.0",
     "uuid-parse": "1.1.0",
-    "validator": "12.2.0"
+    "validator": "12.2.0",
+    "web-push": "3.4.3"
   },
   "devDependencies": {
+    "@oclif/test": "1.2.5",
     "babel-eslint": "10.1.0",
     "coveralls": "3.0.11",
     "eslint-plugin-react": "7.18.3",
@@ -75,10 +71,35 @@
     "jest": "25.1.0",
     "json-to-graphql-query": "2.0.0",
     "mockdate": "2.0.5",
+    "nixt": "0.5.1",
     "nock": "12.0.3",
     "nyc": "15.0.0",
     "standard": "14.3.3",
     "supertest": "4.0.2"
+  },
+  "engines": {
+    "node": ">=10.13.0 <13"
+  },
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "build": "next build",
+    "coveralls": "cat ./coverage/lcov.info | coveralls",
+    "dev": "node server.js",
+    "heroku-postbuild": "npm run build",
+    "lint": "standard",
+    "start": "node server.js",
+    "test": "npm run lint && jest --coverage"
+  },
+  "oclif": {
+    "commands": "./cli/commands",
+    "bin": "bm-cli",
+    "hooks": {
+      "init": "./cli/hooks/init"
+    },
+    "plugins": [
+      "@oclif/plugin-help"
+    ]
   },
   "standard": {
     "parser": "babel-eslint",
@@ -93,8 +114,5 @@
       "beforeAll",
       "afterAll"
     ]
-  },
-  "browser": {
-    "mobile-detect": false
   }
 }
