@@ -92,7 +92,8 @@
     "heroku-postbuild": "npm run build",
     "lint": "standard",
     "start": "node server.js",
-    "test": "npm run lint && jest --coverage"
+    "test": "npm run lint && jest --coverage",
+    "setup": "node bin/run setup"
   },
   "oclif": {
     "commands": "./cli/commands",
