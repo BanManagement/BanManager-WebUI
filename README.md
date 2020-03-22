@@ -24,7 +24,8 @@ See [setup instructions](https://banmanagement.com/setup)
 #### Development
 ```
 npm install
-API_HOST=http://localhost:3001 node server.js
+npm run setup
+node server.js | npx pino-pretty
 ```
 
 ### [Demo](https://demo.banmanagement.com)
