@@ -1,4 +1,3 @@
-// const {expect, test} = require('@oclif/test')
 const nixt = require('nixt')
 const { unparse } = require('uuid-parse')
 const { tables } = require('../../server/data/tables')

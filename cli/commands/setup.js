@@ -163,10 +163,8 @@ class SetupCommand extends Command {
       connectionLimit: 1,
       multipleStatements: true
     }
-    const dbmOpts = { config: { dev: dbConfig } }
+    const dbmOpts = { config: { dev: dbConfig }, cmdOptions: { 'migrations-dir': './server/data/migrations' } }
     const dbm = DBMigrate.getInstance(true, dbmOpts)
-
-    dbm.internals.argv['migrations-dir'] = './server/data/migrations' // @TODO see if official way of setting this?
 
     await dbm.up()
 
