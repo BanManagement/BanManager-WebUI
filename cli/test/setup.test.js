@@ -30,15 +30,26 @@ describe('setup', () => {
 
   test('should disallow invalid email address', done => {
     nixt()
+      .env('CONTACT_EMAIL', '')
       .run('./bin/run setup')
-      .on('? Email address for push notification registration (Coming Soon) ').respond('test\n')
-      .stdout(/Email address is not valid. Please try again.../)
+      .on(/Email address for push notification/).respond('test\n')
+      .stdout(/Email address is not valid. Please try again/)
       .end(done)
   })
 
   test('should output env', done => {
     const dbPool = setup.dbPool.pool.config.connectionConfig
     const cmd = nixt()
+      .env('CONTACT_EMAIL', '')
+      .env('ENCRYPTION_KEY', '')
+      .env('SESSION_KEY', '')
+      .env('NOTIFICATION_VAPID_PUBLIC_KEY', '')
+      .env('NOTIFICATION_VAPID_PRIVATE_KEY', '')
+      .env('DB_HOST', '')
+      .env('DB_PORT', '')
+      .env('DB_USER', '')
+      .env('DB_PASSWORD', '')
+      .env('DB_NAME', '')
       .run('./bin/run setup --writeFile env')
       .on(/Email address for push notification/).respond('test@banmanagement.com\n')
       .on(/Database Host/).respond(`${dbPool.host}\n`)
