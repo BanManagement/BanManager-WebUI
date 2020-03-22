@@ -8,13 +8,14 @@ export default function SessionNavProfile () {
   const router = useRouter()
   const store = GlobalStore()
   const user = store.get('user')
+  const origin = store.get('origin')
   const [state, setState] = useState({ loggingOut: false })
   const handleLogout = async () => {
     setState({ loggingOut: true })
 
     // Using cookies for SSR instead of local storage, which are set to HttpOnly
     // requires server to delete cookie
-    const response = await fetch(process.env.API_HOST + '/logout',
+    const response = await fetch(`${origin}/api/logout`,
       {
         method: 'POST',
         headers: new Headers({ 'Content-Type': 'application/json' }),

@@ -1,7 +1,8 @@
-[![Slack Status](https://banmanagement-slack.herokuapp.com/badge.svg)](https://banmanagement-slack.herokuapp.com/)
-[![Known Vulnerabilities](https://snyk.io/test/github/banmanagement/banmanager-webui/badge.svg?targetFile=package.json)](https://snyk.io/test/github/banmanagement/banmanager-webui?targetFile=package.json)
-
 # BanManager-WebUI
+
+[![Build Status](https://api.travis-ci.org/BanManagement/BanManager-WebUI.svg?branch=master)](https://travis-ci.org/BanManagement/BanManager-WebUI)
+[![Coverage Status](https://coveralls.io/repos/github/BanManagement/BanManager-WebUI/badge.svg)](https://coveralls.io/github/BanManagement/BanManager-WebUI)
+[![Known Vulnerabilities](https://snyk.io/test/github/banmanagement/banmanager-webui/badge.svg?targetFile=package.json)](https://snyk.io/test/github/banmanagement/banmanager-webui?targetFile=package.json)
 
 ![](https://user-images.githubusercontent.com/1658997/37547562-5312183c-296a-11e8-91c7-8d1b9d17f4d3.png)
 
@@ -23,7 +24,8 @@ See [setup instructions](https://banmanagement.com/setup)
 #### Development
 ```
 npm install
-API_HOST=http://localhost:3001 node server.js
+npm run setup
+node server.js | npx pino-pretty
 ```
 
 ### [Demo](https://demo.banmanagement.com)

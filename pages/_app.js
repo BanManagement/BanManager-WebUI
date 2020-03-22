@@ -4,6 +4,7 @@ import MobileDetect from 'mobile-detect'
 import 'cross-fetch/polyfill'
 import { GraphQLProvider } from 'graphql-react'
 import { withGraphQLApp } from 'next-graphql-react'
+import absoluteUrl from 'next-absolute-url'
 import { GlobalStoreProvider } from '../components/GlobalContext'
 
 // Only import what we need
@@ -45,6 +46,10 @@ class MyApp extends App {
       pageProps = await Component.getInitialProps(ctx)
     }
 
+    const { origin } = absoluteUrl(ctx.req)
+
+    pageProps.origin = origin
+
     if (!ctx.req) {
       pageProps.deviceInfo = {
         mobile: false,
@@ -63,7 +68,7 @@ class MyApp extends App {
     }
 
     try {
-      const response = await fetch(process.env.API_HOST + '/graphql', {
+      const response = await fetch(`${origin}/graphql`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Cookie: ctx.req ? ctx.req.headers.cookie : undefined },
         credentials: 'include',
@@ -94,7 +99,7 @@ class MyApp extends App {
 
   render () {
     const { Component, pageProps, graphql } = this.props
-    const init = { user: pageProps.user || {}, cookie: pageProps.cookie, deviceInfo: pageProps.deviceInfo }
+    const init = { user: pageProps.user || {}, cookie: pageProps.cookie, deviceInfo: pageProps.deviceInfo, origin: pageProps.origin }
 
     return (
       <GlobalStoreProvider initValues={init}>
