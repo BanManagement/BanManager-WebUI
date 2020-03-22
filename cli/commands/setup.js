@@ -66,7 +66,7 @@ class SetupCommand extends Command {
       }])
 
       CONTACT_EMAIL = value
-      await save({ CONTACT_EMAIL })
+      await save({ CONTACT_EMAIL, NODE_ENV: 'production' })
     }
 
     if (ENCRYPTION_KEY) {
