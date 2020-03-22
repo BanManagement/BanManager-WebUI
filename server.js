@@ -7,8 +7,7 @@ requireEnv(
     'DB_HOST',
     'DB_PORT',
     'DB_USER',
-    'DB_NAME',
-    'DB_CONNECTION_LIMIT'
+    'DB_NAME'
   ])
 
 const logger = require('pino')(
@@ -20,7 +19,7 @@ const createApp = require('./server/app')
 const { setupPool, setupServersPool } = require('./server/connections')
 const port = process.env.PORT || 3000
 const dbConfig = {
-  connectionLimit: process.env.DB_CONNECTION_LIMIT,
+  connectionLimit: process.env.DB_CONNECTION_LIMIT || 5,
   host: process.env.DB_HOST,
   port: process.env.DB_PORT,
   user: process.env.DB_USER,
