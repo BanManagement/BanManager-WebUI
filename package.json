@@ -33,7 +33,7 @@
     "graphql": "14.6.0",
     "graphql-constraint-directive": "1.4.1",
     "graphql-depth-limit": "1.1.0",
-    "graphql-react": "9.1.0",
+    "graphql-react": "10.0.0",
     "graphql-tools": "4.0.7",
     "hibp": "9.0.0",
     "inquirer": "7.1.0",
