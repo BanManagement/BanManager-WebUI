@@ -1,4 +1,6 @@
 const depthLimit = require('graphql-depth-limit')
+const responseCachePlugin = require('apollo-server-plugin-response-cache')
+const { unparse } = require('uuid-parse')
 const typeDefs = require('./types')
 const resolvers = require('./resolvers')
 const schemaDirectives = {
@@ -40,7 +42,22 @@ module.exports = ({ logger }) => {
       logger.error(originalError)
 
       return { message: 'Internal Server Error' }
-    }
-    // validationRules: [depthLimit(10)]
+    },
+    plugins: [
+      {
+        requestDidStart ({ request, context }) {
+          context.log.debug(request.query)
+        }
+      },
+      responseCachePlugin({
+        sessionId: ({ context }) => {
+          if (context.session.playerId) {
+            return unparse(context.session.playerId)
+          }
+
+          return null
+        }
+      })
+    ]
   }
 }

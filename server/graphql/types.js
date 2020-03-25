@@ -345,10 +345,10 @@ type Query {
 
   me: Me
 
-  navigation: Navigation!
+  navigation: Navigation! @cacheControl(maxAge: 30, scope: PRIVATE)
   adminNavigation: AdminNavigation! @allowIf(resource: "servers", permission: "manage")
 
-  pageLayout(pathname: String!): PageLayout! @cacheControl(maxAge: 500)
+  pageLayout(pathname: String!): PageLayout! @cacheControl(maxAge: 30, scope: PUBLIC)
   pageLayouts: [PageLayout!] @allowIf(resource: "servers", permission: "manage")
 
   roles(defaultOnly: Boolean): [Role!] @allowIf(resource: "servers", permission: "manage")
