@@ -51,7 +51,7 @@ module.exports = ({ logger }) => {
       },
       responseCachePlugin({
         sessionId: ({ context }) => {
-          if (context.session.playerId) {
+          if (context.session && context.session.playerId) {
             return unparse(context.session.playerId)
           }
 
