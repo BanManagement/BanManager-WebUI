@@ -67,6 +67,8 @@ class MyApp extends App {
       }
     }
 
+    if (ctx.req && !ctx.req.headers.cookie) return { pageProps }
+
     try {
       const response = await fetch(`${origin}/graphql`, {
         method: 'POST',
