@@ -3,7 +3,7 @@ import { Container, Header, Image, Loader } from 'semantic-ui-react'
 import GraphQLErrorMessage from './GraphQLErrorMessage'
 import { fromNow, useApi } from '../utils'
 
-export default function PlayerHeader ({ id }) {
+export default function PlayerHeader ({ id, colour }) {
   const { loading, data, graphQLErrors } = useApi({
     variables: { id }, query: `
     query player($id: UUID!) {
@@ -24,7 +24,7 @@ export default function PlayerHeader ({ id }) {
       <Header
         as='h1'
         icon
-        inverted
+        inverted={!!colour}
         style={{ fontWeight: 'normal' }}
       >
         <Image src={`https://crafatar.com/avatars/${data.player.id}?size=128&overlay=true`} />
