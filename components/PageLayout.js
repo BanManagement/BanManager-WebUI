@@ -82,7 +82,7 @@ function createComponents (rows, availableComponents, props) {
           key={index}
           textAlign={deviceComponent.textAlign}
         >
-          <Container><Component { ...props } /></Container>
+          <Container><Component {...props} /></Container>
         </Grid.Column>
 
       return rendered
