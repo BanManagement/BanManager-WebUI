@@ -162,7 +162,7 @@ export default function Page () {
                   <Segment.Group color='black'>
                     {report.serverLogs.map(log => (
                       <Segment key={log.id}>
-                        [{format(fromUnixTime(log.created), 'YYYY-MM-DD HH:mm:ss')}] {log.message}
+                        [{format(fromUnixTime(log.created), 'yyyy-MM-dd HH:mm:ss')}] {log.message}
                       </Segment>
                     ))}
                   </Segment.Group>
@@ -173,7 +173,7 @@ export default function Page () {
                   <Segment.Group color='black'>
                     {report.commands.map(cmd => (
                       <Segment key={cmd.id}>
-                        [{format(fromUnixTime(cmd.created), 'YYYY-MM-DD HH:mm:ss')}] <Image floated='left' src={`https://crafatar.com/avatars/${cmd.actor.id}?size=28&overlay=true`} /> {cmd.actor.name} <pre style={{ display: 'inline' }}>/{cmd.command} {cmd.args}</pre>
+                        [{format(fromUnixTime(cmd.created), 'yyyy-MM-dd HH:mm:ss')}] <Image floated='left' src={`https://crafatar.com/avatars/${cmd.actor.id}?size=28&overlay=true`} /> {cmd.actor.name} <pre style={{ display: 'inline' }}>/{cmd.command} {cmd.args}</pre>
                       </Segment>
                     ))}
                   </Segment.Group>
