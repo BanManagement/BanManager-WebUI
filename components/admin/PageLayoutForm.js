@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Form, Label, Header, Segment, Responsive as ResponsiveUtil } from 'semantic-ui-react'
+import { Button, Form, Label, Header, Modal, Segment, Responsive as ResponsiveUtil } from 'semantic-ui-react'
 import { COLORS as COLOURS, TEXT_ALIGNMENTS } from 'semantic-ui-react/dist/commonjs/lib/SUI'
 import GridLayout from 'react-grid-layout'
-import { capitalize, find, pick } from 'lodash-es'
+import { capitalize, find, maxBy, pick } from 'lodash-es'
 import GraphQLErrorMessage from '../GraphQLErrorMessage'
 import { useApi } from '../../utils'
+import * as reuseableComponents from './layout'
 
 const colourOptions = COLOURS.map(colour => {
   const text = capitalize(colour)
@@ -21,7 +22,9 @@ const textAlignmentOptions = TEXT_ALIGNMENTS.map(alignment => {
 textAlignmentOptions.unshift({ key: 'none', text: 'None', value: 'none' })
 
 const cleanUpComponent = (component) => {
-  return pick(component, ['x', 'y', 'w', 'component', 'colour', 'textAlign', 'id'])
+  if (component.generated) return pick(component, ['x', 'y', 'w', 'meta', 'component', 'colour', 'textAlign'])
+
+  return pick(component, ['x', 'y', 'w', 'meta', 'component', 'colour', 'textAlign', 'id'])
 }
 
 export default function PageLayoutForm ({ pathname, pageLayout, onFinished, query }) {
@@ -31,9 +34,10 @@ export default function PageLayoutForm ({ pathname, pageLayout, onFinished, quer
   const [currentLayout, setCurrentLayout] = useState(pageLayout.devices.desktop)
   const [currentPageLayout, setCurrentPageLayout] = useState(pageLayout)
   const [selectedComponent, setSelectedComponent] = useState(null)
+  const [openComponentForm, setOpenComponentForm] = useState(null)
 
   useEffect(() => {
-    const newLayout = { ...currentPageLayout }
+    const newLayout = { devices: {} }
 
     Object.keys(currentPageLayout.devices).forEach(device => {
       if (!currentPageLayout.devices[device].components) return
@@ -42,7 +46,8 @@ export default function PageLayoutForm ({ pathname, pageLayout, onFinished, quer
         {
           ...currentPageLayout.devices[device],
           components: currentPageLayout.devices[device].components.map(cleanUpComponent),
-          unusedComponents: currentPageLayout.devices[device].unusedComponents.map(cleanUpComponent)
+          unusedComponents: currentPageLayout.devices[device].unusedComponents.map(cleanUpComponent),
+          reusableComponents: undefined
         }
     })
 
@@ -67,9 +72,14 @@ export default function PageLayoutForm ({ pathname, pageLayout, onFinished, quer
     setCurrentDevice({ name, width: ResponsiveUtil[widthName].minWidth })
     setCurrentLayout(currentPageLayout.devices[name])
   }
-  const onSelectComponent = (index) => setSelectedComponent(index)
+  const onSelectComponent = (id) => setSelectedComponent(id)
   const addComponent = (component) => {
     const updatedComponent = { ...component, y: currentLayout.components.length }
+
+    if (!updatedComponent.id) {
+      updatedComponent.id = (parseInt(maxBy(currentLayout.components, ({ id }) => parseInt(id, 10)).id, 10) + 1).toString()
+      updatedComponent.generated = true
+    }
 
     const unusedComponents = currentLayout.unusedComponents.filter(({ component: name }) => name !== component.component)
     const components = [...currentLayout.components.slice(), updatedComponent]
@@ -87,11 +97,16 @@ export default function PageLayoutForm ({ pathname, pageLayout, onFinished, quer
       }
     })
   }
-  const removeComponent = (index, e) => {
+  const removeComponent = (id, e) => {
     e.stopPropagation()
 
-    const components = currentLayout.components.filter((component, i) => i !== index)
-    const unusedComponents = [...currentLayout.unusedComponents.slice(), currentLayout.components[index]]
+    const currentComponent = find(currentLayout.components, { id })
+    const components = currentLayout.components.filter(component => component.id !== id)
+    let unusedComponents = currentLayout.unusedComponents.slice()
+
+    if (!currentComponent.generated) {
+      unusedComponents = [...currentLayout.unusedComponents.slice(), currentComponent]
+    }
 
     setCurrentLayout({ ...currentLayout, components, unusedComponents })
     setCurrentPageLayout({
@@ -106,11 +121,26 @@ export default function PageLayoutForm ({ pathname, pageLayout, onFinished, quer
       }
     })
 
-    if (selectedComponent === index) setSelectedComponent(null)
+    if (selectedComponent === currentComponent.id) setSelectedComponent(null)
   }
-  const handleComponentChange = (e, { name, value }) => {
-    const components = currentLayout.components.map((component, index) => {
-      if (selectedComponent !== null && selectedComponent === index) {
+  const editComponent = (id, e) => {
+    e.stopPropagation()
+
+    const component = find(currentLayout.components, { id })
+    const FormComponent = reuseableComponents[component.component]
+    const setMeta = (meta) => {
+      handleComponentChange(null, { name: 'meta', value: meta }, id)
+      handleCloseComponentForm()
+    }
+
+    setOpenComponentForm(<FormComponent meta={{ ...component.meta }} setMeta={setMeta} />)
+  }
+  const handleCloseComponentForm = () => {
+    setOpenComponentForm(null)
+  }
+  const handleComponentChange = (e, { name, value }, id) => {
+    const components = currentLayout.components.map((component) => {
+      if ((id && component.id === id) || (selectedComponent !== null && selectedComponent === component.id)) {
         return { ...component, [name]: value === 'none' ? null : value }
       }
 
@@ -130,15 +160,9 @@ export default function PageLayoutForm ({ pathname, pageLayout, onFinished, quer
     })
   }
   const onLayoutChange = (layout) => {
-    let newSelectedComponent
-    const components = layout.map((component, index) => {
-      const oldComponent = find(currentLayout.components, { component: component.i })
-      const newComponent = { ...oldComponent, ...component }
-
-      if (currentLayout.components[selectedComponent] &&
-        currentLayout.components[selectedComponent].i === component.i) {
-        newSelectedComponent = index
-      }
+    const components = layout.map(({ i, w, x, y }) => {
+      const currentComponent = find(currentLayout.components, { id: i })
+      const newComponent = { ...currentComponent, w, x, y }
 
       return newComponent
     })
@@ -155,7 +179,7 @@ export default function PageLayoutForm ({ pathname, pageLayout, onFinished, quer
       }
     })
 
-    if (newSelectedComponent) setSelectedComponent(newSelectedComponent)
+    // if (newSelectedComponent) setSelectedComponent(newSelectedComponent)
   }
   const onSubmit = (e) => {
     e.preventDefault()
@@ -169,23 +193,26 @@ export default function PageLayoutForm ({ pathname, pageLayout, onFinished, quer
     setSelectedComponent(null)
   }
 
-  const selected = currentLayout.components[selectedComponent]
-  const currentLayoutData = currentLayout.components.map(layout => ({ ...layout, h: 1, i: layout.component }))
-  const layoutComponents = currentLayoutData.map((component, index) => {
+  const selected = find(currentLayout.components, { id: selectedComponent })
+  const currentLayoutData = currentLayout.components.map((layout) => ({ ...layout, h: 1, i: layout.id }))
+  const layoutComponents = currentLayoutData.map(component => {
     const colour = component.colour && component.colour !== 'none' ? { inverted: true, color: component.colour } : {}
+    const editForm = reuseableComponents[component.component]
 
     return (
-      <div key={component.i} onClick={onSelectComponent.bind(this, index)}>
+      <div key={component.i} onClick={onSelectComponent.bind(this, component.id)}>
         <Segment clearing {...colour}>
-          {component.i}
-          <Button floated='right' icon='trash' size='mini' onClick={removeComponent.bind(this, index)} />
+          {component.component}
+          <Button floated='right' icon='trash' size='mini' onClick={removeComponent.bind(this, component.id)} />
+          {!!editForm &&
+            <Button floated='right' icon='pencil' size='mini' onClick={editComponent.bind(this, component.id)} />}
         </Segment>
       </div>
     )
   })
-  const unusedComponents = currentLayout.unusedComponents.map(component => {
+  const unusedComponents = currentLayout.unusedComponents.concat(pageLayout.devices[currentDevice.name].reusableComponents).map(component => {
     return (
-      <Segment key={component.component}>
+      <Segment key={component.id ? component.id : component.component}>
         {component.component}
         <Button
           floated='right'
@@ -219,6 +246,17 @@ export default function PageLayoutForm ({ pathname, pageLayout, onFinished, quer
       </Button.Group>
       <Button color='green' onClick={handleReset}>Reset</Button>
       <Button primary onClick={onSubmit} loading={loading}>Save</Button>
+      <Modal
+        open={!!openComponentForm}
+        onClose={handleCloseComponentForm}
+      >
+        <Header>
+          Edit
+        </Header>
+        <Modal.Content>
+          {openComponentForm}
+        </Modal.Content>
+      </Modal>
       <Segment>
         <GraphQLErrorMessage error={graphQLErrors} />
         <Form>

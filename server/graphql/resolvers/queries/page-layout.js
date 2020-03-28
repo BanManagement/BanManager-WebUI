@@ -1,4 +1,5 @@
 const ExposedError = require('../../../data/exposed-error')
+const reusableComponents = require('../../../data/default-components')
 
 module.exports = async function pageLayout (obj, { pathname }, { state: { dbPool } }) {
   const [results] = await dbPool.execute('SELECT * FROM bm_web_page_layouts WHERE pathname = ?', [pathname])
@@ -10,7 +11,9 @@ module.exports = async function pageLayout (obj, { pathname }, { state: { dbPool
   results.forEach(result => {
     const { device, y } = result
 
-    if (!devices[device]) devices[device] = {}
+    if (result.meta) result.meta = JSON.parse(result.meta)
+
+    if (!devices[device]) devices[device] = { reusableComponents }
     if (!devices[device].unusedComponents) devices[device].unusedComponents = []
     if (!devices[device].components) devices[device].components = []
 

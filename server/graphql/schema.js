@@ -39,7 +39,7 @@ module.exports = ({ logger }) => {
         return { ...originalError, message: `${fieldName} ${message}` }
       }
 
-      logger.error(originalError)
+      logger.error(originalError.stack ? originalError.stack : originalError)
 
       return { message: 'Internal Server Error' }
     },

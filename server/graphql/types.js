@@ -10,6 +10,7 @@ module.exports = gql`
 scalar IPAddress
 scalar Timestamp
 scalar UUID
+scalar JSONObject
 
 directive @allowIf(resource: String!, permission: String!, serverVar: String, serverSrc: String) on FIELD_DEFINITION
 directive @allowIfLoggedIn on FIELD_DEFINITION
@@ -309,12 +310,23 @@ type DeviceComponent {
   w: Int!
   colour: String
   textAlign: String
-  meta: String
+  meta: JSONObject
+}
+
+type ReusableDeviceComponent {
+  component: String!
+  x: Int
+  y: Int
+  w: Int
+  colour: String
+  textAlign: String
+  meta: JSONObject
 }
 
 type PageDevice {
   components: [DeviceComponent!]!
   unusedComponents: [DeviceComponent!]!
+  reusableComponents: [ReusableDeviceComponent!]!
 }
 
 type PageDevices {
@@ -471,14 +483,14 @@ input PageLayoutDeviceInput {
 }
 
 input PageLayoutComponentInput {
-  id: ID!
+  id: ID
   component: String!
   x: Int!
   y: Int!
   w: Int!
   colour: String
   textAlign: String
-  meta: String
+  meta: JSONObject
 }
 
 input RoleInput {
