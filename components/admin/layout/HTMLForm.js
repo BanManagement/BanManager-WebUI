@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Form, TextArea } from 'semantic-ui-react'
 
-export default function HTMLForm({ meta, setMeta }) {
+export default function HTMLForm ({ meta, setMeta }) {
   const [html, setHtml] = useState(meta.html)
   const onSubmit = (e) => {
     e.preventDefault()

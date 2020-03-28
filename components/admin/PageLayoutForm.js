@@ -205,8 +205,7 @@ export default function PageLayoutForm ({ pathname, pageLayout, onFinished, quer
           {component.component}
           <Button floated='right' icon='trash' size='mini' onClick={removeComponent.bind(this, component.id)} />
           {!!editForm &&
-            <Button floated='right' icon='pencil' size='mini' onClick={editComponent.bind(this, component.id)} />
-          }
+            <Button floated='right' icon='pencil' size='mini' onClick={editComponent.bind(this, component.id)} />}
         </Segment>
       </div>
     )
