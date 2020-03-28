@@ -1,6 +1,7 @@
 const { readdirSync } = require('fs')
 const { join } = require('path')
 const { GraphQLScalarType } = require('graphql')
+const { GraphQLJSONObject } = require('graphql-type-json')
 
 function importFunctions (...dir) {
   return readdirSync(join(...dir)).reduce((files, file) => {
@@ -31,6 +32,6 @@ const scalars = readdirSync(join(__dirname, 'scalars'))
     }
 
     return files
-  }, {})
+  }, { JSONObject: GraphQLJSONObject })
 
 module.exports = { Mutation: mutations, Query: queries, ...scalars }

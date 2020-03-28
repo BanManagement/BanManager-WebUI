@@ -1,5 +1,7 @@
-const { insert, update } = require('../../../data/udify')
+const { find } = require('lodash')
+const { insert, update, delete: deleteData } = require('../../../data/udify')
 const ExposedError = require('../../../data/exposed-error')
+const reusableComponents = require('../../../data/default-components')
 const pageLayout = require('../queries/page-layout')
 
 module.exports = async function updatePageLayout (obj, { pathname, input }, { log, state }) {
@@ -57,8 +59,13 @@ module.exports = async function updatePageLayout (obj, { pathname, input }, { lo
     })
 
     for (const component of components) {
+      if (!component.id && component.y === -1) continue
       if (component.id) {
-        await update(conn, 'bm_web_page_layouts', component, { id: component.id })
+        if (component.y === -1 && find(reusableComponents, { component: component.component })) {
+          await deleteData(conn, 'bm_web_page_layouts', { id: component.id })
+        } else {
+          await update(conn, 'bm_web_page_layouts', component, { id: component.id })
+        }
       } else {
         await insert(conn, 'bm_web_page_layouts', component)
       }

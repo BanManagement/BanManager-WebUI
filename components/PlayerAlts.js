@@ -2,7 +2,7 @@ import { Header, Image, List, Loader } from 'semantic-ui-react'
 import GraphQLErrorMessage from './GraphQLErrorMessage'
 import { useApi } from '../utils'
 
-export default function PlayerAlts ({ id }) {
+export default function PlayerAlts ({ id, colour }) {
   const { loading, data, graphQLErrors } = useApi({
     variables: { id }, query: `
     query player($id: UUID!) {
@@ -47,8 +47,8 @@ export default function PlayerAlts ({ id }) {
 
   return (
     <>
-      <Header>Possible Alts</Header>
-      <List divided>
+      <Header inverted={!!colour}>Possible Alts</Header>
+      <List divided inverted={!!colour}>
         {alts}
       </List>
     </>
