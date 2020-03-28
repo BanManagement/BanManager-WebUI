@@ -9,9 +9,10 @@ module.exports = async function pageLayouts (obj, info, { state: { dbPool } }) {
     const devices = pageLayouts[result.pathname]
     const { device, y } = result
 
-    if (!devices[device]) devices[device] = {}
+    if (!devices[device]) devices[device] = { reusableComponents: [] }
     if (!devices[device].unusedComponents) devices[device].unusedComponents = []
     if (!devices[device].components) devices[device].components = []
+    devices[device].reusableComponents = []
 
     if (y < 0) {
       devices[device].unusedComponents.push(result)

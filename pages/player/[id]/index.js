@@ -10,10 +10,11 @@ import PlayerHeader from '../../../components/PlayerHeader'
 import PlayerIpList from '../../../components/PlayerIpList'
 import PlayerPunishmentList from '../../../components/PlayerPunishmentList'
 import PlayerHistoryList from '../../../components/PlayerHistoryList'
+import HTML from '../../../components/HTML'
 import GraphQLErrorMessage from '../../../components/GraphQLErrorMessage'
 
 const availableComponents = {
-  PlayerAlts, PlayerHeader, PlayerIpList, PlayerHistoryList, PlayerPunishmentList
+  PlayerAlts, PlayerHeader, PlayerIpList, PlayerHistoryList, PlayerPunishmentList, HTML
 }
 
 export default function Page () {

@@ -17,6 +17,15 @@ export default function Page () {
     colour
     textAlign
     meta
+  }
+  fragment ReusableComponent on ReusableDeviceComponent {
+    component
+    x
+    y
+    w
+    colour
+    textAlign
+    meta
   }`
   const query = `query pageLayout($pathname: String!) {
     pageLayout(pathname: $pathname) {
@@ -28,6 +37,9 @@ export default function Page () {
           unusedComponents {
             ...Component
           }
+          reusableComponents {
+            ...ReusableComponent
+          }
         }
         tablet {
           components {
@@ -36,6 +48,9 @@ export default function Page () {
           unusedComponents {
             ...Component
           }
+          reusableComponents {
+            ...ReusableComponent
+          }
         }
         desktop {
           components {
@@ -43,6 +58,9 @@ export default function Page () {
           }
           unusedComponents {
             ...Component
+          }
+          reusableComponents {
+            ...ReusableComponent
           }
         }
       }

@@ -11,15 +11,9 @@ const query = `query pageLayout($pathname: String!) {
         components {
           ...Component
         }
-        unusedComponents {
-          ...Component
-        }
       }
       tablet {
         components {
-          ...Component
-        }
-        unusedComponents {
           ...Component
         }
       }
@@ -27,15 +21,11 @@ const query = `query pageLayout($pathname: String!) {
         components {
           ...Component
         }
-        unusedComponents {
-          ...Component
-        }
       }
     }
   }
 }
 fragment Component on DeviceComponent {
-  id
   component
   x
   y
@@ -47,9 +37,16 @@ fragment Component on DeviceComponent {
 
 // @TODO Component needs optimising, try and avoid numerous loops
 function calculateRowCount (components) {
-  return components.reduce(function (x, y) {
-    return (x.y > y.y) ? x.y : y.y
-  })
+  const counted = {}
+
+  return components.filter(c => {
+    if (c.y >= 0 && !counted[c.y]) {
+      counted[c.y] = true
+      return true
+    }
+
+    return false
+  }).length
 }
 
 function createRows (rowCount, components) {
@@ -74,6 +71,7 @@ function createComponents (rows, availableComponents, props) {
       if (!Component) return null
 
       props.colour = deviceComponent.colour
+      props.meta = deviceComponent.meta
 
       const rendered =
         <Grid.Column
