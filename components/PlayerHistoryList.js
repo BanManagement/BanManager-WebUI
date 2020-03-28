@@ -1,18 +1,20 @@
 import { Header, Loader, Table } from 'semantic-ui-react'
+import { format, fromUnixTime } from 'date-fns'
 import GraphQLErrorMessage from './GraphQLErrorMessage'
-import { fromNow, useApi } from '../utils'
+import { useApi } from '../utils'
 
 const PlayerHistory = ({ server, history }) => {
   if (!history || !history.length) return null
 
+  const dateFormat = 'yyyy-MM-dd HH:mm:ss'
   const ips = history.map((item, i) => {
     return (
       <Table.Row key={i}>
         <Table.Cell>
-          {fromNow(item.join)}
+          {format(fromUnixTime(item.join), dateFormat)}
         </Table.Cell>
         <Table.Cell>
-          {fromNow(item.leave)}
+          {format(fromUnixTime(item.leave), dateFormat)}
         </Table.Cell>
         <Table.Cell>{item.ip}</Table.Cell>
       </Table.Row>
@@ -24,6 +26,11 @@ const PlayerHistory = ({ server, history }) => {
       <Table.Header>
         <Table.Row>
           <Table.HeaderCell colSpan='3'>{server.server.name}</Table.HeaderCell>
+        </Table.Row>
+        <Table.Row>
+          <Table.HeaderCell>Joined</Table.HeaderCell>
+          <Table.HeaderCell>Left</Table.HeaderCell>
+          <Table.HeaderCell>IP Address</Table.HeaderCell>
         </Table.Row>
       </Table.Header>
       <Table.Body>{ips}</Table.Body>
@@ -69,7 +76,7 @@ export default function PlayerHistoryList ({ id }) {
 
   return (
     <>
-      <Header>Player History</Header>
+      <Header>Player Session History</Header>
       {history}
     </>
   )
