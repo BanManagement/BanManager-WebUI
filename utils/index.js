@@ -30,8 +30,8 @@ export const useApi = (operation, options) => {
       if (cookie) options.headers.Cookie = cookie
     },
     loadOnMount: true,
-    loadOnReload: true,
-    loadOnReset: true,
+    loadOnReload: false,
+    loadOnReset: false,
     ...options
   })
   const { load, loading, cacheValue: { data, graphQLErrors } = {} } = res
