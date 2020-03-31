@@ -18,9 +18,11 @@ exports.up = async function (db) {
     }
   }])
 
-  const [{ id }] = await db.runSql('SELECT id FROM bm_web_servers LIMIT 1')
+  const [result] = await db.runSql('SELECT id FROM bm_web_servers LIMIT 1')
 
-  if (!id) return
+  if (!result || !result.id) return
+
+  const id = result.id
 
   await addComponents('home', [{ component: 'ServerNameHeader', x: 0, y: 1, w: 16, meta: { serverId: id, as: 'h2' } }])
   await addComponents('home', [
