@@ -10,7 +10,7 @@ module.exports = (db) => {
       ])
     }
 
-    return db.insert('bm_web_page_layouts', ['pathname', 'device', 'component', 'x', 'y', 'w', 'colour', 'textAlign']
+    return db.insert('bm_web_page_layouts', ['pathname', 'device', 'component', 'x', 'y', 'w', 'colour', 'textAlign', 'meta']
       , [pathname,
         component.device,
         component.component,
@@ -18,7 +18,8 @@ module.exports = (db) => {
         component.y,
         component.w,
         component.colour || null,
-        component.textAlign || null
+        component.textAlign || null,
+        component.meta ? JSON.stringify(component.meta) : null
       ]
       , noop)
   }

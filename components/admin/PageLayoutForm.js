@@ -5,7 +5,7 @@ import GridLayout from 'react-grid-layout'
 import { capitalize, find, maxBy, pick } from 'lodash-es'
 import GraphQLErrorMessage from '../GraphQLErrorMessage'
 import { useApi } from '../../utils'
-import * as reuseableComponents from './layout'
+import { componentsMeta } from './layout'
 
 const colourOptions = COLOURS.map(colour => {
   const text = capitalize(colour)
@@ -127,7 +127,7 @@ export default function PageLayoutForm ({ pathname, pageLayout, onFinished, quer
     e.stopPropagation()
 
     const component = find(currentLayout.components, { id })
-    const FormComponent = reuseableComponents[component.component]
+    const FormComponent = componentsMeta[component.component].edit
     const setMeta = (meta) => {
       handleComponentChange(null, { name: 'meta', value: meta }, id)
       handleCloseComponentForm()
@@ -197,7 +197,7 @@ export default function PageLayoutForm ({ pathname, pageLayout, onFinished, quer
   const currentLayoutData = currentLayout.components.map((layout) => ({ ...layout, h: 1, i: layout.id }))
   const layoutComponents = currentLayoutData.map(component => {
     const colour = component.colour && component.colour !== 'none' ? { inverted: true, color: component.colour } : {}
-    const editForm = reuseableComponents[component.component]
+    const editForm = componentsMeta[component.component] ? componentsMeta[component.component].edit : null
 
     return (
       <div key={component.i} onClick={onSelectComponent.bind(this, component.id)}>
