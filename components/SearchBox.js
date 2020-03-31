@@ -3,7 +3,7 @@ import { Grid, Header, Image } from 'semantic-ui-react'
 import { useRouter } from 'next/router'
 import PlayerSelector from './admin/PlayerSelector'
 
-export default function SearchBox ({ meta: { iconSrc, name, showPlayerSearch, showIpSearch }}) {
+export default function SearchBox ({ meta: { iconSrc, name, showPlayerSearch, showIpSearch } }) {
   const router = useRouter()
 
   return (
@@ -25,16 +25,14 @@ export default function SearchBox ({ meta: { iconSrc, name, showPlayerSearch, sh
               multiple={false}
               handleChange={(id) => id ? router.push(`/player/${id}`) : undefined}
               placeholder='Search Player Name'
-            />
-          }
+            />}
           <br />
           {!!showIpSearch &&
             <PlayerSelector
               multiple={false}
               handleChange={(id) => id ? router.push(`/player/${id}`) : undefined}
               placeholder='Search IP Address'
-            />
-          }
+            />}
         </Grid.Column>
       </Grid.Row>
     </Grid>

@@ -21,7 +21,7 @@ const metaMap = {
   }
 }
 
-export default function RecentServerPunishments ({ meta: { serverId, type }}) {
+export default function RecentServerPunishments ({ meta: { serverId, type } }) {
   const variables = { serverId, limit: 5 }
   const meta = metaMap[type]
   const query = `
