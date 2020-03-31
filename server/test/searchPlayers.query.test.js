@@ -35,7 +35,7 @@ describe('Query searchPlayers', () => {
       .set('Accept', 'application/json')
       .send({
         query: `query players {
-        searchPlayers(name:"${player.name.substr(0, 3)}") {
+        searchPlayers(name:"${player.name.substr(0, player.name.length - 2)}") {
           id
           name
           lastSeen
