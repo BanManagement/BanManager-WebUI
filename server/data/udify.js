@@ -24,8 +24,24 @@ async function deleteData (pool, table, where) {
 
 async function insert (pool, table, entity) {
   if (Array.isArray(entity)) {
-    for (const item of entity) {
-      await insert(pool, table, item)
+    const conn = await pool.getConnection()
+
+    try {
+      await conn.beginTransaction()
+
+      for (const item of entity) {
+        await insert(conn, table, item)
+      }
+
+      await conn.commit()
+    } catch (e) {
+      if (!conn.connection._fatalError) {
+        await conn.rollback()
+      }
+
+      throw e
+    } finally {
+      conn.release()
     }
 
     return
