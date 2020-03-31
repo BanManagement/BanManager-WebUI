@@ -92,7 +92,7 @@
     "build": "next build",
     "coveralls": "cat ./coverage/lcov.info | coveralls",
     "dev": "node server.js",
-    "heroku-postbuild": "npm run build",
+    "heroku-postbuild": "npm run build && node bin/run update",
     "lint": "standard",
     "start": "node server.js",
     "test": "npm run lint && jest --coverage",
