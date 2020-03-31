@@ -6,7 +6,7 @@ const udify = require('../../server/data/udify')
 const { Command, flags } = require('@oclif/command')
 const { isEmail } = require('validator')
 const { generateVAPIDKeys } = require('web-push')
-const { createConnection } = require('mysql2/promise')
+const { createPool } = require('mysql2/promise')
 const { merge } = require('lodash')
 const { parse } = require('uuid-parse')
 const { generateServerId } = require('../../server/data/generator')
@@ -95,7 +95,7 @@ class SetupCommand extends Command {
 
     const connectToDb = async (config) => {
       try {
-        return await createConnection(config)
+        return await createPool(config)
       } catch (e) {
         console.error(e)
         return null
@@ -177,7 +177,7 @@ class SetupCommand extends Command {
       this.log(`BanManager Server ${server.name} detected, skipping server setup, attempting to connect`)
 
       try {
-        serverConn = await createConnection({
+        serverConn = await createPool({
           host: server.host,
           port: server.port,
           database: server.database,
@@ -195,7 +195,7 @@ class SetupCommand extends Command {
       serverConn = await askDb()
 
       const { serverName } = await inquirer.prompt([{ name: 'serverName', message: 'Server Name', default: server ? server.name : undefined }])
-      const { host, port, user, password, database } = serverConn.config
+      const { host, port, user, password, database } = serverConn.pool.config.connectionConfig
 
       server = { host, port, user, password, database, name: serverName }
     }
@@ -203,7 +203,7 @@ class SetupCommand extends Command {
     const checkTable = async (conn, table) => {
       const [[{ exists }]] = await conn.execute(
         'SELECT COUNT(*) AS `exists` FROM information_schema.tables WHERE table_schema = ? AND table_name = ?'
-        , [conn.connection.config.database, table])
+        , [conn.pool.config.connectionConfig.database, table])
 
       return exists
     }
@@ -298,6 +298,25 @@ class SetupCommand extends Command {
       }
 
       await udify.insert(conn, 'bm_web_servers', server)
+
+      // Setup default homepage
+      await udify.insert(conn, 'bm_web_page_layouts', [
+        { pathname: 'home', component: 'ServerNameHeader', x: 0, y: 1, w: 16, meta: JSON.stringify({ serverId: server.id, as: 'h2' }), device: 'desktop' },
+        { pathname: 'home', component: 'ServerNameHeader', x: 0, y: 1, w: 16, meta: JSON.stringify({ serverId: server.id, as: 'h2' }), device: 'tablet' },
+        { pathname: 'home', component: 'ServerNameHeader', x: 0, y: 1, w: 16, meta: JSON.stringify({ serverId: server.id, as: 'h2' }), device: 'mobile' },
+        { pathname: 'home', component: 'RecentServerPunishments', x: 0, y: 2, w: 4, meta: JSON.stringify({ serverId: server.id, type: 'bans' }), device: 'desktop' },
+        { pathname: 'home', component: 'RecentServerPunishments', x: 4, y: 2, w: 4, meta: JSON.stringify({ serverId: server.id, type: 'mutes' }), device: 'desktop' },
+        { pathname: 'home', component: 'RecentServerPunishments', x: 8, y: 2, w: 4, meta: JSON.stringify({ serverId: server.id, type: 'reports' }), device: 'desktop' },
+        { pathname: 'home', component: 'RecentServerPunishments', x: 12, y: 2, w: 4, meta: JSON.stringify({ serverId: server.id, type: 'warnings' }), device: 'desktop' },
+        { pathname: 'home', component: 'RecentServerPunishments', x: 0, y: 2, w: 4, meta: JSON.stringify({ serverId: server.id, type: 'bans' }), device: 'tablet' },
+        { pathname: 'home', component: 'RecentServerPunishments', x: 4, y: 2, w: 4, meta: JSON.stringify({ serverId: server.id, type: 'mutes' }), device: 'tablet' },
+        { pathname: 'home', component: 'RecentServerPunishments', x: 8, y: 2, w: 4, meta: JSON.stringify({ serverId: server.id, type: 'reports' }), device: 'tablet' },
+        { pathname: 'home', component: 'RecentServerPunishments', x: 12, y: 2, w: 4, meta: JSON.stringify({ serverId: server.id, type: 'warnings' }), device: 'tablet' },
+        { pathname: 'home', component: 'RecentServerPunishments', x: 0, y: 2, w: 16, meta: JSON.stringify({ serverId: server.id, type: 'bans' }), device: 'mobile' },
+        { pathname: 'home', component: 'RecentServerPunishments', x: 0, y: 3, w: 16, meta: JSON.stringify({ serverId: server.id, type: 'mutes' }), device: 'mobile' },
+        { pathname: 'home', component: 'RecentServerPunishments', x: 0, y: 4, w: 16, meta: JSON.stringify({ serverId: server.id, type: 'reports' }), device: 'mobile' },
+        { pathname: 'home', component: 'RecentServerPunishments', x: 0, y: 5, w: 16, meta: JSON.stringify({ serverId: server.id, type: 'warnings' }), device: 'mobile' }
+      ])
     }
 
     const [roleResults] = await conn.execute('SELECT player_id FROM bm_web_player_roles WHERE role_id = 3 LIMIT 1')
