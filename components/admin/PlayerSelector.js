@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Dropdown } from 'semantic-ui-react'
 import { useApi } from '../../utils'
 
-export default function PlayerSelector ({ clearable = false, handleChange, multiple = true, value, options: defaultOptions = [], fluid = true, placeholder = 'Select players', limit = 5 }) {
+export default function PlayerSelector ({ clearable = false, handleChange, multiple = true, value, options: defaultOptions = [], fluid = true, placeholder = 'Select players', limit = 5, selectOnBlur = false }) {
   const [loading, setLoading] = useState(false)
   const [name, setName] = useState('')
   const [selected, setSelected] = useState(multiple ? [] : value || null)
@@ -52,6 +52,7 @@ export default function PlayerSelector ({ clearable = false, handleChange, multi
       onSearchChange={handleSearchChange}
       disabled={loading}
       loading={loading}
+      selectOnBlur={selectOnBlur}
     />
   )
 }
