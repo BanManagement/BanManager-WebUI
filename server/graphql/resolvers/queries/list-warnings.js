@@ -2,27 +2,20 @@ const { parse, unparse } = require('uuid-parse')
 const ExposedError = require('../../../data/exposed-error')
 
 // eslint-disable-next-line complexity
-module.exports = async function listReports (obj, { serverId, actor, assigned, player, state: stateId, limit, offset, order }, { state }) {
+module.exports = async function listWarnings (obj, { serverId, actor, player, limit = 10, offset, order }, { state }) {
   const filter = {}
 
   if (limit > 50) throw new ExposedError('Limit too large')
-  if (!limit) limit = 10
 
   if (actor) filter['r.actor_id'] = parse(actor, Buffer.alloc(16))
-  if (assigned) filter['r.assignee_id'] = parse(assigned, Buffer.alloc(16))
   if (player) filter['r.player_id'] = parse(player, Buffer.alloc(16))
-  if (stateId) filter['r.state_id'] = stateId
 
   let totalQuery = `SELECT COUNT(*) AS total FROM
     ?? r
         LEFT JOIN
-    ?? rps ON r.state_id = rps.id
-        LEFT JOIN
     ?? a ON r.actor_id = a.id
         JOIN
-    ?? p ON r.player_id = p.id
-        LEFT JOIN
-    ?? ap ON r.assignee_id = ap.id`
+    ?? p ON r.player_id = p.id`
   let query = `SELECT
     r.id,
     r.reason,
@@ -30,22 +23,13 @@ module.exports = async function listReports (obj, { serverId, actor, assigned, p
     p.name AS player_name,
     actor_id,
     a.name AS actor_name,
-    assignee_id,
-    ap.name AS assignee_name,
-    created,
-    updated,
-    state_id,
-    rps.name AS state_name
+    created
   FROM
     ?? r
         LEFT JOIN
-    ?? rps ON r.state_id = rps.id
-        LEFT JOIN
     ?? a ON r.actor_id = a.id
         JOIN
-    ?? p ON r.player_id = p.id
-        LEFT JOIN
-    ?? ap ON r.assignee_id = ap.id`
+    ?? p ON r.player_id = p.id`
   const filterKeys = Object.keys(filter)
   const filterValues = Object.values(filter)
 
@@ -72,15 +56,11 @@ module.exports = async function listReports (obj, { serverId, actor, assigned, p
 
     const tables = server.config.tables
     const actualQuery = query
-      .replace('??', tables.playerReports)
-      .replace('??', tables.playerReportStates)
-      .replace('??', tables.players)
+      .replace('??', tables.playerWarnings)
       .replace('??', tables.players)
       .replace('??', tables.players)
     const actualTotalQuery = totalQuery
-      .replace('??', tables.playerReports)
-      .replace('??', tables.playerReportStates)
-      .replace('??', tables.players)
+      .replace('??', tables.playerWarnings)
       .replace('??', tables.players)
       .replace('??', tables.players)
 
@@ -90,7 +70,19 @@ module.exports = async function listReports (obj, { serverId, actor, assigned, p
     data.total += total
 
     data.records = data.records.concat(results.map(result => {
-      const report = {
+      const acl = {
+        update: state.acl.hasServerPermission(serverId, 'player.mutes', 'update.any') ||
+        (state.acl.hasServerPermission(serverId, 'player.warnings', 'update.own') && state.acl.owns(result.actor_id)) ||
+        (state.acl.hasServerPermission(serverId, 'player.warnings', 'update.any')) ||
+        (state.acl.hasServerPermission(serverId, 'player.warnings', 'update.own') && state.acl.owns(result.actor_id)),
+        delete: state.acl.hasServerPermission(serverId, 'player.warnings', 'delete.any') ||
+        (state.acl.hasServerPermission(serverId, 'player.warnings', 'delete.own') && state.acl.owns(result.actor_id)) ||
+        (state.acl.hasServerPermission(serverId, 'player.warnings', 'delete.any')) ||
+        (state.acl.hasServerPermission(serverId, 'player.warnings', 'delete.own') && state.acl.owns(result.actor_id)),
+        actor: state.acl.owns(result.actor_id),
+        yours: state.acl.owns(result.player_id)
+      }
+      const record = {
         id: result.id,
         reason: result.reason,
         created: result.created,
@@ -103,20 +95,11 @@ module.exports = async function listReports (obj, { serverId, actor, assigned, p
           id: unparse(result.actor_id),
           name: result.actor_name
         },
-        state: {
-          id: result.state_id,
-          name: result.state_name
-        },
-        server: server.config
+        server: server.config,
+        acl
       }
 
-      if (result.assignee_id) {
-        report.assignee = {
-          id: unparse(result.assignee_id), name: result.assignee_name
-        }
-      }
-
-      return report
+      return record
     }))
   }
 

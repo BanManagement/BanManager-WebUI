@@ -123,7 +123,22 @@ type PlayerNote {
 
 type PlayerReportList {
   total: Int!
-  reports: [PlayerReport!]!
+  records: [PlayerReport!]!
+}
+
+type PlayerBanList {
+  total: Int!
+  records: [PlayerBan!]!
+}
+
+type PlayerMuteList {
+  total: Int!
+  records: [PlayerMute!]!
+}
+
+type PlayerWarningList {
+  total: Int!
+  records: [PlayerWarning!]!
 }
 
 type PlayerReport {
@@ -302,6 +317,11 @@ enum RecordType {
   PlayerWarning
 }
 
+enum OrderByInput {
+  created_ASC
+  created_DESC
+}
+
 type DeviceComponent {
   id: ID!
   component: String!
@@ -347,7 +367,7 @@ type Query {
 
   servers: [Server!]
   serverTables: [String!]
-  server(id: ID!): Server @allowIf(resource: "servers", permission: "manage")
+  server(id: ID!): Server
 
   playerBan(id: ID!, serverId: ID!): PlayerBan @allowIf(resource: "player.bans", permission: "view", serverVar: "serverId")
   playerKick(id: ID!, serverId: ID!): PlayerKick @allowIf(resource: "player.kicks", permission: "view", serverVar: "serverId")
@@ -369,7 +389,11 @@ type Query {
 
   reportStates(serverId: ID!): [PlayerReportState!]
   report(id: ID!, serverId: ID!): PlayerReport @allowIf(resource: "player.reports", permission: "view.any")
-  listReports(actor: UUID, assigned: UUID, player: UUID, state: ID, limit: Int = 10, offset: Int = 0): PlayerReportList! @allowIf(resource: "player.reports", permission: "view.any")
+  listReports(serverId: ID, actor: UUID, assigned: UUID, player: UUID, state: ID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerReportList! @allowIf(resource: "player.reports", permission: "view.any")
+
+  listBans(serverId: ID, actor: UUID, player: UUID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerBanList! @allowIf(resource: "player.bans", permission: "view")
+  listMutes(serverId: ID, actor: UUID, player: UUID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerMuteList! @allowIf(resource: "player.mutes", permission: "view")
+  listWarnings(serverId: ID, actor: UUID, player: UUID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerWarningList! @allowIf(resource: "player.warnings", permission: "view")
 }
 
 input CreatePlayerNoteInput {

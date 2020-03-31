@@ -7,7 +7,7 @@ const query = `
 query listReports($actor: UUID, $assigned: UUID, $player: UUID, $state: ID, $limit: Int) {
   listReports(actor: $actor, assigned: $assigned, player: $player, state: $state, limit: $limit) {
     total
-    reports {
+    records {
       id
       created
       updated
@@ -50,7 +50,7 @@ export default function ReportsTable ({ limit = 30 }) {
 
   const handlePageChange = (e, { activePage }) => setTableState({ ...tableState, activePage, offset: activePage * limit })
   const handlePlayerChange = (field) => (id) => setTableState({ ...tableState, [field]: id || null })
-  const rows = data?.listReports?.reports || []
+  const rows = data?.listReports?.records || []
   const total = data?.listReports.total || 0
   const totalPages = Math.ceil(total / limit)
 
