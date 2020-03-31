@@ -71,7 +71,7 @@ function createComponents (rows, availableComponents, props) {
       if (!Component) return null
 
       props.colour = deviceComponent.colour
-      props.meta = deviceComponent.meta
+      props.meta = deviceComponent.meta || {}
 
       const rendered =
         <Grid.Column
@@ -86,6 +86,16 @@ function createComponents (rows, availableComponents, props) {
       return rendered
     })
 
+    if (components.length > 1) {
+      return (
+        <Grid.Row key={i}>
+          <Grid container>
+            {components}
+          </Grid>
+        </Grid.Row>
+      )
+    }
+
     return (
       <Grid.Row key={i}>
         {components}
@@ -94,7 +104,7 @@ function createComponents (rows, availableComponents, props) {
   })
 }
 
-export default function PageLayout ({ availableComponents, pathname, props }) {
+export default function PageLayout ({ availableComponents, pathname, props = {} }) {
   const store = GlobalStore()
   const { mobile, tablet } = store.get('deviceInfo')
   const { loading, data, graphQLErrors } = useApi({ query, variables: { pathname } })
