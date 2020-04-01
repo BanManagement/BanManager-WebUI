@@ -22,7 +22,9 @@ export const useApi = (operation, options) => {
   const res = useGraphQL({
     operation,
     fetchOptionsOverride (options) {
-      options.url = store.get('origin') + '/graphql'
+      const origin = !process.browser && process.env.SSR_API_HOST ? process.env.SSR_API_HOST : store.get('origin')
+
+      options.url = origin + '/graphql'
       options.credentials = 'include'
 
       const cookie = store.get('cookie')

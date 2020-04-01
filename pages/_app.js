@@ -46,9 +46,7 @@ class MyApp extends App {
       pageProps = await Component.getInitialProps(ctx)
     }
 
-    const { origin } = absoluteUrl(ctx.req)
-
-    pageProps.origin = origin
+    pageProps.origin = absoluteUrl(ctx.req).origin
 
     if (!ctx.req) {
       pageProps.deviceInfo = {
@@ -70,6 +68,7 @@ class MyApp extends App {
     if (ctx.req && !ctx.req.headers.cookie) return { pageProps }
 
     try {
+      const origin = ctx.req && process.env.SSR_API_HOST ? process.env.SSR_API_HOST : pageProps.origin
       const response = await fetch(`${origin}/graphql`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Cookie: ctx.req ? ctx.req.headers.cookie : undefined },
