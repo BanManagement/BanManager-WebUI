@@ -29,6 +29,7 @@ async function handlePasswordLogin (ctx) {
   if (!match) return throwError(400, 'Incorrect login details')
 
   ctx.session = create(result.playerId, result.updated, 'password')
+  ctx.session.manuallyCommit()
 
   response.body = null
 }
@@ -69,6 +70,7 @@ async function handlePinLogin (ctx) {
     'SELECT updated FROM bm_web_users WHERE player_id = ?', [result.playerId])
 
   ctx.session = create(result.playerId, checkResult ? checkResult.updated : null, 'pin')
+  ctx.session.manuallyCommit()
 
   response.body = { hasAccount: !!checkResult }
 }

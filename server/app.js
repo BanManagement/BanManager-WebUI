@@ -55,6 +55,8 @@ module.exports = async function ({ dbPool, logger, serversPool, disableUI = fals
   server.use(session({
     key: process.env.SESSION_NAME || 'bm-webui-sess',
     renew: true,
+    maxAge: (24 * 60 * 60 * 1000) * 3, // Valid for 3 days
+    autoCommit: false,
     httpOnly: true,
     decode (str) {
       const body = Buffer.from(str, 'base64').toString('utf8')
@@ -78,11 +80,15 @@ module.exports = async function ({ dbPool, logger, serversPool, disableUI = fals
 
   if (handle) {
     router.all('*', async ctx => {
+      if (ctx.session) ctx.session.manuallyCommit()
+
       await handle(ctx.req, ctx.res)
       ctx.respond = false
     })
   } else {
     router.all('*', async ctx => {
+      if (ctx.session) ctx.session.manuallyCommit()
+
       ctx.respond = false
     })
   }
