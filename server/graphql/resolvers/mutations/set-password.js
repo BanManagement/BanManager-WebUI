@@ -42,6 +42,8 @@ module.exports = async function setPassword (obj, { currentPassword, newPassword
 
   session.updated = Math.floor(Date.now() / 1000)
 
+  await session.manuallyCommit()
+
   await state.dbPool.execute('UPDATE bm_web_users SET password = ?, updated = ? WHERE player_id = ?',
     [encodedHash, session.updated, session.playerId])
 
