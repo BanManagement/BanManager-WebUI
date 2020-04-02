@@ -63,7 +63,7 @@ export default function PlayerHistoryList ({ id }) {
   if (!data || !data.player || !data.player.servers) return null
 
   const history = data.player.servers.reduce((data, server, i) => {
-    if (!server.history) return data
+    if (!server.history || !server.history.length) return data
 
     const row = <PlayerHistory server={server} history={server.history} key={i} />
 
