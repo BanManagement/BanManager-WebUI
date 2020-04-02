@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react'
 import { Image, Loader, Pagination, Table } from 'semantic-ui-react'
 import PlayerSelector from './admin/PlayerSelector'
 import { useApi } from '../utils'
+import ServerSelector from './admin/ServerSelector'
 
 const query = `
-query listReports($actor: UUID, $assigned: UUID, $player: UUID, $state: ID, $limit: Int) {
-  listReports(actor: $actor, assigned: $assigned, player: $player, state: $state, limit: $limit) {
+query listReports($serverId: ID!, $actor: UUID, $assigned: UUID, $player: UUID, $state: ID, $limit: Int) {
+  listReports(serverId: $serverId, actor: $actor, assigned: $assigned, player: $player, state: $state, limit: $limit) {
     total
     records {
       id
@@ -36,7 +37,7 @@ query listReports($actor: UUID, $assigned: UUID, $player: UUID, $state: ID, $lim
 }`
 
 export default function ReportsTable ({ limit = 30 }) {
-  const [tableState, setTableState] = useState({ activePage: 1, limit, offset: 0, actor: null, assigned: null, player: null, state: null })
+  const [tableState, setTableState] = useState({ serverId: null, activePage: 1, limit, offset: 0, actor: null, assigned: null, player: null, state: null })
   const { load, loading, data } = useApi({ query, variables: tableState }, {
     loadOnMount: false,
     loadOnReload: false,
@@ -45,11 +46,11 @@ export default function ReportsTable ({ limit = 30 }) {
   })
 
   useEffect(() => {
-    load()
+    if (tableState.serverId) load()
   }, [tableState])
 
-  const handlePageChange = (e, { activePage }) => setTableState({ ...tableState, activePage, offset: activePage * limit })
-  const handlePlayerChange = (field) => (id) => setTableState({ ...tableState, [field]: id || null })
+  const handlePageChange = (e, { activePage }) => setTableState({ ...tableState, activePage, offset: (activePage - 1) * limit })
+  const handleFieldChange = (field) => (id) => setTableState({ ...tableState, [field]: id || null })
   const rows = data?.listReports?.records || []
   const total = data?.listReports.total || 0
   const totalPages = Math.ceil(total / limit)
@@ -58,12 +59,12 @@ export default function ReportsTable ({ limit = 30 }) {
     <Table selectable>
       <Table.Header>
         <Table.Row>
-          <Table.HeaderCell>Server</Table.HeaderCell>
+          <Table.HeaderCell><ServerSelector handleChange={handleFieldChange('serverId')} /></Table.HeaderCell>
           <Table.HeaderCell>ID</Table.HeaderCell>
-          <Table.HeaderCell><PlayerSelector multiple={false} clearable placeholder='Reporter' handleChange={handlePlayerChange('actor')} /></Table.HeaderCell>
-          <Table.HeaderCell><PlayerSelector multiple={false} clearable placeholder='Reported' handleChange={handlePlayerChange('player')} /></Table.HeaderCell>
+          <Table.HeaderCell><PlayerSelector multiple={false} clearable placeholder='Reporter' handleChange={handleFieldChange('actor')} /></Table.HeaderCell>
+          <Table.HeaderCell><PlayerSelector multiple={false} clearable placeholder='Reported' handleChange={handleFieldChange('player')} /></Table.HeaderCell>
           <Table.HeaderCell>State</Table.HeaderCell>
-          <Table.HeaderCell><PlayerSelector multiple={false} clearable placeholder='Assigned' handleChange={handlePlayerChange('assigned')} /></Table.HeaderCell>
+          <Table.HeaderCell><PlayerSelector multiple={false} clearable placeholder='Assigned' handleChange={handleFieldChange('assigned')} /></Table.HeaderCell>
         </Table.Row>
       </Table.Header>
       <Table.Body>

@@ -402,12 +402,12 @@ type Query {
 
   reportStates(serverId: ID!): [PlayerReportState!]
   report(id: ID!, serverId: ID!): PlayerReport @allowIf(resource: "player.reports", permission: "view.any")
-  listReports(serverId: ID, actor: UUID, assigned: UUID, player: UUID, state: ID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerReportList! @allowIf(resource: "player.reports", permission: "view.any")
+  listReports(serverId: ID!, actor: UUID, assigned: UUID, player: UUID, state: ID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerReportList! @allowIf(resource: "player.reports", permission: "view.any")
 
-  listBans(serverId: ID, actor: UUID, player: UUID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerBanList! @allowIf(resource: "player.bans", permission: "view")
-  listMutes(serverId: ID, actor: UUID, player: UUID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerMuteList! @allowIf(resource: "player.mutes", permission: "view")
+  listBans(serverId: ID!, actor: UUID, player: UUID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerBanList! @allowIf(resource: "player.bans", permission: "view")
+  listMutes(serverId: ID!, actor: UUID, player: UUID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerMuteList! @allowIf(resource: "player.mutes", permission: "view")
   listSessionHistory(serverId: ID!, player: UUID, limit: Int = 10, offset: Int = 0, order: OrderBySessionHistoryInput): PlayerSessionHistoryList! @allowIf(resource: "player.history", permission: "view")
-  listWarnings(serverId: ID, actor: UUID, player: UUID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerWarningList! @allowIf(resource: "player.warnings", permission: "view")
+  listWarnings(serverId: ID!, actor: UUID, player: UUID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerWarningList! @allowIf(resource: "player.warnings", permission: "view")
 }
 
 input CreatePlayerNoteInput {

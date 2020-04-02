@@ -5,6 +5,7 @@ const ExposedError = require('../../../data/exposed-error')
 module.exports = async function listWarnings (obj, { serverId, actor, player, limit = 10, offset, order }, { state }) {
   const filter = {}
 
+  if (!state.serversPool.has(serverId)) throw new ExposedError('Server does not exist')
   if (limit > 50) throw new ExposedError('Limit too large')
 
   if (actor) filter['r.actor_id'] = parse(actor, Buffer.alloc(16))
@@ -48,28 +49,23 @@ module.exports = async function listWarnings (obj, { serverId, actor, player, li
 
   query += ' LIMIT ?, ?'
 
-  const data = { total: 0, records: [] }
+  const server = state.serversPool.get(serverId)
+  const tables = server.config.tables
+  const actualQuery = query
+    .replace('??', tables.playerWarnings)
+    .replace('??', tables.players)
+    .replace('??', tables.players)
+  const actualTotalQuery = totalQuery
+    .replace('??', tables.playerWarnings)
+    .replace('??', tables.players)
+    .replace('??', tables.players)
 
-  // @TODO Clean up
-  for (const [id, server] of state.serversPool) {
-    if (serverId && serverId !== id) continue
+  const [[{ total }]] = await state.dbPool.execute(actualTotalQuery, filterValues)
+  const [results] = await server.execute(actualQuery, [...filterValues, offset, limit])
 
-    const tables = server.config.tables
-    const actualQuery = query
-      .replace('??', tables.playerWarnings)
-      .replace('??', tables.players)
-      .replace('??', tables.players)
-    const actualTotalQuery = totalQuery
-      .replace('??', tables.playerWarnings)
-      .replace('??', tables.players)
-      .replace('??', tables.players)
-
-    const [[{ total }]] = await state.dbPool.execute(actualTotalQuery, filterValues)
-    const [results] = await server.execute(actualQuery, [...filterValues, offset, limit])
-
-    data.total += total
-
-    data.records = data.records.concat(results.map(result => {
+  const data = {
+    total,
+    records: results.map(result => {
       const acl = {
         update: state.acl.hasServerPermission(serverId, 'player.mutes', 'update.any') ||
         (state.acl.hasServerPermission(serverId, 'player.warnings', 'update.own') && state.acl.owns(result.actor_id)) ||
@@ -100,7 +96,7 @@ module.exports = async function listWarnings (obj, { serverId, actor, player, li
       }
 
       return record
-    }))
+    })
   }
 
   return data

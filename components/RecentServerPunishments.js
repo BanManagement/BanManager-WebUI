@@ -25,7 +25,7 @@ export default function RecentServerPunishments ({ meta: { serverId, type } }) {
   const variables = { serverId, limit: 5 }
   const meta = metaMap[type]
   const query = `
-    query ($serverId: ID, $limit: Int) {
+    query ($serverId: ID!, $limit: Int) {
       ${meta.operation}(serverId: $serverId, limit: $limit, order: created_DESC) {
         total
         records {

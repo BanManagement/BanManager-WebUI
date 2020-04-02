@@ -21,6 +21,8 @@ module.exports = ({ logger }) => {
     resolvers,
     schemaDirectives,
     validationRules: [depthLimit(10)],
+    tracing: true,
+    cacheControl: true,
     context: ({ ctx: { log, session, state } }) => ({
       log,
       session,

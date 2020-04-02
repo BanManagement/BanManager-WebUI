@@ -45,7 +45,6 @@ module.exports = async function listSessionHistory (obj, { serverId, player, lim
 
   query += ' LIMIT ?, ?'
 
-  const data = { total: 0, records: [] }
   const server = state.serversPool.get(serverId)
   const tables = server.config.tables
   const actualQuery = query
@@ -57,10 +56,9 @@ module.exports = async function listSessionHistory (obj, { serverId, player, lim
   const [[{ total }]] = await state.dbPool.execute(actualTotalQuery, filterValues)
   const [results] = await server.execute(actualQuery, [...filterValues, offset, limit])
 
-  data.total += total
-
-  data.records = data.records.concat(results.map(result => {
-    const record = {
+  const data = {
+    total,
+    records: results.map(result => ({
       id: result.id,
       ip: result.ip,
       join: result.join,
@@ -70,10 +68,8 @@ module.exports = async function listSessionHistory (obj, { serverId, player, lim
         name: result.player_name
       },
       server: server.config
-    }
-
-    return record
-  }))
+    }))
+  }
 
   return data
 }
