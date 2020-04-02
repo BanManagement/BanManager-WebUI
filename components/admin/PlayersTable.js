@@ -42,7 +42,7 @@ export default function PlayersTable ({ limit = 30, roles, servers }) {
     load()
   }, [tableState])
 
-  const handlePageChange = (e, { activePage }) => setTableState({ ...tableState, activePage, offset: activePage * limit })
+  const handlePageChange = (e, { activePage }) => setTableState({ ...tableState, activePage, offset: (activePage - 1) * limit })
   const handleOpen = player => () => setEditState({ playerEditOpen: true, currentPlayer: player })
   const handleplayerEditFinished = (updated) => {
     setEditState({ playerEditOpen: false, currentPlayer: null })
