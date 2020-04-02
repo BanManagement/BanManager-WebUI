@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Header, Image, Loader, Pagination, Table } from 'semantic-ui-react'
+import { Header, Loader, Pagination, Table } from 'semantic-ui-react'
 import { format, fromUnixTime } from 'date-fns'
 import { useApi } from '../utils'
 import ServerSelector from './admin/ServerSelector'
