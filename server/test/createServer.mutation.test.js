@@ -154,6 +154,40 @@ describe('Mutation create server', () => {
       'Console UUID not found in bm_players table')
   })
 
+  test('should error server name exists', async () => {
+    const { config } = setup.serversPool.values().next().value
+    const cookie = await getAuthPassword(request, 'admin@banmanagement.com')
+    const player = createPlayer()
+    const server = createServer(unparse(player.id), setup.dbPool.pool.config.connectionConfig.database)
+
+    delete server.id
+    server.tables = JSON.parse(server.tables)
+    server.name = config.name
+
+    const query = jsonToGraphQLQuery({
+      mutation: {
+        createServer:
+          {
+            __args: {
+              input: server
+            },
+            id: true
+          }
+      }
+    })
+    const { body, statusCode } = await request
+      .post('/graphql')
+      .set('Cookie', cookie)
+      .set('Accept', 'application/json')
+      .send({ query })
+
+    assert.strictEqual(statusCode, 200)
+
+    assert(body)
+    assert.strictEqual(body.errors[0].message,
+      'A server with this name already exists')
+  })
+
   test('should encrypt password', async () => {
     const { pool } = setup.serversPool.values().next().value
     const cookie = await getAuthPassword(request, 'admin@banmanagement.com')

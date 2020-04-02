@@ -8,6 +8,12 @@ const udify = require('../../../data/udify')
 const ExposedError = require('../../../data/exposed-error')
 
 module.exports = async function createServer (obj, { input }, { state }) {
+  const [[serverExists]] = await state.dbPool.query('SELECT id FROM bm_web_servers WHERE name = ?', [input.name])
+
+  if (serverExists) {
+    throw new ExposedError('A server with this name already exists')
+  }
+
   const id = await generateServerId()
   const conn = await createConnection(pick(input, ['host', 'port', 'database', 'user', 'password']))
 

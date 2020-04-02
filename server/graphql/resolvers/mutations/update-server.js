@@ -9,6 +9,12 @@ const { tables } = require('../../../data/tables')
 module.exports = async function updateServer (obj, { id, input }, { state }) {
   if (!state.serversPool.has(id)) throw new ExposedError('Server not found')
 
+  const [[serverExists]] = await state.dbPool.query('SELECT id FROM bm_web_servers WHERE name = ? AND id != ?', [input.name, id])
+
+  if (serverExists) {
+    throw new ExposedError('A server with this name already exists')
+  }
+
   // @TODO Check if connection details changed to avoid needing password to change server name
   const conn = await createConnection(pick(input, ['host', 'port', 'database', 'user', 'password']))
   const tableNames = Object.keys(tables)
