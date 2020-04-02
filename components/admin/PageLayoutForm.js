@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Form, Label, Header, Modal, Segment, Responsive as ResponsiveUtil } from 'semantic-ui-react'
+import { Button, Form, Grid, Label, Header, Modal, Segment, Responsive as ResponsiveUtil } from 'semantic-ui-react'
 import { COLORS as COLOURS, TEXT_ALIGNMENTS } from 'semantic-ui-react/dist/commonjs/lib/SUI'
 import GridLayout from 'react-grid-layout'
 import { capitalize, find, maxBy, pick } from 'lodash-es'
@@ -201,11 +201,17 @@ export default function PageLayoutForm ({ pathname, pageLayout, onFinished, quer
 
     return (
       <div key={component.i} onClick={onSelectComponent.bind(this, component.id)}>
-        <Segment clearing {...colour}>
-          {component.component}
-          <Button floated='right' icon='trash' size='mini' onClick={removeComponent.bind(this, component.id)} />
-          {!!editForm &&
-            <Button floated='right' icon='pencil' size='mini' onClick={editComponent.bind(this, component.id)} />}
+        <Segment {...colour}>
+          <Grid columns={2} stackable>
+            <Grid.Row verticalAlign='middle'>
+              <Grid.Column>{component.component}</Grid.Column>
+              <Grid.Column textAlign='right'>
+                <Button icon='trash' size='mini' onClick={removeComponent.bind(this, component.id)} />
+                {!!editForm &&
+                  <Button icon='pencil' size='mini' onClick={editComponent.bind(this, component.id)} />}
+              </Grid.Column>
+            </Grid.Row>
+          </Grid>
         </Segment>
       </div>
     )
