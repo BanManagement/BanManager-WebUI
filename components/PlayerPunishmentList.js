@@ -90,7 +90,7 @@ export default function PlayerPunishmentList ({ id }) {
     types.forEach((type) => {
       if (!server[type] || !Array.isArray(server[type])) return
 
-      const items = server[type].map(punishment => <PlayerPunishment punishment={punishment} type={type} server={server.server} key={server.id + data.id + type} />)
+      const items = server[type].map(punishment => <PlayerPunishment punishment={punishment} type={type} server={server.server} key={server.server.id + data.id + type} />)
 
       activePunishments = activePunishments.concat(items)
     })
