@@ -7,7 +7,7 @@ export default function ErrorLayout ({ errors }) {
   return (
     <DefaultLayout title='Error'>
       <PageContainer>
-        <ErrorMessages { ...errors } />
+        <ErrorMessages {...errors} />
       </PageContainer>
     </DefaultLayout>
   )

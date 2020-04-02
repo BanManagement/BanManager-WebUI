@@ -26,7 +26,7 @@ export default function PlayerLoginPinForm () {
   }`
   })
 
-  if (errors || !data) return <ErrorMessages { ...errors } />
+  if (errors || !data) return <ErrorMessages {...errors} />
 
   const servers = data.servers.map(server => ({ key: server.id, value: server.id, text: server.name }))
   const onSubmit = async (e) => {

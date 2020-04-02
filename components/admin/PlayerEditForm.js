@@ -69,7 +69,7 @@ export default function PlayerEditForm ({ open, onFinished, player, roles, serve
       </Header>
       <Modal.Content>
         <Form size='large' error loading={loading}>
-          <ErrorMessages { ...errors } />
+          <ErrorMessages {...errors} />
           <Form.Input
             fluid
             placeholder='Email'

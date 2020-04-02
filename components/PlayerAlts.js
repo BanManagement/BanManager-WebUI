@@ -19,7 +19,7 @@ export default function PlayerAlts ({ id, colour }) {
   })
 
   if (loading) return <Loader active />
-  if (errors) return <ErrorMessages { ...errors } />
+  if (errors) return <ErrorMessages {...errors} />
   if (!data || !data.player || !data.player.servers) return null
 
   // @TODO Clean up, iterating mutliple times

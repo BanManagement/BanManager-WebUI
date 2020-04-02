@@ -81,7 +81,7 @@ export default function PlayerPunishmentList ({ id }) {
   })
 
   if (loading) return <Loader active />
-  if (errors) return <ErrorMessages { ...errors } />
+  if (errors) return <ErrorMessages {...errors} />
   if (!data || !data.player || !data.player.servers) return null
 
   let activePunishments = []

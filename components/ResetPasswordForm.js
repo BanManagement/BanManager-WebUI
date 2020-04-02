@@ -55,7 +55,7 @@ export default function ResetPasswordForm () {
       {success &&
         <Message success header='Password successfully updated' />}
       <Form size='large' onSubmit={onSubmit} error loading={loading}>
-        <ErrorMessages { ...errors, error } />
+        <ErrorMessages error={error} {...errors} />
         <Form.Input
           required
           name='currentPassword'

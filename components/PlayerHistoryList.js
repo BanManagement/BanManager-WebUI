@@ -59,7 +59,7 @@ export default function PlayerHistoryList ({ id }) {
   })
 
   if (loading) return <Loader active />
-  if (errors) return <ErrorMessages { ...errors } />
+  if (errors) return <ErrorMessages {...errors} />
   if (!data || !data.player || !data.player.servers) return null
 
   const history = data.player.servers.reduce((data, server, i) => {

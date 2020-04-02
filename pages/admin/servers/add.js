@@ -19,7 +19,7 @@ export default function Page () {
   })
 
   if (loading) return <Loader active />
-  if (errors || !data) return <ErrorMessages { ...errors } />
+  if (errors || !data) return <ErrorMessages {...errors} />
 
   const query = ` mutation createServer($input: CreateServerInput!) {
     createServer(input: $input) {

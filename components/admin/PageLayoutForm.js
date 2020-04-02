@@ -258,7 +258,7 @@ export default function PageLayoutForm ({ pathname, pageLayout, onFinished, quer
         </Modal.Content>
       </Modal>
       <Segment>
-        <ErrorMessages { ...errors } />
+        <ErrorMessages {...errors} />
         <Form>
           <Form.Group inline>
             <Form.Field>

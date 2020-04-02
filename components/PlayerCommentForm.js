@@ -42,7 +42,7 @@ export default function PlayerCommentForm ({ onFinish, parseVariables, query }) 
 
   return (
     <Form size='large' onSubmit={onSubmit} error loading={loading}>
-      <ErrorMessages { ...errors } />
+      <ErrorMessages {...errors} />
       <Form.TextArea name='message' maxLength='250' value={inputState.message} onChange={handleChange} />
       <Form.Button content='Reply' labelPosition='left' icon='edit' primary />
     </Form>

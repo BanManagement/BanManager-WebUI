@@ -17,7 +17,7 @@ export default function PlayerHeader ({ id, colour }) {
   })
 
   if (loading) return <Loader active />
-  if (errors || !data) return <ErrorMessages { ...errors } />
+  if (errors || !data) return <ErrorMessages {...errors} />
 
   return (
     <Container text>

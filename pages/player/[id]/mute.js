@@ -3,6 +3,7 @@ import { useRouter } from 'next/router'
 import DefaultLayout from '../../../components/DefaultLayout'
 import PageContainer from '../../../components/PageContainer'
 import PlayerMuteForm from '../../../components/PlayerMuteForm'
+import ErrorLayout from '../../../components/ErrorLayout'
 import { useApi } from '../../../utils'
 
 export default function Page () {

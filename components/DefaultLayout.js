@@ -30,7 +30,7 @@ function DefaultLayout ({ title = 'Default Title', children, heading, descriptio
   })
 
   if (loading && !data) return <Loader active />
-  if (errors || !data) return <ErrorMessages { ...errors } />
+  if (errors || !data) return <ErrorMessages {...errors} />
 
   let right = [{ icon: 'user', href: '/login' }]
 

@@ -15,6 +15,7 @@ export default function ServerForm ({ onFinished, query, parseVariables, serverT
     port: defaults.port || 3306,
     database: defaults.database || '',
     user: defaults.user || '',
+    password: '',
     console: defaults?.console?.id || '',
     tables: defaults.tables
   })
@@ -76,7 +77,7 @@ export default function ServerForm ({ onFinished, query, parseVariables, serverT
       key={'server-table-' + name}
       required
       placeholder={name}
-      value={inputState.tables ? inputState.tables[name] : null}
+      value={inputState.tables ? inputState.tables[name] : ''}
       name={name}
       onChange={handleTableChange}
     />
@@ -84,7 +85,7 @@ export default function ServerForm ({ onFinished, query, parseVariables, serverT
 
   return (
     <Form size='large' onSubmit={onSubmit} error loading={loading}>
-      <ErrorMessages { ...errors } />
+      <ErrorMessages {...errors} />
       <Form.Input
         fluid
         required

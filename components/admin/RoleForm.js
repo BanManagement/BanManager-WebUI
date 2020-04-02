@@ -66,7 +66,7 @@ export default function RoleForm ({ onFinished, query, parseVariables, parentRol
 
   return (
     <Form size='large' onSubmit={onSubmit} error loading={loading}>
-      <ErrorMessages { ...errors } />
+      <ErrorMessages {...errors} />
       <Form.Input
         fluid
         required

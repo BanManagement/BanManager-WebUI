@@ -15,7 +15,7 @@ export default function Page () {
   })
 
   if (loading) return <Loader active />
-  if (errors || !data) return <ErrorMessages { ...errors } />
+  if (errors || !data) return <ErrorMessages {...errors} />
 
   const canDelete = data.servers.length !== 1
   const items = data.servers.map(server => <ServerItem key={server.id} server={server} canDelete={canDelete} />)

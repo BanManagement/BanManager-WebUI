@@ -43,7 +43,7 @@ export default function PlayerReportComment ({ id, actor, created, message, acl,
         onConfirm={handleConfirmDelete}
         onCancel={handleDeleteCancel}
       />
-      <ErrorMessages { ...errors } />
+      <ErrorMessages {...errors} />
       <Comment.Avatar src={`https://crafatar.com/avatars/${actor.id}?size=128&overlay=true`} />
       <Comment.Content>
         <Comment.Author as='a' href={`/player/${actor.id}`}>{actor.name}</Comment.Author>
