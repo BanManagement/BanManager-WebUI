@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Form, Image, Select, Header } from 'semantic-ui-react'
-import GraphQLErrorMessage from './GraphQLErrorMessage'
+import ErrorMessages from './ErrorMessages'
 import DateTimePicker from './DateTimePicker'
 import { fromNow, useApi } from '../utils'
 
@@ -16,14 +16,14 @@ export default function PlayerBanForm ({ player, servers, onFinished, query, par
 
   useEffect(() => setVariables(parseVariables(inputState)), [inputState])
 
-  const { load, data, graphQLErrors } = useApi({ query, variables }, {
+  const { load, data, errors } = useApi({ query, variables }, {
     loadOnMount: false,
     loadOnReload: false,
     loadOnReset: false,
     reloadOnLoad: true
   })
 
-  useEffect(() => setLoading(false), [graphQLErrors])
+  useEffect(() => setLoading(false), [errors])
   useEffect(() => {
     if (!data) return
     if (Object.keys(data).some(key => !!data[key].id)) onFinished()
@@ -61,7 +61,7 @@ export default function PlayerBanForm ({ player, servers, onFinished, query, par
   return (
     <Form size='large' onSubmit={onSubmit} error loading={loading}>
       <Header>Ban</Header>
-      <GraphQLErrorMessage error={graphQLErrors} />
+      <ErrorMessages { ...errors } />
       <Form.Group inline>
         <label>
           <Image fluid inline src={`https://crafatar.com/avatars/${player.id}?size=50&overlay=true`} />

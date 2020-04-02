@@ -7,7 +7,7 @@ export default function PlayerReportAssign ({ id, player, server, onChange }) {
   const [loading, setLoading] = useState(false)
   const [variables, setVariables] = useState({ serverId: server, report: id, player: player ? player.id : null })
 
-  const { load, data, graphQLErrors } = useApi({
+  const { load, data, errors } = useApi({
     query: `mutation assignReport($report: ID!, $serverId: ID!, $player: UUID!) {
     assignReport(report: $report, serverId: $serverId, player: $player) {
       updated
@@ -29,7 +29,7 @@ export default function PlayerReportAssign ({ id, player, server, onChange }) {
     reloadOnLoad: true
   })
 
-  useEffect(() => setLoading(false), [graphQLErrors])
+  useEffect(() => setLoading(false), [errors])
   useEffect(() => {
     if (!data) return
     if (Object.keys(data).some(key => !!data[key].updated)) {

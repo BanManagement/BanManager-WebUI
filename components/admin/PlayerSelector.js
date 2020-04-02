@@ -13,14 +13,14 @@ export default function PlayerSelector ({ clearable = false, handleChange, multi
     }
   }`
 
-  const { load, data, graphQLErrors } = useApi({ query, variables: { limit, name } }, {
+  const { load, data, errors } = useApi({ query, variables: { limit, name } }, {
     loadOnMount: false,
     loadOnReload: false,
     loadOnReset: false,
     reloadOnLoad: true
   })
 
-  useEffect(() => setLoading(false), [data, graphQLErrors])
+  useEffect(() => setLoading(false), [data, errors])
   useEffect(() => {
     if (!name) return
 

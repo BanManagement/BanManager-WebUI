@@ -4,7 +4,7 @@ import { Comment, Grid, Header, Image, Loader, Responsive, Segment } from 'seman
 import { format, fromUnixTime } from 'date-fns'
 import { fromNow, useApi } from '../../../utils'
 import DefaultLayout from '../../../components/DefaultLayout'
-import GraphQLErrorMessage from '../../../components/GraphQLErrorMessage'
+import ErrorLayout from '../../../components/ErrorLayout'
 import PageContainer from '../../../components/PageContainer'
 import PlayerReportCommentList from '../../../components/PlayerReportCommentList'
 import PlayerReportAssign from '../../../components/PlayerReportAssign'
@@ -14,7 +14,7 @@ export default function Page () {
   const router = useRouter()
   const { id, serverId } = router.query
   const [width, setWidth] = useState(null)
-  const { loading, data } = useApi({
+  const { loading, data, errors } = useApi({
     variables: { serverId, id },
     query: `query report($id: ID!, $serverId: ID!) {
       reportStates(serverId: $serverId) {
@@ -119,7 +119,7 @@ export default function Page () {
   const [assignee, setAssignee] = useState(report?.assignee)
 
   if (loading) return <Loader active />
-  if (!report) return <GraphQLErrorMessage error={{ networkError: true }} />
+  if (errors || !data) return <ErrorLayout errors={errors} />
 
   const handleOnScreenUpdate = (e, { width }) => setWidth(width)
   const renderLocation = (location) => (

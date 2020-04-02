@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Form, Select } from 'semantic-ui-react'
-import ErrorMessage from './ErrorMessage'
-import GraphQLErrorMessage from './GraphQLErrorMessage'
+import ErrorMessages from './ErrorMessages'
 import { GlobalStore } from './GlobalContext'
 import { useApi } from '../utils'
 
@@ -18,7 +17,7 @@ export default function PlayerLoginPinForm () {
 
   useEffect(() => setLoading(false), [error])
 
-  const { data } = useApi({
+  const { data, errors } = useApi({
     query: `query servers {
     servers {
       id
@@ -27,7 +26,7 @@ export default function PlayerLoginPinForm () {
   }`
   })
 
-  if (!data) return <GraphQLErrorMessage error={{ networkError: true }} />
+  if (errors || !data) return <ErrorMessages { ...errors } />
 
   const servers = data.servers.map(server => ({ key: server.id, value: server.id, text: server.name }))
   const onSubmit = async (e) => {
@@ -69,7 +68,7 @@ export default function PlayerLoginPinForm () {
 
   return (
     <Form size='large' onSubmit={onSubmit} error loading={loading}>
-      <ErrorMessage error={error} />
+      <ErrorMessages error={error} />
       <Form.Field
         required
         name='server'

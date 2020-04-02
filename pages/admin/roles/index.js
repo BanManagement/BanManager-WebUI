@@ -1,5 +1,5 @@
 import { Button, Header, List, Loader } from 'semantic-ui-react'
-import GraphQLErrorMessage from '../../../components/GraphQLErrorMessage'
+import ErrorLayout from '../../../components/ErrorLayout'
 import AdminLayout from '../../../components/AdminLayout'
 import RoleItem from '../../../components/admin/RoleItem'
 import AssignPlayersRoleForm from '../../../components/admin/AssignPlayersRoleForm'
@@ -7,7 +7,7 @@ import { useApi } from '../../../utils'
 import PlayersTable from '../../../components/admin/PlayersTable'
 
 export default function Page () {
-  const { loading, data } = useApi({
+  const { loading, data, errors } = useApi({
     query: `query {
       roles {
         id
@@ -26,7 +26,7 @@ export default function Page () {
   })
 
   if (loading) return <Loader active />
-  if (!data || !data.roles) return <GraphQLErrorMessage error={{ networkError: true }} />
+  if (errors || !data) return <ErrorLayout errors={errors} />
 
   const items = data.roles.map(role => <RoleItem key={role.id} role={role} />)
   const globalRoleMutation = `mutation assignRole($players: [UUID!]!, $role: Int!) {

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Form, Grid, Select } from 'semantic-ui-react'
 import PlayerSelector from './PlayerSelector'
-import GraphQLErrorMessage from '../GraphQLErrorMessage'
+import ErrorMessages from '../ErrorMessages'
 import { useApi } from '../../utils'
 
 export default function AssignPlayersRoleForm ({ query, roles, servers = [] }) {
@@ -14,14 +14,14 @@ export default function AssignPlayersRoleForm ({ query, roles, servers = [] }) {
 
   useEffect(() => setVariables(inputState), [inputState])
 
-  const { data, load, graphQLErrors } = useApi({ query, variables }, {
+  const { data, load, errors } = useApi({ query, variables }, {
     loadOnMount: false,
     loadOnReload: false,
     loadOnReset: false,
     reloadOnLoad: true
   })
 
-  useEffect(() => setLoading(false), [graphQLErrors])
+  useEffect(() => setLoading(false), [errors])
   useEffect(() => {
     if (!data) return
     if (Object.keys(data).some(key => data[key] && data[key].id)) {
@@ -47,7 +47,7 @@ export default function AssignPlayersRoleForm ({ query, roles, servers = [] }) {
     <Grid doubling>
       <Grid.Row>
         <Grid.Column desktop={4} mobile={16}>
-          <GraphQLErrorMessage error={graphQLErrors} />
+          <ErrorMessages { ...errors } />
           <PlayerSelector handleChange={handlePlayerChange} />
         </Grid.Column>
         <Grid.Column desktop={4} mobile={16}>

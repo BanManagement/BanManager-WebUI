@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Form, Message } from 'semantic-ui-react'
-import ErrorMessage from './ErrorMessage'
-import GraphQLErrorMessage from './GraphQLErrorMessage'
+import ErrorMessages from './ErrorMessages'
 import { useApi } from '../utils'
 
 export default function ResetPasswordForm () {
@@ -17,7 +16,7 @@ export default function ResetPasswordForm () {
 
   useEffect(() => setVariables(inputState), [inputState])
 
-  const { load, data, graphQLErrors } = useApi({
+  const { load, data, errors } = useApi({
     query: `mutation setPassword($currentPassword: String!, $newPassword: String!) {
     setPassword(currentPassword: $currentPassword, newPassword: $newPassword) {
       id
@@ -34,7 +33,7 @@ export default function ResetPasswordForm () {
   useEffect(() => {
     setLoading(false)
     setSuccess(false)
-  }, [graphQLErrors])
+  }, [errors])
   useEffect(() => {
     if (!data) return
     if (Object.keys(data).some(key => !!data[key].id)) setSuccess(true)
@@ -56,8 +55,7 @@ export default function ResetPasswordForm () {
       {success &&
         <Message success header='Password successfully updated' />}
       <Form size='large' onSubmit={onSubmit} error loading={loading}>
-        <GraphQLErrorMessage error={graphQLErrors} />
-        <ErrorMessage error={error} />
+        <ErrorMessages { ...errors, error } />
         <Form.Input
           required
           name='currentPassword'

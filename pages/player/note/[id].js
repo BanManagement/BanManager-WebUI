@@ -3,13 +3,13 @@ import { useRouter } from 'next/router'
 import DefaultLayout from '../../../components/DefaultLayout'
 import PageContainer from '../../../components/PageContainer'
 import PlayerNoteForm from '../../../components/PlayerNoteForm'
-import GraphQLErrorMessage from '../../../components/GraphQLErrorMessage'
+import ErrorLayout from '../../../components/ErrorLayout'
 import { useApi } from '../../../utils'
 
 export default function Page () {
   const router = useRouter()
   const [serverId, id] = router.query.id.split('-')
-  const { loading, data, graphQLErrors } = useApi({
+  const { loading, data, errors } = useApi({
     query: `
   query playerNote($id: ID!, $serverId: ID!) {
     playerNote(id: $id, serverId: $serverId) {
@@ -33,7 +33,7 @@ export default function Page () {
   })
 
   if (loading) return <Loader active />
-  if (!data || graphQLErrors) return <GraphQLErrorMessage error={graphQLErrors} />
+  if (errors || !data) return <ErrorLayout errors={errors} />
 
   const query = `mutation updatePlayerNote($id: ID!, $serverId: ID!, $input: UpdatePlayerNoteInput!) {
     updatePlayerNote(id: $id, serverId: $serverId, input: $input) {

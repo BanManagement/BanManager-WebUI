@@ -104,15 +104,15 @@ class MyApp extends App {
 
     return (
       <GlobalStoreProvider initValues={init}>
+        <DefaultSeo
+          openGraph={{
+            type: 'website',
+            locale: 'en_UK',
+            url: pageProps.origin,
+            site_name: 'Ban Management'
+          }}
+        />
         <GraphQLProvider graphql={graphql}>
-          <DefaultSeo
-            openGraph={{
-              type: 'website',
-              locale: 'en_UK',
-              url: pageProps.origin,
-              site_name: 'Ban Management'
-            }}
-          />
           <Component {...pageProps} />
         </GraphQLProvider>
       </GlobalStoreProvider>)

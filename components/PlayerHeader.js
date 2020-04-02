@@ -1,10 +1,10 @@
 import React from 'react'
 import { Container, Header, Image, Loader } from 'semantic-ui-react'
-import GraphQLErrorMessage from './GraphQLErrorMessage'
+import ErrorMessages from './ErrorMessages'
 import { fromNow, useApi } from '../utils'
 
 export default function PlayerHeader ({ id, colour }) {
-  const { loading, data, graphQLErrors } = useApi({
+  const { loading, data, errors } = useApi({
     variables: { id }, query: `
     query player($id: UUID!) {
       player(id: $id) {
@@ -17,7 +17,7 @@ export default function PlayerHeader ({ id, colour }) {
   })
 
   if (loading) return <Loader active />
-  if (graphQLErrors || !data) return <GraphQLErrorMessage error={graphQLErrors} />
+  if (errors || !data) return <ErrorMessages { ...errors } />
 
   return (
     <Container text>

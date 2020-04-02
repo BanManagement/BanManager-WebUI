@@ -1,10 +1,10 @@
 import { List, Loader } from 'semantic-ui-react'
-import GraphQLErrorMessage from '../../../components/GraphQLErrorMessage'
 import AdminLayout from '../../../components/AdminLayout'
 import { useApi } from '../../../utils'
+import ErrorLayout from '../../../components/ErrorLayout'
 
 export default function Page () {
-  const { loading, data } = useApi({
+  const { loading, data, errors } = useApi({
     query: `query {
       pageLayouts {
         pathname
@@ -18,7 +18,7 @@ export default function Page () {
   })
 
   if (loading) return <Loader active />
-  if (!data || !data.pageLayouts) return <GraphQLErrorMessage error={{ networkError: true }} />
+  if (errors || !data) return <ErrorLayout errors={errors} />
 
   const items = data.pageLayouts.map(layout => (
     <List.Item as='a' key={layout.pathname} href={`/admin/page-layouts/${layout.pathname}`}>

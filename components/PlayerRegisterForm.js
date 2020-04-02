@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Form } from 'semantic-ui-react'
 import { useRouter } from 'next/router'
 import { GlobalStore } from './GlobalContext'
-import ErrorMessage from './ErrorMessage'
+import ErrorMessages from './ErrorMessages'
 
 export default function PlayerRegisterForm () {
   const router = useRouter()
@@ -53,7 +53,7 @@ export default function PlayerRegisterForm () {
 
   return (
     <Form size='large' onSubmit={onSubmit} error loading={loading}>
-      <ErrorMessage error={error} />
+      <ErrorMessages error={error} />
       <Form.Input
         required
         name='email'

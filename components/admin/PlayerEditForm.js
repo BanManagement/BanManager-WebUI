@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Form, Header, Image, Modal, Select } from 'semantic-ui-react'
-import GraphQLErrorMessage from '../GraphQLErrorMessage'
+import ErrorMessages from '../ErrorMessages'
 import { useApi } from '../../utils'
 
 export default function PlayerEditForm ({ open, onFinished, player, roles, servers }) {
@@ -13,7 +13,7 @@ export default function PlayerEditForm ({ open, onFinished, player, roles, serve
     serverRoles: player.serverRoles
   })
   const [variables, setVariables] = useState({})
-  const { load, data, graphQLErrors } = useApi({
+  const { load, data, errors } = useApi({
     query: `mutation setRoles($player: ID!, $input: SetRolesInput!) {
       setRoles(player: $player, input: $input) {
         id
@@ -34,7 +34,7 @@ export default function PlayerEditForm ({ open, onFinished, player, roles, serve
       serverRoles: inputState.serverRoles.map(role => ({ role: { id: role.role.id }, server: { id: role.server.id } }))
     }
   }), [inputState])
-  useEffect(() => setLoading(false), [graphQLErrors])
+  useEffect(() => setLoading(false), [errors])
   useEffect(() => {
     if (!data) return
     if (Object.keys(data).some(key => !!data[key].id)) onFinished(true)
@@ -69,7 +69,7 @@ export default function PlayerEditForm ({ open, onFinished, player, roles, serve
       </Header>
       <Modal.Content>
         <Form size='large' error loading={loading}>
-          <GraphQLErrorMessage error={graphQLErrors} />
+          <ErrorMessages { ...errors } />
           <Form.Input
             fluid
             placeholder='Email'

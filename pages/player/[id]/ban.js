@@ -3,13 +3,13 @@ import { useRouter } from 'next/router'
 import DefaultLayout from '../../../components/DefaultLayout'
 import PageContainer from '../../../components/PageContainer'
 import PlayerBanForm from '../../../components/PlayerBanForm'
-import GraphQLErrorMessage from '../../../components/GraphQLErrorMessage'
+import ErrorLayout from '../../../components/ErrorLayout'
 import { useApi } from '../../../utils'
 
 export default function Page () {
   const router = useRouter()
   const { id } = router.query
-  const { loading, data, graphQLErrors } = useApi({
+  const { loading, data, errors } = useApi({
     query: `query player($id: UUID!) {
     player(id: $id) {
       id
@@ -29,7 +29,7 @@ export default function Page () {
   })
 
   if (loading) return <Loader active />
-  if (!data || graphQLErrors) return <GraphQLErrorMessage error={graphQLErrors} />
+  if (errors || !data) return <ErrorLayout errors={errors} />
 
   const query = `mutation createPlayerBan($input: CreatePlayerBanInput!) {
     createPlayerBan(input: $input) {

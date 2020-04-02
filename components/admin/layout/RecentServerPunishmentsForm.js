@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
 import { Form, Loader, Select } from 'semantic-ui-react'
 import { useApi } from '../../../utils'
-import GraphQLErrorMessage from '../../GraphQLErrorMessage'
+import ErrorMessages from '../../ErrorMessages'
 
 export default function RecentServerPunishmentsForm ({ meta, setMeta }) {
   const [input, setInput] = useState({ ...meta })
 
-  const { loading, data } = useApi({
+  const { loading, data, errors } = useApi({
     query: `query servers {
     servers {
       id
@@ -16,7 +16,7 @@ export default function RecentServerPunishmentsForm ({ meta, setMeta }) {
   })
 
   if (loading) return <Loader active />
-  if (!data) return <GraphQLErrorMessage error={{ networkError: true }} />
+  if (errors || !data) return <ErrorMessages { ...errors } />
 
   const handleChange = (e, { name, value }) => setInput({ ...input, [name]: value })
   const onSubmit = (e) => {

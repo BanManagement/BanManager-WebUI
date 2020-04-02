@@ -36,9 +36,10 @@ export const useApi = (operation, options) => {
     loadOnReset: false,
     ...options
   })
-  const { load, loading, cacheValue: { data, graphQLErrors } = {} } = res
+  const { load, loading, cacheValue: { data, ...possibleErrors } = {} } = res
+  const errors = Object.keys(possibleErrors).length === 0 && possibleErrors.constructor === Object ? null : possibleErrors
 
-  return { load, loading, graphQLErrors, data }
+  return { load, loading, errors, data }
 }
 
 export const fromNow = (timestamp) => formatDistance(fromUnixTime(timestamp), new Date(), { addSuffix: true })

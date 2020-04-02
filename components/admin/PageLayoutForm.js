@@ -3,7 +3,7 @@ import { Button, Form, Label, Header, Modal, Segment, Responsive as ResponsiveUt
 import { COLORS as COLOURS, TEXT_ALIGNMENTS } from 'semantic-ui-react/dist/commonjs/lib/SUI'
 import GridLayout from 'react-grid-layout'
 import { capitalize, find, maxBy, pick } from 'lodash-es'
-import GraphQLErrorMessage from '../GraphQLErrorMessage'
+import ErrorMessages from '../ErrorMessages'
 import { useApi } from '../../utils'
 import { componentsMeta } from './layout'
 
@@ -54,14 +54,14 @@ export default function PageLayoutForm ({ pathname, pageLayout, onFinished, quer
     setVariables({ pathname, input: newLayout.devices })
   }, [currentPageLayout])
 
-  const { load, data, graphQLErrors } = useApi({ query, variables }, {
+  const { load, data, errors } = useApi({ query, variables }, {
     loadOnMount: false,
     loadOnReload: false,
     loadOnReset: false,
     reloadOnLoad: true
   })
 
-  useEffect(() => setLoading(false), [graphQLErrors])
+  useEffect(() => setLoading(false), [errors])
   useEffect(() => {
     if (!data) return
     if (Object.keys(data).some(key => !!data[key].pathname)) onFinished()
@@ -258,7 +258,7 @@ export default function PageLayoutForm ({ pathname, pageLayout, onFinished, quer
         </Modal.Content>
       </Modal>
       <Segment>
-        <GraphQLErrorMessage error={graphQLErrors} />
+        <ErrorMessages { ...errors } />
         <Form>
           <Form.Group inline>
             <Form.Field>

@@ -1,6 +1,7 @@
 import React from 'react'
 import { Container, Grid, Loader, Responsive } from 'semantic-ui-react'
-import GraphQLErrorMessage from './GraphQLErrorMessage'
+import ErrorMessages from './ErrorMessages'
+import PageContainer from './PageContainer'
 import { GlobalStore } from '../components/GlobalContext'
 import { getWidthFactory, useApi } from '../utils'
 
@@ -107,10 +108,10 @@ function createComponents (rows, availableComponents, props) {
 export default function PageLayout ({ availableComponents, pathname, props = {} }) {
   const store = GlobalStore()
   const { mobile, tablet } = store.get('deviceInfo')
-  const { loading, data, graphQLErrors } = useApi({ query, variables: { pathname } })
+  const { loading, data, errors } = useApi({ query, variables: { pathname } })
 
   if (loading) return <Loader active />
-  if (graphQLErrors || !data) return <GraphQLErrorMessage error={graphQLErrors} />
+  if (errors || !data) return <PageContainer><ErrorMessages { ...errors } /></PageContainer>
 
   const { pageLayout } = data
   const devices = Object.keys(pageLayout.devices).filter(name => name !== '__typename')

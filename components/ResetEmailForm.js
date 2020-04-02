@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Form, Message } from 'semantic-ui-react'
-import GraphQLErrorMessage from './GraphQLErrorMessage'
+import ErrorMessages from './ErrorMessages'
 import { useApi } from '../utils'
 
 export default function ResetEmailForm () {
@@ -14,7 +14,7 @@ export default function ResetEmailForm () {
 
   useEffect(() => setVariables(inputState), [inputState])
 
-  const { load, data, graphQLErrors } = useApi({
+  const { load, data, errors } = useApi({
     query: `mutation setEmail($currentPassword: String!, $email: String!) {
     setEmail(currentPassword: $currentPassword, email: $email) {
       id
@@ -31,7 +31,7 @@ export default function ResetEmailForm () {
   useEffect(() => {
     setLoading(false)
     setSuccess(false)
-  }, [graphQLErrors])
+  }, [errors])
   useEffect(() => {
     if (!data) return
     if (Object.keys(data).some(key => !!data[key].id)) setSuccess(true)
@@ -52,7 +52,7 @@ export default function ResetEmailForm () {
       {success &&
         <Message success header='Email successfully updated' />}
       <Form size='large' onSubmit={onSubmit} error loading={loading}>
-        <GraphQLErrorMessage error={graphQLErrors} />
+        <ErrorMessages { ...errors } />
         <Form.Input
           required
           name='email'

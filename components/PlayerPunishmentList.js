@@ -1,12 +1,12 @@
 import { Card, Loader } from 'semantic-ui-react'
 import PlayerPunishment from './PlayerPunishment'
-import GraphQLErrorMessage from './GraphQLErrorMessage'
+import ErrorMessages from './ErrorMessages'
 import { useApi } from '../utils'
 
 const types = ['bans', 'kicks', 'mutes', 'notes', 'warnings']
 
 export default function PlayerPunishmentList ({ id }) {
-  const { loading, data, graphQLErrors } = useApi({
+  const { loading, data, errors } = useApi({
     variables: { id }, query: `
     query player($id: UUID!) {
       player(id: $id) {
@@ -81,7 +81,7 @@ export default function PlayerPunishmentList ({ id }) {
   })
 
   if (loading) return <Loader active />
-  if (graphQLErrors) return <GraphQLErrorMessage error={graphQLErrors} />
+  if (errors) return <ErrorMessages { ...errors } />
   if (!data || !data.player || !data.player.servers) return null
 
   let activePunishments = []

@@ -5,7 +5,7 @@ import { NextSeo } from 'next-seo'
 import { Loader } from 'semantic-ui-react'
 import Footer from './Footer'
 import ResponsiveContainer from './ResponsiveContainer'
-import GraphQLErrorMessage from './GraphQLErrorMessage'
+import ErrorMessages from './ErrorMessages'
 import SessionNavProfile from './SessionNavProfile'
 import { getWidthFactory, useApi } from '../utils'
 import { GlobalStore } from '../components/GlobalContext'
@@ -14,7 +14,7 @@ function DefaultLayout ({ title = 'Default Title', children, heading, descriptio
   const store = GlobalStore()
   const user = store.get('user')
   const { mobile, tablet } = store.get('deviceInfo')
-  const { loading, data } = useApi({
+  const { loading, data, errors } = useApi({
     query: `{
       navigation {
         left {
@@ -29,8 +29,8 @@ function DefaultLayout ({ title = 'Default Title', children, heading, descriptio
     loadOnReset: false
   })
 
-  if (loading) return <Loader active />
-  if (!data) return <GraphQLErrorMessage error={{ networkError: true }} />
+  if (loading && !data) return <Loader active />
+  if (errors || !data) return <ErrorMessages { ...errors } />
 
   let right = [{ icon: 'user', href: '/login' }]
 

@@ -6,7 +6,7 @@ export default function PlayerReportState ({ id, currentState, states, server, o
   const [loading, setLoading] = useState(false)
   const [variables, setVariables] = useState({ report: id, serverId: server, state: currentState.id })
 
-  const { load, data, graphQLErrors } = useApi({
+  const { load, data, errors } = useApi({
     query: `mutation reportState($report: ID!, $serverId: ID!, $state: ID!) {
     reportState(report: $report, serverId: $serverId, state: $state) {
       updated
@@ -24,7 +24,7 @@ export default function PlayerReportState ({ id, currentState, states, server, o
     reloadOnLoad: true
   })
 
-  useEffect(() => setLoading(false), [graphQLErrors])
+  useEffect(() => setLoading(false), [errors])
   useEffect(() => {
     if (!data) return
     if (Object.keys(data).some(key => !!data[key].updated)) {

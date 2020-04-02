@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { cloneDeep, find } from 'lodash-es'
 import { Form, Header, Select } from 'semantic-ui-react'
-import GraphQLErrorMessage from '../GraphQLErrorMessage'
+import ErrorMessages from '../ErrorMessages'
 import { useApi } from '../../utils'
 
 export default function RoleForm ({ onFinished, query, parseVariables, parentRoles, resources, defaults = {} }) {
@@ -15,14 +15,14 @@ export default function RoleForm ({ onFinished, query, parseVariables, parentRol
 
   useEffect(() => setVariables(parseVariables(inputState)), [inputState])
 
-  const { load, data, graphQLErrors } = useApi({ query, variables }, {
+  const { load, data, errors } = useApi({ query, variables }, {
     loadOnMount: false,
     loadOnReload: false,
     loadOnReset: false,
     reloadOnLoad: true
   })
 
-  useEffect(() => setLoading(false), [graphQLErrors])
+  useEffect(() => setLoading(false), [errors])
   useEffect(() => {
     if (!data) return
     if (Object.keys(data).some(key => data[key] && data[key].id)) onFinished()
@@ -66,7 +66,7 @@ export default function RoleForm ({ onFinished, query, parseVariables, parentRol
 
   return (
     <Form size='large' onSubmit={onSubmit} error loading={loading}>
-      <GraphQLErrorMessage error={graphQLErrors} />
+      <ErrorMessages { ...errors } />
       <Form.Input
         fluid
         required

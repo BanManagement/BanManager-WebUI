@@ -1,9 +1,9 @@
 import { Header, Image, List, Loader } from 'semantic-ui-react'
-import GraphQLErrorMessage from './GraphQLErrorMessage'
+import ErrorMessages from './ErrorMessages'
 import { useApi } from '../utils'
 
 export default function PlayerAlts ({ id, colour }) {
-  const { loading, data, graphQLErrors } = useApi({
+  const { loading, data, errors } = useApi({
     variables: { id }, query: `
     query player($id: UUID!) {
       player(id: $id) {
@@ -19,7 +19,7 @@ export default function PlayerAlts ({ id, colour }) {
   })
 
   if (loading) return <Loader active />
-  if (graphQLErrors) return <GraphQLErrorMessage error={graphQLErrors} />
+  if (errors) return <ErrorMessages { ...errors } />
   if (!data || !data.player || !data.player.servers) return null
 
   // @TODO Clean up, iterating mutliple times

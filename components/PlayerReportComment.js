@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { Comment, Confirm } from 'semantic-ui-react'
-import GraphQLErrorMessage from './GraphQLErrorMessage'
+import ErrorMessages from './ErrorMessages'
 import { fromNow, useApi } from '../utils'
 
 export default function PlayerReportComment ({ id, actor, created, message, acl, serverId, onFinish }) {
   const [state, setState] = useState({ deleteConfirmShow: false, deleting: false })
-  const { load, data, loading, graphQLErrors } = useApi({
+  const { load, data, loading, errors } = useApi({
     query: `mutation deleteReportComment($id: ID!, $serverId: ID!) {
       deleteReportComment(comment: $id, serverId: $serverId) {
         id
@@ -43,7 +43,7 @@ export default function PlayerReportComment ({ id, actor, created, message, acl,
         onConfirm={handleConfirmDelete}
         onCancel={handleDeleteCancel}
       />
-      <GraphQLErrorMessage error={graphQLErrors} />
+      <ErrorMessages { ...errors } />
       <Comment.Avatar src={`https://crafatar.com/avatars/${actor.id}?size=128&overlay=true`} />
       <Comment.Content>
         <Comment.Author as='a' href={`/player/${actor.id}`}>{actor.name}</Comment.Author>

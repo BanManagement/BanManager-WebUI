@@ -1,14 +1,14 @@
 import { useRouter } from 'next/router'
 import { Loader } from 'semantic-ui-react'
 import AdminLayout from '../../../components/AdminLayout'
-import GraphQLErrorMessage from '../../../components/GraphQLErrorMessage'
+import ErrorMessages from '../../../components/ErrorMessages'
 import { useApi } from '../../../utils'
 import ServerForm from '../../../components/admin/ServerForm'
 
 export default function Page () {
   const router = useRouter()
   const { id } = router.query
-  const { loading, data } = useApi({
+  const { loading, data, errors } = useApi({
     variables: { id },
     query: `query server {
       serverTables
@@ -19,7 +19,7 @@ export default function Page () {
   })
 
   if (loading) return <Loader active />
-  if (!data) return <GraphQLErrorMessage error={{ networkError: true }} />
+  if (errors || !data) return <ErrorMessages { ...errors } />
 
   const query = ` mutation createServer($input: CreateServerInput!) {
     createServer(input: $input) {

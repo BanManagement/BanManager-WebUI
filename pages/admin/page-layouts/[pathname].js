@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router'
 import { Loader } from 'semantic-ui-react'
 import AdminLayout from '../../../components/AdminLayout'
-import GraphQLErrorMessage from '../../../components/GraphQLErrorMessage'
+import ErrorLayout from '../../../components/ErrorLayout'
 import { useApi } from '../../../utils'
 import PageLayoutForm from '../../../components/admin/PageLayoutForm'
 
@@ -68,13 +68,13 @@ export default function Page () {
   }
   ${fragment}`
 
-  const { loading, data } = useApi({ variables: { pathname }, query }, {
+  const { loading, data, errors } = useApi({ variables: { pathname }, query }, {
     loadOnReload: false,
     loadOnReset: false
   })
 
   if (loading) return <Loader active />
-  if (!data) return <GraphQLErrorMessage error={{ networkError: true }} />
+  if (errors || !data) return <ErrorLayout errors={errors} />
 
   const mutationQuery = `mutation updatePageLayout($pathname: ID!, $input: UpdatePageLayoutInput!) {
     updatePageLayout(pathname: $pathname, input: $input) {

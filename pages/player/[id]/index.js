@@ -11,7 +11,7 @@ import PlayerIpList from '../../../components/PlayerIpList'
 import PlayerPunishmentList from '../../../components/PlayerPunishmentList'
 import PlayerHistoryList from '../../../components/PlayerHistoryList'
 import HTML from '../../../components/HTML'
-import GraphQLErrorMessage from '../../../components/GraphQLErrorMessage'
+import ErrorLayout from '../../../components/ErrorLayout'
 
 const availableComponents = {
   PlayerAlts, PlayerHeader, PlayerIpList, PlayerHistoryList, PlayerPunishmentList, HTML
@@ -20,7 +20,7 @@ const availableComponents = {
 export default function Page () {
   const router = useRouter()
   const { id } = router.query
-  const { loading, data } = useApi({
+  const { loading, data, errors } = useApi({
     query: ` query player($id: UUID!) {
     player(id: $id) {
       id
@@ -48,7 +48,7 @@ export default function Page () {
   })
 
   if (loading) return <Loader active />
-  if (!data) return <GraphQLErrorMessage />
+  if (errors || !data) return <ErrorLayout errors={errors} />
 
   // @TODO Reduce
   let canCreateBan = false

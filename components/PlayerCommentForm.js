@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Form } from 'semantic-ui-react'
-import GraphQLErrorMessage from './GraphQLErrorMessage'
+import ErrorMessages from './ErrorMessages'
 import { useApi } from '../utils'
 
 export default function PlayerCommentForm ({ onFinish, parseVariables, query }) {
@@ -12,7 +12,7 @@ export default function PlayerCommentForm ({ onFinish, parseVariables, query }) 
 
   useEffect(() => setVariables(parseVariables(inputState)), [inputState])
 
-  const { load, data, graphQLErrors } = useApi({ query, variables }, {
+  const { load, data, errors } = useApi({ query, variables }, {
     loadOnMount: false,
     loadOnReload: false,
     loadOnReset: false,
@@ -21,7 +21,7 @@ export default function PlayerCommentForm ({ onFinish, parseVariables, query }) 
 
   useEffect(() => {
     setLoading(false)
-  }, [graphQLErrors])
+  }, [errors])
   useEffect(() => {
     if (!data) return
     if (Object.keys(data).some(key => !!data[key].id)) {
@@ -42,7 +42,7 @@ export default function PlayerCommentForm ({ onFinish, parseVariables, query }) 
 
   return (
     <Form size='large' onSubmit={onSubmit} error loading={loading}>
-      <GraphQLErrorMessage error={graphQLErrors} />
+      <ErrorMessages { ...errors } />
       <Form.TextArea name='message' maxLength='250' value={inputState.message} onChange={handleChange} />
       <Form.Button content='Reply' labelPosition='left' icon='edit' primary />
     </Form>

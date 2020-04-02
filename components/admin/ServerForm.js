@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Form, Header, TextArea } from 'semantic-ui-react'
 import { safeLoad } from 'js-yaml'
 import { pick } from 'lodash-es'
-import GraphQLErrorMessage from '../GraphQLErrorMessage'
+import ErrorMessages from '../ErrorMessages'
 import { useApi } from '../../utils'
 
 export default function ServerForm ({ onFinished, query, parseVariables, serverTables, defaults = {} }) {
@@ -21,14 +21,14 @@ export default function ServerForm ({ onFinished, query, parseVariables, serverT
 
   useEffect(() => setVariables(parseVariables(inputState)), [inputState])
 
-  const { load, data, graphQLErrors } = useApi({ query, variables }, {
+  const { load, data, errors } = useApi({ query, variables }, {
     loadOnMount: false,
     loadOnReload: false,
     loadOnReset: false,
     reloadOnLoad: true
   })
 
-  useEffect(() => setLoading(false), [graphQLErrors])
+  useEffect(() => setLoading(false), [errors])
   useEffect(() => {
     if (!data) return
     if (Object.keys(data).some(key => data[key] && data[key].id)) onFinished()
@@ -84,7 +84,7 @@ export default function ServerForm ({ onFinished, query, parseVariables, serverT
 
   return (
     <Form size='large' onSubmit={onSubmit} error loading={loading}>
-      <GraphQLErrorMessage error={graphQLErrors} />
+      <ErrorMessages { ...errors } />
       <Form.Input
         fluid
         required

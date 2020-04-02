@@ -1,6 +1,6 @@
 import { Header, Loader, Table } from 'semantic-ui-react'
 import { format, fromUnixTime } from 'date-fns'
-import GraphQLErrorMessage from './GraphQLErrorMessage'
+import ErrorMessages from './ErrorMessages'
 import { useApi } from '../utils'
 
 const PlayerHistory = ({ server, history }) => {
@@ -39,7 +39,7 @@ const PlayerHistory = ({ server, history }) => {
 }
 
 export default function PlayerHistoryList ({ id }) {
-  const { loading, data, graphQLErrors } = useApi({
+  const { loading, data, errors } = useApi({
     variables: { id }, query: `
     query player($id: UUID!) {
       player(id: $id) {
@@ -59,7 +59,7 @@ export default function PlayerHistoryList ({ id }) {
   })
 
   if (loading) return <Loader active />
-  if (graphQLErrors) return <GraphQLErrorMessage error={graphQLErrors} />
+  if (errors) return <ErrorMessages { ...errors } />
   if (!data || !data.player || !data.player.servers) return null
 
   const history = data.player.servers.reduce((data, server, i) => {

@@ -1,12 +1,12 @@
 import { Grid, Label, Loader, Menu } from 'semantic-ui-react'
 import DefaultLayout from './DefaultLayout'
 import MenuLink from './MenuLink'
-import GraphQLErrorMessage from './GraphQLErrorMessage'
+import ErrorLayout from './ErrorLayout'
 import PageContainer from './PageContainer'
 import { useApi } from '../utils'
 
 export default function AdminLayout ({ children, title }) {
-  const { loading, data } = useApi({
+  const { loading, data, errors } = useApi({
     query: `query adminNavigation {
       adminNavigation {
         left {
@@ -22,8 +22,8 @@ export default function AdminLayout ({ children, title }) {
     loadOnReset: false
   })
 
-  if (loading) return <Loader active />
-  if (!data) return <GraphQLErrorMessage error={{ networkError: true }} />
+  if (loading && !data) return <Loader active />
+  if (errors || !data) return <ErrorLayout errors={errors} />
 
   const items = data.adminNavigation.left.map(item => {
     if (item.label) {
