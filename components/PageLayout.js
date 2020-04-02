@@ -47,7 +47,7 @@ function calculateRowCount (components) {
     }
 
     return false
-  }).length
+  }).length - 1
 }
 
 function createRows (rowCount, components) {

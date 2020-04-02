@@ -48,7 +48,7 @@ function DefaultLayout ({ title = 'Default Title', children, heading, descriptio
       <NextSeo description={description} title={title} />
       <ResponsiveContainer heading={heading} leftItems={left} rightItems={right} getWidth={getWidthFactory(mobile, tablet)} mobile={!!mobile}>
         <div style={{ display: 'flex', minHeight: '100vh', flexDirection: 'column' }}>
-          <div style={{ flex: 1 }}>
+          <div style={{ flex: 1, marginBottom: '1em' }}>
             {children}
           </div>
           <Footer isMobileFromSSR={mobile} />
