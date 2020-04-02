@@ -53,23 +53,6 @@ module.exports =
         return state.loaders.playerWarning.serverPlayerId.load({ server: obj.server.id, player: obj.player.id })
       }
     },
-    history:
-    {
-      async resolve ({ server: { id: serverId }, player: { id: playerId } }, args, { state }) {
-        const server = state.serversPool.get(serverId)
-        const tables = server.config.tables
-        const query = `
-          SELECT
-            id, ip, \`join\`, \`leave\`
-          FROM
-            ${tables.playerHistory}
-          WHERE
-            player_id = ?`
-        const [history] = await server.execute(query, [playerId])
-
-        return history
-      }
-    },
     alts:
     {
       async resolve ({ server: { id: serverId }, player: { id, ip } }, args, { state }) {

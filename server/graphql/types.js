@@ -91,11 +91,13 @@ type PlayerKick {
   acl: EntityACL!
 }
 
-type PlayerHistory {
+type PlayerSessionHistory {
   id: ID!
-  ip: IPAddress!
+  ip: IPAddress! @allowIf(resource: "player.ips", permission: "view")
   join: Timestamp!
   leave: Timestamp!
+  player: Player!
+  server: Server!
 }
 
 type PlayerMute {
@@ -139,6 +141,11 @@ type PlayerMuteList {
 type PlayerWarningList {
   total: Int!
   records: [PlayerWarning!]!
+}
+
+type PlayerSessionHistoryList {
+  total: Int!
+  records: [PlayerSessionHistory!]!
 }
 
 type PlayerReport {
@@ -228,7 +235,6 @@ type PlayerServer {
   server: Server!
   lastSeen: Timestamp!
   ip: IPAddress @allowIf(resource: "player.ips", permission: "view")
-  history: [PlayerHistory!] @allowIf(resource: "player.history", permission: "view")
   bans: [PlayerBan!] @allowIf(resource: "player.bans", permission: "view", serverSrc: "id")
   kicks: [PlayerKick!] @allowIf(resource: "player.kicks", permission: "view", serverSrc: "id")
   mutes: [PlayerMute!] @allowIf(resource: "player.mutes", permission: "view", serverSrc: "id")
@@ -322,6 +328,13 @@ enum OrderByInput {
   created_DESC
 }
 
+enum OrderBySessionHistoryInput {
+  leave_ASC
+  leave_DESC
+  join_ASC
+  join_DESC
+}
+
 type DeviceComponent {
   id: ID!
   component: String!
@@ -346,7 +359,7 @@ type ReusableDeviceComponent {
 type PageDevice {
   components: [DeviceComponent!]!
   unusedComponents: [DeviceComponent!]!
-  reusableComponents: [ReusableDeviceComponent!]!
+  reusableComponents: [ReusableDeviceComponent!]! @allowIf(resource: "servers", permission: "manage")
 }
 
 type PageDevices {
@@ -377,10 +390,10 @@ type Query {
 
   me: Me
 
-  navigation: Navigation! @cacheControl(maxAge: 30, scope: PRIVATE)
+  navigation: Navigation!
   adminNavigation: AdminNavigation! @allowIf(resource: "servers", permission: "manage")
 
-  pageLayout(pathname: String!): PageLayout! @cacheControl(maxAge: 30, scope: PUBLIC)
+  pageLayout(pathname: String!): PageLayout!
   pageLayouts: [PageLayout!] @allowIf(resource: "servers", permission: "manage")
 
   roles(defaultOnly: Boolean): [Role!] @allowIf(resource: "servers", permission: "manage")
@@ -393,6 +406,7 @@ type Query {
 
   listBans(serverId: ID, actor: UUID, player: UUID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerBanList! @allowIf(resource: "player.bans", permission: "view")
   listMutes(serverId: ID, actor: UUID, player: UUID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerMuteList! @allowIf(resource: "player.mutes", permission: "view")
+  listSessionHistory(serverId: ID!, player: UUID, limit: Int = 10, offset: Int = 0, order: OrderBySessionHistoryInput): PlayerSessionHistoryList! @allowIf(resource: "player.history", permission: "view")
   listWarnings(serverId: ID, actor: UUID, player: UUID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerWarningList! @allowIf(resource: "player.warnings", permission: "view")
 }
 
