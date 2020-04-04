@@ -36,7 +36,7 @@ describe('Query pageLayout', () => {
     assert.strictEqual(body.errors[0].message, 'Page Layout not found')
   })
 
-  test('should resolve all fields', async () => {
+  test('should resolve fields', async () => {
     const { body, statusCode } = await request
       .post('/graphql')
       .set('Accept', 'application/json')
@@ -47,16 +47,6 @@ describe('Query pageLayout', () => {
           devices {
             mobile {
               components {
-                id
-                component
-                x
-                y
-                w
-                colour
-                textAlign
-                meta
-              }
-              unusedComponents {
                 id
                 component
                 x
@@ -78,29 +68,9 @@ describe('Query pageLayout', () => {
                 textAlign
                 meta
               }
-              unusedComponents {
-                id
-                component
-                x
-                y
-                w
-                colour
-                textAlign
-                meta
-              }
             }
             desktop {
               components {
-                id
-                component
-                x
-                y
-                w
-                colour
-                textAlign
-                meta
-              }
-              unusedComponents {
                 id
                 component
                 x
@@ -172,8 +142,7 @@ describe('Query pageLayout', () => {
           colour: null,
           textAlign: null,
           meta: null
-        }],
-        unusedComponents: []
+        }]
       },
       tablet: {
         components:
@@ -226,8 +195,7 @@ describe('Query pageLayout', () => {
           colour: null,
           textAlign: null,
           meta: null
-        }],
-        unusedComponents: []
+        }]
       },
       desktop: {
         components:
@@ -280,8 +248,7 @@ describe('Query pageLayout', () => {
           colour: null,
           textAlign: null,
           meta: null
-        }],
-        unusedComponents: []
+        }]
       }
     })
   })
