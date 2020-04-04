@@ -13,7 +13,7 @@ FROM base AS dependencies
 # install node packages
 RUN npm set progress=false && npm config set depth 0
 ENV NPM_CONFIG_LOGLEVEL warn
-RUN npm ci --only=production
+RUN npm ci --no-audit --only=production
 
 #
 # ---- Release ----
