@@ -57,7 +57,7 @@ module.exports = ({ logger }) => {
             return unparse(context.session.playerId)
           }
 
-          return null
+          return 'public' // Shared cache for guests
         }
       })
     ]

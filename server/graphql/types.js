@@ -30,16 +30,16 @@ directive @constraint(
   multipleOf: Int
 ) on INPUT_FIELD_DEFINITION
 
-type Server {
-  id: ID!
-  name: String!
+type Server @cacheControl(scope: PUBLIC, maxAge: 3600) {
+  id: ID! @cacheControl(scope: PUBLIC, maxAge: 3600)
+  name: String! @cacheControl(scope: PUBLIC, maxAge: 3600)
   host: String! @allowIf(resource: "servers", permission: "manage")
   port: Int! @allowIf(resource: "servers", permission: "manage")
   database: String! @allowIf(resource: "servers", permission: "manage")
   user: String! @allowIf(resource: "servers", permission: "manage")
   console: Player! @allowIf(resource: "servers", permission: "manage")
   tables: ServerTables! @allowIf(resource: "servers", permission: "manage")
-  timeOffset: Timestamp!
+  timeOffset: Timestamp! @cacheControl(scope: PUBLIC, maxAge: 3600)
 }
 
 type ServerTables {
@@ -55,10 +55,10 @@ type EntityACL {
 }
 
 type Player {
-  id: UUID!
-  name: String!
+  id: UUID! @cacheControl(scope: PUBLIC, maxAge: 3600)
+  name: String! @cacheControl(scope: PUBLIC, maxAge: 3600)
   email: String @allowIf(resource: "servers", permission: "manage")
-  lastSeen: Timestamp!
+  lastSeen: Timestamp! @cacheControl(scope: PUBLIC, maxAge: 300)
   servers: [PlayerServer!]!
   roles: [Role!]! @allowIf(resource: "servers", permission: "manage")
   serverRoles: [ServerRole!]! @allowIf(resource: "servers", permission: "manage")
@@ -71,23 +71,23 @@ type PlayerList {
 
 type PlayerBan {
   id: ID!
-  player: Player!
-  actor: Player!
+  player: Player! @cacheControl(scope: PUBLIC, maxAge: 3600)
+  actor: Player! @cacheControl(scope: PUBLIC, maxAge: 3600)
   reason: String!
   created: Timestamp!
   updated: Timestamp!
   expires: Timestamp!
-  server: Server!
+  server: Server! @cacheControl(scope: PUBLIC, maxAge: 3600)
   acl: EntityACL!
 }
 
 type PlayerKick {
   id: ID!
-  player: Player!
-  actor: Player!
+  player: Player! @cacheControl(scope: PUBLIC, maxAge: 3600)
+  actor: Player! @cacheControl(scope: PUBLIC, maxAge: 3600)
   reason: String!
   created: Timestamp!
-  server: Server!
+  server: Server! @cacheControl(scope: PUBLIC, maxAge: 3600)
   acl: EntityACL!
 }
 
@@ -96,69 +96,69 @@ type PlayerSessionHistory {
   ip: IPAddress! @allowIf(resource: "player.ips", permission: "view")
   join: Timestamp!
   leave: Timestamp!
-  player: Player!
-  server: Server!
+  player: Player! @cacheControl(scope: PUBLIC, maxAge: 3600)
+  server: Server! @cacheControl(scope: PUBLIC, maxAge: 3600)
 }
 
 type PlayerMute {
   id: ID!
-  player: Player!
-  actor: Player!
+  player: Player! @cacheControl(scope: PUBLIC, maxAge: 3600)
+  actor: Player! @cacheControl(scope: PUBLIC, maxAge: 3600)
   reason: String!
   created: Timestamp!
   updated: Timestamp!
   expires: Timestamp!
   soft: Boolean!
-  server: Server!
+  server: Server! @cacheControl(scope: PUBLIC, maxAge: 3600)
   acl: EntityACL!
 }
 
 type PlayerNote {
   id: ID!
-  player: Player!
-  actor: Player!
+  player: Player! @cacheControl(scope: PUBLIC, maxAge: 3600)
+  actor: Player! @cacheControl(scope: PUBLIC, maxAge: 3600)
   message: String!
   created: Timestamp!
-  server: Server!
+  server: Server! @cacheControl(scope: PUBLIC, maxAge: 3600)
   acl: EntityACL!
 }
 
 type PlayerReportList {
-  total: Int!
-  records: [PlayerReport!]!
+  total: Int! @cacheControl(scope: PUBLIC, maxAge: 300)
+  records: [PlayerReport!]! @cacheControl(scope: PUBLIC, maxAge: 300)
 }
 
 type PlayerBanList {
-  total: Int!
-  records: [PlayerBan!]!
+  total: Int! @cacheControl(scope: PUBLIC, maxAge: 300)
+  records: [PlayerBan!]! @cacheControl(scope: PUBLIC, maxAge: 300)
 }
 
 type PlayerMuteList {
-  total: Int!
-  records: [PlayerMute!]!
+  total: Int! @cacheControl(scope: PUBLIC, maxAge: 300)
+  records: [PlayerMute!]! @cacheControl(scope: PUBLIC, maxAge: 300)
 }
 
 type PlayerWarningList {
-  total: Int!
-  records: [PlayerWarning!]!
+  total: Int! @cacheControl(scope: PUBLIC, maxAge: 300)
+  records: [PlayerWarning!]! @cacheControl(scope: PUBLIC, maxAge: 300)
 }
 
 type PlayerSessionHistoryList {
-  total: Int!
-  records: [PlayerSessionHistory!]!
+  total: Int! @cacheControl(scope: PUBLIC, maxAge: 300)
+  records: [PlayerSessionHistory!]! @cacheControl(scope: PUBLIC, maxAge: 300)
 }
 
 type PlayerReport {
   id: ID!
-  player: Player!
-  actor: Player!
+  player: Player! @cacheControl(scope: PUBLIC, maxAge: 3600)
+  actor: Player! @cacheControl(scope: PUBLIC, maxAge: 3600)
   assignee: Player
   reason: String!
   created: Timestamp!
   updated: Timestamp!
   state: PlayerReportState!
   locations: PlayerReportLocations!
-  server: Server!
+  server: Server! @cacheControl(scope: PUBLIC, maxAge: 3600)
   acl: PlayerReportACL!
   comments: [PlayerReportComment!] @allowIf(resource: "player.reports", permission: "view.comments", serverSrc: "id")
   serverLogs: [PlayerReportServerLog!] @allowIf(resource: "player.reports", permission: "view.serverlogs", serverSrc: "id")
@@ -174,7 +174,7 @@ type PlayerReportACL {
 
 type PlayerReportCommand {
   id: ID!
-  actor: Player!
+  actor: Player! @cacheControl(scope: PUBLIC, maxAge: 3600)
   command: String!
   args: String
   created: Timestamp!
@@ -187,7 +187,7 @@ type PlayerReportLocations {
 }
 
 type PlayerLocation {
-  player: Player!
+  player: Player! @cacheControl(scope: PUBLIC, maxAge: 3600)
   world: String!
   x: Float!
   y: Float!
@@ -199,7 +199,7 @@ type PlayerLocation {
 type PlayerReportComment {
   id: ID!
   message: String!
-  actor: Player!
+  actor: Player! @cacheControl(scope: PUBLIC, maxAge: 3600)
   created: Timestamp!
   updated: Timestamp!
   acl: EntityACL!
@@ -232,7 +232,7 @@ type PlayerServerACL {
 
 type PlayerServer {
   id: ID!
-  server: Server!
+  server: Server! @cacheControl(scope: PUBLIC, maxAge: 3600)
   lastSeen: Timestamp!
   ip: IPAddress @allowIf(resource: "player.ips", permission: "view")
   bans: [PlayerBan!] @allowIf(resource: "player.bans", permission: "view", serverSrc: "id")
@@ -246,15 +246,15 @@ type PlayerServer {
 
 type PlayerWarning {
   id: ID!
-  player: Player!
-  actor: Player!
+  player: Player! @cacheControl(scope: PUBLIC, maxAge: 3600)
+  actor: Player! @cacheControl(scope: PUBLIC, maxAge: 3600)
   reason: String!
   created: Timestamp!
   updated: Timestamp!
   expires: Timestamp!
   read: Boolean!
   points: Float!
-  server: Server!
+  server: Server! @cacheControl(scope: PUBLIC, maxAge: 3600)
   acl: EntityACL!
 }
 
@@ -283,8 +283,8 @@ type AdminMenuItem {
   label: Int
 }
 
-type Navigation {
-  left: [MenuItem!]!
+type Navigation @cacheControl(scope: PRIVATE, maxAge: 300) {
+  left: [MenuItem!]! @cacheControl(scope: PRIVATE, maxAge: 300)
 }
 
 type AdminNavigation {
@@ -357,20 +357,20 @@ type ReusableDeviceComponent {
 }
 
 type PageDevice {
-  components: [DeviceComponent!]!
-  unusedComponents: [DeviceComponent!]!
+  components: [DeviceComponent!]! @cacheControl(scope: PUBLIC, maxAge: 300)
+  unusedComponents: [DeviceComponent!]! @allowIf(resource: "servers", permission: "manage")
   reusableComponents: [ReusableDeviceComponent!]! @allowIf(resource: "servers", permission: "manage")
 }
 
 type PageDevices {
-  mobile: PageDevice
-  tablet: PageDevice
-  desktop: PageDevice
+  mobile: PageDevice @cacheControl(scope: PUBLIC, maxAge: 300)
+  tablet: PageDevice @cacheControl(scope: PUBLIC, maxAge: 300)
+  desktop: PageDevice @cacheControl(scope: PUBLIC, maxAge: 300)
 }
 
-type PageLayout {
-  pathname: ID!
-  devices: PageDevices!
+type PageLayout @cacheControl(scope: PUBLIC, maxAge: 300) {
+  pathname: ID! @cacheControl(scope: PUBLIC, maxAge: 300)
+  devices: PageDevices! @cacheControl(scope: PUBLIC, maxAge: 300)
 }
 
 type Query {
@@ -402,12 +402,12 @@ type Query {
 
   reportStates(serverId: ID!): [PlayerReportState!]
   report(id: ID!, serverId: ID!): PlayerReport @allowIf(resource: "player.reports", permission: "view.any")
-  listReports(serverId: ID!, actor: UUID, assigned: UUID, player: UUID, state: ID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerReportList! @allowIf(resource: "player.reports", permission: "view.any")
+  listReports(serverId: ID!, actor: UUID, assigned: UUID, player: UUID, state: ID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerReportList! @cacheControl(scope: PRIVATE, maxAge: 300) @allowIf(resource: "player.reports", permission: "view.any")
 
-  listBans(serverId: ID!, actor: UUID, player: UUID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerBanList! @allowIf(resource: "player.bans", permission: "view")
-  listMutes(serverId: ID!, actor: UUID, player: UUID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerMuteList! @allowIf(resource: "player.mutes", permission: "view")
-  listSessionHistory(serverId: ID!, player: UUID, limit: Int = 10, offset: Int = 0, order: OrderBySessionHistoryInput): PlayerSessionHistoryList! @allowIf(resource: "player.history", permission: "view")
-  listWarnings(serverId: ID!, actor: UUID, player: UUID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerWarningList! @allowIf(resource: "player.warnings", permission: "view")
+  listBans(serverId: ID!, actor: UUID, player: UUID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerBanList! @cacheControl(scope: PRIVATE, maxAge: 300) @allowIf(resource: "player.bans", permission: "view")
+  listMutes(serverId: ID!, actor: UUID, player: UUID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerMuteList! @cacheControl(scope: PRIVATE, maxAge: 300) @allowIf(resource: "player.mutes", permission: "view")
+  listSessionHistory(serverId: ID!, player: UUID, limit: Int = 10, offset: Int = 0, order: OrderBySessionHistoryInput): PlayerSessionHistoryList! @cacheControl(scope: PRIVATE, maxAge: 300) @allowIf(resource: "player.history", permission: "view")
+  listWarnings(serverId: ID!, actor: UUID, player: UUID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerWarningList! @cacheControl(scope: PRIVATE, maxAge: 300) @allowIf(resource: "player.warnings", permission: "view")
 }
 
 input CreatePlayerNoteInput {
