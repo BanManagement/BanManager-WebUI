@@ -66,7 +66,7 @@ module.exports = async function ({ dbPool, logger, serversPool, disableUI = fals
 
       return json
     },
-    sameSite: 'strict',
+    sameSite: 'Lax',
     valid (session, data) {
       return valid(data)
     }
