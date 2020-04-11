@@ -289,7 +289,7 @@ else {
 					<tr>
 						<td colspan="2">
 							<a class="btn btn-warning edit" title="'.$language['viewplayer']['current_mute']['edit'].'" href="#editmute" data-toggle="modal"><span class="glyphicon glyphicon-pencil"></span> '.$language['viewplayer']['current_mute']['edit'].'</a>
-							<a class="btn btn-danger delete" title="'.$language['viewplayer']['current_mute']['unmute'].'" data-role="confirm" href="index.php?action=deletemute&ajax=true&authid='.sha1($settings['password']).'&server='.$_GET['server'].'&id='.$currentMutes['id'].'" data-confirm-title="'.sprintf($language['viewplayer']['current_mute']['unmute_modal-title'], $_GET['player']).'" data-confirm-body="Are you sure you want to unmute '.$_GET['player'].'?<br />This cannot be undone"><span class="glyphicon glyphicon-trash"></span> Unmute</a>
+							<a class="btn btn-danger delete" title="'.$language['viewplayer']['current_mute']['unmute'].'" data-role="confirm" href="index.php?action=deletemute&ajax=true&authid='.sha1($settings['password']).'&server='.$_GET['server'].'&id='.$currentMutes['id'].'" data-confirm-title="'.sprintf($language['viewplayer']['current_mute']['unmute_modal-title'], $_GET['player']).'" data-confirm-body="'.sprintf($language['viewplayer']['current_mute']['unmute_modal-body'], $_GET['player']).'"><span class="glyphicon glyphicon-trash"></span> '.$language['viewplayer']['current_mute']['unmute'].'</a>
 						</td>
 					</tr>
 				</tfoot>';
@@ -319,35 +319,39 @@ else {
 							<div class="modal-body">
 									<div class="control-group">
 										<label class="control-label" for="yourtime"><?= $language['viewplayer']['current_mute']['edit_modal-your_time'] ?>:</label>
+										<div class="controls">
 											<span class="yourtime"></span>
 									</div>
+								</div>
 									<div class="control-group">
 										<label class="control-label" for="servertime"><?= $language['viewplayer']['current_mute']['edit_modal-server_time'] ?>:</label>
+										<div class="controls">
 											<span class="servertime"><?php echo date('d/m/Y H:i:s', time() + $mysqlSecs); ?></span>
+										</div>
 									</div>
-								<!--	<div class="control-group">
-										<label class="control-label" for="mutedatetime"><?= $language['viewplayer']['current_mute']['edit_modal-expires_server_time'] ?>:</label>
-										<div class="input-group">
-											<div class="input datetimepicker date">
-											<?php
-								/*
-												echo '
-												<div class="input-group-addon">
-													<button class="btn btn-danger bantype" type="button">';
+									<div class="control-group">
+									<label class="control-label" for="mutedatetime"><?= $language['viewplayer']['current_mute']['edit_modal-expires_server_time']; ?>:</label>
+									<div class="controls">
+										<div class="input-group date datetimepicker">
+										<?php
+											echo '
+											<span class="input-group-btn">
+												<button class="btn btn-danger bantype" type="button">';
 											if($currentMutes['expires'] == 0)
 												echo $language['viewplayer']['current_mute']['edit_modal-permanent'];
 											else
 												echo $language['viewplayer']['current_mute']['edit_modal-temporary'];
 
 											echo '</button>
-													<input type="text" class="required';
+											</span>
+											<input type="text" class="form-control required';
 
 											if($currentMutes['expires'] == 0)
 												echo ' disabled" disabled="disabled"';
 											else
 												echo '"';
 
-											echo ' name="expires" data-format="dd/MM/yyyy HH:mm:ss" value="';
+											echo ' name="expires" data-format="DD/MM/YYYY HH:mm:ss" value="';
 
 											if($currentMutes['expires'] == 0)
 												echo '';
@@ -355,31 +359,28 @@ else {
 												echo date('d/m/Y H:i:s', $currentMutes['expires']);
 
 											echo '" id="mutedatetime" />';
-
-								*/			?>
-													<span class="input-group-addon">
-														<span class="glyphicon glyphicon-calendar"></span>
-													</span>
-												</div>
-											</div>
+										?>
+											<span class="input-group-addon">
+												<i class="glyphicon glyphicon-calendar"></i>
+											</span>
 										</div>
-									</div> -->
-									<div class="control-group">
-										<label class="control-label" for="mutereason"><?= $language['viewplayer']['current_mute']['edit_modal-reason'] ?>:</label>
-											<textarea id="mutereason" class="form-control" name="reason" rows="4"><?php echo $currentMutes['reason']; ?></textarea>
 									</div>
 								</div>
+								<label for="mutereason"><?= $language['viewplayer']['current_mute']['edit_modal-reason']; ?>:</label>
+								<textarea id="mutereason" name="reason" class="form-control" rows="4"><?php echo $currentMutes['reason']; ?></textarea>
+							</div>
 							<div class="modal-footer">
-								<a href="#" class="btn" data-dismiss="modal"><?= $language['viewplayer']['current_mute']['edit_modal-close'] ?></a>
-								<input type="submit" class="btn btn-primary" value="<?= $language['viewplayer']['current_mute']['edit_modal-your_time'] ?>" />
+								<a href="#" class="btn" data-dismiss="modal"><?= $language['viewplayer']['current_mute']['edit_modal-close']; ?></a>
+								<input type="submit" class="btn btn-primary" value="<?= $language['viewplayer']['current_mute']['edit_modal-save']; ?>" />
 							</div>
 							<input type="hidden" name="id" value="<?php echo $currentMutes['id']; ?>" />
 							<input type="hidden" name="server" value="<?php echo $_GET['server']; ?>" />
-							<input type="hidden" name="expiresTimestamp" value="<?php echo $currentMutes['expires']; ?>" />
+							<input type="hidden" name="expiresTimestamp" value="" />
 						</form>
 					</div>
 				</div>
-			</div><?php
+			</div>
+			<?php
 			}
 		}
 
