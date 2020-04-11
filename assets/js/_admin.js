@@ -221,13 +221,13 @@ $(function() {
       return false;
     errorRemove();
 
-    // if ($(this).find('input[name=expires]').attr('disabled') === 'disabled') {
-    //   $(this).find('input[name=expires]').val('');
-    // }
+    if ($(this).find('input[name=expires]').attr('disabled') === 'disabled') {
+      $(this).find('input[name=expires]').val('');
+    }
 
     formBody.hide().after('<div id="ajaxLoading"><span id="loadingSmall"></span><br />Saving</div>');
     showLoading('loadingSmall');
-    // $('#editmute form input[name=expiresTimestamp]').val($('#editmute form input[name=expires]').parent().parent().data('DateTimePicker').date().getTime() / 1000);
+    $('#editmute form input[name=expiresTimestamp]').val($('#editmute form input[name=expires]').parent().data('DateTimePicker').getDate().toDate().getTime() / 1000);
     $.ajax({
       url: 'index.php?action=updatemute&ajax=true&authid=' + authid
       , data: form.serialize()
