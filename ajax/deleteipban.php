@@ -28,7 +28,7 @@ else {
 		} else {
 			$consoleId = str_replace('-', '', $server['consoleId']);
 
-			mysqli_query($mysqlicon, "INSERT INTO ".$server['ipBanRecordsTable']." (ip, reason, expired, actor_id, pastActor_id, pastCreated, created) SELECT b.ip, b.reason, b.expires, UNHEX('$consoleId'), b.actor_id, b.created, UNIX_TIMESTAMP(now()) FROM ".$server['ipBansTable']." AS b WHERE b.id = '".$_GET['id']."'");
+			mysqli_query($mysqlicon, "INSERT INTO ".$server['ipBanRecordsTable']." (ip, reason, expired, actor_id, pastActor_id, pastCreated, created, createdReason, silent) SELECT b.ip, b.reason, b.expires, UNHEX('$consoleId'), b.actor_id, b.created, UNIX_TIMESTAMP(now()), 'WebUI', b.silent FROM ".$server['ipBansTable']." AS b WHERE b.id = '".$_GET['id']."'");
 			// Now delete it
 			mysqli_query($mysqlicon, "DELETE FROM ".$server['ipBansTable']." WHERE id = '".$_GET['id']."'");
 
