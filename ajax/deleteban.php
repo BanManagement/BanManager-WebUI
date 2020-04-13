@@ -27,7 +27,7 @@ else {
 			$error = 'Please specify a consoleId for this server';
 		} else {
 			$consoleId = str_replace('-', '', $server['consoleId']);
-			mysqli_query($mysqlicon, "INSERT INTO ".$server['playerBanRecordsTable']." (player_id, reason, expired, actor_id, pastActor_id, pastCreated, created, createdReason) SELECT b.player_id, b.reason, b.expires, UNHEX('$consoleId'), b.actor_id, b.created, UNIX_TIMESTAMP(now()), 'WebUI' FROM ".$server['playerBansTable']." AS b WHERE b.id = '".$_GET['id']."'");
+			mysqli_query($mysqlicon, "INSERT INTO ".$server['playerBanRecordsTable']." (player_id, reason, expired, actor_id, pastActor_id, pastCreated, created, createdReason,silent) SELECT b.player_id, b.reason, b.expires, UNHEX('$consoleId'), b.actor_id, b.created, UNIX_TIMESTAMP(now()), 'WebUI', b.silent FROM ".$server['playerBansTable']." AS b WHERE b.id = '".$_GET['id']."'");
 			// Now delete it
 			mysqli_query($mysqlicon, "DELETE FROM ".$server['playerBansTable']." WHERE id = '".$_GET['id']."'");
 
