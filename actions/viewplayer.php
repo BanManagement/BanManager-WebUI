@@ -26,10 +26,10 @@ else {
 	$UUID = playerNameToUUID($_GET['player'], $server);
 
 	// Check if the player exists
-	$currentBans = cache("SELECT b.id, reason, created, expires, a.name AS actor_name FROM ".$server['playerBansTable']." b JOIN ".$server['playersTable']." a ON b.actor_id = a.id WHERE player_id = UNHEX('".$UUID."')", $settings['cache_viewplayer'], $_GET['server'].'/players', $server);
-	$pastBans = cache("SELECT b.id, reason, created, expired, a.name AS actor_name, pa.name AS pastActor_name, pastCreated FROM ".$server['playerBanRecordsTable']." b LEFT OUTER JOIN ".$server['playersTable']." a ON b.actor_id = a.id JOIN ".$server['playersTable']." pa ON b.pastActor_id = pa.id WHERE player_id = UNHEX('".$UUID."') AND pastCreated <> 0", $settings['cache_viewplayer'], $_GET['server'].'/players', $server);
-	$currentMutes = cache("SELECT b.id, reason, created, expires, a.name AS actor_name FROM ".$server['playerMutesTable']." b JOIN ".$server['playersTable']." a ON b.actor_id = a.id WHERE player_id = UNHEX('".$UUID."')", $settings['cache_viewplayer'], $_GET['server'].'/players', $server);
-	$pastMutes = cache("SELECT b.id, reason, created, expired, a.name AS actor_name, pa.name AS pastActor_name, pastCreated FROM ".$server['playerMuteRecordsTable']." b LEFT OUTER JOIN ".$server['playersTable']." a ON b.actor_id = a.id JOIN ".$server['playersTable']." pa ON b.pastActor_id = pa.id WHERE player_id = UNHEX('".$UUID."')", $settings['cache_viewplayer'], $_GET['server'].'/players', $server);
+	$currentBans = cache("SELECT b.id, reason, created, expires, silent, a.name AS actor_name FROM ".$server['playerBansTable']." b JOIN ".$server['playersTable']." a ON b.actor_id = a.id WHERE player_id = UNHEX('".$UUID."')", $settings['cache_viewplayer'], $_GET['server'].'/players', $server);
+	$pastBans = cache("SELECT b.id, reason, created, expired, silent, a.name AS actor_name, pa.name AS pastActor_name, pastCreated FROM ".$server['playerBanRecordsTable']." b LEFT OUTER JOIN ".$server['playersTable']." a ON b.actor_id = a.id JOIN ".$server['playersTable']." pa ON b.pastActor_id = pa.id WHERE player_id = UNHEX('".$UUID."') AND pastCreated <> 0", $settings['cache_viewplayer'], $_GET['server'].'/players', $server);
+	$currentMutes = cache("SELECT b.id, reason, created, expires, soft, silent, a.name AS actor_name FROM ".$server['playerMutesTable']." b JOIN ".$server['playersTable']." a ON b.actor_id = a.id WHERE player_id = UNHEX('".$UUID."')", $settings['cache_viewplayer'], $_GET['server'].'/players', $server);
+	$pastMutes = cache("SELECT b.id, reason, created, expired, soft, silent, a.name AS actor_name, pa.name AS pastActor_name, pastCreated FROM ".$server['playerMuteRecordsTable']." b LEFT OUTER JOIN ".$server['playersTable']." a ON b.actor_id = a.id JOIN ".$server['playersTable']." pa ON b.pastActor_id = pa.id WHERE player_id = UNHEX('".$UUID."')", $settings['cache_viewplayer'], $_GET['server'].'/players', $server);
 	$pastKicks = cache("SELECT b.id, reason, created, a.name AS actor_name FROM ".$server['playerKicksTable']." b JOIN ".$server['playersTable']." a ON b.actor_id = a.id WHERE player_id = UNHEX('".$UUID."')", $settings['cache_viewplayer'], $_GET['server'].'/players', $server);
 	$pastWarnings = cache("SELECT b.id, reason, created, a.name AS actor_name FROM ".$server['playerWarningsTable']." b JOIN ".$server['playersTable']." a ON b.actor_id = a.id WHERE player_id = UNHEX('".$UUID."')", $settings['cache_viewplayer'], $_GET['server'].'/players', $server);
 
@@ -115,6 +115,11 @@ else {
 					<tr>
 						<td>'.$language['viewplayer']['current_ban']['ban_reason'].':</td>
 						<td class="reason">'.$currentBans['reason'].'</td>
+					</tr>';
+					if ($admin)
+					echo '<tr>
+						<td>'.$language['viewplayer']['current_ban']['silent'].':</td>
+						<td>'.($currentBans['silent'] == 1 ? '<span class="glyphicon glyphicon-ok"></span>' : '<span class="glyphicon glyphicon-remove"></span>').'</td>
 					</tr>';
 				if(!empty($currentBans['server'])) {
 					echo '
@@ -269,8 +274,16 @@ else {
 					<tr>
 						<td>'.$language['viewplayer']['current_mute']['mute_reason'].':</td>
 						<td class="reason">'.$currentMutes['reason'].'</td>
+					</tr>';
+					if ($admin)
+					echo '<tr>
+						<td>'.$language['viewplayer']['current_mute']['soft'].':</td>
+						<td>'.($currentMutes['soft'] == 1 ? '<span class="glyphicon glyphicon-ok"></span>' : '<span class="glyphicon glyphicon-remove"></span>').'</td>
 					</tr>
-					<tr>';
+					<tr>
+						<td>'.$language['viewplayer']['current_mute']['silent'].':</td>
+						<td>'.($currentMutes['silent'] == 1 ? '<span class="glyphicon glyphicon-ok"></span>' : '<span class="glyphicon glyphicon-remove"></span>').'</td>
+					</tr>';
 				if(!empty($currentMutes['server'])) {
 					echo '
 					<tr>
@@ -413,7 +426,8 @@ else {
 			}
 			if($admin)
 				echo '
-						<th></th>';
+						<th>'.$language['viewplayer']['previous_bans']['silent'].'</th>
+						<th><center><span class="glyphicon glyphicon-trash"></span></center></th>';
 				?>
 
 					</tr>
@@ -422,7 +436,7 @@ else {
 			if(isset($pastBans[0]) && count($pastBans[0]) == 0) {
 				echo '
 					<tr>
-						<td colspan="8">'.$language['viewplayer']['previous_bans']['none'].'</td>
+						<td colspan="9">'.$language['viewplayer']['previous_bans']['none'].'</td>
 					</tr>';
 			} else {
 				$i = 1;
@@ -431,6 +445,7 @@ else {
 					$r['expired'] = ($r['expired'] != 0 ? $r['expired'] + $mysqlSecs : $r['expired']);
 					$r['pastCreated'] = $r['pastCreated'] + $mysqlSecs;
 					$r['created'] = $r['created'] + $mysqlSecs;
+					$r['silent'] = ($r['silent'] ? $r['silent'] = '<center><span class="glyphicon glyphicon-ok"></span></center>' : $r['silent'] = '<center><span class="glyphicon glyphicon-remove"></span></center>');
 
 					echo '
 					<tr>
@@ -442,6 +457,7 @@ else {
 						<td>'.$r['actor_name'].'</td>
 						<td>'.date('H:i:s d/m/y', $r['created']).'</td>'.($serverName ? '
 						<td>'.$r['server'].'</td>' : '').($admin ? '
+						<td>'.$r['silent'].'</td>
 						<td class="admin-options"><a href="#" class="btn btn-danger delete btn-xs" title="'.$language['viewplayer']['previous_bans']['admin-remove'].'" data-server="'.$_GET['server'].'" data-record-id="'.$r['id'].'"><span class="glyphicon glyphicon-trash"></span></a></td>' : '').'
 					</tr>';
 					++$i;
@@ -482,7 +498,9 @@ else {
 			}
 			if($admin)
 				echo '
-						<th></th>';
+						<th>'.$language['viewplayer']['previous_mutes']['soft'].'</th>
+						<th>'.$language['viewplayer']['previous_mutes']['silent'].'</th>
+						<th><center><span class="glyphicon glyphicon-trash"></span></center></th>';
 				?>
 
 					</tr>
@@ -491,7 +509,7 @@ else {
 			if(count($pastMutes) == 0) {
 				echo '
 					<tr>
-						<td colspan="8">'.$language['viewplayer']['previous_mutes']['none'].'</td>
+						<td colspan="10">'.$language['viewplayer']['previous_mutes']['none'].'</td>
 					</tr>';
 			} else {
 				$i = 1;
@@ -499,6 +517,8 @@ else {
 					$r['reason'] = str_replace(array('&quot;', '"'), array('&#039;', '\''), $r['reason']);
 					$r['expired'] = ($r['expired'] != 0 ? $r['expired'] + $mysqlSecs : $r['expired']);
 					$r['created'] = $r['created'] + $mysqlSecs;
+					$r['soft'] = ($r['soft'] ? $r['soft'] = '<center><span class="glyphicon glyphicon-ok"></span></center>' : $r['soft'] = '<center><span class="glyphicon glyphicon-remove"></span></center>');
+					$r['silent'] = ($r['silent'] ? $r['silent'] = '<center><span class="glyphicon glyphicon-ok"></span></center>' : $r['silent'] = '<center><span class="glyphicon glyphicon-remove"></span></center>');
 					echo '
 					<tr>
 						<td>'.$i.'</td>
@@ -509,6 +529,8 @@ else {
 						<td>'.$r['actor_name'].'</td>
 						<td>'.date('d/m/y', $r['pastCreated']).'</td>'.($serverName ? '
 						<td>'.$r['server'].'</td>' : '').($admin ? '
+						<td>'.$r['soft'].'</td>
+						<td>'.$r['silent'].'</td>
 						<td class="admin-options"><a href="#" class="btn btn-danger delete btn-xs" title="'.$language['viewplayer']['previous_mutes']['admin-remove'].'" data-server="'.$_GET['server'].'" data-record-id="'.$r['id'].'"><span class="glyphicon glyphicon-trash"></span></a></td>' : '').'
 					</tr>';
 					++$i;
