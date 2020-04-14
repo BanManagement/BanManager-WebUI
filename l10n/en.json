@@ -168,6 +168,7 @@
       "banned_by": "Banned by",
       "banned_at": "Banned at",
       "ban_reason": "Reason",
+      "silent": "Silent",
       "server": "Server",
       "edit": "Edit",
       "unban": "Unban",
@@ -192,6 +193,8 @@
       "muted_by": "Muted by",
       "muted_at": "Muted at",
       "mute_reason": "Reason",
+      "soft": "Soft",
+      "silent": "Silent",
       "server": "Server",
       "edit": "Edit",
       "unmute": "Unmute",
@@ -217,6 +220,7 @@
       "unbanned_by": "Unbanned By",
       "at": "At",
       "server": "Server",
+      "silent": "Silent",
       "none": "None",
       "admin-remove": "Remove"
     },
@@ -230,6 +234,8 @@
       "unmuted_by": "Unmuted By",
       "at": "At",
       "server": "Server",
+      "soft": "Soft",
+      "silent": "Silent",
       "none": "None",
       "admin-remove": "Remove"
     },
