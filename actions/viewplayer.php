@@ -116,11 +116,12 @@ else {
 						<td>'.$language['viewplayer']['current_ban']['ban_reason'].':</td>
 						<td class="reason">'.$currentBans['reason'].'</td>
 					</tr>';
-					if ($admin)
+					if ($admin) {
 					echo '<tr>
 						<td>'.$language['viewplayer']['current_ban']['silent'].':</td>
 						<td>'.($currentBans['silent'] == 1 ? '<span class="glyphicon glyphicon-ok"></span>' : '<span class="glyphicon glyphicon-remove"></span>').'</td>
 					</tr>';
+					}
 				if(!empty($currentBans['server'])) {
 					echo '
 					<tr>
@@ -275,7 +276,7 @@ else {
 						<td>'.$language['viewplayer']['current_mute']['mute_reason'].':</td>
 						<td class="reason">'.$currentMutes['reason'].'</td>
 					</tr>';
-					if ($admin)
+					if ($admin) {
 					echo '<tr>
 						<td>'.$language['viewplayer']['current_mute']['soft'].':</td>
 						<td>'.($currentMutes['soft'] == 1 ? '<span class="glyphicon glyphicon-ok"></span>' : '<span class="glyphicon glyphicon-remove"></span>').'</td>
@@ -284,6 +285,7 @@ else {
 						<td>'.$language['viewplayer']['current_mute']['silent'].':</td>
 						<td>'.($currentMutes['silent'] == 1 ? '<span class="glyphicon glyphicon-ok"></span>' : '<span class="glyphicon glyphicon-remove"></span>').'</td>
 					</tr>';
+					}
 				if(!empty($currentMutes['server'])) {
 					echo '
 					<tr>
@@ -424,11 +426,11 @@ else {
 				echo '
 						<th>'.$language['viewplayer']['previous_bans']['server'].'</th>';
 			}
-			if($admin)
+			if($admin) {
 				echo '
 						<th>'.$language['viewplayer']['previous_bans']['silent'].'</th>
 						<th><center><span class="glyphicon glyphicon-trash"></span></center></th>';
-				?>
+			}?>
 
 					</tr>
 				</thead>
@@ -496,12 +498,12 @@ else {
 					echo '
 						<th>'.$language['viewplayer']['previous_mutes']['server'].'</th>';
 			}
-			if($admin)
+			if($admin) {
 				echo '
 						<th>'.$language['viewplayer']['previous_mutes']['soft'].'</th>
 						<th>'.$language['viewplayer']['previous_mutes']['silent'].'</th>
 						<th><center><span class="glyphicon glyphicon-trash"></span></center></th>';
-				?>
+			}?>
 
 					</tr>
 				</thead>
@@ -566,10 +568,10 @@ else {
 				echo '
 						<th>'.$language['viewplayer']['warnings']['server'].'</th>';
 			}
-			if($admin)
+			if($admin) {
 				echo '
 						<th></th>';
-				?>
+			}?>
 
 					</tr>
 				</thead>
@@ -627,10 +629,10 @@ else {
 					echo '
 						<th>'.$language['viewplayer']['previous_kicks']['server'].'</th>';
 			}
-			if($admin)
+			if($admin) {
 				echo '
 						<th></th>';
-				?>
+			}?>
 
 					</tr>
 				</thead>
