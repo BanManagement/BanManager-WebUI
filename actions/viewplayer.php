@@ -570,7 +570,7 @@ else {
 			}
 			if($admin) {
 				echo '
-						<th></th>';
+						<th><center><span class="glyphicon glyphicon-trash"></span></center></th>';
 			}?>
 
 					</tr>
@@ -631,7 +631,7 @@ else {
 			}
 			if($admin) {
 				echo '
-						<th></th>';
+						<th><center><span class="glyphicon glyphicon-trash"></span></center></th>';
 			}?>
 
 					</tr>
