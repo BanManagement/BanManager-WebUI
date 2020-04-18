@@ -1,14 +1,12 @@
-const udify = require('../../../data/udify')
+const role = require('../queries/role')
 
-module.exports = async function updateRole (obj
-  , { id, input: { name, parent, resources } }
-  , { state: { dbPool, loaders } }) {
+module.exports = async function updateRole (obj, { id, input: { name, parent, resources } }, { state }, info) {
   if (id < 4 && parent) throw new Error('Default roles can not have a parent')
 
-  await udify.update(dbPool, 'bm_web_roles', { name, parent_role_id: parent || null }, { role_id: id })
+  await state.dbPool('bm_web_roles').update({ name, parent_role_id: parent || null }).where({ role_id: id })
 
   // Do not allow users to change admin role resources in case they lock themselves out
-  if (id === 3 || id === '3') return loaders.role.ids.load(id)
+  if (id === 3 || id === '3') return role(obj, { id }, { state }, info)
 
   for (const resource of resources) {
     const ids = resource.permissions // @TODO reduce and Promise.all
@@ -16,14 +14,14 @@ module.exports = async function updateRole (obj
       .map(perm => perm.id)
 
     if (!ids.length) {
-      await dbPool.query(`UPDATE bm_web_role_resources
+      await state.dbPool.raw(`UPDATE bm_web_role_resources
         SET
           value = 0
         WHERE
           role_id = ? AND resource_id = ?
       `, [id, resource.id])
     } else {
-      await dbPool.query(`UPDATE bm_web_role_resources
+      await state.dbPool.raw(`UPDATE bm_web_role_resources
         SET
           value = (SELECT
               SUM(value)
@@ -37,5 +35,5 @@ module.exports = async function updateRole (obj
     }
   }
 
-  return loaders.role.ids.load(id)
+  return role(obj, { id }, { state }, info)
 }

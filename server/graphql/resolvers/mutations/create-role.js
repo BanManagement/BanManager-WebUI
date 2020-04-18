@@ -1,61 +1,65 @@
 const { find } = require('lodash')
-const udify = require('../../../data/udify')
+const { parseResolveInfo } = require('graphql-parse-resolve-info')
+const { getSql } = require('../../utils')
 
-module.exports = async function createRole (obj
-  , { input: { name, parent, resources } }
-  , { log, state: { dbPool, loaders } }) {
-  const conn = await dbPool.getConnection()
+module.exports = async function createRole (obj, { input: { name, parent, resources } }, { log, state: { dbPool, loaders } }, info) {
   let id
 
   try {
-    await conn.beginTransaction()
-    const [{ insertId }] = await udify.insert(conn, 'bm_web_roles', { name, parent_role_id: parent })
-    const [allResources] = await conn.execute('SELECT resource_id AS id FROM bm_web_resources')
+    await dbPool.transaction(async trx => {
+      const [insertId] = await trx('bm_web_roles').insert({ name, parent_role_id: parent }, ['id'])
+      const allResources = await trx('bm_web_resources').select('resource_id AS id')
 
-    id = insertId
+      for (const allResource of allResources) {
+        const resource = find(resources, { id: allResource.id })
 
-    for (const allResource of allResources) {
-      const resource = find(resources, { id: allResource.id })
+        if (!resource) {
+          await trx('bm_web_role_resources').insert({ value: 0, role_id: id, resource_id: allResource.id })
+          continue
+        }
 
-      if (!resource) {
-        await udify.insert(conn, 'bm_web_role_resources', { value: 0, role_id: id, resource_id: allResource.id })
-        continue
+        const ids = resource.permissions // @TODO reduce and Promise.all
+          .filter(perm => perm.allowed)
+          .map(perm => perm.id)
+
+        if (!ids.length) {
+          await trx('bm_web_role_resources').insert({ value: 0, role_id: id, resource_id: allResource.id })
+          continue
+        }
+
+        await trx.raw(`INSERT INTO bm_web_role_resources
+          (role_id, resource_id, value)
+          VALUES (?, ?, (
+            SELECT
+              SUM(value)
+            FROM
+              bm_web_resource_permissions
+            WHERE
+              permission_id IN (?)
+          ))
+        `, [insertId, resource.id, ids])
+
+        id = insertId
       }
 
-      const ids = resource.permissions // @TODO reduce and Promise.all
-        .filter(perm => perm.allowed)
-        .map(perm => perm.id)
-
-      if (!ids.length) {
-        await udify.insert(conn, 'bm_web_role_resources', { value: 0, role_id: id, resource_id: allResource.id })
-        continue
-      }
-
-      await conn.query(`INSERT INTO bm_web_role_resources
-        (role_id, resource_id, value)
-        VALUES (?, ?, (
-          SELECT
-            SUM(value)
-          FROM
-            bm_web_resource_permissions
-          WHERE
-            permission_id IN (?)
-        ))
-      `, [id, resource.id, ids])
-    }
-
-    await conn.commit()
+      await trx.commit()
+    })
   } catch (e) {
     log.error(e)
-
-    if (!conn.connection._fatalError) {
-      await conn.rollback()
-    }
-  } finally {
-    conn.release()
   }
 
   if (!id) throw new Error('An error occurred')
 
-  return loaders.role.ids.load(id)
+  const fields = parseResolveInfo(info)
+  const query = getSql(info.schema, {
+    pool: dbPool,
+    config: {
+      tables: {
+        roles: 'bm_web_roles'
+      }
+    }
+  }, fields, 'roles').where('role_id', id)
+  const [data] = await query.exec()
+
+  return data
 }

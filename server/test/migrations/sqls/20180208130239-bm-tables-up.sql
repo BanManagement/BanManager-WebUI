@@ -289,6 +289,12 @@ CREATE TABLE `bm_player_report_states` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+INSERT INTO `bm_player_report_states` (`id`, `name`) VALUES
+  (1, 'Open'),
+  (2, 'Assigned'),
+  (3, 'Resolved'),
+  (4, 'Closed');
+
 CREATE TABLE `bm_player_reports` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `player_id` binary(16) NOT NULL,

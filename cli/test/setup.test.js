@@ -3,7 +3,6 @@ const { unparse } = require('uuid-parse')
 const { tables } = require('../../server/data/tables')
 const { createSetup } = require('../../server/test/lib')
 const { createPlayer } = require('../../server/test/fixtures')
-const { insert } = require('../../server/data/udify')
 
 describe('setup', () => {
   let setup
@@ -12,13 +11,13 @@ describe('setup', () => {
   beforeAll(async () => {
     setup = await createSetup()
 
-    await setup.dbPool.execute('DELETE FROM bm_web_servers')
-    await setup.dbPool.execute('TRUNCATE bm_web_player_roles')
-    await setup.dbPool.execute('TRUNCATE bm_web_users')
+    await setup.dbPool.raw('DELETE FROM bm_web_servers')
+    await setup.dbPool.raw('TRUNCATE bm_web_player_roles')
+    await setup.dbPool.raw('TRUNCATE bm_web_users')
 
     const player = createPlayer()
 
-    await insert(setup.dbPool, 'bm_players', player)
+    await setup.dbPool('bm_players').insert(player)
 
     playerId = unparse(player.id)
   }, 20000)
@@ -37,7 +36,7 @@ describe('setup', () => {
   })
 
   test('should output env', done => {
-    const dbPool = setup.dbPool.pool.config.connectionConfig
+    const dbPool = setup.dbPool.client.config.connection
     const cmd = nixt()
       .env('CONTACT_EMAIL', '')
       .env('ENCRYPTION_KEY', '')
@@ -52,7 +51,7 @@ describe('setup', () => {
       .run('./bin/run setup --writeFile env')
       .on(/Email address for push notification/).respond('test@banmanagement.com\n')
       .on(/Database Host/).respond(`${dbPool.host}\n`)
-      .on(/Database Port/).respond(`${dbPool.port}\n`)
+      .on(/Database Port/).respond('3306\n')
       .on(/Database User/).respond(`${dbPool.user}\n`)
       .on(/Database Password/).respond(`${dbPool.password || ''}\n`)
       .on(/Database Name/).respond(`${dbPool.database}\n`)
@@ -63,7 +62,7 @@ describe('setup', () => {
       .stdout(/Done/)
       .stdout(/Add a BanManager Server/)
       .on(/Server Database Host/).respond(`${dbPool.host}\n`)
-      .on(/Server Database Port/).respond(`${dbPool.port}\n`)
+      .on(/Server Database Port/).respond('3306\n')
       .on(/Server Database User/).respond(`${dbPool.user}\n`)
       .on(/Server Database Password/).respond(`${dbPool.password || ''}\n`)
       .on(/Server Database Name/).respond(`${dbPool.database}\n`)

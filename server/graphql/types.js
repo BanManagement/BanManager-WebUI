@@ -14,6 +14,9 @@ scalar JSONObject
 
 directive @allowIf(resource: String!, permission: String!, serverVar: String, serverSrc: String) on FIELD_DEFINITION
 directive @allowIfLoggedIn on FIELD_DEFINITION
+directive @sqlRelation(field: String!, table: String!, joinType: String, joinOn: String, whereKey: String) on FIELD_DEFINITION
+directive @sqlTable(name: String!) on OBJECT
+directive @sqlColumn(name: String!) on FIELD_DEFINITION
 directive @constraint(
   minLength: Int
   maxLength: Int
@@ -30,7 +33,7 @@ directive @constraint(
   multipleOf: Int
 ) on INPUT_FIELD_DEFINITION
 
-type Server @cacheControl(scope: PUBLIC, maxAge: 3600) {
+type Server @sqlTable(name: "servers") @cacheControl(scope: PUBLIC, maxAge: 3600) {
   id: ID! @cacheControl(scope: PUBLIC, maxAge: 3600)
   name: String! @cacheControl(scope: PUBLIC, maxAge: 3600)
   host: String! @allowIf(resource: "servers", permission: "manage")
@@ -54,72 +57,81 @@ type EntityACL {
   yours: Boolean!
 }
 
-type Player {
+type Player @sqlTable(name: "players") {
   id: UUID! @cacheControl(scope: PUBLIC, maxAge: 3600)
   name: String! @cacheControl(scope: PUBLIC, maxAge: 3600)
-  email: String @allowIf(resource: "servers", permission: "manage")
+  ip: IPAddress @allowIf(resource: "player.ips", permission: "view")
   lastSeen: Timestamp! @cacheControl(scope: PUBLIC, maxAge: 300)
-  servers: [PlayerServer!]!
-  roles: [Role!]! @allowIf(resource: "servers", permission: "manage")
-  serverRoles: [ServerRole!]! @allowIf(resource: "servers", permission: "manage")
 }
 
-type PlayerList {
+type User @sqlTable(name: "users") {
+  id: UUID! @sqlColumn(name: "player_id")
+  email: String @allowIf(resource: "servers", permission: "manage")
+  roles: [UserRole!]! @allowIf(resource: "servers", permission: "manage") @sqlRelation(joinOn: "id", field: "player_id", whereKey: "player_id", table: "playerRoles", joinType: "leftJoin")
+  serverRoles: [UserServerRole!]! @allowIf(resource: "servers", permission: "manage") @sqlRelation(joinOn: "id", field: "player_id", whereKey: "player_id", table: "playerServerRoles", joinType: "leftJoin")
+  player: Player
+}
+
+type UserRole @sqlTable(name: "playerRoles") {
+  role: Role! @sqlRelation(joinOn: "role_id", field: "role_id", table: "roles")
+}
+
+type UserServerRole @sqlTable(name: "playerServerRoles") {
+  serverRole: Role! @sqlRelation(joinOn: "role_id", field: "role_id", table: "roles")
+  server: Server! @sqlRelation(joinOn: "id", field: "server_id", table: "servers")
+}
+
+type UserList {
   total: Int!
-  players: [Player!]
+  records: [User!]
 }
 
-type PlayerBan {
+type PlayerBan @sqlTable(name: "playerBans") {
   id: ID!
-  player: Player! @cacheControl(scope: PUBLIC, maxAge: 3600)
-  actor: Player! @cacheControl(scope: PUBLIC, maxAge: 3600)
+  player: Player! @cacheControl(scope: PUBLIC, maxAge: 3600) @sqlRelation(joinOn: "id", field: "player_id", table: "players")
+  actor: Player! @cacheControl(scope: PUBLIC, maxAge: 3600) @sqlRelation(joinOn: "id", field: "actor_id", table: "players", joinType: "leftJoin")
   reason: String!
   created: Timestamp!
   updated: Timestamp!
   expires: Timestamp!
-  server: Server! @cacheControl(scope: PUBLIC, maxAge: 3600)
   acl: EntityACL!
 }
 
-type PlayerKick {
+type PlayerKick @sqlTable(name: "playerKicks") {
   id: ID!
-  player: Player! @cacheControl(scope: PUBLIC, maxAge: 3600)
-  actor: Player! @cacheControl(scope: PUBLIC, maxAge: 3600)
+  player: Player! @cacheControl(scope: PUBLIC, maxAge: 3600) @sqlRelation(joinOn: "id", field: "player_id", table: "players")
+  actor: Player! @cacheControl(scope: PUBLIC, maxAge: 3600) @sqlRelation(joinOn: "id", field: "actor_id", table: "players", joinType: "leftJoin")
   reason: String!
   created: Timestamp!
-  server: Server! @cacheControl(scope: PUBLIC, maxAge: 3600)
   acl: EntityACL!
 }
 
-type PlayerSessionHistory {
+type PlayerSessionHistory @sqlTable(name: "playerHistory") {
   id: ID!
   ip: IPAddress! @allowIf(resource: "player.ips", permission: "view")
   join: Timestamp!
   leave: Timestamp!
   player: Player! @cacheControl(scope: PUBLIC, maxAge: 3600)
-  server: Server! @cacheControl(scope: PUBLIC, maxAge: 3600)
 }
 
-type PlayerMute {
+type PlayerMute @sqlTable(name: "playerMutes") {
   id: ID!
-  player: Player! @cacheControl(scope: PUBLIC, maxAge: 3600)
-  actor: Player! @cacheControl(scope: PUBLIC, maxAge: 3600)
+  player: Player! @cacheControl(scope: PUBLIC, maxAge: 3600) @sqlRelation(joinOn: "id", field: "player_id", table: "players")
+  actor: Player! @cacheControl(scope: PUBLIC, maxAge: 3600) @sqlRelation(joinOn: "id", field: "actor_id", table: "players", joinType: "leftJoin")
   reason: String!
   created: Timestamp!
   updated: Timestamp!
   expires: Timestamp!
   soft: Boolean!
-  server: Server! @cacheControl(scope: PUBLIC, maxAge: 3600)
   acl: EntityACL!
 }
 
-type PlayerNote {
+type PlayerNote @sqlTable(name: "playerNotes") {
   id: ID!
-  player: Player! @cacheControl(scope: PUBLIC, maxAge: 3600)
-  actor: Player! @cacheControl(scope: PUBLIC, maxAge: 3600)
+  player: Player! @cacheControl(scope: PUBLIC, maxAge: 3600) @sqlRelation(joinOn: "id", field: "player_id", table: "players")
+  actor: Player! @cacheControl(scope: PUBLIC, maxAge: 3600) @sqlRelation(joinOn: "id", field: "actor_id", table: "players", joinType: "leftJoin")
   message: String!
   created: Timestamp!
-  server: Server! @cacheControl(scope: PUBLIC, maxAge: 3600)
   acl: EntityACL!
 }
 
@@ -148,21 +160,20 @@ type PlayerSessionHistoryList {
   records: [PlayerSessionHistory!]! @cacheControl(scope: PUBLIC, maxAge: 300)
 }
 
-type PlayerReport {
+type PlayerReport @sqlTable(name: "playerReports") {
   id: ID!
-  player: Player! @cacheControl(scope: PUBLIC, maxAge: 3600)
-  actor: Player! @cacheControl(scope: PUBLIC, maxAge: 3600)
-  assignee: Player
+  player: Player! @cacheControl(scope: PUBLIC, maxAge: 3600) @sqlRelation(joinOn: "id", field: "player_id", table: "players")
+  actor: Player! @cacheControl(scope: PUBLIC, maxAge: 3600) @sqlRelation(joinOn: "id", field: "actor_id", table: "players", joinType: "leftJoin")
+  assignee: Player @sqlRelation(joinOn: "id", field: "assignee_id", table: "players", joinType: "leftJoin")
   reason: String!
   created: Timestamp!
   updated: Timestamp!
-  state: PlayerReportState!
-  locations: PlayerReportLocations!
-  server: Server! @cacheControl(scope: PUBLIC, maxAge: 3600)
+  state: PlayerReportState! @sqlRelation(joinOn: "id", field: "state_id", table: "playerReportStates")
+  playerLocation: PlayerReportLocation @sqlRelation(joinOn: "player_id", field: "player_id", table: "playerReportLocations", joinType: "leftJoin")
+  actorLocation: PlayerReportLocation @sqlRelation(joinOn: "player_id", field: "actor_id", table: "playerReportLocations", joinType: "leftJoin")
   acl: PlayerReportACL!
-  comments: [PlayerReportComment!] @allowIf(resource: "player.reports", permission: "view.comments", serverSrc: "id")
-  serverLogs: [PlayerReportServerLog!] @allowIf(resource: "player.reports", permission: "view.serverlogs", serverSrc: "id")
-  commands: [PlayerReportCommand!] @allowIf(resource: "player.reports", permission: "view.commands", serverSrc: "id")
+  serverLogs: [PlayerReportServerLog!] @sqlRelation(field: "id", table: "playerReportLogs", whereKey: "report_id") @allowIf(resource: "player.reports", permission: "view.serverlogs", serverSrc: "id")
+  commands: [PlayerReportCommand!]  @sqlRelation(field: "id", table: "playerReportCommands", whereKey: "report_id") @allowIf(resource: "player.reports", permission: "view.commands", serverSrc: "id")
 }
 
 type PlayerReportACL {
@@ -172,22 +183,16 @@ type PlayerReportACL {
   delete: Boolean!
 }
 
-type PlayerReportCommand {
+type PlayerReportCommand @sqlTable(name: "playerReportCommands") {
   id: ID!
-  actor: Player! @cacheControl(scope: PUBLIC, maxAge: 3600)
+  actor: Player! @cacheControl(scope: PUBLIC, maxAge: 3600) @sqlRelation(joinOn: "id", field: "actor_id", table: "players")
   command: String!
   args: String
   created: Timestamp!
   updated: Timestamp!
 }
 
-type PlayerReportLocations {
-  player: PlayerLocation
-  actor: PlayerLocation
-}
-
-type PlayerLocation {
-  player: Player! @cacheControl(scope: PUBLIC, maxAge: 3600)
+type PlayerReportLocation @sqlTable(name: "playerReportLocations") {
   world: String!
   x: Float!
   y: Float!
@@ -196,22 +201,27 @@ type PlayerLocation {
   pitch: Float!
 }
 
-type PlayerReportComment {
+type PlayerReportComment @sqlTable(name: "playerReportComments") {
   id: ID!
-  message: String!
-  actor: Player! @cacheControl(scope: PUBLIC, maxAge: 3600)
+  comment: String!
+  actor: Player! @cacheControl(scope: PUBLIC, maxAge: 3600) @sqlRelation(joinOn: "id", field: "player_id", table: "players")
   created: Timestamp!
   updated: Timestamp!
   acl: EntityACL!
 }
 
-type PlayerReportServerLog {
+type PlayerReportServerLog @sqlTable(name: "playerReportLogs") {
+  id: ID!
+  log: ServerLog! @sqlRelation(joinOn: "id", field: "log_id", table: "serverLogs")
+}
+
+type ServerLog {
   id: ID!
   message: String!
   created: Timestamp!
 }
 
-type PlayerReportState {
+type PlayerReportState @sqlTable(name: "playerReportStates") {
   id: ID!
   name: String!
 }
@@ -222,39 +232,16 @@ type EntityTypeACL {
   delete: Boolean!
 }
 
-type PlayerServerACL {
-  bans: EntityTypeACL!
-  kicks: EntityTypeACL!
-  mutes: EntityTypeACL!
-  notes: EntityTypeACL!
-  warnings: EntityTypeACL!
-}
-
-type PlayerServer {
+type PlayerWarning @sqlTable(name: "playerWarnings") {
   id: ID!
-  server: Server! @cacheControl(scope: PUBLIC, maxAge: 3600)
-  lastSeen: Timestamp!
-  ip: IPAddress @allowIf(resource: "player.ips", permission: "view")
-  bans: [PlayerBan!] @allowIf(resource: "player.bans", permission: "view", serverSrc: "id")
-  kicks: [PlayerKick!] @allowIf(resource: "player.kicks", permission: "view", serverSrc: "id")
-  mutes: [PlayerMute!] @allowIf(resource: "player.mutes", permission: "view", serverSrc: "id")
-  notes: [PlayerNote!] @allowIf(resource: "player.notes", permission: "view", serverSrc: "id")
-  warnings: [PlayerWarning!] @allowIf(resource: "player.warnings", permission: "view", serverSrc: "id")
-  alts: [Player!] @allowIf(resource: "player.alts", permission: "view", serverSrc: "id")
-  acl: PlayerServerACL!
-}
-
-type PlayerWarning {
-  id: ID!
-  player: Player! @cacheControl(scope: PUBLIC, maxAge: 3600)
-  actor: Player! @cacheControl(scope: PUBLIC, maxAge: 3600)
+  player: Player! @cacheControl(scope: PUBLIC, maxAge: 3600) @sqlRelation(joinOn: "id", field: "player_id", table: "players")
+  actor: Player! @cacheControl(scope: PUBLIC, maxAge: 3600) @sqlRelation(joinOn: "id", field: "actor_id", table: "players", joinType: "leftJoin")
   reason: String!
   created: Timestamp!
   updated: Timestamp!
   expires: Timestamp!
   read: Boolean!
   points: Float!
-  server: Server! @cacheControl(scope: PUBLIC, maxAge: 3600)
   acl: EntityACL!
 }
 
@@ -291,16 +278,11 @@ type AdminNavigation {
   left: [AdminMenuItem!]!
 }
 
-type Role {
-  id: ID!
+type Role @sqlTable(name: "roles") {
+  id: ID! @sqlColumn(name: "role_id")
   name: String!
   parent: ID
   resources: [Resources!]
-}
-
-type ServerRole {
-  server: Server!
-  role: Role!
 }
 
 type Resources {
@@ -375,8 +357,7 @@ type PageLayout @cacheControl(scope: PUBLIC, maxAge: 300) {
 
 type Query {
   searchPlayers(name: String!, limit: Int = 10): [Player!]
-  player(id: UUID!): Player
-  listPlayers(email: String, role: String, serverRole: String, limit: Int = 10, offset: Int = 0): PlayerList @allowIf(resource: "servers", permission: "manage")
+  listUsers(player: UUID, email: String, role: String, serverRole: String, limit: Int = 10, offset: Int = 0): UserList @allowIf(resource: "servers", permission: "manage")
 
   servers: [Server!]
   serverTables: [String!]
@@ -402,12 +383,12 @@ type Query {
 
   reportStates(serverId: ID!): [PlayerReportState!]
   report(id: ID!, serverId: ID!): PlayerReport @allowIf(resource: "player.reports", permission: "view.any")
-  listReports(serverId: ID!, actor: UUID, assigned: UUID, player: UUID, state: ID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerReportList! @cacheControl(scope: PRIVATE, maxAge: 300) @allowIf(resource: "player.reports", permission: "view.any")
+  listPlayerReports(serverId: ID!, actor: UUID, assigned: UUID, player: UUID, state: ID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerReportList! @cacheControl(scope: PRIVATE, maxAge: 300) @allowIf(resource: "player.reports", permission: "view.any")
 
-  listBans(serverId: ID!, actor: UUID, player: UUID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerBanList! @cacheControl(scope: PRIVATE, maxAge: 300) @allowIf(resource: "player.bans", permission: "view")
-  listMutes(serverId: ID!, actor: UUID, player: UUID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerMuteList! @cacheControl(scope: PRIVATE, maxAge: 300) @allowIf(resource: "player.mutes", permission: "view")
-  listSessionHistory(serverId: ID!, player: UUID, limit: Int = 10, offset: Int = 0, order: OrderBySessionHistoryInput): PlayerSessionHistoryList! @cacheControl(scope: PRIVATE, maxAge: 300) @allowIf(resource: "player.history", permission: "view")
-  listWarnings(serverId: ID!, actor: UUID, player: UUID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerWarningList! @cacheControl(scope: PRIVATE, maxAge: 300) @allowIf(resource: "player.warnings", permission: "view")
+  listPlayerBans(serverId: ID!, actor: UUID, player: UUID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerBanList! @cacheControl(scope: PRIVATE, maxAge: 300) @allowIf(resource: "player.bans", permission: "view")
+  listPlayerMutes(serverId: ID!, actor: UUID, player: UUID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerMuteList! @cacheControl(scope: PRIVATE, maxAge: 300) @allowIf(resource: "player.mutes", permission: "view")
+  listPlayerSessionHistory(serverId: ID!, player: UUID, limit: Int = 10, offset: Int = 0, order: OrderBySessionHistoryInput): PlayerSessionHistoryList! @cacheControl(scope: PRIVATE, maxAge: 300) @allowIf(resource: "player.history", permission: "view")
+  listPlayerWarnings(serverId: ID!, actor: UUID, player: UUID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerWarningList! @cacheControl(scope: PRIVATE, maxAge: 300) @allowIf(resource: "player.warnings", permission: "view")
 }
 
 input CreatePlayerNoteInput {
@@ -573,7 +554,7 @@ type Mutation {
   deleteRole(id: ID!): Role! @allowIf(resource: "servers", permission: "manage")
   assignRole(players: [UUID!]!, role: Int!): Role! @allowIf(resource: "servers", permission: "manage")
   assignServerRole(players: [UUID!], role: Int!, serverId: ID!): Role! @allowIf(resource: "servers", permission: "manage")
-  setRoles(player: ID!, input: SetRolesInput!): Player! @allowIf(resource: "servers", permission: "manage")
+  setRoles(player: UUID!, input: SetRolesInput!): User! @allowIf(resource: "servers", permission: "manage")
 
   assignReport(report: ID!, serverId: ID!, player: UUID!): PlayerReport!
   reportState(report: ID!, serverId: ID!, state: ID!): PlayerReport!

@@ -2,11 +2,7 @@ const assert = require('assert')
 const supertest = require('supertest')
 const createApp = require('../app')
 const { createSetup, getAuthPassword } = require('./lib')
-const {
-  createPlayer,
-  createWarning
-} = require('./fixtures')
-const { insert } = require('../data/udify')
+const { createPlayer, createWarning } = require('./fixtures')
 
 describe('Mutation update player warning', () => {
   let setup
@@ -99,8 +95,8 @@ describe('Mutation update player warning', () => {
     const actor = createPlayer()
     const warning = createWarning(player, actor)
 
-    await insert(pool, 'bm_players', [player, actor])
-    const [{ insertId }] = await insert(pool, 'bm_player_warnings', warning)
+    await pool('bm_players').insert([player, actor])
+    const [inserted] = await pool('bm_player_warnings').insert(warning, ['id'])
 
     const { body, statusCode } = await request
       .post('/graphql')
@@ -108,7 +104,7 @@ describe('Mutation update player warning', () => {
       .set('Accept', 'application/json')
       .send({
         query: `mutation updatePlayerWarning {
-        updatePlayerWarning(id: "${insertId}", serverId: "${server.id}", input: {
+        updatePlayerWarning(id: "${inserted}", serverId: "${server.id}", input: {
           reason: "testing updates",
           expires: 1000000000,
           points: 1
@@ -140,7 +136,7 @@ describe('Mutation update player warning', () => {
     assert(body)
     assert(body.data)
 
-    assert.strictEqual(body.data.updatePlayerWarning.id, '' + insertId)
+    assert.strictEqual(body.data.updatePlayerWarning.id, '' + inserted)
     assert.strictEqual(body.data.updatePlayerWarning.reason, 'testing updates')
     assert.strictEqual(body.data.updatePlayerWarning.expires, 1000000000)
     assert.strictEqual(body.data.updatePlayerWarning.points, 1)

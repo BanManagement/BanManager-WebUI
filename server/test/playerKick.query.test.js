@@ -3,11 +3,7 @@ const { unparse } = require('uuid-parse')
 const supertest = require('supertest')
 const createApp = require('../app')
 const { createSetup, getAuthPassword } = require('./lib')
-const {
-  createPlayer
-  , createKick
-} = require('./fixtures')
-const { insert } = require('../data/udify')
+const { createPlayer, createKick } = require('./fixtures')
 
 describe('Query player kick', () => {
   let setup
@@ -32,8 +28,8 @@ describe('Query player kick', () => {
     const actor = createPlayer()
     const kick = createKick(player, actor)
 
-    await insert(pool, 'bm_players', [player, actor])
-    await insert(pool, 'bm_player_kicks', kick)
+    await pool('bm_players').insert([player, actor])
+    await pool('bm_player_kicks').insert(kick)
 
     const { body, statusCode } = await request
       .post('/graphql')

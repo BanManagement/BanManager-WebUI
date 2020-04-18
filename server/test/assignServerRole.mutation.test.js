@@ -4,7 +4,6 @@ const supertest = require('supertest')
 const createApp = require('../app')
 const { createSetup, getAuthPassword } = require('./lib')
 const { createPlayer } = require('./fixtures')
-const { insert } = require('../data/udify')
 
 describe('Mutation assignServerRole', () => {
   let setup
@@ -25,7 +24,7 @@ describe('Mutation assignServerRole', () => {
     const { config: server, pool } = setup.serversPool.values().next().value
     const player = createPlayer()
 
-    await insert(pool, 'bm_players', player)
+    await pool('bm_players').insert(player)
 
     const { body, statusCode } = await request
       .post('/graphql')
@@ -50,7 +49,7 @@ describe('Mutation assignServerRole', () => {
     const { config: server, pool } = setup.serversPool.values().next().value
     const player = createPlayer()
 
-    await insert(pool, 'bm_players', player)
+    await pool('bm_players').insert(player)
 
     const { body, statusCode } = await request
       .post('/graphql')
@@ -76,7 +75,7 @@ describe('Mutation assignServerRole', () => {
     const { config: server, pool } = setup.serversPool.values().next().value
     const player = createPlayer()
 
-    await insert(pool, 'bm_players', player)
+    await pool('bm_players').insert(player)
 
     const { body, statusCode } = await request
       .post('/graphql')
@@ -101,7 +100,7 @@ describe('Mutation assignServerRole', () => {
     const { pool } = setup.serversPool.values().next().value
     const player = createPlayer()
 
-    await insert(pool, 'bm_players', player)
+    await pool('bm_players').insert(player)
 
     const { body, statusCode } = await request
       .post('/graphql')
@@ -126,7 +125,7 @@ describe('Mutation assignServerRole', () => {
     const { config: server, pool } = setup.serversPool.values().next().value
     const player = createPlayer()
 
-    await insert(pool, 'bm_players', player)
+    await pool('bm_players').insert(player)
 
     const { body, statusCode } = await request
       .post('/graphql')
@@ -155,7 +154,7 @@ describe('Mutation assignServerRole', () => {
       const { config: server, pool } = setup.serversPool.values().next().value
       const player = createPlayer()
 
-      await insert(pool, 'bm_players', player)
+      await pool('bm_players').insert(player)
 
       const { body, statusCode } = await request
         .post('/graphql')

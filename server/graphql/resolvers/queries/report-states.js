@@ -1,12 +1,10 @@
 const ExposedError = require('../../../data/exposed-error')
 
 module.exports = async function reportStates (obj, { serverId }, { state }) {
-  if (!state.serversPool.has(serverId)) throw new ExposedError('Server not found')
+  if (!state.serversPool.has(serverId)) throw new ExposedError('Server does not exist')
 
   const server = state.serversPool.get(serverId)
-  const query = `SELECT id, name FROM ${server.config.tables.playerReportStates}`
-
-  const [results] = await server.execute(query)
+  const results = await server(server.config.tables.playerReportStates).select('id', 'name')
 
   return results
 }

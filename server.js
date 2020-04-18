@@ -19,7 +19,6 @@ const createApp = require('./server/app')
 const { setupPool, setupServersPool } = require('./server/connections')
 const port = process.env.PORT || 3000
 const dbConfig = {
-  connectionLimit: process.env.DB_CONNECTION_LIMIT || 5,
   host: process.env.DB_HOST,
   port: process.env.DB_PORT,
   user: process.env.DB_USER,

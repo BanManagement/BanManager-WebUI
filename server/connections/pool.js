@@ -1,5 +1,13 @@
-const mysql = require('mysql2/promise')
+const knex = require('knex')
+const { attachOnDuplicateUpdate } = require('knex-on-duplicate-update')
 
-module.exports = (config) => {
-  return mysql.createPool(config)
+attachOnDuplicateUpdate()
+
+module.exports = (config, logger, pool = { min: 0, max: 10 }) => {
+  return knex({
+    client: 'mysql2',
+    asyncStackTraces: true,
+    log: logger,
+    connection: config
+  })
 }

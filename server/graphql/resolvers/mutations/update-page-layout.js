@@ -1,21 +1,18 @@
 const { find } = require('lodash')
-const { insert, update, delete: deleteData } = require('../../../data/udify')
 const ExposedError = require('../../../data/exposed-error')
 const reusableComponents = require('../../../data/default-components')
 const pageLayout = require('../queries/page-layout')
 
 module.exports = async function updatePageLayout (obj, { pathname, input }, { log, state }) {
   // Find all component ids
-  const [results] = await state.dbPool.execute('SELECT id FROM bm_web_page_layouts WHERE pathname = ? LIMIT 1',
-    [pathname])
+  const results = await state.dbPool('bm_web_page_layouts')
+    .select('id')
+    .where('pathname', pathname)
+    .limit(1)
 
   if (!results.length) throw new ExposedError('Page Layout does not exist')
 
-  const conn = await state.dbPool.getConnection()
-
-  try {
-    await conn.beginTransaction()
-
+  await state.dbPool.transaction(async trx => {
     const devices = Object.keys(input)
     const components = []
 
@@ -62,27 +59,17 @@ module.exports = async function updatePageLayout (obj, { pathname, input }, { lo
       if (!component.id && component.y === -1) continue
       if (component.id) {
         if (component.y === -1 && find(reusableComponents, { component: component.component })) {
-          await deleteData(conn, 'bm_web_page_layouts', { id: component.id })
+          await trx('bm_web_page_layouts').where({ id: component.id }).del()
         } else {
-          await update(conn, 'bm_web_page_layouts', component, { id: component.id })
+          await trx('bm_web_page_layouts').update(component).where({ id: component.id })
         }
       } else {
-        await insert(conn, 'bm_web_page_layouts', component)
+        await trx('bm_web_page_layouts').insert(component)
       }
     }
 
-    await conn.commit()
-  } catch (e) {
-    log.error(e)
-
-    if (!conn.connection._fatalError) {
-      await conn.rollback()
-    }
-
-    throw e
-  } finally {
-    conn.release()
-  }
+    await trx.commit()
+  })
 
   return pageLayout(obj, { pathname }, { state })
 }

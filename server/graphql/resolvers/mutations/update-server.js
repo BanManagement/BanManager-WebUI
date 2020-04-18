@@ -1,15 +1,16 @@
 const { createConnection } = require('mysql2/promise')
-const { parse } = require('uuid-parse')
 const { pick } = require('lodash')
 const { encrypt } = require('../../../data/crypto')
-const udify = require('../../../data/udify')
 const ExposedError = require('../../../data/exposed-error')
 const { tables } = require('../../../data/tables')
 
 module.exports = async function updateServer (obj, { id, input }, { state }) {
   if (!state.serversPool.has(id)) throw new ExposedError('Server not found')
 
-  const [[serverExists]] = await state.dbPool.query('SELECT id FROM bm_web_servers WHERE name = ? AND id != ?', [input.name, id])
+  const serverExists = await state.dbPool('bm_web_servers')
+    .select('id')
+    .where('name', input.name)
+    .first()
 
   if (serverExists) {
     throw new ExposedError('A server with this name already exists')
@@ -35,7 +36,7 @@ module.exports = async function updateServer (obj, { id, input }, { state }) {
 
   const [[exists]] = await conn.query(
     'SELECT id FROM ?? WHERE id = ?'
-    , [input.tables.players, parse(input.console, Buffer.alloc(16))])
+    , [input.tables.players, input.console])
 
   conn.end()
 
@@ -50,10 +51,9 @@ module.exports = async function updateServer (obj, { id, input }, { state }) {
   }
 
   // Clean up
-  input.console = parse(input.console, Buffer.alloc(16))
   input.tables = JSON.stringify(input.tables)
 
-  await udify.update(state.dbPool, 'bm_web_servers', input, { id })
+  await state.dbPool('bm_web_servers').update(input).where({ id })
 
   return { id }
 }

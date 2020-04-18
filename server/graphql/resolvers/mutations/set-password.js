@@ -9,8 +9,9 @@ module.exports = async function setPassword (obj, { currentPassword, newPassword
     throw new ExposedError('Invalid password, minimum length 6 characters')
   }
 
-  const [[checkResult]] = await state.dbPool.execute(
-    'SELECT player_id, password FROM bm_web_users WHERE player_id = ?', [session.playerId])
+  const [checkResult] = await state.dbPool('bm_web_users')
+    .select('player_id', 'password')
+    .where('player_id', session.playerId)
 
   if (!checkResult) throw new ExposedError('You do not have an account, please register')
 
@@ -44,8 +45,12 @@ module.exports = async function setPassword (obj, { currentPassword, newPassword
 
   await session.manuallyCommit()
 
-  await state.dbPool.execute('UPDATE bm_web_users SET password = ?, updated = ? WHERE player_id = ?',
-    [encodedHash, session.updated, session.playerId])
+  await state.dbPool('bm_web_users')
+    .update({
+      password: encodedHash,
+      updated: session.updated
+    })
+    .where('player_id', session.playerId)
 
   return Me(obj, {}, { session, state })
 }

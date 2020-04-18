@@ -2,15 +2,14 @@ const fs = require('fs').promises
 const inquirer = require('inquirer')
 const editDotenv = require('edit-dotenv')
 const DBMigrate = require('db-migrate')
-const udify = require('../../server/data/udify')
 const { Command, flags } = require('@oclif/command')
 const { isEmail } = require('validator')
 const { generateVAPIDKeys } = require('web-push')
-const { createPool } = require('mysql2/promise')
 const { merge } = require('lodash')
 const { parse } = require('uuid-parse')
 const { generateServerId } = require('../../server/data/generator')
 const { hash } = require('../../server/data/hash')
+const setupPool = require('../../server/connections/pool')
 const crypto = require('../../server/data/crypto')
 const defaultTables = require('../../server/data/tables').tables
 
@@ -95,7 +94,11 @@ class SetupCommand extends Command {
 
     const connectToDb = async (config) => {
       try {
-        return await createPool(config)
+        const pool = setupPool(config, undefined, { min: 1, max: 5 })
+
+        await pool.raw('SELECT 1+1 AS result')
+
+        return pool
       } catch (e) {
         console.error(e)
         return null
@@ -168,7 +171,7 @@ class SetupCommand extends Command {
 
     await dbm.up()
 
-    const [results] = await conn.execute('SELECT * FROM bm_web_servers LIMIT 1')
+    const results = await conn('bm_web_servers').limit(1)
     let serverConn
     let server
 
@@ -177,13 +180,15 @@ class SetupCommand extends Command {
       this.log(`BanManager Server ${server.name} detected, skipping server setup, attempting to connect`)
 
       try {
-        serverConn = await createPool({
+        serverConn = setupPool({
           host: server.host,
           port: server.port,
           database: server.database,
           user: server.user,
           password: await crypto.decrypt(ENCRYPTION_KEY, server.password)
-        })
+        }, undefined, { min: 1, max: 5 })
+
+        await serverConn.raw('SELECT 1+1 AS result')
       } catch (e) {
         this.log(`Connection to ${server.name} failed`)
       }
@@ -195,24 +200,17 @@ class SetupCommand extends Command {
       serverConn = await askDb()
 
       const { serverName } = await inquirer.prompt([{ name: 'serverName', message: 'Server Name', default: server ? server.name : undefined }])
-      const { host, port, user, password, database } = serverConn.pool.config.connectionConfig
+      const { host, port, user, password, database } = serverConn.client.config.connection
 
       server = { host, port, user, password, database, name: serverName }
     }
 
-    const checkTable = async (conn, table) => {
-      const [[{ exists }]] = await conn.execute(
-        'SELECT COUNT(*) AS `exists` FROM information_schema.tables WHERE table_schema = ? AND table_name = ?'
-        , [conn.pool.config.connectionConfig.database, table])
-
-      return exists
-    }
+    const checkTable = async (conn, table) => conn.schema.hasTable(table)
     const promptTable = async (conn, [key, value]) => {
       const { tableName } = await inquirer.prompt([{ name: 'tableName', message: `${key} table name`, default: value }])
+      const exists = await checkTable(conn, tableName)
 
-      try {
-        await checkTable(conn, tableName)
-      } catch (e) {
+      if (!exists) {
         this.log(`Failed to find ${tableName} table in database, please try again`)
 
         return promptTable(conn, [key, value])
@@ -252,13 +250,7 @@ class SetupCommand extends Command {
       }
     }
 
-    const playerExists = async (conn, table, id) => {
-      const [[result]] = await conn.query(
-        'SELECT name FROM ?? WHERE id = ?'
-        , [table, id])
-
-      return result
-    }
+    const playerExists = async (conn, table, id) => conn(table).select('name').where('id', id).first()
     const askPlayer = async (question, conn, table) => {
       const questions = [{ name: 'id', message: question }]
       const { id } = await inquirer.prompt(questions)
@@ -287,7 +279,7 @@ class SetupCommand extends Command {
     this.log(`Saving server ${server.name}`)
 
     if (server.id) {
-      await udify.update(conn, 'bm_web_servers', { ...server, tables: JSON.stringify(server.tables) }, { id: server.id })
+      await conn('bm_web_servers').update({ ...server, tables: JSON.stringify(server.tables) }).where({ id: server.id })
     } else {
       server.id = (await generateServerId()).toString('hex')
 
@@ -297,10 +289,10 @@ class SetupCommand extends Command {
         server.password = ''
       }
 
-      await udify.insert(conn, 'bm_web_servers', server)
+      await conn('bm_web_servers').insert({ ...server, tables: JSON.stringify(server.tables) })
 
       // Setup default homepage
-      await udify.insert(conn, 'bm_web_page_layouts', [
+      await conn('bm_web_page_layouts').insert([
         { pathname: 'home', component: 'ServerNameHeader', x: 0, y: 1, w: 16, meta: JSON.stringify({ serverId: server.id, as: 'h2' }), device: 'desktop' },
         { pathname: 'home', component: 'ServerNameHeader', x: 0, y: 1, w: 16, meta: JSON.stringify({ serverId: server.id, as: 'h2' }), device: 'tablet' },
         { pathname: 'home', component: 'ServerNameHeader', x: 0, y: 1, w: 16, meta: JSON.stringify({ serverId: server.id, as: 'h2' }), device: 'mobile' },
@@ -319,7 +311,7 @@ class SetupCommand extends Command {
       ])
     }
 
-    const [roleResults] = await conn.execute('SELECT player_id FROM bm_web_player_roles WHERE role_id = 3 LIMIT 1')
+    const roleResults = await conn('bm_web_player_roles').select('player_id').where('role_id', 3).limit(1)
 
     if (roleResults.length) {
       this.log('Admin user detected, skipping')
@@ -342,9 +334,7 @@ class SetupCommand extends Command {
       const askPlayerAccount = async (question, conn, serverConn, table) => {
         const id = await askPlayer(question, serverConn, table)
 
-        const [[{ exists }]] = await conn.execute(
-          'SELECT COUNT(*) AS `exists` FROM bm_web_users WHERE player_id = ?'
-          , [id])
+        const [{ exists }] = await conn('bm_web_users').select(conn.raw('COUNT(*) AS `exists`')).where('player_id', id)
 
         if (exists) {
           this.log('An account already exists for that player')
@@ -361,14 +351,14 @@ class SetupCommand extends Command {
         email, password, player_id: playerId, updated: Math.floor(Date.now() / 1000)
       }
 
-      await udify.insert(conn, 'bm_web_users', user)
-      await udify.insert(conn, 'bm_web_player_roles', { player_id: playerId, role_id: 3 })
+      await conn('bm_web_users').insert(user)
+      await conn('bm_web_player_roles').insert({ player_id: playerId, role_id: 3 })
     }
 
     this.log('Cleaning up...')
 
-    await conn.end()
-    await serverConn.end()
+    await conn.destroy()
+    await serverConn.destroy()
 
     this.log('Setup complete, environment variables are:')
 

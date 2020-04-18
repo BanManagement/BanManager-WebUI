@@ -3,7 +3,6 @@ const supertest = require('supertest')
 const { jsonToGraphQLQuery } = require('json-to-graphql-query')
 const createApp = require('../app')
 const { createSetup, getAuthPassword } = require('./lib')
-const { insert } = require('../data/udify')
 
 describe('Mutation updatePageLayout', () => {
   let setup
@@ -158,7 +157,7 @@ describe('Mutation updatePageLayout', () => {
   })
 
   test('should insert & delete components', async () => {
-    const [{ insertId }] = await insert(setup.dbPool, 'bm_web_page_layouts', { pathname: 'player', device: 'mobile', component: 'HTML', x: 0, y: 0, w: 16 })
+    const [inserted] = await setup.dbPool('bm_web_page_layouts').insert({ pathname: 'player', device: 'mobile', component: 'HTML', x: 0, y: 0, w: 16 }, ['id'])
     const components = [{ id: '1', component: 'PlayerHeader', y: 0, x: 0, w: 5 },
       { id: '4', component: 'PlayerPunishmentList', y: 2, x: 0, w: 5 },
       { id: '7', component: 'PlayerIpList', y: 1, x: 0, w: 5 },
@@ -167,7 +166,7 @@ describe('Mutation updatePageLayout', () => {
     ]
     const unusedComponents = [
       { id: '13', component: 'PlayerAlts', y: 4, x: 0, w: 5 },
-      { id: insertId, component: 'HTML', y: 15, x: 0, w: 5 }
+      { id: inserted, component: 'HTML', y: 15, x: 0, w: 5 }
     ]
     const query = jsonToGraphQLQuery({
       mutation: {

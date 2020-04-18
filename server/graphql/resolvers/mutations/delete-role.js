@@ -1,13 +1,14 @@
+const role = require('../queries/role')
 const ExposedError = require('../../../data/exposed-error')
 
-module.exports = async function deleteRole (obj, { id }, { state }) {
+module.exports = async function deleteRole (obj, { id }, { state }, info) {
   if (id < 4) throw new ExposedError('You may not delete default roles')
 
-  const role = await state.loaders.role.ids.load(id)
+  const data = await role(obj, { id }, { state }, info)
 
-  if (!role) throw new ExposedError(`Role ${id} does not exist`)
+  if (!data) throw new ExposedError(`Role ${id} does not exist`)
 
-  await state.dbPool.execute('DELETE FROM bm_web_roles WHERE role_id = ?', [id])
+  await state.dbPool('bm_web_roles').where('role_id', id).del()
 
-  return role
+  return data
 }

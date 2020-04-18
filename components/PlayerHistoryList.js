@@ -23,7 +23,7 @@ query listSessionHistory($serverId: ID!, $player: UUID, $limit: Int, $offset: In
 
 export default function PlayerHistoryList ({ id }) {
   const limit = 10
-  const [tableState, setTableState] = useState({ activePage: 1, limit, offset: 0, serverId: null, player: null })
+  const [tableState, setTableState] = useState({ activePage: 1, limit, offset: 0, serverId: null, player: id })
   const { load, loading, data, errors } = useApi({ query, variables: tableState }, {
     loadOnMount: false,
     loadOnReload: false,

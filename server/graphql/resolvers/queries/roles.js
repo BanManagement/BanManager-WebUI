@@ -1,9 +1,10 @@
 module.exports = async function roles (obj, { defaultOnly }, { state: { dbPool } }) {
-  let query = 'SELECT role_id AS id, name FROM bm_web_roles'
+  const query = dbPool('bm_web_roles')
+    .select('role_id AS id', 'name')
 
-  if (defaultOnly) query += ' WHERE role_id < 4'
+  if (defaultOnly) query.where('role_id', '<', 4)
 
-  const [roles] = await dbPool.execute(query)
+  const roles = await query
 
   return roles
 }

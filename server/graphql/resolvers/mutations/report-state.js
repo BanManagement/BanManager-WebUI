@@ -1,25 +1,21 @@
-const udify = require('../../../data/udify')
+const report = require('../queries/report')
 const ExposedError = require('../../../data/exposed-error')
 
-module.exports = async function reportState (obj, { serverId, state: stateId, report: id }, { state }) {
+module.exports = async function reportState (obj, { serverId, state: stateId, report: id }, { state }, info) {
   const server = state.serversPool.get(serverId)
 
   if (!server) throw new ExposedError('Server does not exist')
 
   const table = server.config.tables.playerReports
-  let report = await state.loaders.report.serverDataId.load({ server: serverId, id })
+  const exists = await server.pool(table).where({ id })
 
-  if (!report) throw new ExposedError(`Report ${id} does not exist`)
+  if (!exists) throw new ExposedError(`Report ${id} does not exist`)
 
-  const [[row]] = await server.query(`SELECT id FROM ${server.config.tables.playerReportStates} WHERE id = ?`
-    , [stateId])
+  const row = await server.pool(server.config.tables.playerReportStates).where('id', stateId).first()
 
   if (!row) throw new ExposedError(`Report State ${stateId} does not exist`)
 
-  await udify.update(server, table,
-    { updated: 'UNIX_TIMESTAMP()', state_id: stateId }, { id })
+  await server.pool(table).update({ updated: 'UNIX_TIMESTAMP()', state_id: stateId }).where({ id })
 
-  report = await state.loaders.report.serverDataId.load({ server: serverId, id })
-
-  return report
+  return report(obj, { id, serverId }, { state }, info)
 }

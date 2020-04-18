@@ -3,10 +3,7 @@ const { unparse } = require('uuid-parse')
 const supertest = require('supertest')
 const createApp = require('../app')
 const { createSetup } = require('./lib')
-const {
-  createPlayer
-} = require('./fixtures')
-const { insert } = require('../data/udify')
+const { createPlayer } = require('./fixtures')
 
 describe('Query searchPlayers', () => {
   let setup
@@ -28,7 +25,7 @@ describe('Query searchPlayers', () => {
 
     const player = createPlayer()
 
-    await insert(pool, 'bm_players', player)
+    await pool('bm_players').insert(player)
 
     const { body, statusCode } = await request
       .post('/graphql')

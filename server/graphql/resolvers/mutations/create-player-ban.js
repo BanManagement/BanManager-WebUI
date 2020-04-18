@@ -1,22 +1,24 @@
-const { parse } = require('uuid-parse')
 const ExposedError = require('../../../data/exposed-error')
+const playerBan = require('../queries/player-ban')
 
-module.exports = async function createPlayerBan (obj, { input }, { session, state }) {
+module.exports = async function createPlayerBan (obj, { input }, { session, state }, info) {
   const server = state.serversPool.get(input.server)
   const table = server.config.tables.playerBans
-  const player = parse(input.player, Buffer.alloc(16))
+  const player = input.player
   const actor = session.playerId
   let id
 
   try {
-    const [result] = await server.execute(
-      `INSERT INTO ${table}
-        (player_id, actor_id, reason, created, updated, expires)
-          VALUES
-        (?, ?, ?, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), ?)`
-      , [player, actor, input.reason, input.expires])
+    const [insertId] = await server.pool(table).insert({
+      player_id: player,
+      actor_id: actor,
+      reason: input.reason,
+      expires: input.expires,
+      created: server.pool.raw('UNIX_TIMESTAMP()'),
+      updated: server.pool.raw('UNIX_TIMESTAMP()')
+    }, ['id'])
 
-    id = result.insertId
+    id = insertId
   } catch (e) {
     if (e.code === 'ER_DUP_ENTRY') {
       throw new ExposedError('Player already banned on selected server, please unban first')
@@ -25,7 +27,5 @@ module.exports = async function createPlayerBan (obj, { input }, { session, stat
     throw e
   }
 
-  const data = await state.loaders.playerBan.serverDataId.load({ server: input.server, id })
-
-  return data
+  return playerBan(obj, { id, serverId: input.server }, { state }, info)
 }

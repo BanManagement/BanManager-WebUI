@@ -1,15 +1,16 @@
-const { parse } = require('uuid-parse')
+const playerNote = require('../queries/player-note')
 
-module.exports = async function createPlayerNote (obj, { input }, { session, state }) {
+module.exports = async function createPlayerNote (obj, { input }, { session, state }, info) {
   const server = state.serversPool.get(input.server)
   const table = server.config.tables.playerNotes
-  const player = parse(input.player, Buffer.alloc(16))
+  const player = input.player
   const actor = session.playerId
+  const [id] = await server.pool(table).insert({
+    player_id: player,
+    actor_id: actor,
+    message: input.message,
+    created: server.pool.raw('UNIX_TIMESTAMP()')
+  }, ['id'])
 
-  const [{ insertId }] = await server.execute(
-    `INSERT INTO ${table} (player_id, actor_id, message, created) VALUES(?, ?, ?, UNIX_TIMESTAMP())`
-    , [player, actor, input.message])
-  const data = await state.loaders.playerNote.serverDataId.load({ server: input.server, id: insertId })
-
-  return data
+  return playerNote(obj, { id, serverId: input.server }, { state }, info)
 }

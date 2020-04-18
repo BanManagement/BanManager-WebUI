@@ -1,14 +1,15 @@
-const { parse } = require('uuid-parse')
 const { pick } = require('lodash')
 const { encrypt } = require('../../../data/crypto')
 const { generateServerId } = require('../../../data/generator')
 const { createConnection } = require('mysql2/promise')
 const { tables } = require('../../../data/tables')
-const udify = require('../../../data/udify')
 const ExposedError = require('../../../data/exposed-error')
 
 module.exports = async function createServer (obj, { input }, { state }) {
-  const [[serverExists]] = await state.dbPool.query('SELECT id FROM bm_web_servers WHERE name = ?', [input.name])
+  const serverExists = await state.dbPool('bm_web_servers')
+    .select('id')
+    .where('name', input.name)
+    .first()
 
   if (serverExists) {
     throw new ExposedError('A server with this name already exists')
@@ -35,7 +36,7 @@ module.exports = async function createServer (obj, { input }, { state }) {
 
   const [[exists]] = await conn.query(
     'SELECT id FROM ?? WHERE id = ?'
-    , [input.tables.players, parse(input.console, Buffer.alloc(16))])
+    , [input.tables.players, input.console])
 
   conn.end()
 
@@ -50,10 +51,9 @@ module.exports = async function createServer (obj, { input }, { state }) {
   }
 
   // Clean up
-  input.console = parse(input.console, Buffer.alloc(16))
   input.tables = JSON.stringify(input.tables)
 
-  await udify.insert(state.dbPool, 'bm_web_servers', { ...input, id })
+  await state.dbPool('bm_web_servers').insert({ ...input, id })
 
   return { id }
 }

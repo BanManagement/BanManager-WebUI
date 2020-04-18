@@ -10,8 +10,9 @@ module.exports = async function setEmail (obj, { currentPassword, email }, { ses
 
   if (!isEmail(email)) throw new ExposedError('Invalid email address')
 
-  const [[checkResult]] = await state.dbPool.execute(
-    'SELECT player_id, password FROM bm_web_users WHERE player_id = ?', [session.playerId])
+  const [checkResult] = await state.dbPool('bm_web_users')
+    .select('player_id', 'password')
+    .where('player_id', session.playerId)
 
   if (!checkResult) throw new ExposedError('You do not have an account, please register')
 
@@ -19,12 +20,15 @@ module.exports = async function setEmail (obj, { currentPassword, email }, { ses
 
   if (!match) throw new ExposedError('Incorrect login details')
 
-  const [[emailResult]] = await state.dbPool.execute(
-    'SELECT email FROM bm_web_users WHERE email = ?', [email])
+  const [emailResult] = await state.dbPool('bm_web_users')
+    .select('email')
+    .where('email', email)
 
   if (emailResult) throw new ExposedError('You already have an account')
 
-  await state.dbPool.execute('UPDATE bm_web_users SET email = ? WHERE player_id = ?', [email, session.playerId])
+  await state.dbPool('bm_web_users')
+    .update('email', email)
+    .where('player_id', session.playerId)
 
   return Me(obj, {}, { session, state })
 }

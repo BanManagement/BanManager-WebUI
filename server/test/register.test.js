@@ -4,7 +4,6 @@ const nock = require('nock')
 const createApp = require('../app')
 const { createSetup, getAuthPassword, getAuthPin } = require('./lib')
 const { createPlayer } = require('./fixtures')
-const { insert } = require('../data/udify')
 
 describe('/api/register', () => {
   let setup
@@ -167,7 +166,7 @@ describe('/api/register', () => {
     const server = setup.serversPool.values().next().value
     const player = createPlayer()
 
-    await insert(server.pool, 'bm_players', player)
+    await server.pool('bm_players').insert(player)
 
     nock('https://api.pwnedpasswords.com')
       .get('/range/DC724')
@@ -191,7 +190,7 @@ describe('/api/register', () => {
     const server = setup.serversPool.values().next().value
     const player = createPlayer()
 
-    await insert(server.pool, 'bm_players', player)
+    await server.pool('bm_players').insert(player)
 
     nock('https://api.pwnedpasswords.com')
       .get('/range/DC724')

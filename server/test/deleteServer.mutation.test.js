@@ -4,10 +4,7 @@ const supertest = require('supertest')
 const { jsonToGraphQLQuery } = require('json-to-graphql-query')
 const createApp = require('../app')
 const { createSetup, getAuthPassword } = require('./lib')
-const {
-  createPlayer,
-  createServer
-} = require('./fixtures')
+const { createPlayer, createServer } = require('./fixtures')
 
 describe('Mutation delete server', () => {
   let setup

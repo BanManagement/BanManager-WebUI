@@ -5,9 +5,9 @@ const { find } = require('lodash')
 const createApp = require('../app')
 const { createSetup, getAuthPassword } = require('./lib')
 const { createPlayer } = require('./fixtures')
-const { insert } = require('../data/udify')
+const { inetTop } = require('../data/ip')
 
-describe('Query listPlayers', () => {
+describe('Query listUsers', () => {
   let setup
   let request
 
@@ -27,13 +27,11 @@ describe('Query listPlayers', () => {
       .post('/graphql')
       .set('Accept', 'application/json')
       .send({
-        query: `query listPlayers {
-        listPlayers {
+        query: `query listUsers {
+        listUsers {
           total
-          players {
+          records {
             id
-            name
-            lastSeen
           }
         }
       }`
@@ -53,23 +51,24 @@ describe('Query listPlayers', () => {
       .set('Cookie', cookie)
       .set('Accept', 'application/json')
       .send({
-        query: `query listPlayers {
-        listPlayers(limit: 51) {
+        query: `query listUsers {
+        listUsers(limit: 51) {
           total
-          players {
+          records {
             id
-            name
             email
-            lastSeen
             roles {
-              id
-              name
+              role {
+                id
+                name
+              }
             }
             serverRoles {
-              server {
+              serverRole {
                 id
+                name
               }
-              role {
+              server {
                 id
                 name
               }
@@ -93,23 +92,24 @@ describe('Query listPlayers', () => {
       .set('Cookie', cookie)
       .set('Accept', 'application/json')
       .send({
-        query: `query listPlayers {
-        listPlayers(offset: 51) {
+        query: `query listUsers {
+        listUsers(offset: 51) {
           total
-          players {
+          records {
             id
-            name
             email
-            lastSeen
             roles {
-              id
-              name
+              role {
+                id
+                name
+              }
             }
             serverRoles {
-              server {
+              serverRole {
                 id
+                name
               }
-              role {
+              server {
                 id
                 name
               }
@@ -131,10 +131,10 @@ describe('Query listPlayers', () => {
 
     const player = createPlayer()
 
-    await insert(pool, 'bm_players', player)
-    await insert(setup.dbPool, 'bm_web_player_roles', { role_id: 2, player_id: player.id })
-    await insert(setup.dbPool, 'bm_web_player_server_roles',
-      { server_Id: server.id, role_id: 1, player_id: player.id })
+    await pool('bm_players').insert(player)
+    await setup.dbPool('bm_web_users').insert({ player_id: player.id })
+    await setup.dbPool('bm_web_player_roles').insert({ role_id: 2, player_id: player.id })
+    await setup.dbPool('bm_web_player_server_roles').insert({ server_Id: server.id, role_id: 1, player_id: player.id })
 
     const cookie = await getAuthPassword(request, 'admin@banmanagement.com')
     const { body, statusCode } = await request
@@ -142,23 +142,30 @@ describe('Query listPlayers', () => {
       .set('Cookie', cookie)
       .set('Accept', 'application/json')
       .send({
-        query: `query listPlayers {
-        listPlayers {
+        query: `query listUsers {
+        listUsers {
           total
-          players {
+          records {
             id
-            name
             email
-            lastSeen
-            roles {
+            player {
               id
               name
+              ip
+              lastSeen
+            }
+            roles {
+              role {
+                id
+                name
+              }
             }
             serverRoles {
-              server {
+              serverRole {
                 id
+                name
               }
-              role {
+              server {
                 id
                 name
               }
@@ -173,25 +180,28 @@ describe('Query listPlayers', () => {
     assert(body)
     assert(body.data)
 
-    const bodyPlayer = find(body.data.listPlayers.players, { id: unparse(player.id) })
+    assert.strictEqual(body.data.listUsers.total, body.data.listUsers.records.length)
+
+    const bodyPlayer = find(body.data.listUsers.records, { id: unparse(player.id) })
 
     assert(bodyPlayer)
 
-    assert.strictEqual(body.data.listPlayers.players.length, 3)
-    assert.strictEqual(bodyPlayer.name, player.name)
-    assert.strictEqual(bodyPlayer.lastSeen, player.lastSeen)
+    assert.strictEqual(body.data.listUsers.records.length, 3)
+    assert.strictEqual(bodyPlayer.player.name, player.name)
+    assert.strictEqual(bodyPlayer.player.lastSeen, player.lastSeen)
+    assert.strictEqual(bodyPlayer.player.ip, inetTop(player.ip))
 
     const roles = bodyPlayer.roles
 
     assert.strictEqual(roles.length, 1)
-    assert.strictEqual(roles[0].id, '2')
-    assert.strictEqual(roles[0].name, 'Logged In')
+    assert.strictEqual(roles[0].role.id, '2')
+    assert.strictEqual(roles[0].role.name, 'Logged In')
 
     const serverRoles = bodyPlayer.serverRoles
 
     assert.strictEqual(serverRoles.length, 1)
-    assert.strictEqual(serverRoles[0].role.id, '1')
-    assert.strictEqual(serverRoles[0].role.name, 'Guest')
+    assert.strictEqual(serverRoles[0].serverRole.id, '1')
+    assert.strictEqual(serverRoles[0].serverRole.name, 'Guest')
     assert.strictEqual(serverRoles[0].server.id, server.id)
   })
 
@@ -202,23 +212,24 @@ describe('Query listPlayers', () => {
       .set('Cookie', cookie)
       .set('Accept', 'application/json')
       .send({
-        query: `query listPlayers {
-        listPlayers(role: "adm") {
+        query: `query listUsers {
+        listUsers(role: "adm") {
           total
-          players {
+          records {
             id
-            name
             email
-            lastSeen
             roles {
-              id
-              name
+              role {
+                id
+                name
+              }
             }
             serverRoles {
-              server {
+              serverRole {
                 id
+                name
               }
-              role {
+              server {
                 id
                 name
               }
@@ -233,18 +244,20 @@ describe('Query listPlayers', () => {
     assert(body)
     assert(body.data)
 
-    const bodyPlayer = body.data.listPlayers.players[0]
+    assert.strictEqual(body.data.listUsers.total, body.data.listUsers.records.length)
+
+    const bodyPlayer = body.data.listUsers.records[0]
 
     assert(bodyPlayer)
 
-    assert.strictEqual(body.data.listPlayers.players.length, 1)
+    assert.strictEqual(body.data.listUsers.records.length, 1)
     assert.strictEqual(bodyPlayer.email, 'admin@banmanagement.com')
 
     const roles = bodyPlayer.roles
 
     assert.strictEqual(roles.length, 1)
-    assert.strictEqual(roles[0].id, '3')
-    assert.strictEqual(roles[0].name, 'Admin')
+    assert.strictEqual(roles[0].role.id, '3')
+    assert.strictEqual(roles[0].role.name, 'Admin')
 
     assert.strictEqual(bodyPlayer.serverRoles.length, 0)
   })
@@ -256,23 +269,24 @@ describe('Query listPlayers', () => {
       .set('Cookie', cookie)
       .set('Accept', 'application/json')
       .send({
-        query: `query listPlayers {
-        listPlayers(role: "asd") {
+        query: `query listUsers {
+        listUsers(role: "asd") {
           total
-          players {
+          records {
             id
-            name
             email
-            lastSeen
             roles {
-              id
-              name
+              role {
+                id
+                name
+              }
             }
             serverRoles {
-              server {
+              serverRole {
                 id
+                name
               }
-              role {
+              server {
                 id
                 name
               }
@@ -287,7 +301,8 @@ describe('Query listPlayers', () => {
     assert(body)
     assert(body.data)
 
-    assert.strictEqual(body.data.listPlayers.players.length, 0)
+    assert.strictEqual(body.data.listUsers.total, body.data.listUsers.records.length)
+    assert.strictEqual(body.data.listUsers.records.length, 0)
   })
 
   test('should filter email', async () => {
@@ -297,23 +312,24 @@ describe('Query listPlayers', () => {
       .set('Cookie', cookie)
       .set('Accept', 'application/json')
       .send({
-        query: `query listPlayers {
-        listPlayers(email: "admin") {
+        query: `query listUsers {
+        listUsers(email: "admin") {
           total
-          players {
+          records {
             id
-            name
             email
-            lastSeen
             roles {
-              id
-              name
+              role {
+                id
+                name
+              }
             }
             serverRoles {
-              server {
+              serverRole {
                 id
+                name
               }
-              role {
+              server {
                 id
                 name
               }
@@ -328,18 +344,20 @@ describe('Query listPlayers', () => {
     assert(body)
     assert(body.data)
 
-    const bodyPlayer = body.data.listPlayers.players[0]
+    assert.strictEqual(body.data.listUsers.total, body.data.listUsers.records.length)
+
+    const bodyPlayer = body.data.listUsers.records[0]
 
     assert(bodyPlayer)
 
-    assert.strictEqual(body.data.listPlayers.players.length, 1)
+    assert.strictEqual(body.data.listUsers.records.length, 1)
     assert.strictEqual(bodyPlayer.email, 'admin@banmanagement.com')
 
     const roles = bodyPlayer.roles
 
     assert.strictEqual(roles.length, 1)
-    assert.strictEqual(roles[0].id, '3')
-    assert.strictEqual(roles[0].name, 'Admin')
+    assert.strictEqual(roles[0].role.id, '3')
+    assert.strictEqual(roles[0].role.name, 'Admin')
 
     assert.strictEqual(bodyPlayer.serverRoles.length, 0)
   })
@@ -351,23 +369,24 @@ describe('Query listPlayers', () => {
       .set('Cookie', cookie)
       .set('Accept', 'application/json')
       .send({
-        query: `query listPlayers {
-        listPlayers(email: "asd") {
+        query: `query listUsers {
+        listUsers(email: "asd") {
           total
-          players {
+          records {
             id
-            name
             email
-            lastSeen
             roles {
-              id
-              name
+              role {
+                id
+                name
+              }
             }
             serverRoles {
-              server {
+              serverRole {
                 id
+                name
               }
-              role {
+              server {
                 id
                 name
               }
@@ -382,7 +401,8 @@ describe('Query listPlayers', () => {
     assert(body)
     assert(body.data)
 
-    assert.strictEqual(body.data.listPlayers.players.length, 0)
+    assert.strictEqual(body.data.listUsers.total, body.data.listUsers.records.length)
+    assert.strictEqual(body.data.listUsers.records.length, 0)
   })
 
   test('should resolve filter server roles', async () => {
@@ -390,11 +410,11 @@ describe('Query listPlayers', () => {
 
     const player = createPlayer()
 
-    await insert(pool, 'bm_players', player)
-    await insert(setup.dbPool, 'bm_web_roles', { role_id: 4, name: 'Test', parent_role_id: 2 })
-    await insert(setup.dbPool, 'bm_web_player_roles', { role_id: 2, player_id: player.id })
-    await insert(setup.dbPool, 'bm_web_player_server_roles',
-      { server_Id: server.id, role_id: 4, player_id: player.id })
+    await pool('bm_players').insert(player)
+    await setup.dbPool('bm_web_users').insert({ player_id: player.id })
+    await setup.dbPool('bm_web_roles').insert({ role_id: 4, name: 'Test', parent_role_id: 2 })
+    await setup.dbPool('bm_web_player_roles').insert({ role_id: 2, player_id: player.id })
+    await setup.dbPool('bm_web_player_server_roles').insert({ server_id: server.id, role_id: 4, player_id: player.id })
 
     const cookie = await getAuthPassword(request, 'admin@banmanagement.com')
     const { body, statusCode } = await request
@@ -402,23 +422,29 @@ describe('Query listPlayers', () => {
       .set('Cookie', cookie)
       .set('Accept', 'application/json')
       .send({
-        query: `query listPlayers {
-        listPlayers(serverRole: "tes") {
+        query: `query listUsers {
+        listUsers(serverRole: "tes") {
           total
-          players {
+          records {
             id
-            name
             email
-            lastSeen
-            roles {
+            player {
               id
               name
+              lastSeen
+            }
+            roles {
+              role {
+                id
+                name
+              }
             }
             serverRoles {
-              server {
+              serverRole {
                 id
+                name
               }
-              role {
+              server {
                 id
                 name
               }
@@ -433,26 +459,28 @@ describe('Query listPlayers', () => {
     assert(body)
     assert(body.data)
 
-    const bodyPlayer = body.data.listPlayers.players[0]
+    assert.strictEqual(body.data.listUsers.total, body.data.listUsers.records.length)
+
+    const bodyPlayer = body.data.listUsers.records[0]
 
     assert(bodyPlayer)
 
-    assert.strictEqual(body.data.listPlayers.players.length, 1)
+    assert.strictEqual(body.data.listUsers.records.length, 1)
     assert.strictEqual(bodyPlayer.id, unparse(player.id))
-    assert.strictEqual(bodyPlayer.name, player.name)
-    assert.strictEqual(bodyPlayer.lastSeen, player.lastSeen)
+    assert.strictEqual(bodyPlayer.player.name, player.name)
+    assert.strictEqual(bodyPlayer.player.lastSeen, player.lastSeen)
 
     const roles = bodyPlayer.roles
 
     assert.strictEqual(roles.length, 1)
-    assert.strictEqual(roles[0].id, '2')
-    assert.strictEqual(roles[0].name, 'Logged In')
+    assert.strictEqual(roles[0].role.id, '2')
+    assert.strictEqual(roles[0].role.name, 'Logged In')
 
     const serverRoles = bodyPlayer.serverRoles
 
     assert.strictEqual(serverRoles.length, 1)
-    assert.strictEqual(serverRoles[0].role.id, '4')
-    assert.strictEqual(serverRoles[0].role.name, 'Test')
+    assert.strictEqual(serverRoles[0].serverRole.id, '4')
+    assert.strictEqual(serverRoles[0].serverRole.name, 'Test')
     assert.strictEqual(serverRoles[0].server.id, server.id)
   })
 
@@ -463,23 +491,24 @@ describe('Query listPlayers', () => {
       .set('Cookie', cookie)
       .set('Accept', 'application/json')
       .send({
-        query: `query listPlayers {
-        listPlayers(serverRole: "asd") {
+        query: `query listUsers {
+        listUsers(serverRole: "asd") {
           total
-          players {
+          records {
             id
-            name
             email
-            lastSeen
             roles {
-              id
-              name
+              role {
+                id
+                name
+              }
             }
             serverRoles {
-              server {
+              serverRole {
                 id
+                name
               }
-              role {
+              server {
                 id
                 name
               }
@@ -494,7 +523,8 @@ describe('Query listPlayers', () => {
     assert(body)
     assert(body.data)
 
-    assert.strictEqual(body.data.listPlayers.players.length, 0)
+    assert.strictEqual(body.data.listUsers.total, 0)
+    assert.strictEqual(body.data.listUsers.records.length, 0)
   })
 
   test('should filter email, role and server role', async () => {
@@ -504,23 +534,24 @@ describe('Query listPlayers', () => {
       .set('Cookie', cookie)
       .set('Accept', 'application/json')
       .send({
-        query: `query listPlayers {
-        listPlayers(email: "admin", role: "admin", serverRole: "admin") {
+        query: `query listUsers {
+        listUsers(email: "admin", role: "admin", serverRole: "admin") {
           total
-          players {
+          records {
             id
-            name
             email
-            lastSeen
             roles {
-              id
-              name
+              role {
+                id
+                name
+              }
             }
             serverRoles {
-              server {
+              serverRole {
                 id
+                name
               }
-              role {
+              server {
                 id
                 name
               }
@@ -535,18 +566,20 @@ describe('Query listPlayers', () => {
     assert(body)
     assert(body.data)
 
-    const bodyPlayer = body.data.listPlayers.players[0]
+    assert.strictEqual(body.data.listUsers.total, body.data.listUsers.records.length)
+
+    const bodyPlayer = body.data.listUsers.records[0]
 
     assert(bodyPlayer)
 
-    assert.strictEqual(body.data.listPlayers.players.length, 1)
+    assert.strictEqual(body.data.listUsers.records.length, 1)
     assert.strictEqual(bodyPlayer.email, 'admin@banmanagement.com')
 
     const roles = bodyPlayer.roles
 
     assert.strictEqual(roles.length, 1)
-    assert.strictEqual(roles[0].id, '3')
-    assert.strictEqual(roles[0].name, 'Admin')
+    assert.strictEqual(roles[0].role.id, '3')
+    assert.strictEqual(roles[0].role.name, 'Admin')
 
     assert.strictEqual(bodyPlayer.serverRoles.length, 0)
   })

@@ -9,7 +9,8 @@ module.exports = async function server (obj, { id }, { state: { serversPool } })
   server.console = { id: unparse(server.console) }
 
   const now = Math.floor(Date.now() / 1000)
-  const [[{ mysqlTime }]] = await serversPool.get(id).execute(`SELECT (${now} - UNIX_TIMESTAMP()) AS mysqlTime`)
+  const [data] = await serversPool.get(id).pool.raw(`SELECT (${now} - UNIX_TIMESTAMP()) AS mysqlTime`)
+  const mysqlTime = data[0].mysqlTime
   const offset = mysqlTime > 0 ? Math.floor(mysqlTime) : Math.ceil(mysqlTime)
 
   server.timeOffset = offset * 1000

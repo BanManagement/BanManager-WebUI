@@ -1,14 +1,13 @@
-const { parse, unparse } = require('uuid-parse')
 const ExposedError = require('../../../data/exposed-error')
 
 // eslint-disable-next-line complexity
-module.exports = async function listSessionHistory (obj, { serverId, player, limit = 10, offset, order = 'leave_DESC' }, { state }) {
+module.exports = async function listPlayerSessionHistory (obj, { serverId, player, limit = 10, offset, order = 'leave_DESC' }, { state }) {
   const filter = {}
 
   if (!state.serversPool.has(serverId)) throw new ExposedError('Server does not exist')
   if (limit > 50) throw new ExposedError('Limit too large')
 
-  if (player) filter['r.player_id'] = parse(player, Buffer.alloc(16))
+  if (player) filter['r.player_id'] = player
 
   let totalQuery = `SELECT COUNT(*) AS total FROM
     ?? r
@@ -64,7 +63,7 @@ module.exports = async function listSessionHistory (obj, { serverId, player, lim
       join: result.join,
       leave: result.leave,
       player: {
-        id: unparse(result.player_id),
+        id: result.player_id,
         name: result.player_name
       },
       server: server.config

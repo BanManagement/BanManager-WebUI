@@ -1,23 +1,26 @@
-const { parse } = require('uuid-parse')
 const ExposedError = require('../../../data/exposed-error')
+const playerMute = require('../queries/player-mute')
 
-module.exports = async function createPlayerMute (obj, { input }, { session, state }) {
+module.exports = async function createPlayerMute (obj, { input }, { session, state }, info) {
   const server = state.serversPool.get(input.server)
   const table = server.config.tables.playerMutes
-  const player = parse(input.player, Buffer.alloc(16))
+  const player = input.player
   const actor = session.playerId
   const soft = input.soft ? 1 : 0
   let id
 
   try {
-    const [result] = await server.execute(
-      `INSERT INTO ${table}
-        (player_id, actor_id, reason, created, updated, expires, soft)
-          VALUES
-        (?, ?, ?, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), ?, ?)`
-      , [player, actor, input.reason, input.expires, soft])
+    const [insertId] = await server.pool(table).insert({
+      player_id: player,
+      actor_id: actor,
+      reason: input.reason,
+      expires: input.expires,
+      soft,
+      created: server.pool.raw('UNIX_TIMESTAMP()'),
+      updated: server.pool.raw('UNIX_TIMESTAMP()')
+    }, ['id'])
 
-    id = result.insertId
+    id = insertId
   } catch (e) {
     if (e.code === 'ER_DUP_ENTRY') {
       throw new ExposedError('Player already muted on selected server, please unmute first')
@@ -26,7 +29,5 @@ module.exports = async function createPlayerMute (obj, { input }, { session, sta
     throw e
   }
 
-  const data = await state.loaders.playerMute.serverDataId.load({ server: input.server, id })
-
-  return data
+  return playerMute(obj, { id, serverId: input.server }, { state }, info)
 }

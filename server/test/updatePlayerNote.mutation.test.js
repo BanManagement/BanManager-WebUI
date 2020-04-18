@@ -2,11 +2,7 @@ const assert = require('assert')
 const supertest = require('supertest')
 const createApp = require('../app')
 const { createSetup, getAuthPassword } = require('./lib')
-const {
-  createPlayer,
-  createNote
-} = require('./fixtures')
-const { insert } = require('../data/udify')
+const { createPlayer, createNote } = require('./fixtures')
 
 describe('Mutation update player note', () => {
   let setup
@@ -99,8 +95,8 @@ describe('Mutation update player note', () => {
     const actor = createPlayer()
     const note = createNote(player, actor)
 
-    await insert(pool, 'bm_players', [player, actor])
-    const [{ insertId }] = await insert(pool, 'bm_player_notes', note)
+    await pool('bm_players').insert([player, actor])
+    const [inserted] = await pool('bm_player_notes').insert(note, ['id'])
 
     const { body, statusCode } = await request
       .post('/graphql')
@@ -108,7 +104,7 @@ describe('Mutation update player note', () => {
       .set('Accept', 'application/json')
       .send({
         query: `mutation updatePlayerNote {
-        updatePlayerNote(id: "${insertId}", serverId: "${server.id}", input: {
+        updatePlayerNote(id: "${inserted}", serverId: "${server.id}", input: {
           message: "testing updates"
         }) {
           id
@@ -136,7 +132,7 @@ describe('Mutation update player note', () => {
     assert(body)
     assert(body.data)
 
-    assert.strictEqual(body.data.updatePlayerNote.id, '' + insertId)
+    assert.strictEqual(body.data.updatePlayerNote.id, '' + inserted)
     assert.strictEqual(body.data.updatePlayerNote.message, 'testing updates')
     assert.deepStrictEqual(body.data.updatePlayerNote.acl, { delete: true, update: true, yours: false })
   })
