@@ -56,7 +56,7 @@ describe('Mutation assignReport', () => {
     await pool('bm_players').insert(player)
 
     const [inserted] = await pool('bm_player_reports').insert(report, ['id'])
-    const role = await setTempRole(setup.dbPool, account, 'player.reports', 'update.assign.any')
+    const role = await setTempRole(setup.dbPool, account, 'player.reports', 'update.assign.any', 'view.any')
 
     const { body, statusCode } = await request
       .post('/graphql')

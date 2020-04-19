@@ -186,7 +186,7 @@ describe('Query listUsers', () => {
 
     assert(bodyPlayer)
 
-    assert.strictEqual(body.data.listUsers.records.length, 3)
+    assert.strictEqual(body.data.listUsers.records.length, 4)
     assert.strictEqual(bodyPlayer.player.name, player.name)
     assert.strictEqual(bodyPlayer.player.lastSeen, player.lastSeen)
     assert.strictEqual(bodyPlayer.player.ip, inetTop(player.ip))

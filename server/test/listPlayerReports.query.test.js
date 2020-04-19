@@ -2,7 +2,7 @@ const assert = require('assert')
 const { unparse } = require('uuid-parse')
 const supertest = require('supertest')
 const createApp = require('../app')
-const { createSetup, getAuthPassword } = require('./lib')
+const { createSetup, getAuthPassword, getAccount, setTempRole } = require('./lib')
 const { createPlayer, createReport } = require('./fixtures')
 
 describe('Query listPlayerReports', () => {
@@ -19,6 +19,53 @@ describe('Query listPlayerReports', () => {
   afterAll(async () => {
     await setup.teardown()
   }, 20000)
+
+  test('should error if server does not exist', async () => {
+    const cookie = await getAuthPassword(request, 'admin@banmanagement.com')
+    const { body, statusCode } = await request
+      .post('/graphql')
+      .set('Cookie', cookie)
+      .set('Accept', 'application/json')
+      .send({
+        query: `query {
+          listPlayerReports(serverId: "asd") {
+            total
+            records {
+              id
+            }
+          }
+        }`
+      })
+
+    assert.strictEqual(statusCode, 200)
+
+    assert(body)
+    assert.strictEqual(body.errors[0].message, 'Server does not exist')
+  })
+
+  test('should error if limit too large', async () => {
+    const cookie = await getAuthPassword(request, 'admin@banmanagement.com')
+    const { config: server } = setup.serversPool.values().next().value
+    const { body, statusCode } = await request
+      .post('/graphql')
+      .set('Cookie', cookie)
+      .set('Accept', 'application/json')
+      .send({
+        query: `query {
+          listPlayerReports(serverId: "${server.id}", limit: 51) {
+            total
+            records {
+              id
+            }
+          }
+        }`
+      })
+
+    assert.strictEqual(statusCode, 200)
+
+    assert(body)
+    assert.strictEqual(body.errors[0].message, 'Limit too large')
+  })
 
   test('should resolve all fields', async () => {
     const cookie = await getAuthPassword(request, 'admin@banmanagement.com')
@@ -57,72 +104,72 @@ describe('Query listPlayerReports', () => {
       .set('Accept', 'application/json')
       .send({
         query: `query {
-        listPlayerReports(serverId: "${server.id}") {
-          total
-          records {
-            id
-            player {
+          listPlayerReports(serverId: "${server.id}") {
+            total
+            records {
               id
-              name
-            }
-            actor {
-              id
-              name
-            }
-            assignee {
-              id
-              name
-            }
-            reason
-            created
-            updated
-            playerLocation {
-              world
-              x
-              y
-              z
-              yaw
-              pitch
-            }
-            actorLocation {
-              world
-              x
-              y
-              z
-              yaw
-              pitch
-            }
-            state {
-              id
-              name
-            }
-            acl {
-              comment
-              assign
-              state
-              delete
-            }
-            serverLogs {
-              id
-              log {
-                message
-                created
+              player {
+                id
+                name
               }
-            }
-            commands {
-              id
-              command
-              args
-              created
-              updated
               actor {
                 id
                 name
               }
+              assignee {
+                id
+                name
+              }
+              reason
+              created
+              updated
+              playerLocation {
+                world
+                x
+                y
+                z
+                yaw
+                pitch
+              }
+              actorLocation {
+                world
+                x
+                y
+                z
+                yaw
+                pitch
+              }
+              state {
+                id
+                name
+              }
+              acl {
+                comment
+                assign
+                state
+                delete
+              }
+              serverLogs {
+                id
+                log {
+                  message
+                  created
+                }
+              }
+              commands {
+                id
+                command
+                args
+                created
+                updated
+                actor {
+                  id
+                  name
+                }
+              }
             }
           }
-        }
-      }`
+        }`
       })
 
     assert.strictEqual(statusCode, 200)
@@ -155,6 +202,391 @@ describe('Query listPlayerReports', () => {
           { id: '2', log: { created: now, message: 'More logs' } }
         ]
       }]
+    })
+  })
+
+  test('should filter actor', async () => {
+    const cookie = await getAuthPassword(request, 'admin@banmanagement.com')
+    const { config: server, pool } = setup.serversPool.values().next().value
+
+    const player = createPlayer()
+    const actor = createPlayer()
+    const assignee = createPlayer()
+    const data = createReport(player, actor, assignee)
+
+    await pool('bm_players').insert([player, actor, assignee])
+    await pool('bm_player_reports').insert([createReport(player, assignee), createReport(player, assignee), createReport(player, assignee)])
+
+    const [inserted] = await pool('bm_player_reports').insert(data, ['id'])
+    const { body, statusCode } = await request
+      .post('/graphql')
+      .set('Cookie', cookie)
+      .set('Accept', 'application/json')
+      .send({
+        query: `query {
+          listPlayerReports(serverId: "${server.id}", actor: "${unparse(actor.id)}") {
+            total
+            records {
+              id
+            }
+          }
+        }`
+      })
+
+    assert.strictEqual(statusCode, 200)
+
+    assert(body)
+    assert(body.data)
+    assert.deepStrictEqual(body.data.listPlayerReports, {
+      total: 1,
+      records: [{
+        id: inserted.toString()
+      }]
+    })
+  })
+
+  test('should filter assigned', async () => {
+    const cookie = await getAuthPassword(request, 'admin@banmanagement.com')
+    const { config: server, pool } = setup.serversPool.values().next().value
+
+    const player = createPlayer()
+    const actor = createPlayer()
+    const assignee = createPlayer()
+    const data = createReport(player, actor, assignee)
+
+    await pool('bm_players').insert([player, actor, assignee])
+    await pool('bm_player_reports').insert([createReport(player, actor), createReport(player, actor), createReport(player, actor)])
+
+    const [inserted] = await pool('bm_player_reports').insert(data, ['id'])
+    const { body, statusCode } = await request
+      .post('/graphql')
+      .set('Cookie', cookie)
+      .set('Accept', 'application/json')
+      .send({
+        query: `query {
+          listPlayerReports(serverId: "${server.id}", assigned: "${unparse(assignee.id)}") {
+            total
+            records {
+              id
+            }
+          }
+        }`
+      })
+
+    assert.strictEqual(statusCode, 200)
+
+    assert(body)
+    assert(body.data)
+    assert.deepStrictEqual(body.data.listPlayerReports, {
+      total: 1,
+      records: [{
+        id: inserted.toString()
+      }]
+    })
+  })
+
+  test('should filter player', async () => {
+    const cookie = await getAuthPassword(request, 'admin@banmanagement.com')
+    const { config: server, pool } = setup.serversPool.values().next().value
+
+    const player = createPlayer()
+    const actor = createPlayer()
+    const assignee = createPlayer()
+    const data = createReport(player, actor, assignee)
+
+    await pool('bm_players').insert([player, actor, assignee])
+    await pool('bm_player_reports').insert([createReport(assignee, actor), createReport(assignee, actor), createReport(assignee, actor)])
+
+    const [inserted] = await pool('bm_player_reports').insert(data, ['id'])
+    const { body, statusCode } = await request
+      .post('/graphql')
+      .set('Cookie', cookie)
+      .set('Accept', 'application/json')
+      .send({
+        query: `query {
+          listPlayerReports(serverId: "${server.id}", player: "${unparse(player.id)}") {
+            total
+            records {
+              id
+            }
+          }
+        }`
+      })
+
+    assert.strictEqual(statusCode, 200)
+
+    assert(body)
+    assert(body.data)
+    assert.deepStrictEqual(body.data.listPlayerReports, {
+      total: 1,
+      records: [{
+        id: inserted.toString()
+      }]
+    })
+  })
+
+  test('should filter state', async () => {
+    const cookie = await getAuthPassword(request, 'admin@banmanagement.com')
+    const { config: server, pool } = setup.serversPool.values().next().value
+
+    const player = createPlayer()
+    const actor = createPlayer()
+    const assignee = createPlayer()
+    const data = createReport(player, actor, assignee)
+
+    await pool('bm_players').insert([player, actor, assignee])
+    await pool('bm_player_reports').insert([createReport(assignee, actor), createReport(assignee, actor), createReport(assignee, actor)])
+
+    const [inserted] = await pool('bm_player_reports').insert({ ...data, state_id: 2 }, ['id'])
+    const { body, statusCode } = await request
+      .post('/graphql')
+      .set('Cookie', cookie)
+      .set('Accept', 'application/json')
+      .send({
+        query: `query {
+          listPlayerReports(serverId: "${server.id}", state: 2) {
+            total
+            records {
+              id
+            }
+          }
+        }`
+      })
+
+    assert.strictEqual(statusCode, 200)
+
+    assert(body)
+    assert(body.data)
+    assert.deepStrictEqual(body.data.listPlayerReports, {
+      total: 1,
+      records: [{
+        id: inserted.toString()
+      }]
+    })
+  })
+
+  test('should order by created DESC', async () => {
+    const cookie = await getAuthPassword(request, 'admin@banmanagement.com')
+    const { config: server, pool } = setup.serversPool.values().next().value
+
+    const player = createPlayer()
+    const actor = createPlayer()
+    const data = createReport(player, actor)
+
+    await pool('bm_players').insert([player, actor])
+
+    const [second] = await pool('bm_player_reports').insert(data, ['id'])
+    const [first] = await pool('bm_player_reports').insert({ ...data, created: data.created + 1000 }, ['id'])
+    const { body, statusCode } = await request
+      .post('/graphql')
+      .set('Cookie', cookie)
+      .set('Accept', 'application/json')
+      .send({
+        query: `query {
+          listPlayerReports(serverId: "${server.id}", player: "${unparse(player.id)}", order: created_DESC) {
+            total
+            records {
+              id
+            }
+          }
+        }`
+      })
+
+    assert.strictEqual(statusCode, 200)
+
+    assert(body)
+    assert(body.data)
+    assert.deepStrictEqual(body.data.listPlayerReports, {
+      total: 2,
+      records: [{ id: first.toString() }, { id: second.toString() }]
+    })
+  })
+
+  test('should list no reports', async () => {
+    const { config: server, pool } = setup.serversPool.values().next().value
+
+    const player = createPlayer()
+    const actor = createPlayer()
+    const data = createReport(player, actor)
+
+    await pool('bm_players').insert([player, actor])
+    await pool('bm_player_reports').insert(data)
+
+    const { body, statusCode } = await request
+      .post('/graphql')
+      .set('Accept', 'application/json')
+      .send({
+        query: `query {
+          listPlayerReports(serverId: "${server.id}") {
+            total
+            records {
+              id
+            }
+          }
+        }`
+      })
+
+    assert.strictEqual(statusCode, 200)
+
+    assert(body)
+    assert(body.data)
+    assert.deepStrictEqual(body.data.listPlayerReports, {
+      total: 0,
+      records: []
+    })
+  })
+
+  test('should list own reports only', async () => {
+    const cookie = await getAuthPassword(request, 'guest@banmanagement.com')
+    const account = await getAccount(request, cookie)
+    const { config: server, pool } = setup.serversPool.values().next().value
+    const player = createPlayer()
+    const report = createReport(player, account)
+
+    await pool('bm_players').insert(player)
+
+    const [inserted] = await pool('bm_player_reports').insert(report, ['id'])
+    const role = await setTempRole(setup.dbPool, account, 'player.reports', 'view.own')
+
+    const { body, statusCode } = await request
+      .post('/graphql')
+      .set('Cookie', cookie)
+      .set('Accept', 'application/json')
+      .send({
+        query: `query {
+          listPlayerReports(serverId: "${server.id}") {
+            total
+            records {
+              id
+            }
+          }
+        }`
+      })
+
+    await role.reset()
+
+    assert.strictEqual(statusCode, 200)
+
+    assert(body)
+    assert(body.data)
+    assert.deepStrictEqual(body.data.listPlayerReports, {
+      total: 1,
+      records: [{ id: inserted.toString() }]
+    })
+  })
+
+  test('should list assigned reports only', async () => {
+    const cookie = await getAuthPassword(request, 'guest@banmanagement.com')
+    const account = await getAccount(request, cookie)
+    const { config: server, pool } = setup.serversPool.values().next().value
+    const player = createPlayer()
+    const actor = createPlayer()
+    const report = createReport(player, actor, account)
+
+    await pool('bm_players').insert([player, actor])
+
+    const [inserted] = await pool('bm_player_reports').insert(report, ['id'])
+    const role = await setTempRole(setup.dbPool, account, 'player.reports', 'view.assigned')
+
+    const { body, statusCode } = await request
+      .post('/graphql')
+      .set('Cookie', cookie)
+      .set('Accept', 'application/json')
+      .send({
+        query: `query {
+          listPlayerReports(serverId: "${server.id}") {
+            total
+            records {
+              id
+            }
+          }
+        }`
+      })
+
+    await role.reset()
+
+    assert.strictEqual(statusCode, 200)
+
+    assert(body)
+    assert(body.data)
+    assert.deepStrictEqual(body.data.listPlayerReports, {
+      total: 1,
+      records: [{ id: inserted.toString() }]
+    })
+  })
+
+  test('should list reported reports only', async () => {
+    const cookie = await getAuthPassword(request, 'guest@banmanagement.com')
+    const account = await getAccount(request, cookie)
+    const { config: server, pool } = setup.serversPool.values().next().value
+    const actor = createPlayer()
+    const report = createReport(account, actor)
+
+    await pool('bm_players').insert(actor)
+
+    const [inserted] = await pool('bm_player_reports').insert(report, ['id'])
+    const role = await setTempRole(setup.dbPool, account, 'player.reports', 'view.reported')
+
+    const { body, statusCode } = await request
+      .post('/graphql')
+      .set('Cookie', cookie)
+      .set('Accept', 'application/json')
+      .send({
+        query: `query {
+          listPlayerReports(serverId: "${server.id}") {
+            total
+            records {
+              id
+            }
+          }
+        }`
+      })
+
+    await role.reset()
+
+    assert.strictEqual(statusCode, 200)
+
+    assert(body)
+    assert(body.data)
+    assert.deepStrictEqual(body.data.listPlayerReports, {
+      total: 1,
+      records: [{ id: inserted.toString() }]
+    })
+  })
+
+  test('should list no reports', async () => {
+    const cookie = await getAuthPassword(request, 'guest@banmanagement.com')
+    const account = await getAccount(request, cookie)
+    const { config: server, pool } = setup.serversPool.values().next().value
+    const actor = createPlayer()
+    const report = createReport(account, actor)
+
+    await pool('bm_players').insert(actor)
+
+    await pool('bm_player_reports').insert(report, ['id'])
+
+    const { body, statusCode } = await request
+      .post('/graphql')
+      .set('Cookie', cookie)
+      .set('Accept', 'application/json')
+      .send({
+        query: `query {
+          listPlayerReports(serverId: "${server.id}") {
+            total
+            records {
+              id
+            }
+          }
+        }`
+      })
+
+    assert.strictEqual(statusCode, 200)
+
+    assert(body)
+    assert(body.data)
+    assert.deepStrictEqual(body.data.listPlayerReports, {
+      total: 0,
+      records: []
     })
   })
 })

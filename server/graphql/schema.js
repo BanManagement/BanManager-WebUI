@@ -24,7 +24,7 @@ module.exports = ({ logger }) => {
     schemaDirectives,
     validationRules: [depthLimit(10)],
     tracing: process.env.NODE_ENV !== 'production',
-    cacheControl: true,
+    cacheControl: process.env.NODE_ENV !== 'test',
     context: ({ ctx: { log, session, state } }) => ({
       log,
       session,

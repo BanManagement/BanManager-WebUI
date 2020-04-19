@@ -1,10 +1,36 @@
 const { parseResolveInfo, simplifyParsedResolveInfoFragmentWithType } = require('graphql-parse-resolve-info')
 const { getSql } = require('../../utils')
 const ExposedError = require('../../../data/exposed-error')
+const viewPerms = [
+  ['view.own', 'actor_id'],
+  ['view.assigned', 'assignee_id'],
+  ['view.reported', 'player_id']
+]
 
-module.exports = async function listPlayerReports (obj, { serverId, actor, assigned, player, state: stateId, limit = 10, offset, order }, { state }, info) {
+module.exports = async function listPlayerReports (obj, { serverId, actor, assigned, player, state: stateId, limit, offset, order }, { session, state }, info) {
   if (!state.serversPool.has(serverId)) throw new ExposedError('Server does not exist')
   if (limit > 50) throw new ExposedError('Limit too large')
+
+  const aclFilter = []
+  const handleAclFilter = query => {
+    for (const [field, value] of aclFilter) {
+      query.orWhere(field, value)
+    }
+  }
+
+  if (!state.acl.hasServerPermission(serverId, 'player.reports', 'view.any')) {
+    if (!session || !session.playerId) return { total: 0, records: [] }
+
+    const deny = viewPerms.every(([perm]) => state.acl.hasServerPermission(serverId, 'player.reports', perm) === false)
+
+    if (deny) return { total: 0, records: [] }
+
+    viewPerms.forEach(([perm, field]) => {
+      const allowed = state.acl.hasServerPermission(serverId, 'player.reports', perm)
+
+      if (allowed) aclFilter.push([field, session.playerId])
+    })
+  }
 
   const server = state.serversPool.get(serverId)
   const tables = server.config.tables
@@ -22,6 +48,7 @@ module.exports = async function listPlayerReports (obj, { serverId, actor, assig
     const { total } = await server.pool(tables.playerReports)
       .select(server.pool.raw('COUNT(*) as total'))
       .where(filter)
+      .where(handleAclFilter)
       .first()
 
     data.total = total
@@ -30,6 +57,7 @@ module.exports = async function listPlayerReports (obj, { serverId, actor, assig
   if (fields.records) {
     const query = getSql(info.schema, server, fields.records, 'playerReports')
       .where(filter)
+      .where(handleAclFilter)
       .limit(limit)
 
     if (order) {

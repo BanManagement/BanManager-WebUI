@@ -7,15 +7,35 @@ module.exports = async function report (obj, { id, serverId }, { state }, info) 
   if (!state.serversPool.has(serverId)) throw new ExposedError('Server not found')
 
   const server = state.serversPool.get(serverId)
+  const table = server.config.tables.playerReports
+
+  if (!state.acl.hasServerPermission(serverId, 'player.reports', 'view.any')) {
+    // We need to perform some permission checks
+    const [aclCheck] = await server.pool(table)
+      .select('actor_id', 'player_id', 'assignee_id')
+      .where({ id })
+
+    if (!aclCheck) throw new ExposedError('Report not found')
+
+    const canView = (state.acl.hasServerPermission(serverId, 'player.reports', 'view.own') && state.acl.owns(aclCheck.actor_id)) ||
+      (state.acl.hasServerPermission(serverId, 'player.reports', 'view.assigned') && state.acl.owns(aclCheck.assignee_id)) ||
+      (state.acl.hasServerPermission(serverId, 'player.reports', 'view.reported') && state.acl.owns(aclCheck.player_id))
+
+    if (!canView) {
+      throw new ExposedError(
+        'You do not have permission to perform this action, please contact your server administrator')
+    }
+  }
+
   const fields = parseResolveInfo(info)
   const query = getSql(info.schema, server, fields, 'playerReports')
-    .where(`${server.config.tables.playerReports}.id`, id)
+    .where(`${table}.id`, id)
 
   let calculateAcl = false
 
   if (fields.fieldsByTypeName.PlayerReport.acl) {
     calculateAcl = true
-    query.select('actor_id', 'player_id', 'assignee_id')
+    query.select(['actor_id', 'player_id', 'assignee_id'].map(f => `${table}.${f}`))
   }
 
   const [data] = await query.exec()

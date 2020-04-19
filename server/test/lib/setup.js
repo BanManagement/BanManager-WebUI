@@ -48,19 +48,24 @@ module.exports = async () => { // eslint-disable-line max-statements
 
   // Create player console
   const playerConsole = createPlayer()
-  // Create two users, logged in and admin
+  // Create three users, guest, logged in and admin
+  const guestUser = createPlayer()
   const loggedInUser = createPlayer()
   const adminUser = createPlayer()
 
-  await dbPool('bm_players').insert([playerConsole, loggedInUser, adminUser])
+  await dbPool('bm_players').insert([playerConsole, guestUser, loggedInUser, adminUser])
 
-  await dbPool('bm_web_player_roles').insert([{ player_id: loggedInUser.id, role_id: 2 },
+  await dbPool('bm_web_player_roles').insert([
+    { player_id: guestUser.id, role_id: 1 },
+    { player_id: loggedInUser.id, role_id: 2 },
     { player_id: adminUser.id, role_id: 3 }
   ])
 
   const updated = Math.floor(Date.now() / 1000)
 
-  await dbPool('bm_web_users').insert([{ player_id: loggedInUser.id, email: 'user@banmanagement.com', password: await hash('testing'), updated },
+  await dbPool('bm_web_users').insert([
+    { player_id: guestUser.id, email: 'guest@banmanagement.com', password: await hash('testing'), updated },
+    { player_id: loggedInUser.id, email: 'user@banmanagement.com', password: await hash('testing'), updated },
     { player_id: adminUser.id, email: 'admin@banmanagement.com', password: await hash('testing'), updated }
   ])
 

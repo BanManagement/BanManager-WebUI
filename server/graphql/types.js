@@ -111,7 +111,7 @@ type PlayerSessionHistory @sqlTable(name: "playerHistory") {
   ip: IPAddress! @allowIf(resource: "player.ips", permission: "view")
   join: Timestamp!
   leave: Timestamp!
-  player: Player! @cacheControl(scope: PUBLIC, maxAge: 3600)
+  player: Player! @cacheControl(scope: PUBLIC, maxAge: 3600) @sqlRelation(joinOn: "id", field: "player_id", table: "players")
 }
 
 type PlayerMute @sqlTable(name: "playerMutes") {
@@ -382,8 +382,8 @@ type Query {
   resources: [Resources!] @allowIf(resource: "servers", permission: "manage")
 
   reportStates(serverId: ID!): [PlayerReportState!]
-  report(id: ID!, serverId: ID!): PlayerReport @allowIf(resource: "player.reports", permission: "view.any")
-  listPlayerReports(serverId: ID!, actor: UUID, assigned: UUID, player: UUID, state: ID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerReportList! @cacheControl(scope: PRIVATE, maxAge: 300) @allowIf(resource: "player.reports", permission: "view.any")
+  report(id: ID!, serverId: ID!): PlayerReport
+  listPlayerReports(serverId: ID!, actor: UUID, assigned: UUID, player: UUID, state: ID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerReportList! @cacheControl(scope: PRIVATE, maxAge: 300)
 
   listPlayerBans(serverId: ID!, actor: UUID, player: UUID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerBanList! @cacheControl(scope: PRIVATE, maxAge: 300) @allowIf(resource: "player.bans", permission: "view")
   listPlayerMutes(serverId: ID!, actor: UUID, player: UUID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerMuteList! @cacheControl(scope: PRIVATE, maxAge: 300) @allowIf(resource: "player.mutes", permission: "view")
