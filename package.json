@@ -71,7 +71,7 @@
   "devDependencies": {
     "@oclif/test": "1.2.5",
     "babel-eslint": "10.1.0",
-    "coveralls": "3.0.11",
+    "coveralls": "3.1.0",
     "eslint-plugin-react": "7.19.0",
     "faker": "4.1.0",
     "jest": "25.4.0",
