@@ -45,7 +45,5 @@ module.exports = async function setRoles (obj, { player, input: { roles, serverR
   }, fields, 'users').where('player_id', player)
   const [user] = await query.exec()
 
-  console.log(query.toString())
-
   return user
 }
