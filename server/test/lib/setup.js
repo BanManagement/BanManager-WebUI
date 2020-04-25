@@ -39,10 +39,14 @@ module.exports = async () => { // eslint-disable-line max-statements
   let dbmOpts = { config: { dev: { ...dbConfig, driver: 'mysql' } }, cmdOptions: { 'migrations-dir': path.join(__dirname, '..', '..', 'data', 'migrations') } }
   let dbm = DBMigrate.getInstance(true, dbmOpts)
 
+  dbm.silence(true)
+
   await dbm.up()
 
   dbmOpts = { config: { dev: { ...dbConfig, driver: 'mysql' } }, cmdOptions: { 'migrations-dir': path.join(__dirname, '..', 'migrations') } }
   dbm = DBMigrate.getInstance(true, dbmOpts)
+
+  dbm.silence(true)
 
   await dbm.up()
 
