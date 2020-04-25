@@ -1,14 +1,17 @@
 const ExposedError = require('../../../data/exposed-error')
+const reportComment = require('../queries/report-comment')
 
-module.exports = async function deleteReportComment (obj, { comment: id, serverId }, { state }) {
+module.exports = async function deleteReportComment (obj, { id, serverId }, { state }, info) {
+  if (!state.serversPool.has(serverId)) throw new ExposedError('Server not found')
+
   const server = state.serversPool.get(serverId)
-  const tables = server.config.tables
-  const comment = await state.loaders.reportComment.serverDataId.load({ id, serverId })
+  const comment = await reportComment(obj, { id, serverId }, { state }, info)
 
-  if (!comment) throw new ExposedError(`Comment ${id} does not exist`)
-  if (!comment.acl.delete) throw new ExposedError('You do not have permission to perform this action')
+  if (!comment.acl || !comment.acl.delete) throw new ExposedError('You do not have permission to perform this action')
 
-  await state.dbPool.execute(`DELETE FROM ${tables.playerReportComments} WHERE id = ?`, [id])
+  await server.pool(server.config.tables.playerReportComments)
+    .where({ id })
+    .del()
 
   return comment
 }
