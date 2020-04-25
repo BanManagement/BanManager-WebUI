@@ -50,7 +50,7 @@
     "lodash-es": "4.17.15",
     "memoizee": "0.4.14",
     "mobile-detect": "1.4.4",
-    "mysql2": "2.1.0",
+    "mysql2": "github:confuser/node-mysql2#fix/nested-cache-key",
     "next": "9.3.2",
     "next-absolute-url": "1.2.2",
     "next-compose-plugins": "2.2.0",
