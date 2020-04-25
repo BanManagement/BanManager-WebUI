@@ -9,7 +9,7 @@ const { createServer, createPlayer } = require('../fixtures')
 const loaders = require('../../graphql/loaders')
 const { hash } = require('../../data/hash')
 
-module.exports = async () => { // eslint-disable-line max-statements
+module.exports = async (disableTestMigrations) => { // eslint-disable-line max-statements
   const dbName = 'bm_web_tests_' + randomBytes(4).toString('hex')
   const dbConfig =
     {

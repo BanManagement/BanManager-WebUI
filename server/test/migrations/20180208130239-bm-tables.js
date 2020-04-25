@@ -1,43 +1,18 @@
-const fs = require('fs')
+const fs = require('fs').promises
 const path = require('path')
-let Promise
 
-/**
-  * We receive the dbmigrate dependency from dbmigrate initially.
-  * This enables us to not have to rely on NODE_PATH.
-  */
-exports.setup = function (options) {
-  Promise = options.Promise
-}
-
-exports.up = function (db) {
+exports.up = async function (db) {
   const filePath = path.join(__dirname, 'sqls', '20180208130239-bm-tables-up.sql')
+  const data = await fs.readFile(filePath, { encoding: 'utf-8' })
 
-  return new Promise(function (resolve, reject) {
-    fs.readFile(filePath, { encoding: 'utf-8' }, function (err, data) {
-      if (err) return reject(err)
-
-      resolve(data)
-    })
-  })
-    .then(function (data) {
-      return db.runSql(data)
-    })
+  return db.runSql(data)
 }
 
-exports.down = function (db) {
+exports.down = async function (db) {
   const filePath = path.join(__dirname, 'sqls', '20180208130239-bm-tables-down.sql')
+  const data = await fs.readFile(filePath, { encoding: 'utf-8' })
 
-  return new Promise(function (resolve, reject) {
-    fs.readFile(filePath, { encoding: 'utf-8' }, function (err, data) {
-      if (err) return reject(err)
-
-      resolve(data)
-    })
-  })
-    .then(function (data) {
-      return db.runSql(data)
-    })
+  return db.runSql(data)
 }
 
 exports._meta = {

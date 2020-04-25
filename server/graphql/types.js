@@ -569,8 +569,8 @@ type Mutation {
   assignServerRole(players: [UUID!], role: Int!, serverId: ID!): Role! @allowIf(resource: "servers", permission: "manage")
   setRoles(player: UUID!, input: SetRolesInput!): User! @allowIf(resource: "servers", permission: "manage")
 
-  assignReport(report: ID!, serverId: ID!, player: UUID!): PlayerReport!
-  reportState(report: ID!, serverId: ID!, state: ID!): PlayerReport!
+  assignReport(report: ID!, serverId: ID!, player: UUID!): PlayerReport! @allowIfLoggedIn
+  reportState(report: ID!, serverId: ID!, state: ID!): PlayerReport! @allowIfLoggedIn
   deleteReportComment(id: ID!, serverId: ID!): PlayerReportComment! @allowIfLoggedIn
   createReportComment(report: ID!, serverId: ID!, input: ReportCommentInput!): PlayerReportComment! @allowIfLoggedIn
 

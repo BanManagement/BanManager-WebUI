@@ -7,15 +7,24 @@ module.exports = async function reportState (obj, { serverId, state: stateId, re
   if (!server) throw new ExposedError('Server does not exist')
 
   const table = server.config.tables.playerReports
-  const exists = await server.pool(table).where({ id })
+  const [data] = await server.pool(table).where({ id })
 
-  if (!exists) throw new ExposedError(`Report ${id} does not exist`)
+  if (!data) throw new ExposedError(`Report ${id} does not exist`)
+
+  const canUpdate = state.acl.hasServerPermission(serverId, 'player.reports', 'update.state.any') ||
+    (state.acl.hasServerPermission(serverId, 'player.reports', 'update.state.own') && state.acl.owns(data.actor_id)) ||
+    (state.acl.hasServerPermission(serverId, 'player.reports', 'update.state.assigned') && state.acl.owns(data.assignee_id)) ||
+    (state.acl.hasServerPermission(serverId, 'player.reports', 'update.state.reported') && state.acl.owns(data.player_id))
+
+  if (!canUpdate) {
+    throw new ExposedError('You do not have permission to perform this action, please contact your server administrator')
+  }
 
   const row = await server.pool(server.config.tables.playerReportStates).where('id', stateId).first()
 
   if (!row) throw new ExposedError(`Report State ${stateId} does not exist`)
 
-  await server.pool(table).update({ updated: 'UNIX_TIMESTAMP()', state_id: stateId }).where({ id })
+  await server.pool(table).update({ updated: server.pool.raw('UNIX_TIMESTAMP()'), state_id: stateId }).where({ id })
 
   return report(obj, { id, serverId }, { state }, info)
 }
