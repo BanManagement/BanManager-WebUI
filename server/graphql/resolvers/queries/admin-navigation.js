@@ -4,9 +4,9 @@ module.exports = async function adminNavigation (obj, info, { state }) {
     .select(state.dbPool.raw('COUNT(DISTINCT pathname) AS pageLayoutsCount'))
     .first()
   const left = [
-    { id: 1, name: 'Roles', label: rolesCount, href: '/admin/roles' },
-    { id: 2, name: 'Servers', label: state.serversPool.size, href: '/admin/servers' },
-    { id: 3, name: 'Page Layouts', label: pageLayoutsCount, href: '/admin/page-layouts' }
+    { id: 1, name: 'Page Layouts', label: pageLayoutsCount, href: '/admin/page-layouts' },
+    { id: 2, name: 'Roles', label: rolesCount, href: '/admin/roles' },
+    { id: 3, name: 'Servers', label: state.serversPool.size, href: '/admin/servers' }
   ]
 
   return { left }

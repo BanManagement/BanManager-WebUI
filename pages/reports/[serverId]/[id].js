@@ -21,6 +21,10 @@ export default function Page () {
         id
         name
       }
+      server(id: $serverId) {
+        id
+        name
+      }
       report(id: $id, serverId: $serverId) {
         id
         player {
@@ -42,35 +46,21 @@ export default function Page () {
           id
           name
         }
-        locations {
-          player {
-            world
-            x
-            y
-            z
-            yaw
-            pitch
-            player {
-              id
-              name
-            }
-          }
-          actor {
-            world
-            x
-            y
-            z
-            yaw
-            pitch
-            player {
-              id
-              name
-            }
-          }
+        playerLocation {
+          world
+          x
+          y
+          z
+          yaw
+          pitch
         }
-        server {
-          id
-          name
+        actorLocation {
+          world
+          x
+          y
+          z
+          yaw
+          pitch
         }
         acl {
           state
@@ -80,19 +70,9 @@ export default function Page () {
         }
         serverLogs {
           id
-          message
-          created
-        }
-        comments {
-          id
-          message
-          created
-          actor {
-            id
-            name
-          }
-          acl {
-            delete
+          log {
+            message
+            created
           }
         }
         commands {
@@ -122,10 +102,10 @@ export default function Page () {
   if (errors || !data) return <ErrorLayout errors={errors} />
 
   const handleOnScreenUpdate = (e, { width }) => setWidth(width)
-  const renderLocation = (location) => (
+  const renderLocation = (location, player) => (
     <>
       <p>
-        <Image floated='left' src={`https://crafatar.com/avatars/${location.player.id}?size=28&overlay=true`} /> {location.player.name}
+        <Image floated='left' src={`https://crafatar.com/avatars/${player.id}?size=28&overlay=true`} /> {player.name}
       </p>
       <pre style={{ overflowY: 'auto' }}>/tppos {location.x} {location.y} {location.z} {location.pitch} {location.yaw} {location.world}</pre>
     </>
@@ -156,18 +136,18 @@ export default function Page () {
                   </Comment.Content>
                 </Comment>
               </Comment.Group>
-              {!!report.serverLogs.length &&
+              {!!report.serverLogs && !!report.serverLogs.length &&
                 <>
                   <Header>Server Logs</Header>
                   <Segment.Group color='black'>
-                    {report.serverLogs.map(log => (
-                      <Segment key={log.id}>
+                    {report.serverLogs.map(({ id, log }) => (
+                      <Segment key={id}>
                         [{format(fromUnixTime(log.created), 'yyyy-MM-dd HH:mm:ss')}] {log.message}
                       </Segment>
                     ))}
                   </Segment.Group>
                 </>}
-              {!!report.commands.length &&
+              {!!report.commands && !!report.commands.length &&
                 <>
                   <Header>Commands</Header>
                   <Segment.Group color='black'>
@@ -188,7 +168,7 @@ export default function Page () {
                       State: {canUpdateState ? (
                         <PlayerReportState
                           id={report.id}
-                          server={report.server.id}
+                          server={data.server.id}
                           currentState={state}
                           states={stateOptions}
                           onChange={({ reportState: { state, updated } }) => {
@@ -207,7 +187,7 @@ export default function Page () {
                         <PlayerReportAssign
                           id={report.id}
                           player={assignee}
-                          server={report.server.id}
+                          server={data.server.id}
                           onChange={({ assignReport: { assignee, updated } }) => {
                             setAssignee(assignee)
                             setUpdated(updated)
@@ -228,19 +208,13 @@ export default function Page () {
               <Grid.Row style={{ marginTop: '1em' }}>
                 <Grid.Column width={16}>
                   <Header dividing>Locations</Header>
-                  {report.locations.player && renderLocation(report.locations.player)}
-                  {report.locations.actor && renderLocation(report.locations.actor)}
+                  {report.playerLocation && renderLocation(report.playerLocation, report.player)}
+                  {report.actorLocation && renderLocation(report.actorLocation, report.actor)}
                 </Grid.Column>
               </Grid.Row>
             </Grid.Column>
           </Grid.Row>
-          {report.comments &&
-            <Grid.Row style={{ marginTop: '1em' }}>
-              <Grid.Column width={16}>
-                <Header>Comments</Header>
-                <PlayerReportCommentList id={id} comments={report.comments} serverId={report.server.id} showReply={canComment} />
-              </Grid.Column>
-            </Grid.Row>}
+          <PlayerReportCommentList report={id} serverId={serverId} showReply={canComment} />
         </Responsive>
       </PageContainer>
     </DefaultLayout>

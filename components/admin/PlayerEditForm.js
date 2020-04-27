@@ -9,12 +9,12 @@ export default function PlayerEditForm ({ open, onFinished, player, roles, serve
   const [loading, setLoading] = useState(false)
   const [inputState, setInputState] = useState({
     email: player.email || '',
-    roles: player.roles.map(role => role.id),
+    roles: player.roles.map(({ role }) => role.id),
     serverRoles: player.serverRoles
   })
   const [variables, setVariables] = useState({})
   const { load, data, errors } = useApi({
-    query: `mutation setRoles($player: ID!, $input: SetRolesInput!) {
+    query: `mutation setRoles($player: UUID!, $input: SetRolesInput!) {
       setRoles(player: $player, input: $input) {
         id
       }
@@ -31,7 +31,7 @@ export default function PlayerEditForm ({ open, onFinished, player, roles, serve
     player: player.id,
     input: {
       roles: inputState.roles.map(id => ({ id })),
-      serverRoles: inputState.serverRoles.map(role => ({ role: { id: role.role.id }, server: { id: role.server.id } }))
+      serverRoles: inputState.serverRoles.map(role => ({ role: { id: role.serverRole.id }, server: { id: role.server.id } }))
     }
   }), [inputState])
   useEffect(() => setLoading(false), [errors])
@@ -50,7 +50,7 @@ export default function PlayerEditForm ({ open, onFinished, player, roles, serve
   const handleServerRoleChange = (e, { name, value }) => {
     const newRoles = roles
       .filter(role => value.includes(role.id))
-      .map(role => ({ role: { id: role.id, name: role.name }, server: { id: name } }))
+      .map(role => ({ serverRole: { id: role.id, name: role.name }, server: { id: name } }))
 
     setInputState({ ...inputState, serverRoles: newRoles })
   }
@@ -65,7 +65,7 @@ export default function PlayerEditForm ({ open, onFinished, player, roles, serve
     >
       <Header>
         <Image src={`https://crafatar.com/avatars/${player.id}?size=45&overlay=true`} fluid avatar />
-        {player.name}
+        {player.player.name}
       </Header>
       <Modal.Content>
         <Form size='large' error loading={loading}>
@@ -92,7 +92,7 @@ export default function PlayerEditForm ({ open, onFinished, player, roles, serve
           {serversDropdown.map(server => {
             const value = inputState.serverRoles
               .filter(r => r.server.id === server.value)
-              .map(({ role }) => role.id)
+              .map(({ serverRole }) => serverRole.id)
 
             return (
               <React.Fragment key={server.value}>

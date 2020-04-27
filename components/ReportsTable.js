@@ -5,17 +5,13 @@ import { useApi } from '../utils'
 import ServerSelector from './admin/ServerSelector'
 
 const query = `
-query listReports($serverId: ID!, $actor: UUID, $assigned: UUID, $player: UUID, $state: ID, $limit: Int) {
-  listReports(serverId: $serverId, actor: $actor, assigned: $assigned, player: $player, state: $state, limit: $limit) {
+query listPlayerReports($serverId: ID!, $actor: UUID, $assigned: UUID, $player: UUID, $state: ID, $limit: Int, $offset: Int) {
+  listPlayerReports(serverId: $serverId, actor: $actor, assigned: $assigned, player: $player, state: $state, limit: $limit, offset: $offset) {
     total
     records {
       id
       created
       updated
-      server {
-        id
-        name
-      }
       actor {
         id
         name
@@ -32,6 +28,10 @@ query listReports($serverId: ID!, $actor: UUID, $assigned: UUID, $player: UUID, 
         id
         name
       }
+    }
+    server {
+      id
+      name
     }
   }
 }`
@@ -51,8 +51,8 @@ export default function ReportsTable ({ limit = 30 }) {
 
   const handlePageChange = (e, { activePage }) => setTableState({ ...tableState, activePage, offset: (activePage - 1) * limit })
   const handleFieldChange = (field) => (id) => setTableState({ ...tableState, [field]: id || null })
-  const rows = data?.listReports?.records || []
-  const total = data?.listReports.total || 0
+  const rows = data?.listPlayerReports?.records || []
+  const total = data?.listPlayerReports.total || 0
   const totalPages = Math.ceil(total / limit)
 
   return (
@@ -72,8 +72,8 @@ export default function ReportsTable ({ limit = 30 }) {
           ? <Table.Row><Table.Cell colSpan='6'><Loader active inline='centered' /></Table.Cell></Table.Row>
           : rows.map((row, i) => (
             <Table.Row key={i}>
-              <Table.Cell>{row.server.name}</Table.Cell>
-              <Table.Cell><a href={`/reports/${row.server.id}/${row.id}`}>#{row.id}</a></Table.Cell>
+              <Table.Cell>{data.listPlayerReports.server.name}</Table.Cell>
+              <Table.Cell><a href={`/reports/${data.listPlayerReports.server.id}/${row.id}`}>#{row.id}</a></Table.Cell>
               <Table.Cell>
                 <a href={`player/${row.actor.id}`}>
                   <Image src={`https://crafatar.com/avatars/${row.actor.id}?size=26&overlay=true`} fluid avatar />

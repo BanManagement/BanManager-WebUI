@@ -37,11 +37,17 @@ export default function AssignPlayersRoleForm ({ query, roles, servers = [] }) {
     e.preventDefault()
     setLoading(true)
 
-    load()
+    await load()
+
+    setInputState({
+      players: [],
+      serverId: servers.length ? servers[0].id : '',
+      role: ''
+    })
   }
 
   const serversDropdown = servers.map(server => ({ key: server.id, value: server.id, text: server.name }))
-  const rolesDropdown = roles.map(role => ({ key: role.id, text: role.name, value: role.id }))
+  const rolesDropdown = roles.map(role => ({ key: role.id, text: role.name, value: parseInt(role.id, 10) }))
 
   return (
     <Grid doubling>
@@ -58,6 +64,7 @@ export default function AssignPlayersRoleForm ({ query, roles, servers = [] }) {
             options={rolesDropdown}
             placeholder='Role'
             onChange={handleChange}
+            value={inputState.role}
             fluid
           />
         </Grid.Column>

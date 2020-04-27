@@ -4,19 +4,23 @@ import PlayerEditForm from './PlayerEditForm'
 import { useApi } from '../../utils'
 
 const query = `
-query listPlayers($email: String, $role: String, $serverRole: String, $limit: Int, $offset: Int) {
-  listPlayers(email: $email, role: $role, serverRole: $serverRole, limit: $limit, offset: $offset) {
+query listUsers($email: String, $role: String, $serverRole: String, $limit: Int, $offset: Int) {
+  listUsers(email: $email, role: $role, serverRole: $serverRole, limit: $limit, offset: $offset) {
     total
-    players {
+    records {
       id
-      name
-      email
-      roles {
-        id
+      player {
         name
       }
-      serverRoles {
+      email
+      roles {
         role {
+          id
+          name
+        }
+      }
+      serverRoles {
+        serverRole {
           id
           name
         }
@@ -50,8 +54,8 @@ export default function PlayersTable ({ limit = 30, roles, servers }) {
     if (updated) load()
   }
   const handleFilter = (e, { name, value }) => setTableState({ ...tableState, [name]: value })
-  const rows = data?.listPlayers?.players || []
-  const total = data?.listPlayers.total || 0
+  const rows = data?.listUsers?.records || []
+  const total = data?.listUsers.total || 0
   const totalPages = Math.ceil(total / limit)
 
   return (
@@ -80,12 +84,12 @@ export default function PlayersTable ({ limit = 30, roles, servers }) {
                 <Table.Cell>
                   <a onClick={handleOpen(row)}>
                     <Image src={`https://crafatar.com/avatars/${row.id}?size=26&overlay=true`} fluid avatar />
-                    {row.name}
+                    {row.player.name}
                   </a>
                 </Table.Cell>
                 <Table.Cell>{row.email}</Table.Cell>
-                <Table.Cell>{row.roles.map(role => role.name).join(', ')}</Table.Cell>
-                <Table.Cell>{row.serverRoles.map(({ role }) => role.name).join(', ')}</Table.Cell>
+                <Table.Cell>{row.roles.map(({ role }) => role.name).join(', ')}</Table.Cell>
+                <Table.Cell>{row.serverRoles.map(({ serverRole }) => serverRole.name).join(', ')}</Table.Cell>
               </Table.Row>
             ))}
         </Table.Body>

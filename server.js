@@ -29,7 +29,7 @@ const dbConfig = {
 
 ;(async () => {
   try {
-    const dbPool = await setupPool(dbConfig)
+    const dbPool = await setupPool(dbConfig, logger)
     const serversPool = await setupServersPool({ dbPool, logger })
     const app = await createApp({ dbPool, logger, serversPool, disableUI: process.env.DISABLE_UI === 'true' })
 

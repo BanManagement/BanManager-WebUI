@@ -1,6 +1,7 @@
 const { parseResolveInfo, simplifyParsedResolveInfoFragmentWithType } = require('graphql-parse-resolve-info')
 const { getSql } = require('../../utils')
 const ExposedError = require('../../../data/exposed-error')
+const getServer = require('./server')
 const viewPerms = [
   ['view.own', 'actor_id'],
   ['view.assigned', 'assignee_id'],
@@ -36,7 +37,7 @@ module.exports = async function listPlayerReports (obj, { serverId, actor, assig
   const tables = server.config.tables
   const parsedResolveInfoFragment = parseResolveInfo(info)
   const { fields } = simplifyParsedResolveInfoFragmentWithType(parsedResolveInfoFragment, info.returnType)
-  const data = {}
+  const data = { server: await getServer(obj, { id: serverId }, { state }, info) }
   const filter = {}
 
   if (actor) filter.actor_id = actor
@@ -59,6 +60,7 @@ module.exports = async function listPlayerReports (obj, { serverId, actor, assig
       .where(filter)
       .where(handleAclFilter)
       .limit(limit)
+      .offset(offset)
 
     if (order) {
       query.orderByRaw(order.replace('_', ' '))

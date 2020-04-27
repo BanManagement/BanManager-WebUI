@@ -7,7 +7,7 @@ module.exports = (config, logger, pool = { min: 0, max: 10 }) => {
   return knex({
     client: 'mysql2',
     asyncStackTraces: true,
-    log: logger,
+    // log: logger,
     connection: config
   })
 }
