@@ -1,0 +1,48 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.14.1
+ignore: {}
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  SNYK-JS-LODASH-567746:
+    - '@nateradebaugh/react-datetime > @babel/core > lodash':
+        patched: '2020-04-30T22:55:30.517Z'
+    - next > @babel/types > lodash:
+        patched: '2020-04-30T22:55:30.517Z'
+    - next > autodll-webpack-plugin > lodash:
+        patched: '2020-04-30T22:55:30.517Z'
+    - next > babel-plugin-transform-define > lodash:
+        patched: '2020-04-30T22:55:30.517Z'
+    - '@nateradebaugh/react-datetime > @babel/core > @babel/traverse > lodash':
+        patched: '2020-04-30T22:55:30.517Z'
+    - next > @babel/preset-env > @babel/plugin-transform-block-scoping > lodash:
+        patched: '2020-04-30T22:55:30.517Z'
+    - next > styled-jsx > @babel/types > lodash:
+        patched: '2020-04-30T22:55:30.517Z'
+    - '@nateradebaugh/react-datetime > @babel/core > @babel/helpers > @babel/traverse > lodash':
+        patched: '2020-04-30T22:55:30.517Z'
+    - next > @babel/preset-env > @babel/plugin-transform-classes > @babel/helper-define-map > lodash:
+        patched: '2020-04-30T22:55:30.517Z'
+    - '@nateradebaugh/react-datetime > @babel/core > @babel/helpers > @babel/traverse > @babel/generator > lodash':
+        patched: '2020-04-30T22:55:30.517Z'
+    - next > @babel/preset-env > @babel/plugin-transform-unicode-regex > @babel/helper-create-regexp-features-plugin > @babel/helper-regex > lodash:
+        patched: '2020-04-30T22:55:30.517Z'
+    - next > @babel/preset-env > @babel/plugin-transform-modules-umd > @babel/helper-module-transforms > @babel/template > @babel/types > lodash:
+        patched: '2020-04-30T22:55:30.517Z'
+    - '@nateradebaugh/react-datetime > @babel/core > @babel/helpers > @babel/traverse > @babel/helper-split-export-declaration > @babel/types > lodash':
+        patched: '2020-04-30T22:55:30.517Z'
+    - next > @babel/preset-env > @babel/plugin-transform-modules-umd > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > @babel/generator > lodash:
+        patched: '2020-04-30T22:55:30.517Z'
+    - '@nateradebaugh/react-datetime > @babel/core > @babel/helpers > @babel/traverse > @babel/helper-function-name > @babel/helper-get-function-arity > @babel/types > lodash':
+        patched: '2020-04-30T22:55:30.517Z'
+    - next > @babel/preset-env > @babel/plugin-transform-modules-umd > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > @babel/helper-split-export-declaration > @babel/types > lodash:
+        patched: '2020-04-30T22:55:30.517Z'
+    - next > @babel/preset-env > @babel/plugin-transform-modules-umd > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > @babel/helper-function-name > @babel/helper-get-function-arity > @babel/types > lodash:
+        patched: '2020-04-30T22:55:30.517Z'
+    - inquirer > lodash:
+        patched: '2020-04-30T22:55:30.517Z'
+    - semantic-ui-react > lodash:
+        patched: '2020-04-30T22:55:30.517Z'
+    - '@next/bundle-analyzer > webpack-bundle-analyzer > lodash':
+        patched: '2020-04-30T22:55:30.517Z'
+    - next > autodll-webpack-plugin > webpack-merge > lodash:
+        patched: '2020-04-30T22:55:30.517Z'
