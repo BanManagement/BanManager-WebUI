@@ -66,7 +66,8 @@
     "url-loader": "4.1.0",
     "uuid-parse": "1.1.0",
     "validator": "13.0.0",
-    "web-push": "3.4.3"
+    "web-push": "3.4.3",
+    "snyk": "^1.316.1"
   },
   "devDependencies": {
     "@oclif/test": "1.2.5",
@@ -96,7 +97,9 @@
     "lint": "standard",
     "start": "node server.js",
     "test": "npm run lint && jest --coverage",
-    "setup": "node bin/run setup"
+    "setup": "node bin/run setup",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "oclif": {
     "commands": "./cli/commands",
@@ -122,5 +125,6 @@
       "beforeAll",
       "afterAll"
     ]
-  }
+  },
+  "snyk": true
 }
