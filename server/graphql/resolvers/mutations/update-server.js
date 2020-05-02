@@ -12,12 +12,19 @@ module.exports = async function updateServer (obj, { id, input }, { state }) {
     .where('name', input.name)
     .first()
 
-  if (serverExists) {
+  if (serverExists && serverExists.id !== id) {
     throw new ExposedError('A server with this name already exists')
   }
 
   // @TODO Check if connection details changed to avoid needing password to change server name
-  const conn = await createConnection(pick(input, ['host', 'port', 'database', 'user', 'password']))
+  let conn
+
+  try {
+    conn = await createConnection(pick(input, ['host', 'port', 'database', 'user', 'password']))
+  } catch (e) {
+    throw new ExposedError(e.message)
+  }
+
   const tableNames = Object.keys(tables)
   const tablesMissing = []
 

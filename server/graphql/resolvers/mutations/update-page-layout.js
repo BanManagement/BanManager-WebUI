@@ -28,7 +28,7 @@ module.exports = async function updatePageLayout (obj, { pathname, input }, { lo
           w,
           textAlign: textAlign || null,
           colour: colour || null,
-          meta: meta || null
+          meta: meta ? JSON.stringify(meta) : null
         }
 
         if (id) data.id = id
@@ -46,7 +46,7 @@ module.exports = async function updatePageLayout (obj, { pathname, input }, { lo
           w,
           textAlign: textAlign || null,
           colour: colour || null,
-          meta: meta || null
+          meta: meta ? JSON.stringify(meta) : null
         }
 
         if (id) data.id = id

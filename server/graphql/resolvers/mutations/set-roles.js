@@ -1,11 +1,12 @@
 const { parseResolveInfo } = require('graphql-parse-resolve-info')
+const { uniq } = require('lodash')
 const { getSql } = require('../../utils')
 const ExposedError = require('../../../data/exposed-error')
 
 module.exports = async function setRoles (obj, { player, input: { roles, serverRoles } }, { log, state }, info) {
-  const roleIds = roles
+  const roleIds = uniq(roles
     .map(role => role.id)
-    .concat(serverRoles.map(serverRole => serverRole.role.id))
+    .concat(serverRoles.map(serverRole => serverRole.role.id)))
   const dataRoles = await state.dbPool('bm_web_roles').whereIn('role_id', roleIds)
 
   if (dataRoles.filter(Boolean).length !== roleIds.length) {
