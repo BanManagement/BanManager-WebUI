@@ -37,6 +37,9 @@ $settings['player_kicks'] = true;
 $settings['player_warnings'] = true;
 $settings['player_current_ban_extra_html'] = '';
 $settings['player_current_mute_extra_html'] = '';
+// Should punish overwrite active punishments, delete active punishments and create a new one or stop when there is an active punishment
+// [1-overwrite 2-delete 3-stop]
+$settings['punish'] = 1;
 
 // Turn to false, if you want to show accociated accounts for everyone, without authentication
 $settings['associated_accounts_only_for_admins'] = true;
