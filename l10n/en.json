@@ -180,6 +180,7 @@
       "edit_modal-expires_server_time": "Expires Server Time",
       "edit_modal-permanent": "Permanent",
       "edit_modal-temporary": "Temporary",
+      "edit_modal-silent": "Silent",
       "edit_modal-reason": "Reason",
       "edit_modal-close": "Close",
       "edit_modal-save": "Save"
@@ -206,6 +207,8 @@
       "edit_modal-expires_server_time": "Expires Server Time",
       "edit_modal-permanent": "Permanent",
       "edit_modal-temporary": "Temporary",
+      "edit_modal-silent": "Silent",
+      "edit_modal-soft": "Soft",
       "edit_modal-reason": "Reason",
       "edit_modal-close": "Close",
       "edit_modal-save": "Save"
