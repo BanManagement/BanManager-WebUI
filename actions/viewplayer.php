@@ -214,6 +214,10 @@ else {
 										</div>
 									</div>
 								</div>
+								<div class="control-group">
+									<label class="control-label" for="silentban"><?= $language['viewplayer']['current_ban']['edit_modal-silent']; ?>:</label>
+									<input type="checkbox" name="silent" id="silentban" value="Silent" <?php if ($currentBans['silent'] != 0) echo 'checked';?> />
+								</div>
 								<label for="banreason"><?= $language['viewplayer']['current_ban']['edit_modal-reason']; ?>:</label>
 								<textarea id="banreason" name="reason" class="form-control" rows="4" style="resize: vertical;"><?php echo $currentBans['reason']; ?></textarea>
 							</div>
@@ -380,6 +384,12 @@ else {
 											</span>
 										</div>
 									</div>
+								</div>
+								<div class="control-group">
+									<label class="control-label" for="softmute"><?= $language['viewplayer']['current_mute']['edit_modal-soft']; ?>:</label>
+									<input type="checkbox" name="soft" id="softmute" value="Soft" <?php if ($currentMutes['soft'] != 0) echo 'checked';?> />
+									<label class="control-label" for="silentmute"><?= $language['viewplayer']['current_mute']['edit_modal-silent']; ?>:</label>
+									<input type="checkbox" name="silent" id="silentmute" value="Silent" <?php if ($currentMutes['silent'] != 0) echo 'checked';?> />
 								</div>
 								<label for="mutereason"><?= $language['viewplayer']['current_mute']['edit_modal-reason']; ?>:</label>
 								<textarea id="mutereason" name="reason" class="form-control" rows="4" style="resize: vertical;"><?php echo $currentMutes['reason']; ?></textarea>
