@@ -21,8 +21,13 @@ else {
 	} else
 		$timestamp = 0;
 
-	if(!isset($_POST['reason']))
-		$_POST['reason'] = '';
+	if(empty($_POST['reason']))
+		$_POST['reason'] = '(WebUI)';
+
+	if(isset($_POST['silent']))
+		$silent = 1;
+	else
+		$silent = 0;
 
 	if(!isset($error)) {
 		// Get the server details
@@ -38,7 +43,7 @@ else {
 			if(mysqli_num_rows($currentBan) == 0)
 				$error = 'That ban does not exist';
 			else {
-				mysqli_query($mysqlicon, "UPDATE ".$server['playerBansTable']." SET reason = '".$_POST['reason']."', updated = UNIX_TIMESTAMP(now()), expires = '$timestamp' WHERE id = '".$_POST['id']."'");
+				mysqli_query($mysqlicon, "UPDATE ".$server['playerBansTable']." SET reason = '".$_POST['reason']."', updated = UNIX_TIMESTAMP(now()), expires = '$timestamp', silent = '$silent' WHERE id = '".$_POST['id']."'");
 
 				// Clear the cache
 				clearCache($_POST['server'].'/players');
