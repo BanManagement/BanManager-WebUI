@@ -48,9 +48,23 @@ else {
 		<div class="row">
 			<div class="col-lg-3">
 					<div class="player_information">
-							<div><img src="<?php echo str_replace(array('%name%', '%uuid%'), array($_GET['player'], $UUID), $settings['skin']['complete']) ?>" class="skin-complete" alt="<?php echo $_GET['player'];?>"/></div>
+							<div><img src="<?php echo str_replace(array('%name%', '%uuid%'), array($_GET['player'], $UUID), $settings['skin']['complete']) ?>" class="skin-complete" alt="<?php echo $_GET['player'];?>"/></div><br>
 							<span id="player_name" title="UUID: <?php echo $UUID;?>"><?php echo $_GET['player'];?></span>
-					</div>
+
+				<?php if ($admin) { ?>
+							<br>
+							<center>
+								<a class="btn btn-danger dropdown-toggle" href="#" data-toggle="dropdown"><i class="glyphicon glyphicon-plus"> <?php echo $language['viewplayer']['punish']['punish'];?></i></a>
+								<ul class="dropdown-menu punish">
+									<li><?='<div class="col-lg-6"><a class="btn btn-danger pull-left" title="'.$language['viewplayer']['punish']['ban'].'" href="#addban" data-toggle="modal">'.$language['viewplayer']['punish']['ban'].'</a></div> <div class="col-lg-6"><a class="btn btn-danger pull-right" title="'.$language['viewplayer']['punish']['mute'].'" href="#addmute" data-toggle="modal">'.$language['viewplayer']['punish']['mute'].'</a></div>'; ?></li>
+								</ul>
+							</center> 
+
+							
+
+				<?php } ?>
+
+					</div>		
 			</div>
 			<div class="col-lg-9" id="player_ban_info">
 					<h4><?= $language['viewplayer']['current_server']; ?>: <?php echo $server['name']; ?></h4>
@@ -155,6 +169,65 @@ else {
 				'.$extra.'
 			</div>';
 			}
+
+			if ($admin) { ?>
+				<div class="modal fade" id="addban">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<form class="form-horizontal" action="" method="post">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal">&times;</button>
+									<h3><?= $language['viewplayer']['punish']['add_modal-creating_ban']; ?></h3>
+								</div>
+								<div class="modal-body">
+									<div class="control-group">
+										<label class="control-label" for="yourtime"><?= $language['viewplayer']['punish']['add_modal-your_time']; ?>:</label>
+										<div class="controls">
+											<span class="yourtime"></span>
+										</div>
+									</div>
+									<div class="control-group">
+										<label class="control-label" for="servertime"><?= $language['viewplayer']['punish']['add_modal-server_time']; ?>:</label>
+										<div class="controls">
+											<span class="servertime"><?php echo date('d/m/Y H:i:s', time() + $mysqlSecs); ?></span>
+										</div>
+									</div>
+									<div class="control-group">
+										<label class="control-label" for="bandatetime"><?= $language['viewplayer']['punish']['add_modal-expires_server_time']; ?>:</label>
+										<div class="controls">
+											<div class="input-group date datetimepicker">
+												<span class="input-group-btn">
+												<button class="btn btn-danger bantype" type="button"><?= $language['viewplayer']['punish']['add_modal-permanent']; ?></button>
+												</span>
+												<input type="text" class="form-control required disabled" disabled="disabled" name="expires" data-format="DD/MM/YYYY HH:mm:ss" value="" id="bandatetime" />
+												<span class="input-group-addon">
+													<i class="glyphicon glyphicon-calendar"></i>
+												</span>
+											</div>
+										</div>
+									</div>
+									<div class="control-group">
+										<label class="control-label" for="silentban"><?= $language['viewplayer']['punish']['add_modal-silent']; ?>:</label>
+										<input type="checkbox" name="silent" id="silentban" value="Silent" />
+									</div>
+									<label for="banreason"><?= $language['viewplayer']['punish']['add_modal-reason']; ?>:</label>
+									<textarea id="banreason" name="reason" class="form-control" rows="4" style="resize: vertical;"></textarea>
+								</div>
+								<div class="modal-footer">
+									<a href="#" class="btn" data-dismiss="modal"><?= $language['viewplayer']['punish']['add_modal-close']; ?></a>
+									<input type="submit" class="btn btn-primary" value="<?= $language['viewplayer']['punish']['add_modal-save']; ?>" />
+								</div>
+								<?php if (isset($currentBans['id'])) {
+								echo '<input type="hidden" name="id" value="'.$currentBans['id'].'" />'; } ?>
+								<input type="hidden" name="uuid" value="<?php echo $UUID; ?>" />
+								<input type="hidden" name="server" value="<?php echo $_GET['server']; ?>" />
+								<input type="hidden" name="expiresTimestamp" value="" />
+							</form>
+						</div>
+					</div>
+				</div>
+			<?php }
+
 			if($admin && count($currentBans) != 0) {?>
 			<div class="modal fade" id="editban">
 				<div class="modal-dialog">
@@ -325,6 +398,67 @@ else {
 				'.$extra.'
 			</div>';
 			}
+
+			if ($admin) { ?>
+				<div class="modal fade" id="addmute">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<form class="form-horizontal" action="" method="post">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal">&times;</button>
+									<h3><?= $language['viewplayer']['punish']['add_modal-creating_mute']; ?></h3>
+								</div>
+								<div class="modal-body">
+									<div class="control-group">
+										<label class="control-label" for="yourtime"><?= $language['viewplayer']['punish']['add_modal-your_time']; ?>:</label>
+										<div class="controls">
+											<span class="yourtime"></span>
+										</div>
+									</div>
+									<div class="control-group">
+										<label class="control-label" for="servertime"><?= $language['viewplayer']['punish']['add_modal-server_time']; ?>:</label>
+										<div class="controls">
+											<span class="servertime"><?php echo date('d/m/Y H:i:s', time() + $mysqlSecs); ?></span>
+										</div>
+									</div>
+									<div class="control-group">
+										<label class="control-label" for="mutedatetime"><?= $language['viewplayer']['punish']['add_modal-expires_server_time']; ?>:</label>
+										<div class="controls">
+											<div class="input-group date datetimepicker">
+												<span class="input-group-btn">
+												<button class="btn btn-danger mutetype" type="button"><?= $language['viewplayer']['punish']['add_modal-permanent']; ?></button>
+												</span>
+												<input type="text" class="form-control required disabled" disabled="disabled" name="expires" data-format="DD/MM/YYYY HH:mm:ss" value="" id="mutedatetime" />
+												<span class="input-group-addon">
+													<i class="glyphicon glyphicon-calendar"></i>
+												</span>
+											</div>
+										</div>
+									</div>
+									<div class="control-group">
+										<label class="control-label" for="softmute"><?= $language['viewplayer']['punish']['add_modal-soft']; ?>:</label>
+										<input type="checkbox" name="soft" id="softmute" value="Soft" />
+										<label class="control-label" for="silentmute"><?= $language['viewplayer']['punish']['add_modal-silent']; ?>:</label>
+										<input type="checkbox" name="silent" id="silentmute" value="Silent" />
+									</div>
+									<label for="mutereason"><?= $language['viewplayer']['punish']['add_modal-reason']; ?>:</label>
+									<textarea id="mutereason" name="reason" class="form-control" rows="4"  style="resize: vertical;"></textarea>
+								</div>
+								<div class="modal-footer">
+									<a href="#" class="btn" data-dismiss="modal"><?= $language['viewplayer']['punish']['add_modal-close']; ?></a>
+									<input type="submit" class="btn btn-primary" value="<?= $language['viewplayer']['punish']['add_modal-save']; ?>" />
+								</div>
+								<?php if (isset($currentMutes['id'])) {
+								echo '<input type="hidden" name="id" value="'.$currentMutes['id'].'" />'; } ?>
+								<input type="hidden" name="uuid" value="<?php echo $UUID; ?>" />
+								<input type="hidden" name="server" value="<?php echo $_GET['server']; ?>" />
+								<input type="hidden" name="expiresTimestamp" value="" />
+							</form>
+						</div>
+					</div>
+				</div>
+			<?php }
+
 			if($admin && count($currentMutes) != 0) {?>
 
 			<div class="modal fade" id="editmute">
