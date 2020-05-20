@@ -215,7 +215,7 @@ else {
 									</div>
 								</div>
 								<label for="banreason"><?= $language['viewplayer']['current_ban']['edit_modal-reason']; ?>:</label>
-								<textarea id="banreason" name="reason" class="form-control" rows="4"><?php echo $currentBans['reason']; ?></textarea>
+								<textarea id="banreason" name="reason" class="form-control" rows="4" style="resize: vertical;"><?php echo $currentBans['reason']; ?></textarea>
 							</div>
 							<div class="modal-footer">
 								<a href="#" class="btn" data-dismiss="modal"><?= $language['viewplayer']['current_ban']['edit_modal-close']; ?></a>
@@ -382,7 +382,7 @@ else {
 									</div>
 								</div>
 								<label for="mutereason"><?= $language['viewplayer']['current_mute']['edit_modal-reason']; ?>:</label>
-								<textarea id="mutereason" name="reason" class="form-control" rows="4"><?php echo $currentMutes['reason']; ?></textarea>
+								<textarea id="mutereason" name="reason" class="form-control" rows="4" style="resize: vertical;"><?php echo $currentMutes['reason']; ?></textarea>
 							</div>
 							<div class="modal-footer">
 								<a href="#" class="btn" data-dismiss="modal"><?= $language['viewplayer']['current_mute']['edit_modal-close']; ?></a>
