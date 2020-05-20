@@ -149,7 +149,7 @@ $(function() {
 
   $('.yourtime').html(dateFormat(new Date(), 'dd/mm/yyyy HH:MM:ss'));
 
-  $('#editban form .bantype, #editmute form .bantype').click(function(e) {
+  $('#editban form .bantype, #editmute form .mutetype').click(function(e) {
     e.preventDefault();
     var $expires = $(this).parent().parent().find('input[name=expires]');
 
