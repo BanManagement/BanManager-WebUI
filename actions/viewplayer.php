@@ -351,7 +351,7 @@ else {
 										<?php
 											echo '
 											<span class="input-group-btn">
-												<button class="btn btn-danger bantype" type="button">';
+												<button class="btn btn-danger mutetype" type="button">';
 											if($currentMutes['expires'] == 0)
 												echo $language['viewplayer']['current_mute']['edit_modal-permanent'];
 											else
