@@ -863,6 +863,8 @@ $actions = array(
 );
 
 $ajaxactions = array(
+	'addban',
+	'addmute',
 	'addserver',
 	'deleteban',
 	'deletebanrecord',
