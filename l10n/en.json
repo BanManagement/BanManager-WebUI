@@ -159,6 +159,23 @@
     "current_server": "Current Server",
     "change_server": "Change Server",
     "date-format": "j F Y h:i:s A",
+    "punish": {
+      "punish":"Punish",
+      "ban": "Ban",
+      "mute": "Mute",
+      "add_modal-creating_ban": "Creating Ban",
+      "add_modal-creating_mute": "Creating Mute",
+      "add_modal-your_time": "Your time",
+      "add_modal-server_time": "Server time",
+      "add_modal-expires_server_time": "Expires Server Time",
+      "add_modal-permanent": "Permanent",
+      "add_modal-temporary": "Temporary",
+      "add_modal-silent": "Silent",
+      "add_modal-soft": "Soft",
+      "add_modal-reason": "Reason",
+      "add_modal-close": "Close",
+      "add_modal-save": "Save"
+    },
     "current_ban": {
       "current_ban":"Current Ban",
       "none": "None",
