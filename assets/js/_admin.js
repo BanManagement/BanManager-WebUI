@@ -149,7 +149,7 @@ $(function() {
 
   $('.yourtime').html(dateFormat(new Date(), 'dd/mm/yyyy HH:MM:ss'));
 
-  $('#editban form .bantype, #editmute form .bantype').click(function(e) {
+  $('#editban form .bantype, #editmute form .mutetype, #addban form .bantype, #addmute form .mutetype').click(function(e) {
     e.preventDefault();
     var $expires = $(this).parent().parent().find('input[name=expires]');
 
@@ -167,6 +167,90 @@ $(function() {
       $expires.val('');
       $expires.attr('disabled', 'disabled');
     }
+  });
+
+  $('#addban form').submit(function(e) {
+    e.preventDefault();
+
+    var form = $(this)
+    , formBody = form.find('.modal-body');
+
+    if (!form.valid())
+      return false;
+    errorRemove();
+
+    if ($(this).find('input[name=expires]').attr('disabled') === 'disabled') {
+      $(this).find('input[name=expires]').val('');
+    }
+
+    formBody.hide().after('<div id="ajaxLoading"><span id="loadingSmall"></span><br />Saving</div>');
+    showLoading('loadingSmall');
+    $('#addban form input[name=expiresTimestamp]').val($('#addban form input[name=expires]').parent().data('DateTimePicker').getDate().toDate().getTime() / 1000);
+    $.ajax({
+      url: 'index.php?action=addban&ajax=true&authid=' + authid
+      , data: form.serialize()
+      , type: 'post'
+      , dataType: 'json'
+      , success: function(data) {
+        hideLoading();
+        formBody.show();
+        if (data.error) {
+          formBody.prepend(error(data.error));
+        } else {
+          errorRemove();
+          $('#addban').modal('hide');
+          location.reload();
+        }
+      }
+      , error: function(jqXHR) {
+        hideLoading();
+        formBody.show();
+        formBody.prepend(error('Invalid response from server, try again<br />Response: ' + jqXHR.responseText));
+      }
+    });
+  return false;
+  });
+
+  $('#addmute form').submit(function(e) {
+    e.preventDefault();
+
+    var form = $(this)
+    , formBody = form.find('.modal-body');
+
+    if (!form.valid())
+      return false;
+    errorRemove();
+
+    if ($(this).find('input[name=expires]').attr('disabled') === 'disabled') {
+      $(this).find('input[name=expires]').val('');
+    }
+
+    formBody.hide().after('<div id="ajaxLoading"><span id="loadingSmall"></span><br />Saving</div>');
+    showLoading('loadingSmall');
+    $('#addmute form input[name=expiresTimestamp]').val($('#addmute form input[name=expires]').parent().data('DateTimePicker').getDate().toDate().getTime() / 1000);
+    $.ajax({
+      url: 'index.php?action=addmute&ajax=true&authid=' + authid
+      , data: form.serialize()
+      , type: 'post'
+      , dataType: 'json'
+      , success: function(data) {
+        hideLoading();
+        formBody.show();
+        if (data.error) {
+          formBody.prepend(error(data.error));
+        } else {
+          errorRemove();
+          $('#addmute').modal('hide');
+          location.reload();
+        }
+      }
+      , error: function(jqXHR) {
+        hideLoading();
+        formBody.show();
+        formBody.prepend(error('Invalid response from server, try again<br />Response: ' + jqXHR.responseText));
+      }
+    });
+  return false;
   });
 
   $('#editban form').submit(function(e) {

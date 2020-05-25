@@ -325,6 +325,19 @@ else if(isset($_SESSION['failed_attempts']) && $_SESSION['failed_attempts'] > 4)
 				<tr>
 					<td>'.$language['admin']['viewplayer']['kicks'].'</td>
 					<td><input type="checkbox" name="kicks"'.((isset($settings['player_kicks']) && $settings['player_kicks']) || !isset($settings['player_kicks']) ? ' checked="checked"' : '').' /></td>
+				</tr>
+				<tr>
+					<td>'.$language['admin']['viewplayer']['punish'].'</td>
+					<td>
+						<label for="overwrite">Overwrite</label>
+						<input type="radio" name="punish" id="overwrite" value="1"'.(($settings['punish'] == 1) ? ' checked' : '').'/>
+						&nbsp
+						<label for="delete">Delete</label>
+						<input type="radio" name="punish" id="delete" value="2"'.(($settings['punish'] == 2) ? ' checked' : '').'/>
+						&nbsp
+						<label for="stop">Stop</label>
+						<input type="radio" name="punish" id="stop" value="3"'.(($settings['punish'] == 3) ? ' checked' : '').'/>
+					</td>
 				</tr>';
 	} ?>
 
