@@ -65,7 +65,7 @@
     "semver": "7.3.2",
     "url-loader": "4.1.0",
     "uuid-parse": "1.1.0",
-    "validator": "13.0.0",
+    "validator": "13.1.1",
     "web-push": "3.4.4"
   },
   "devDependencies": {
