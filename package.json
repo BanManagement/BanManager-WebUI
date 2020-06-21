@@ -39,7 +39,7 @@
     "hibp": "9.0.0",
     "inquirer": "7.2.0",
     "js-yaml": "3.14.0",
-    "koa": "2.12.1",
+    "koa": "2.13.0",
     "koa-bodyparser": "4.3.0",
     "koa-pino-logger": "2.1.3",
     "koa-session": "5.13.1",
