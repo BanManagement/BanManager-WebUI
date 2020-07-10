@@ -37,7 +37,7 @@
     "graphql-tools": "4.0.8",
     "graphql-type-json": "0.3.2",
     "hibp": "9.0.0",
-    "inquirer": "7.3.0",
+    "inquirer": "7.3.1",
     "js-yaml": "3.14.0",
     "koa": "2.13.0",
     "koa-bodyparser": "4.3.0",
