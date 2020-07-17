@@ -17,14 +17,14 @@ This version of BanManager-WebUI is no longer maintained or supported. Please se
 
 ##### Preperation
 
-1. Clone this repository into your Nginx/Apache document root:  
+1. Clone this repository into your Nginx/Apache document root:
   `git clone https://github.com/BanManagement/BanManager-WebUI.git /var/www/banmanager`
-1. Make sure cache is writeable:  
-  `cd /var/www/banmanager`  
-  `chmod 777 cache/`  
-1. Rename settingsRename.php to settings.php:  
+1. Make sure cache is writeable:
+  `cd /var/www/banmanager`
+  `chmod 777 cache/`
+1. Rename settingsRename.php to settings.php:
   `cp settingsRename.php settings.php`
-1. Make sure settings file is writeable:  
+1. Make sure settings file is writeable:
   `chmod 777 settings.php`
 1. Open and adjust the settings and make sure you're adjusted `$settings['password']`.
 
@@ -50,13 +50,13 @@ In case you run into an `Invalid response from server` error, set `$settings['de
 In case you want to help us and contribute to the project you need to compile the assets with the assistence of Grunt:
 
 1. Make sure you've installed `node` and `npm`
-1. Install Grunt, Bower and Linter and code checker:  
+1. Install Grunt, Bower and Linter and code checker:
   `npm install -g grunt-cli bower jshint jscs`
-1. Install all dependencies:  
+1. Install all dependencies:
   `npm install`
-1. Install web libraries:  
+1. Install web libraries:
   `bower install`
-1. Run grunt task to compile assets and start watching for local file changes:  
+1. Run grunt task to compile assets and start watching for local file changes:
   `grunt dev`
 
 If you want to commit your changes, exclude the `dev` argument.
@@ -101,4 +101,4 @@ You can find a working demo over here: http://bans.yeahwh.at
 
 ### Version
 
-1.5.8
+1.6.0
