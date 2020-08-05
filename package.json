@@ -14,7 +14,7 @@
     "@nateradebaugh/react-datetime": "4.4.2",
     "@next/bundle-analyzer": "9.5.1",
     "@oclif/command": "1.8.0",
-    "@oclif/config": "1.16.0",
+    "@oclif/config": "1.17.0",
     "@oclif/plugin-help": "2.2.3",
     "apollo-server-koa": "2.16.1",
     "apollo-server-plugin-response-cache": "0.5.3",
