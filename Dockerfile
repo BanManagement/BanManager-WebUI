@@ -1,7 +1,6 @@
 # ---- Base Node ----
 FROM node:12-alpine AS base
-## Install build toolchain, install node deps and compile native add-ons
-RUN apk add --no-cache python make g++ git
+
 # set working directory
 WORKDIR /usr/src/app
 # copy project file
@@ -10,6 +9,8 @@ COPY package*.json ./
 #
 # ---- Dependencies ----
 FROM base AS dependencies
+## Install build toolchain, install node deps and compile native add-ons
+RUN apk add --no-cache python make g++ git
 # install node packages
 RUN npm set progress=false && npm config set depth 0
 ENV NPM_CONFIG_LOGLEVEL warn
