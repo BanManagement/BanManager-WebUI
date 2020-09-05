@@ -8,13 +8,15 @@ COPY package*.json ./
 
 #
 # ---- Dependencies ----
-FROM base AS dependencies
+FROM base AS basedependencies
 ## Install build toolchain, install node deps and compile native add-ons
 RUN apk add --no-cache python make g++ git
+
+FROM basedependencies as dependencies
 # install node packages
 RUN npm set progress=false && npm config set depth 0
 ENV NPM_CONFIG_LOGLEVEL warn
-RUN npm ci --no-audit --only=production
+RUN npm ci --no-audit
 
 #
 # ---- Release ----
