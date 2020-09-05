@@ -1,31 +1,29 @@
+const { parse, unparse } = require('uuid-parse')
 const { GraphQLScalarType } = require('graphql')
-const { GraphQLError } = require('graphql/error')
 const { Kind } = require('graphql/language')
-// eslint-disable-next-line max-len
-const regex = /^([[{(]?)([0-9A-F]{8})([:-]?)([0-9A-F]{4})([:-]?)([0-9A-F]{4})([:-]?)([0-9A-F]{4})([:-]?)([0-9A-F]{12})([\]})]?)$/i
+const { isUUID } = require('validator')
+const ExposedErrpr = require('../../../data/exposed-error')
 
 module.exports = new GraphQLScalarType(
   {
     name: 'UUID',
     serialize: value => {
-      return value
+      if (!Buffer.isBuffer(value)) return value
+
+      return unparse(value)
     },
     parseValue: value => {
-      if (!regex.test(value)) {
-        throw new GraphQLError('Query error: Not a valid UUID')
+      if (!isUUID(value)) {
+        throw new ExposedErrpr('Type Error: Invalid UUID')
       }
 
-      return value
+      return parse(value, Buffer.alloc(16))
     },
     parseLiteral: ast => {
-      if (ast.kind !== Kind.STRING) {
-        throw new GraphQLError('Query error: Can only parse strings got a: ' + ast.kind, [ast])
+      if (ast.kind === Kind.STRING && isUUID(ast.value)) {
+        return parse(ast.value, Buffer.alloc(16))
       }
 
-      if (!regex.test(ast.value)) {
-        throw new GraphQLError('Query error: Not a valid UUID: ', [ast])
-      }
-
-      return ast.value
+      return null
     }
   })

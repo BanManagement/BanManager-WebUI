@@ -5,19 +5,19 @@ import { useApi } from '../utils'
 const metaMap = {
   bans: {
     title: 'Recent Bans',
-    operation: 'listBans'
+    operation: 'listPlayerBans'
   },
   mutes: {
     title: 'Recent Mutes',
-    operation: 'listMutes'
+    operation: 'listPlayerMutes'
   },
   reports: {
     title: 'Recept Reports',
-    operation: 'listReports'
+    operation: 'listPlayerReports'
   },
   warnings: {
     title: 'Recent Warnings',
-    operation: 'listWarnings'
+    operation: 'listPlayerWarnings'
   }
 }
 

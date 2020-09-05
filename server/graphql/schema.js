@@ -6,7 +6,9 @@ const resolvers = require('./resolvers')
 const schemaDirectives = {
   constraint: require('graphql-constraint-directive'),
   allowIf: require('./directives/allow-if'),
-  allowIfLoggedIn: require('./directives/allow-if-logged-in')
+  allowIfLoggedIn: require('./directives/allow-if-logged-in'),
+  sqlRelation: require('./directives/sql-relation'),
+  sqlTable: require('./directives/sql-table')
 }
 const findOriginalError = (error) => {
   if (error.originalError) return findOriginalError(error.originalError)
@@ -22,7 +24,7 @@ module.exports = ({ logger }) => {
     schemaDirectives,
     validationRules: [depthLimit(10)],
     tracing: process.env.NODE_ENV !== 'production',
-    cacheControl: true,
+    cacheControl: process.env.NODE_ENV !== 'test',
     context: ({ ctx: { log, session, state } }) => ({
       log,
       session,

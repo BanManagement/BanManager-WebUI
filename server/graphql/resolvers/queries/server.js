@@ -1,4 +1,3 @@
-const { unparse } = require('uuid-parse')
 const ExposedError = require('../../../data/exposed-error')
 
 module.exports = async function server (obj, { id }, { state: { serversPool } }) {
@@ -6,10 +5,11 @@ module.exports = async function server (obj, { id }, { state: { serversPool } })
 
   const server = Object.assign({}, serversPool.get(id).config)
 
-  server.console = { id: unparse(server.console) }
+  server.console = { id: server.console }
 
   const now = Math.floor(Date.now() / 1000)
-  const [[{ mysqlTime }]] = await serversPool.get(id).execute(`SELECT (${now} - UNIX_TIMESTAMP()) AS mysqlTime`)
+  const [data] = await serversPool.get(id).pool.raw(`SELECT (${now} - UNIX_TIMESTAMP()) AS mysqlTime`)
+  const mysqlTime = data[0].mysqlTime
   const offset = mysqlTime > 0 ? Math.floor(mysqlTime) : Math.ceil(mysqlTime)
 
   server.timeOffset = offset * 1000

@@ -3,7 +3,6 @@ const { createPlayer } = require('./fixtures')
 const supertest = require('supertest')
 const createApp = require('../app')
 const { createSetup, getAuthPassword } = require('./lib')
-const { insert } = require('../data/udify')
 
 describe('Mutation delete role', () => {
   let setup
@@ -144,8 +143,8 @@ describe('Mutation delete role', () => {
     const cookie = await getAuthPassword(request, 'admin@banmanagement.com')
     const player = createPlayer()
 
-    await insert(setup.dbPool, 'bm_web_roles', { name: 'Test', parent_role_id: 2 })
-    await insert(setup.dbPool, 'bm_web_player_roles', { player_id: player.id, role_id: 4 })
+    await setup.dbPool('bm_web_roles').insert({ name: 'Test', parent_role_id: 2 })
+    await setup.dbPool('bm_web_player_roles').insert({ player_id: player.id, role_id: 4 })
 
     const { body, statusCode } = await request
       .post('/graphql')
@@ -166,8 +165,7 @@ describe('Mutation delete role', () => {
     assert.strictEqual(body.data.deleteRole.id, '4')
     assert.strictEqual(body.data.deleteRole.name, 'Test')
 
-    const [results] = await setup.dbPool.execute('SELECT * FROM bm_web_player_roles WHERE player_id = ?'
-      , [player.id])
+    const results = await setup.dbPool('bm_web_player_roles').where('player_id', player.id)
 
     assert.strictEqual(results.length, 0)
   })

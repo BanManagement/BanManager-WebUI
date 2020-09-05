@@ -1,123 +1,104 @@
-const { parse, unparse } = require('uuid-parse')
+const { parseResolveInfo, simplifyParsedResolveInfoFragmentWithType } = require('graphql-parse-resolve-info')
+const { getSql } = require('../../utils')
 const ExposedError = require('../../../data/exposed-error')
+const getServer = require('./server')
+const viewPerms = [
+  ['view.own', 'actor_id'],
+  ['view.assigned', 'assignee_id'],
+  ['view.reported', 'player_id']
+]
 
-// eslint-disable-next-line complexity
-module.exports = async function listReports (obj, { serverId, actor, assigned, player, state: stateId, limit, offset, order }, { state }) {
+module.exports = async function listPlayerReports (obj, { serverId, actor, assigned, player, state: stateId, limit, offset, order }, { session, state }, info) {
+  if (!state.serversPool.has(serverId)) throw new ExposedError('Server does not exist')
+  if (limit > 50) throw new ExposedError('Limit too large')
+
+  const aclFilter = []
+  const handleAclFilter = query => {
+    for (const [field, value] of aclFilter) {
+      query.orWhere(field, value)
+    }
+  }
+
+  if (!state.acl.hasServerPermission(serverId, 'player.reports', 'view.any')) {
+    if (!session || !session.playerId) return { total: 0, records: [] }
+
+    const deny = viewPerms.every(([perm]) => state.acl.hasServerPermission(serverId, 'player.reports', perm) === false)
+
+    if (deny) return { total: 0, records: [] }
+
+    viewPerms.forEach(([perm, field]) => {
+      const allowed = state.acl.hasServerPermission(serverId, 'player.reports', perm)
+
+      if (allowed) aclFilter.push([field, session.playerId])
+    })
+  }
+
+  const server = state.serversPool.get(serverId)
+  const tables = server.config.tables
+  const parsedResolveInfoFragment = parseResolveInfo(info)
+  const { fields } = simplifyParsedResolveInfoFragmentWithType(parsedResolveInfoFragment, info.returnType)
+  const data = { server: await getServer(obj, { id: serverId }, { state }, info) }
   const filter = {}
 
-  if (limit > 50) throw new ExposedError('Limit too large')
-  if (!limit) limit = 10
+  if (actor) filter.actor_id = actor
+  if (assigned) filter.assignee_id = assigned
+  if (player) filter.player_id = player
+  if (stateId) filter.state_id = stateId
 
-  if (actor) filter['r.actor_id'] = parse(actor, Buffer.alloc(16))
-  if (assigned) filter['r.assignee_id'] = parse(assigned, Buffer.alloc(16))
-  if (player) filter['r.player_id'] = parse(player, Buffer.alloc(16))
-  if (stateId) filter['r.state_id'] = stateId
+  if (fields.total) {
+    const { total } = await server.pool(tables.playerReports)
+      .select(server.pool.raw('COUNT(*) as total'))
+      .where(filter)
+      .where(handleAclFilter)
+      .first()
 
-  let totalQuery = `SELECT COUNT(*) AS total FROM
-    ?? r
-        LEFT JOIN
-    ?? rps ON r.state_id = rps.id
-        LEFT JOIN
-    ?? a ON r.actor_id = a.id
-        JOIN
-    ?? p ON r.player_id = p.id
-        LEFT JOIN
-    ?? ap ON r.assignee_id = ap.id`
-  let query = `SELECT
-    r.id,
-    r.reason,
-    p.id AS player_id,
-    p.name AS player_name,
-    actor_id,
-    a.name AS actor_name,
-    assignee_id,
-    ap.name AS assignee_name,
-    created,
-    updated,
-    state_id,
-    rps.name AS state_name
-  FROM
-    ?? r
-        LEFT JOIN
-    ?? rps ON r.state_id = rps.id
-        LEFT JOIN
-    ?? a ON r.actor_id = a.id
-        JOIN
-    ?? p ON r.player_id = p.id
-        LEFT JOIN
-    ?? ap ON r.assignee_id = ap.id`
-  const filterKeys = Object.keys(filter)
-  const filterValues = Object.values(filter)
-
-  if (filterKeys.length) {
-    const whereQuery = ' WHERE ' + filterKeys.map(key => {
-      return `${key} = ?`
-    }).join(' AND ')
-
-    totalQuery += whereQuery
-    query += whereQuery
+    data.total = total
   }
 
-  if (order) {
-    query += ' ORDER BY ' + order.replace('_', ' ')
-  }
+  if (fields.records) {
+    const query = getSql(info.schema, server, fields.records, 'playerReports')
+      .where(filter)
+      .where(handleAclFilter)
+      .limit(limit)
+      .offset(offset)
 
-  query += ' LIMIT ?, ?'
+    if (order) {
+      query.orderByRaw(order.replace('_', ' '))
+    }
 
-  const data = { total: 0, records: [] }
+    let calculateAcl = false
 
-  // @TODO Clean up
-  for (const [id, server] of state.serversPool) {
-    if (serverId && serverId !== id) continue
+    if (fields.records.fieldsByTypeName.PlayerReport.acl) {
+      calculateAcl = true
+      query.select(['actor_id', 'player_id', 'assignee_id'].map(f => `${tables.playerReports}.${f}`))
+    }
 
-    const tables = server.config.tables
-    const actualQuery = query
-      .replace('??', tables.playerReports)
-      .replace('??', tables.playerReportStates)
-      .replace('??', tables.players)
-      .replace('??', tables.players)
-      .replace('??', tables.players)
-    const actualTotalQuery = totalQuery
-      .replace('??', tables.playerReports)
-      .replace('??', tables.playerReportStates)
-      .replace('??', tables.players)
-      .replace('??', tables.players)
-      .replace('??', tables.players)
+    const results = await query.exec()
 
-    const [[{ total }]] = await state.dbPool.execute(actualTotalQuery, filterValues)
-    const [results] = await server.execute(actualQuery, [...filterValues, offset, limit])
+    data.records = results
 
-    data.total += total
-
-    data.records = data.records.concat(results.map(result => {
-      const report = {
-        id: result.id,
-        reason: result.reason,
-        created: result.created,
-        updated: result.updated,
-        player: {
-          id: unparse(result.player_id),
-          name: result.player_name
-        },
-        actor: {
-          id: unparse(result.actor_id),
-          name: result.actor_name
-        },
-        state: {
-          id: result.state_id,
-          name: result.state_name
-        },
-        server: server.config
-      }
-
-      if (result.assignee_id) {
-        report.assignee = {
-          id: unparse(result.assignee_id), name: result.assignee_name
+    if (calculateAcl) {
+      for (const result of results) {
+        const acl = {
+          comment: state.acl.hasServerPermission(serverId, 'player.reports', 'comment.any') ||
+            (state.acl.hasServerPermission(serverId, 'player.reports', 'comment.own') && state.acl.owns(result.actor_id)) ||
+            (state.acl.hasServerPermission(serverId, 'player.reports', 'comment.assigned') && state.acl.owns(result.assignee_id)) ||
+            (state.acl.hasServerPermission(serverId, 'player.reports', 'comment.reported') && state.acl.owns(result.player_id)),
+          assign: state.acl.hasServerPermission(serverId, 'player.reports', 'update.assign.any') ||
+            (state.acl.hasServerPermission(serverId, 'player.reports', 'update.assign.own') && state.acl.owns(result.actor_id)) ||
+            (state.acl.hasServerPermission(serverId, 'player.reports', 'update.assign.assigned') && state.acl.owns(result.assignee_id)) ||
+            (state.acl.hasServerPermission(serverId, 'player.reports', 'update.assign.reported') && state.acl.owns(result.player_id)),
+          state: state.acl.hasServerPermission(serverId, 'player.reports', 'update.state.any') ||
+            (state.acl.hasServerPermission(serverId, 'player.reports', 'update.state.own') && state.acl.owns(result.actor_id)) ||
+            (state.acl.hasServerPermission(serverId, 'player.reports', 'update.state.assigned') && state.acl.owns(result.assignee_id)) ||
+            (state.acl.hasServerPermission(serverId, 'player.reports', 'update.state.reported') && state.acl.owns(result.player_id)),
+          delete: state.acl.hasServerPermission(serverId, 'player.reports', 'delete.any') ||
+            (state.acl.hasServerPermission(serverId, 'player.reports', 'delete.assigned') && state.acl.owns(result.assignee_id))
         }
-      }
 
-      return report
-    }))
+        result.acl = acl
+      }
+    }
   }
 
   return data

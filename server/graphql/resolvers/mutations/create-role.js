@@ -1,24 +1,22 @@
 const { find } = require('lodash')
-const udify = require('../../../data/udify')
+const ExposedError = require('../../../data/exposed-error')
+const role = require('../queries/role')
 
-module.exports = async function createRole (obj
-  , { input: { name, parent, resources } }
-  , { log, state: { dbPool, loaders } }) {
-  const conn = await dbPool.getConnection()
+module.exports = async function createRole (obj, { input: { name, parent, resources } }, { state }, info) {
+  if (parent < 1 || parent > 3) throw new ExposedError('Invalid parent')
+
   let id
 
-  try {
-    await conn.beginTransaction()
-    const [{ insertId }] = await udify.insert(conn, 'bm_web_roles', { name, parent_role_id: parent })
-    const [allResources] = await conn.execute('SELECT resource_id AS id FROM bm_web_resources')
-
-    id = insertId
+  await state.dbPool.transaction(async trx => {
+    const [insertId] = await trx('bm_web_roles').insert({ name, parent_role_id: parent }, ['id'])
+    const allResources = await trx('bm_web_resources').select('resource_id AS id')
 
     for (const allResource of allResources) {
-      const resource = find(resources, { id: allResource.id })
+      // eslint-disable-next-line eqeqeq
+      const resource = find(resources, (r) => r.id == allResource.id)
 
       if (!resource) {
-        await udify.insert(conn, 'bm_web_role_resources', { value: 0, role_id: id, resource_id: allResource.id })
+        await trx('bm_web_role_resources').insert({ value: 0, role_id: insertId, resource_id: allResource.id })
         continue
       }
 
@@ -27,11 +25,11 @@ module.exports = async function createRole (obj
         .map(perm => perm.id)
 
       if (!ids.length) {
-        await udify.insert(conn, 'bm_web_role_resources', { value: 0, role_id: id, resource_id: allResource.id })
+        await trx('bm_web_role_resources').insert({ value: 0, role_id: insertId, resource_id: allResource.id })
         continue
       }
 
-      await conn.query(`INSERT INTO bm_web_role_resources
+      await trx.raw(`INSERT INTO bm_web_role_resources
         (role_id, resource_id, value)
         VALUES (?, ?, (
           SELECT
@@ -41,21 +39,13 @@ module.exports = async function createRole (obj
           WHERE
             permission_id IN (?)
         ))
-      `, [id, resource.id, ids])
+      `, [insertId, resource.id, ids])
     }
 
-    await conn.commit()
-  } catch (e) {
-    log.error(e)
+    id = insertId
 
-    if (!conn.connection._fatalError) {
-      await conn.rollback()
-    }
-  } finally {
-    conn.release()
-  }
+    await trx.commit()
+  })
 
-  if (!id) throw new Error('An error occurred')
-
-  return loaders.role.ids.load(id)
+  return role(obj, { id }, { state }, info)
 }

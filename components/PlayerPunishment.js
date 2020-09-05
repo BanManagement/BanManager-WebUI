@@ -1,30 +1,26 @@
 import React, { useState } from 'react'
-import { Button, Card, Confirm, Icon, Label } from 'semantic-ui-react'
+import { Button, Card, Confirm, Label } from 'semantic-ui-react'
+import { format, fromUnixTime } from 'date-fns'
 import { fromNow, useApi } from '../utils'
 
 const metaMap = {
-  bans: {
-    icon: 'ban',
+  ban: {
     editPath: 'ban',
     recordType: 'PlayerBan'
   },
-  kicks: {
-    icon: 'hand paper',
+  kick: {
     editPath: 'kick',
     recordType: 'PlayerKick'
   },
-  mutes: {
-    icon: 'mute',
+  mute: {
     editPath: 'mute',
     recordType: 'PlayerMute'
   },
-  notes: {
-    icon: 'sticky note outline',
+  note: {
     editPath: 'note',
     recordType: 'PlayerNote'
   },
-  warnings: {
-    icon: 'warning',
+  warning: {
     editPath: 'warning',
     recordType: 'PlayerWarning'
   }
@@ -63,19 +59,18 @@ export default function PlayerPunishment ({ punishment, server, type }) {
 
   let label = ''
 
-  if (punishment.expires === 0) label = <Label color='red' horizontal>Permanent</Label>
-  if (punishment.expires) label = <Label color='yellow' horizontal>{fromNow(punishment.expires)}</Label>
+  if (punishment.expires === 0) label = <Label style={{ float: 'right' }} color='red' horizontal>Permanent</Label>
+  if (punishment.expires) label = <Label style={{ float: 'right' }} color='yellow' horizontal>{fromNow(punishment.expires)}</Label>
+
   const extraButtonsAmount = [punishment.acl.yours, punishment.acl.update, punishment.acl.delete].filter(x => x).length
   const extraButtonAmountWord = buttonWords[extraButtonsAmount]
+  const dateFormat = 'yyyy-MM-dd HH:mm:ss'
 
   return (
     <Card fluid>
       <Card.Content>
-        <Icon name={meta.icon} style={{ float: 'right' }} size='large' />
-        <Card.Header>{server.name}</Card.Header>
-        <Card.Meta>
-          {label} {punishment.actor.name}
-        </Card.Meta>
+        <Card.Header>{punishment.actor.name} {label}</Card.Header>
+        <Card.Meta>{server.name} {format(fromUnixTime(punishment.created), dateFormat)}</Card.Meta>
         <Card.Description>{punishment.reason || punishment.message}</Card.Description>
       </Card.Content>
       {!!extraButtonsAmount &&

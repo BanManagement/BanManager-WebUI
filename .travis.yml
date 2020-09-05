@@ -1,8 +1,6 @@
 language: node_js
 node_js:
-- 10
 - 12
-- 13
 cache: npm
 services:
   - mysql
@@ -26,7 +24,6 @@ jobs:
   include:
     - stage: deploy
       node_js: 12
-      script: skip
       if: branch = master
       deploy:
         provider: script

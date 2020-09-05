@@ -7,7 +7,7 @@ export default function PlayerCommentForm ({ onFinish, parseVariables, query }) 
   const [loading, setLoading] = useState(false)
   const [variables, setVariables] = useState({})
   const [inputState, setInputState] = useState({
-    message: ''
+    comment: ''
   })
 
   useEffect(() => setVariables(parseVariables(inputState)), [inputState])
@@ -26,6 +26,7 @@ export default function PlayerCommentForm ({ onFinish, parseVariables, query }) 
     if (!data) return
     if (Object.keys(data).some(key => !!data[key].id)) {
       setLoading(false)
+      setInputState({ ...inputState, comment: '' })
       onFinish(data)
     }
   }, [data])
@@ -43,7 +44,7 @@ export default function PlayerCommentForm ({ onFinish, parseVariables, query }) 
   return (
     <Form size='large' onSubmit={onSubmit} error loading={loading}>
       <ErrorMessages {...errors} />
-      <Form.TextArea name='message' maxLength='250' value={inputState.message} onChange={handleChange} />
+      <Form.TextArea name='comment' maxLength='250' value={inputState.comment} onChange={handleChange} />
       <Form.Button content='Reply' labelPosition='left' icon='edit' primary />
     </Form>
   )

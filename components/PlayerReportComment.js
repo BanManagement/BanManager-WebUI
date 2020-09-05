@@ -3,12 +3,15 @@ import { Comment, Confirm } from 'semantic-ui-react'
 import ErrorMessages from './ErrorMessages'
 import { fromNow, useApi } from '../utils'
 
-export default function PlayerReportComment ({ id, actor, created, message, acl, serverId, onFinish }) {
+export default function PlayerReportComment ({ id, actor, created, comment, acl, serverId, onFinish }) {
   const [state, setState] = useState({ deleteConfirmShow: false, deleting: false })
   const { load, data, loading, errors } = useApi({
     query: `mutation deleteReportComment($id: ID!, $serverId: ID!) {
-      deleteReportComment(comment: $id, serverId: $serverId) {
+      deleteReportComment(id: $id, serverId: $serverId) {
         id
+        acl {
+          delete
+        }
       }
     }`,
     variables: { id, serverId }
@@ -50,7 +53,7 @@ export default function PlayerReportComment ({ id, actor, created, message, acl,
         <Comment.Metadata>
           <div>{fromNow(created)}</div>
         </Comment.Metadata>
-        <Comment.Text>{message}</Comment.Text>
+        <Comment.Text>{comment}</Comment.Text>
         <Comment.Actions>
           {acl.delete &&
             <Comment.Action onClick={showConfirmDelete}>Delete</Comment.Action>}

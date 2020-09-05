@@ -16,10 +16,11 @@ module.exports = async (ctx, next) => {
 
   if (valid(ctx.session)) {
     // Check if session requires invalidating due to password change
-    const [[checkResult]] = await state.dbPool.execute(
-      'SELECT updated FROM bm_web_users WHERE player_id = ? AND updated < ?'
-      , [ctx.session.playerId, ctx.session.updated]
-    )
+    const checkResult = await dbPool('bm_web_users')
+      .select('updated')
+      .where('player_id', ctx.session.playerId)
+      .andWhere('updated', '<', ctx.session.updated)
+      .first()
 
     if (checkResult) {
       // Password has changed recently, invalidate ctx.session
@@ -31,17 +32,11 @@ module.exports = async (ctx, next) => {
     // They're a guest, load Guest role permissions
     resourceValues = await loadRoleResourceValues(dbPool, 1)
   } else {
-    const [playerRoleResults] = await dbPool.execute(`
-      SELECT
-        r.name, rr.value
-      FROM
-        bm_web_role_resources rr
-          INNER JOIN
-        bm_web_resources r ON rr.resource_id = r.resource_id
-          LEFT JOIN
-        bm_web_player_roles pr ON pr.role_id = rr.role_id
-      WHERE
-        pr.player_id = ?`, [ctx.session.playerId])
+    const playerRoleResults = await dbPool('bm_web_role_resources AS rr')
+      .select('r.name AS name', 'rr.value AS value')
+      .innerJoin('bm_web_resources AS r', 'rr.resource_id', 'r.resource_id')
+      .leftJoin('bm_web_player_roles', 'bm_web_player_roles.role_id', 'rr.role_id')
+      .where('bm_web_player_roles.player_id', ctx.session.playerId)
 
     if (!playerRoleResults.length) {
       // They're a guest, load Guest role permissions
@@ -61,17 +56,11 @@ module.exports = async (ctx, next) => {
     }
 
     // Check server specific roles
-    const [serverRoleResults] = await dbPool.execute(`
-      SELECT
-        r.name, rr.value, psr.server_id
-      FROM
-        bm_web_role_resources rr
-          INNER JOIN
-        bm_web_resources r ON rr.resource_id = r.resource_id
-          LEFT JOIN
-        bm_web_player_server_roles psr ON psr.role_id = rr.role_id
-      WHERE
-        psr.player_id = ?`, [ctx.session.playerId])
+    const serverRoleResults = await dbPool('bm_web_role_resources AS rr')
+      .select('r.name AS name', 'rr.value AS value')
+      .innerJoin('bm_web_resources AS r', 'rr.resource_id', 'r.resource_id')
+      .leftJoin('bm_web_player_server_roles', 'bm_web_player_server_roles.role_id', 'rr.role_id')
+      .where('bm_web_player_server_roles.player_id', ctx.session.playerId)
 
     if (serverRoleResults.length) {
       serverRoleResults.forEach((row) => {
@@ -133,15 +122,11 @@ module.exports = async (ctx, next) => {
 }
 
 async function loadRoleResourceValues (dbPool, roleId) {
-  const [results] = await dbPool.execute(`
-    SELECT
-      r.name, rr.value
-    FROM
-      bm_web_role_resources rr
-        INNER JOIN
-      bm_web_resources r ON rr.resource_id = r.resource_id
-    WHERE
-      rr.role_id = ?`, [roleId])
+  const results = await dbPool('bm_web_role_resources AS rr')
+    .select('r.name AS name', 'rr.value AS value')
+    .innerJoin('bm_web_resources AS r', 'rr.resource_id', 'r.resource_id')
+    .leftJoin('bm_web_player_server_roles', 'bm_web_player_server_roles.role_id', 'rr.role_id')
+    .where('rr.role_id', roleId)
   const resourceValues = {}
 
   results.forEach((row) => {
@@ -153,13 +138,10 @@ async function loadRoleResourceValues (dbPool, roleId) {
 
 async function loadPermissionValues (dbPool) {
   const load = async () => {
-    const [results] = await dbPool.execute(`
-      SELECT
-        rp.resource_id, r.name AS resource_name, rp.name, rp.value
-      FROM
-        bm_web_resource_permissions rp
-          INNER JOIN
-        bm_web_resources r ON r.resource_id = rp.resource_id`)
+    const results = await dbPool('bm_web_resource_permissions AS rp')
+      .column({ resource_id: 'rp.resource_id', resource_name: 'r.name', name: 'rp.name', value: 'rp.value' })
+      .select()
+      .innerJoin('bm_web_resources AS r', 'r.resource_id', 'rp.resource_id')
     const permissionValues = {}
 
     results.forEach((row) => {

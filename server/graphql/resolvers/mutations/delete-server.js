@@ -3,9 +3,9 @@ const ExposedError = require('../../../data/exposed-error')
 module.exports = async function deleteServer (obj, { id }, { state }) {
   if (!state.serversPool.has(id)) throw new ExposedError('Server does not exist')
 
-  await state.dbPool.execute('DELETE FROM bm_web_servers WHERE id = ?', [id])
+  await state.dbPool('bm_web_servers').where('id', id).del()
 
-  state.serversPool.get(id).pool.end()
+  state.serversPool.get(id).pool.destroy()
   state.serversPool.delete(id)
 
   return id

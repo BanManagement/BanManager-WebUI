@@ -7,7 +7,7 @@ export default function PlayerHeader ({ id, colour }) {
   const { loading, data, errors } = useApi({
     variables: { id }, query: `
     query player($id: UUID!) {
-      player(id: $id) {
+      player(player: $id) {
         id
         name
         lastSeen

@@ -23,14 +23,3 @@ module.exports.tables = {
   serverLogs: 'bm_server_logs',
   playerReportLogs: 'bm_report_logs'
 }
-
-const enums = {
-  PlayerBan: { table: 'playerBans', resource: 'player.bans' },
-  PlayerKick: { table: 'playerKicks', resource: 'player.kicks' },
-  PlayerMute: { table: 'playerMutes', resource: 'player.mutes' },
-  PlayerNote: { table: 'playerNotes', resource: 'player.notes' },
-  PlayerWarning: { table: 'playerWarnings', resource: 'player.warnings' }
-}
-
-module.exports.recordToTable = (type) => enums[type].table
-module.exports.recordToResource = (type) => enums[type].record

@@ -3,11 +3,10 @@ const ExposedError = require('../../../data/exposed-error')
 module.exports = async function me (obj, info, { session, state }) {
   if (!session || !session.playerId) throw new ExposedError('Invalid session')
 
-  const [[checkResult]] = await state.dbPool.execute(
-    'SELECT email FROM bm_web_users WHERE player_id = ?', [session.playerId])
+  const [checkResult] = await state.dbPool('bm_web_users').select('email').where('player_id', session.playerId)
 
   const me = {
-    ...await state.loaders.player.ids.load(session.playerId),
+    ...await state.loaders.player.load({ id: session.playerId, fields: ['id', 'name'] }),
     hasAccount: !!checkResult,
     email: checkResult ? checkResult.email : null,
     session: {

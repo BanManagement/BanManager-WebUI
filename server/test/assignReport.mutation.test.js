@@ -4,7 +4,6 @@ const supertest = require('supertest')
 const createApp = require('../app')
 const { createSetup, getAuthPassword, getAccount, setTempRole } = require('./lib')
 const { createPlayer, createReport } = require('./fixtures')
-const { insert } = require('../data/udify')
 
 describe('Mutation assignReport', () => {
   let setup
@@ -26,15 +25,15 @@ describe('Mutation assignReport', () => {
     const player = createPlayer()
     const report = createReport(player, player)
 
-    await insert(pool, 'bm_players', player)
-    const [{ insertId }] = await insert(pool, 'bm_player_reports', report)
+    await pool('bm_players').insert(player)
+    const [inserted] = await pool('bm_player_reports').insert(report, ['id'])
 
     const { body, statusCode } = await request
       .post('/graphql')
       .set('Accept', 'application/json')
       .send({
         query: `mutation assignReport {
-        assignReport(player: "${unparse(player.id)}", serverId: "${server.id}", report: ${insertId}) {
+        assignReport(player: "${unparse(player.id)}", serverId: "${server.id}", report: ${inserted}) {
           id
         }
       }`
@@ -54,10 +53,10 @@ describe('Mutation assignReport', () => {
     const player = createPlayer()
     const report = createReport(player, player)
 
-    await insert(pool, 'bm_players', player)
+    await pool('bm_players').insert(player)
 
-    const [{ insertId }] = await insert(pool, 'bm_player_reports', report)
-    const role = await setTempRole(setup.dbPool, account, 'player.reports', 'update.assign.any')
+    const [inserted] = await pool('bm_player_reports').insert(report, ['id'])
+    const role = await setTempRole(setup.dbPool, account, 'player.reports', 'update.assign.any', 'view.any')
 
     const { body, statusCode } = await request
       .post('/graphql')
@@ -65,7 +64,7 @@ describe('Mutation assignReport', () => {
       .set('Accept', 'application/json')
       .send({
         query: `mutation assignReport {
-        assignReport(player: "${unparse(player.id)}", serverId: "${server.id}", report: ${insertId}) {
+        assignReport(player: "${unparse(player.id)}", serverId: "${server.id}", report: ${inserted}) {
           id
         }
       }`
@@ -77,7 +76,7 @@ describe('Mutation assignReport', () => {
 
     assert(body)
     assert(body.data)
-    assert.strictEqual(body.data.assignReport.id, '' + insertId)
+    assert.strictEqual(body.data.assignReport.id, '' + inserted)
   })
 
   test('should allow update.assign.own', async () => {
@@ -87,9 +86,9 @@ describe('Mutation assignReport', () => {
     const player = createPlayer()
     const report = createReport(player, account)
 
-    await insert(pool, 'bm_players', player)
+    await pool('bm_players').insert(player)
 
-    const [{ insertId }] = await insert(pool, 'bm_player_reports', report)
+    const [inserted] = await pool('bm_player_reports').insert(report, ['id'])
     const role = await setTempRole(setup.dbPool, account, 'player.reports', 'update.assign.own')
 
     const { body, statusCode } = await request
@@ -98,7 +97,7 @@ describe('Mutation assignReport', () => {
       .set('Accept', 'application/json')
       .send({
         query: `mutation assignReport {
-        assignReport(player: "${unparse(player.id)}", serverId: "${server.id}", report: ${insertId}) {
+        assignReport(player: "${unparse(player.id)}", serverId: "${server.id}", report: ${inserted}) {
           id
         }
       }`
@@ -110,7 +109,7 @@ describe('Mutation assignReport', () => {
 
     assert(body)
     assert(body.data)
-    assert.strictEqual(body.data.assignReport.id, '' + insertId)
+    assert.strictEqual(body.data.assignReport.id, '' + inserted)
   })
 
   test('should allow update.assign.assigned', async () => {
@@ -122,9 +121,9 @@ describe('Mutation assignReport', () => {
 
     report.assignee_id = account.id
 
-    await insert(pool, 'bm_players', player)
+    await pool('bm_players').insert(player)
 
-    const [{ insertId }] = await insert(pool, 'bm_player_reports', report)
+    const [inserted] = await pool('bm_player_reports').insert(report, ['id'])
     const role = await setTempRole(setup.dbPool, account, 'player.reports', 'update.assign.assigned')
 
     const { body, statusCode } = await request
@@ -133,7 +132,7 @@ describe('Mutation assignReport', () => {
       .set('Accept', 'application/json')
       .send({
         query: `mutation assignReport {
-        assignReport(player: "${unparse(player.id)}", serverId: "${server.id}", report: ${insertId}) {
+        assignReport(player: "${unparse(player.id)}", serverId: "${server.id}", report: ${inserted}) {
           id
         }
       }`
@@ -145,7 +144,7 @@ describe('Mutation assignReport', () => {
 
     assert(body)
     assert(body.data)
-    assert.strictEqual(body.data.assignReport.id, '' + insertId)
+    assert.strictEqual(body.data.assignReport.id, '' + inserted)
   })
 
   test('should allow update.assign.reported', async () => {
@@ -155,9 +154,9 @@ describe('Mutation assignReport', () => {
     const player = createPlayer()
     const report = createReport(account, player)
 
-    await insert(pool, 'bm_players', player)
+    await pool('bm_players').insert(player)
 
-    const [{ insertId }] = await insert(pool, 'bm_player_reports', report)
+    const [inserted] = await pool('bm_player_reports').insert(report, ['id'])
     const role = await setTempRole(setup.dbPool, account, 'player.reports', 'update.assign.reported')
 
     const { body, statusCode } = await request
@@ -166,7 +165,7 @@ describe('Mutation assignReport', () => {
       .set('Accept', 'application/json')
       .send({
         query: `mutation assignReport {
-        assignReport(player: "${unparse(player.id)}", serverId: "${server.id}", report: ${insertId}) {
+        assignReport(player: "${unparse(player.id)}", serverId: "${server.id}", report: ${inserted}) {
           id
         }
       }`
@@ -178,7 +177,7 @@ describe('Mutation assignReport', () => {
 
     assert(body)
     assert(body.data)
-    assert.strictEqual(body.data.assignReport.id, '' + insertId)
+    assert.strictEqual(body.data.assignReport.id, '' + inserted)
   })
 
   test('should error if report does not exist', async () => {
@@ -186,7 +185,7 @@ describe('Mutation assignReport', () => {
     const { config: server, pool } = setup.serversPool.values().next().value
     const player = createPlayer()
 
-    await insert(pool, 'bm_players', player)
+    await pool('bm_players').insert(player)
 
     const { body, statusCode } = await request
       .post('/graphql')
@@ -211,7 +210,7 @@ describe('Mutation assignReport', () => {
     const { pool } = setup.serversPool.values().next().value
     const player = createPlayer()
 
-    await insert(pool, 'bm_players', player)
+    await pool('bm_players').insert(player)
 
     const { body, statusCode } = await request
       .post('/graphql')
@@ -259,7 +258,7 @@ describe('Mutation assignReport', () => {
     const { config: server, pool } = setup.serversPool.values().next().value
     const player = createPlayer()
 
-    await insert(pool, 'bm_players', player)
+    await pool('bm_players').insert(player)
 
     const { body, statusCode } = await request
       .post('/graphql')

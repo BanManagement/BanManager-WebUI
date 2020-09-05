@@ -3,11 +3,7 @@ const { unparse } = require('uuid-parse')
 const supertest = require('supertest')
 const createApp = require('../app')
 const { createSetup, getAuthPassword } = require('./lib')
-const {
-  createPlayer
-  , createMute
-} = require('./fixtures')
-const { insert } = require('../data/udify')
+const { createPlayer, createMute } = require('./fixtures')
 
 describe('Query player mute', () => {
   let setup
@@ -32,8 +28,8 @@ describe('Query player mute', () => {
     const actor = createPlayer()
     const mute = createMute(player, actor)
 
-    await insert(pool, 'bm_players', [player, actor])
-    await insert(pool, 'bm_player_mutes', mute)
+    await pool('bm_players').insert([player, actor])
+    await pool('bm_player_mutes').insert(mute)
 
     const { body, statusCode } = await request
       .post('/graphql')

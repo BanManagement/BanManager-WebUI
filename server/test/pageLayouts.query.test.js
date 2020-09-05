@@ -113,167 +113,38 @@ describe('Query pageLayouts', () => {
     assert.strictEqual(statusCode, 200)
 
     assert(body)
-    assert.strictEqual(body.data.pageLayouts[0].pathname, 'player')
-    assert.deepStrictEqual(body.data.pageLayouts[0].devices, {
-      mobile: {
-        components:
-        [{
-          id: '1',
-          component: 'PlayerHeader',
-          x: 0,
-          y: 0,
-          w: 16,
-          colour: 'blue',
-          textAlign: 'center',
-          meta: null
-        },
-        {
-          id: '4',
-          component: 'PlayerPunishmentList',
-          x: 0,
-          y: 1,
-          w: 16,
-          colour: null,
-          textAlign: null,
-          meta: null
-        },
-        {
-          id: '7',
-          component: 'PlayerIpList',
-          x: 0,
-          y: 2,
-          w: 16,
-          colour: null,
-          textAlign: null,
-          meta: null
-        },
-        {
-          id: '10',
-          component: 'PlayerHistoryList',
-          x: 0,
-          y: 3,
-          w: 16,
-          colour: null,
-          textAlign: null,
-          meta: null
-        },
-        {
-          id: '13',
-          component: 'PlayerAlts',
-          x: 0,
-          y: 4,
-          w: 16,
-          colour: null,
-          textAlign: null,
-          meta: null
-        }]
-      },
-      tablet: {
-        components:
-        [{
-          id: '2',
-          component: 'PlayerHeader',
-          x: 0,
-          y: 0,
-          w: 16,
-          colour: 'blue',
-          textAlign: 'center',
-          meta: null
-        },
-        {
-          id: '5',
-          component: 'PlayerPunishmentList',
-          x: 0,
-          y: 1,
-          w: 16,
-          colour: null,
-          textAlign: null,
-          meta: null
-        },
-        {
-          id: '8',
-          component: 'PlayerIpList',
-          x: 0,
-          y: 2,
-          w: 16,
-          colour: null,
-          textAlign: null,
-          meta: null
-        },
-        {
-          id: '11',
-          component: 'PlayerHistoryList',
-          x: 0,
-          y: 3,
-          w: 16,
-          colour: null,
-          textAlign: null,
-          meta: null
-        },
-        {
-          id: '14',
-          component: 'PlayerAlts',
-          x: 0,
-          y: 4,
-          w: 16,
-          colour: null,
-          textAlign: null,
-          meta: null
-        }]
-      },
+
+    const pageLayout = body.data.pageLayouts.find(({ pathname }) => pathname === 'player')
+
+    assert.deepStrictEqual(pageLayout.devices, {
       desktop: {
-        components:
-        [{
-          id: '3',
-          component: 'PlayerHeader',
-          x: 0,
-          y: 0,
-          w: 16,
-          colour: 'blue',
-          textAlign: 'center',
-          meta: null
-        },
-        {
-          id: '6',
-          component: 'PlayerPunishmentList',
-          x: 0,
-          y: 1,
-          w: 16,
+        components: [{ colour: 'blue', component: 'PlayerHeader', id: '21', meta: null, textAlign: 'center', w: 16, x: 0, y: 0 }, { colour: null, component: 'ActivePlayerBans', id: '24', meta: null, textAlign: null, w: 16, x: 0, y: 1 }, {
           colour: null,
+          component:
+            'ActivePlayerMutes',
+          id: '27',
+          meta: null,
           textAlign: null,
-          meta: null
-        },
-        {
-          id: '9',
-          component: 'PlayerIpList',
-          x: 0,
-          y: 2,
           w: 16,
-          colour: null,
-          textAlign: null,
-          meta: null
-        },
-        {
-          id: '12',
-          component: 'PlayerHistoryList',
           x: 0,
-          y: 3,
-          w: 16,
+          y: 2
+        }, { colour: null, component: 'PlayerPunishmentRecords', id: '30', meta: null, textAlign: null, w: 16, x: 0, y: 3 }, { colour: null, component: 'PlayerIpList', id: '33', meta: null, textAlign: null, w: 16, x: 0, y: 4 }, { colour: null, component: 'PlayerHistoryList', id: '36', meta: null, textAlign: null, w: 16, x: 0, y: 5 }, { colour: null, component: 'PlayerAlts', id: '39', meta: null, textAlign: null, w: 16, x: 0, y: 6 }]
+      },
+      mobile: { components: [{ colour: 'blue', component: 'PlayerHeader', id: '19', meta: null, textAlign: 'center', w: 16, x: 0, y: 0 }, { colour: null, component: 'ActivePlayerBans', id: '22', meta: null, textAlign: null, w: 16, x: 0, y: 1 }, { colour: null, component: 'ActivePlayerMutes', id: '25', meta: null, textAlign: null, w: 16, x: 0, y: 2 }, { colour: null, component: 'PlayerPunishmentRecords', id: '28', meta: null, textAlign: null, w: 16, x: 0, y: 3 }, { colour: null, component: 'PlayerIpList', id: '31', meta: null, textAlign: null, w: 16, x: 0, y: 4 }, { colour: null, component: 'PlayerHistoryList', id: '34', meta: null, textAlign: null, w: 16, x: 0, y: 5 }, { colour: null, component: 'PlayerAlts', id: '37', meta: null, textAlign: null, w: 16, x: 0, y: 6 }] },
+      tablet: {
+        components: [{ colour: 'blue', component: 'PlayerHeader', id: '20', meta: null, textAlign: 'center', w: 16, x: 0, y: 0 }, { colour: null, component: 'ActivePlayerBans', id: '23', meta: null, textAlign: null, w: 16, x: 0, y: 1 }, { colour: null, component: 'ActivePlayerMutes', id: '26', meta: null, textAlign: null, w: 16, x: 0, y: 2 }, { colour: null, component: 'PlayerPunishmentRecords', id: '29', meta: null, textAlign: null, w: 16, x: 0, y: 3 }, {
           colour: null,
+          component:
+            'PlayerIpList',
+          id: '32',
+          meta: null,
           textAlign: null,
-          meta: null
-        },
-        {
-          id: '15',
-          component: 'PlayerAlts',
+          w: 16,
           x: 0,
-          y: 4,
-          w: 16,
-          colour: null,
-          textAlign: null,
-          meta: null
-        }]
+          y: 4
+        }, { colour: null, component: 'PlayerHistoryList', id: '35', meta: null, textAlign: null, w: 16, x: 0, y: 5 }, { colour: null, component: 'PlayerAlts', id: '38', meta: null, textAlign: null, w: 16, x: 0, y: 6 }]
       }
-    })
+    }
+    )
   })
 })

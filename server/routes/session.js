@@ -19,8 +19,10 @@ async function handlePasswordLogin (ctx) {
     return throwError(400, 'Invalid password, minimum length 6 characters')
   }
 
-  const [[result]] = await state.dbPool.execute(
-    'SELECT player_id AS playerId, password, updated FROM bm_web_users WHERE email = ?', [request.body.email])
+  const result = await state.dbPool('bm_web_users')
+    .select('player_id', 'password', 'updated')
+    .where('email', request.body.email)
+    .first()
 
   if (!result) return throwError(400, 'Incorrect login details')
 
@@ -28,7 +30,7 @@ async function handlePasswordLogin (ctx) {
 
   if (!match) return throwError(400, 'Incorrect login details')
 
-  ctx.session = create(result.playerId, result.updated, 'password')
+  ctx.session = create(result.player_id, result.updated, 'password')
   await ctx.session.manuallyCommit()
 
   response.body = null
@@ -46,17 +48,13 @@ async function handlePinLogin (ctx) {
 
   if (!server) return throwError(400, 'Server does not exist')
 
-  const table = server.config.tables.playerPins
-  const [[result]] = await server.execute(`
-    SELECT
-      pins.id AS id, p.id AS playerId, pins.pin AS pin
-    FROM
-      bm_players p
-        RIGHT JOIN
-      bm_player_pins pins ON pins.player_id = p.id
-    WHERE
-      p.name = ?
-    LIMIT 1`, [request.body.name])
+  const { playerPins, players } = server.config.tables
+  const result = await server.pool(players + ' AS p')
+    .select('pins.id AS id', 'p.id AS playerId', 'pins.pin AS pin')
+    .rightJoin(playerPins + ' AS pins', 'pins.player_id', 'p.id')
+    .where('p.name', request.body.name)
+    .limit(1)
+    .first()
 
   if (!result) return throwError(400, 'Incorrect login details')
 
@@ -64,10 +62,14 @@ async function handlePinLogin (ctx) {
 
   if (!match) return throwError(400, 'Incorrect login details')
 
-  await server.execute(`DELETE FROM ${table} WHERE id = ?`, [result.id])
+  await server.pool(playerPins)
+    .where('id', result.id)
+    .del()
 
-  const [[checkResult]] = await state.dbPool.execute(
-    'SELECT updated FROM bm_web_users WHERE player_id = ?', [result.playerId])
+  const checkResult = await state.dbPool('bm_web_users')
+    .select('updated')
+    .where('player_id', result.playerId)
+    .first()
 
   ctx.session = create(result.playerId, checkResult ? checkResult.updated : null, 'pin')
   await ctx.session.manuallyCommit()

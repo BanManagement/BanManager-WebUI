@@ -11,7 +11,7 @@ export default function Page () {
   const { id } = router.query
   const { loading, data, errors } = useApi({
     query: `query player($id: UUID!) {
-    player(id: $id) {
+    player(player: $id) {
       id
       name
       servers {

@@ -3,7 +3,6 @@ const supertest = require('supertest')
 const createApp = require('../app')
 const { createSetup } = require('./lib')
 const { createPlayer } = require('./fixtures')
-const { insert } = require('../data/udify')
 const { hash } = require('../data/hash')
 
 describe('/api/session', () => {
@@ -239,8 +238,8 @@ describe('/api/session', () => {
       const { config: server, pool } = setup.serversPool.values().next().value
       const player = createPlayer()
 
-      await insert(pool, 'bm_players', player)
-      await insert(pool, 'bm_player_pins', { player_id: player.id, pin: await hash('123456'), expires: 0 })
+      await pool('bm_players').insert(player)
+      await pool('bm_player_pins').insert({ player_id: player.id, pin: await hash('123456'), expires: 0 })
 
       const { body, statusCode } = await request
         .post('/api/session')
@@ -257,8 +256,8 @@ describe('/api/session', () => {
       const { config: server, pool } = setup.serversPool.values().next().value
       const player = createPlayer()
 
-      await insert(pool, 'bm_players', player)
-      await insert(pool, 'bm_player_pins', { player_id: player.id, pin: await hash('123456'), expires: 0 })
+      await pool('bm_players').insert(player)
+      await pool('bm_player_pins').insert({ player_id: player.id, pin: await hash('123456'), expires: 0 })
 
       const { body, statusCode } = await request
         .post('/api/session')

@@ -5,11 +5,7 @@ const { jsonToGraphQLQuery } = require('json-to-graphql-query')
 const { decrypt } = require('../data/crypto')
 const createApp = require('../app')
 const { createSetup, getAuthPassword } = require('./lib')
-const {
-  createPlayer,
-  createServer
-} = require('./fixtures')
-const { insert } = require('../data/udify')
+const { createPlayer, createServer } = require('./fixtures')
 
 describe('Mutation update server', () => {
   let setup
@@ -90,7 +86,7 @@ describe('Mutation update server', () => {
   test('should error if server does not exist', async () => {
     const cookie = await getAuthPassword(request, 'admin@banmanagement.com')
     const player = createPlayer()
-    const server = createServer(unparse(player.id), setup.dbPool.pool.config.connectionConfig.database)
+    const server = createServer(unparse(player.id), setup.dbPool.client.config.connection.database)
     const serverId = server.id
 
     delete server.id
@@ -122,7 +118,7 @@ describe('Mutation update server', () => {
     const { config } = setup.serversPool.values().next().value
     const cookie = await getAuthPassword(request, 'admin@banmanagement.com')
     const player = createPlayer()
-    const server = createServer(unparse(player.id), setup.dbPool.pool.config.connectionConfig.database)
+    const server = createServer(unparse(player.id), setup.dbPool.client.config.connection.database)
     const serverId = config.id
 
     delete server.id
@@ -155,7 +151,7 @@ describe('Mutation update server', () => {
     const { config } = setup.serversPool.values().next().value
     const cookie = await getAuthPassword(request, 'admin@banmanagement.com')
     const player = createPlayer()
-    const server = createServer(unparse(player.id), setup.dbPool.pool.config.connectionConfig.database)
+    const server = createServer(unparse(player.id), setup.dbPool.client.config.connection.database)
     const serverId = config.id
 
     delete server.id
@@ -187,10 +183,10 @@ describe('Mutation update server', () => {
     const { config } = setup.serversPool.values().next().value
     const cookie = await getAuthPassword(request, 'admin@banmanagement.com')
     const player = createPlayer()
-    const server = createServer(player.id, setup.dbPool.pool.config.connectionConfig.database)
+    const server = createServer(player.id, setup.dbPool.client.config.connection.database)
     const serverId = config.id
 
-    await insert(setup.dbPool, 'bm_web_servers', server)
+    await setup.dbPool('bm_web_servers').insert(server)
 
     delete server.id
     server.console = unparse(server.console)
@@ -223,11 +219,11 @@ describe('Mutation update server', () => {
     const cookie = await getAuthPassword(request, 'admin@banmanagement.com')
     const player = createPlayer()
 
-    await insert(pool, 'bm_players', player)
+    await pool('bm_players').insert(player)
 
     // Create temp user
-    await pool.execute('GRANT ALL PRIVILEGES ON *.* TO \'foobar\'@\'localhost\' IDENTIFIED BY \'password\';')
-    const server = createServer(unparse(player.id), setup.dbPool.pool.config.connectionConfig.database)
+    await pool.raw('GRANT ALL PRIVILEGES ON *.* TO \'foobar\'@\'localhost\' IDENTIFIED BY \'password\';')
+    const server = createServer(unparse(player.id), setup.dbPool.client.config.connection.database)
     const serverId = config.id
 
     delete server.id
@@ -252,15 +248,14 @@ describe('Mutation update server', () => {
       .send({ query })
 
     // Delete custom user
-    await pool.execute('DELETE FROM mysql.user WHERE user = "foobar";')
+    await pool('mysql.user').where('user', 'foobar').del()
 
     assert.strictEqual(statusCode, 200)
 
     assert(body)
     assert(body.data.updateServer.id)
 
-    const [[result]] = await pool.execute('SELECT * FROM bm_web_servers WHERE id = ?'
-      , [body.data.updateServer.id])
+    const result = await pool('bm_web_servers').select('*').where('id', body.data.updateServer.id).first()
     const decrypted = await decrypt(process.env.ENCRYPTION_KEY, result.password)
 
     assert.strictEqual(decrypted, 'password')

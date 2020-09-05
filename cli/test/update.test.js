@@ -13,7 +13,7 @@ describe('update', () => {
   }, 20000)
 
   test('should update schema', async done => {
-    const dbPool = setup.dbPool.pool.config.connectionConfig
+    const dbPool = setup.dbPool.client.config.connection
 
     nixt()
       .env('DB_HOST', dbPool.host)

@@ -5,11 +5,7 @@ const { jsonToGraphQLQuery } = require('json-to-graphql-query')
 const { decrypt } = require('../data/crypto')
 const createApp = require('../app')
 const { createSetup, getAuthPassword } = require('./lib')
-const {
-  createPlayer,
-  createServer
-} = require('./fixtures')
-const { insert } = require('../data/udify')
+const { createPlayer, createServer } = require('./fixtures')
 
 describe('Mutation create server', () => {
   let setup
@@ -92,7 +88,7 @@ describe('Mutation create server', () => {
   test('should error if tables missing', async () => {
     const cookie = await getAuthPassword(request, 'admin@banmanagement.com')
     const player = createPlayer()
-    const server = createServer(unparse(player.id), setup.dbPool.pool.config.connectionConfig.database)
+    const server = createServer(unparse(player.id), setup.dbPool.client.config.connection.database)
 
     delete server.id
     server.tables = JSON.parse(server.tables)
@@ -125,7 +121,7 @@ describe('Mutation create server', () => {
   test('should error if console does not exist', async () => {
     const cookie = await getAuthPassword(request, 'admin@banmanagement.com')
     const player = createPlayer()
-    const server = createServer(unparse(player.id), setup.dbPool.pool.config.connectionConfig.database)
+    const server = createServer(unparse(player.id), setup.dbPool.client.config.connection.database)
 
     delete server.id
     server.tables = JSON.parse(server.tables)
@@ -158,7 +154,7 @@ describe('Mutation create server', () => {
     const { config } = setup.serversPool.values().next().value
     const cookie = await getAuthPassword(request, 'admin@banmanagement.com')
     const player = createPlayer()
-    const server = createServer(unparse(player.id), setup.dbPool.pool.config.connectionConfig.database)
+    const server = createServer(unparse(player.id), setup.dbPool.client.config.connection.database)
 
     delete server.id
     server.tables = JSON.parse(server.tables)
@@ -193,11 +189,11 @@ describe('Mutation create server', () => {
     const cookie = await getAuthPassword(request, 'admin@banmanagement.com')
     const player = createPlayer()
 
-    await insert(pool, 'bm_players', player)
+    await pool('bm_players').insert(player)
 
     // Create temp user
-    await pool.execute('GRANT ALL PRIVILEGES ON *.* TO \'foobar\'@\'localhost\' IDENTIFIED BY \'password\';')
-    const server = createServer(unparse(player.id), setup.dbPool.pool.config.connectionConfig.database)
+    await pool.raw('GRANT ALL PRIVILEGES ON *.* TO \'foobar\'@\'localhost\' IDENTIFIED BY \'password\';')
+    const server = createServer(unparse(player.id), setup.dbPool.client.config.connection.database)
 
     delete server.id
     server.user = 'foobar'
@@ -222,15 +218,14 @@ describe('Mutation create server', () => {
       .send({ query })
 
     // Delete custom user
-    await pool.execute('DELETE FROM mysql.user WHERE user = "foobar";')
+    await pool('mysql.user').where('user', 'foobar').del()
 
     assert.strictEqual(statusCode, 200)
 
     assert(body)
     assert(body.data.createServer.id)
 
-    const [[result]] = await pool.execute('SELECT * FROM bm_web_servers WHERE id = ?'
-      , [body.data.createServer.id])
+    const result = await pool('bm_web_servers').where('id', body.data.createServer.id).first()
     const decrypted = await decrypt(process.env.ENCRYPTION_KEY, result.password)
 
     assert.strictEqual(decrypted, 'password')

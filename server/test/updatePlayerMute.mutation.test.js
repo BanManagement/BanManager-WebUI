@@ -2,11 +2,7 @@ const assert = require('assert')
 const supertest = require('supertest')
 const createApp = require('../app')
 const { createSetup, getAuthPassword } = require('./lib')
-const {
-  createPlayer,
-  createMute
-} = require('./fixtures')
-const { insert } = require('../data/udify')
+const { createPlayer, createMute } = require('./fixtures')
 
 describe('Mutation update player mute', () => {
   let setup
@@ -99,8 +95,8 @@ describe('Mutation update player mute', () => {
     const actor = createPlayer()
     const mute = createMute(player, actor)
 
-    await insert(pool, 'bm_players', [player, actor])
-    const [{ insertId }] = await insert(pool, 'bm_player_mutes', mute)
+    await pool('bm_players').insert([player, actor])
+    const [inserted] = await pool('bm_player_mutes').insert(mute, ['id'])
 
     const { body, statusCode } = await request
       .post('/graphql')
@@ -108,7 +104,7 @@ describe('Mutation update player mute', () => {
       .set('Accept', 'application/json')
       .send({
         query: `mutation updatePlayerMute {
-        updatePlayerMute(id: "${insertId}", serverId: "${server.id}", input: {
+        updatePlayerMute(id: "${inserted}", serverId: "${server.id}", input: {
           reason: "testing updates",
           expires: 1000000000,
           soft: false

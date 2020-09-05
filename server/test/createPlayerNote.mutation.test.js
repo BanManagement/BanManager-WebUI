@@ -3,11 +3,7 @@ const { unparse } = require('uuid-parse')
 const supertest = require('supertest')
 const createApp = require('../app')
 const { createSetup, getAuthPassword } = require('./lib')
-const {
-  createPlayer,
-  createNote
-} = require('./fixtures')
-const { insert } = require('../data/udify')
+const { createPlayer, createNote } = require('./fixtures')
 
 describe('Mutation create player note', () => {
   let setup
@@ -97,7 +93,7 @@ describe('Mutation create player note', () => {
     const actor = createPlayer()
     const note = createNote(player, actor)
 
-    await insert(pool, 'bm_players', [player, actor])
+    await pool('bm_players').insert([player, actor])
 
     const { body, statusCode } = await request
       .post('/graphql')

@@ -18,39 +18,35 @@ module.exports = async function ({ log, request: { body }, throw: throwError, re
     return throwError(400, 'Commonly used password, please choose another')
   }
 
-  const [[checkResult]] = await state.dbPool.execute(
-    'SELECT player_id FROM bm_web_users WHERE player_id = ?', [session.playerId])
+  const [checkResult] = await state.dbPool('bm_web_users')
+    .select('player_id')
+    .where('player_id', session.playerId)
 
   if (checkResult) return throwError(400, 'You already have an account')
 
-  const [[emailResult]] = await state.dbPool.execute(
-    'SELECT email FROM bm_web_users WHERE email = ?', [body.email])
+  const [emailResult] = await state.dbPool('bm_web_users')
+    .select('email')
+    .where('email', body.email)
 
   if (emailResult) return throwError(400, 'You already have an account')
 
   const encodedHash = await hash(body.password)
-  const conn = await state.dbPool.getConnection()
 
-  try {
-    await conn.beginTransaction()
+  await state.dbPool.transaction(async trx => {
+    await trx('bm_web_users').insert({
+      player_id: session.playerId,
+      email: body.email,
+      password: encodedHash,
+      updated: trx.raw('UNIX_TIMESTAMP()')
+    })
 
-    await conn.execute(
-      'INSERT INTO bm_web_users (player_id, email, password, updated) VALUES(?, ?, ?, UNIX_TIMESTAMP())',
-      [session.playerId, body.email, encodedHash])
+    await trx('bm_web_player_roles').insert({
+      player_id: session.playerId,
+      role_id: 2
+    })
 
-    await conn.execute(
-      'INSERT INTO bm_web_player_roles (player_id, role_id) VALUES(?, ?)', [session.playerId, 2])
-
-    await conn.commit()
-  } catch (e) {
-    log.error(e)
-
-    if (!conn.connection._fatalError) {
-      await conn.rollback()
-    }
-  } finally {
-    conn.release()
-  }
+    await trx.commit()
+  })
 
   response.body = null
 }
