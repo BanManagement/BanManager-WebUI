@@ -1,7 +1,7 @@
 # ---- Base Node ----
 FROM node:12-alpine AS base
 ## Install build toolchain, install node deps and compile native add-ons
-RUN apk add --no-cache python make g++
+RUN apk add --no-cache python make g++ git
 # set working directory
 WORKDIR /usr/src/app
 # copy project file
