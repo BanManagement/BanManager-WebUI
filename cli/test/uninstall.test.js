@@ -3,7 +3,7 @@ const nixt = require('nixt')
 const DBMigrate = require('db-migrate')
 const { createSetup } = require('../../server/test/lib')
 
-describe('uninstall', () => {
+describe.skip('uninstall', () => {
   let setup
 
   beforeAll(async () => {
