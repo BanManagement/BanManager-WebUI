@@ -24,7 +24,6 @@ jobs:
   include:
     - stage: deploy
       node_js: 12
-      script: skip
       if: branch = master
       deploy:
         provider: script
