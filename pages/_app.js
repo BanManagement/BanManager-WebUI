@@ -1,10 +1,11 @@
+import React from 'react'
 import App from 'next/app'
 import { DefaultSeo } from 'next-seo'
 import MobileDetect from 'mobile-detect'
 import 'cross-fetch/polyfill'
 import { GraphQLProvider } from 'graphql-react'
 import { withGraphQLApp } from 'next-graphql-react'
-import absoluteUrl from 'next-absolute-url'
+import { absoluteUrl } from '../utils'
 import { GlobalStoreProvider } from '../components/GlobalContext'
 
 // Only import what we need
@@ -101,6 +102,8 @@ class MyApp extends App {
   render () {
     const { Component, pageProps, graphql } = this.props
     const init = { user: pageProps.user || {}, cookie: pageProps.cookie, deviceInfo: pageProps.deviceInfo, origin: pageProps.origin }
+
+    if (process.browser) init.origin = window.location.origin
 
     return (
       <GlobalStoreProvider initValues={init}>

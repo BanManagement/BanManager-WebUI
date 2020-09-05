@@ -1,37 +1,36 @@
+import React from 'react'
 import { Loader, Table } from 'semantic-ui-react'
 import ErrorMessages from './ErrorMessages'
 import { fromNow, useApi } from '../utils'
 
 export default function PlayerIpList ({ id }) {
   const { loading, data, errors } = useApi({
-    variables: { id }, query: `
-    query player($id: UUID!) {
-      player(id: $id) {
-        servers {
+    variables: { id },
+    query: `query playerInfo($id: UUID!) {
+      playerInfo(player: $id) {
+        id
+        ip
+        lastSeen
+        server {
           id
-          ip
-          lastSeen
-          server {
-            name
-          }
+          name
         }
       }
-    }
-  `
+    }`
   })
 
   if (loading) return <Loader active />
   if (errors) return <ErrorMessages {...errors} />
-  if (!data || !data.player || !data.player.servers) return null
+  if (!data || !data.playerInfo) return null
 
-  const ips = data.player.servers.reduce((rows, server) => {
-    if (!server.ip) return rows
+  const ips = data.playerInfo.reduce((rows, info) => {
+    if (!info.ip) return rows
 
     const row = (
-      <Table.Row key={server.id}>
-        <Table.Cell>{server.server.name}</Table.Cell>
-        <Table.Cell>{server.ip}</Table.Cell>
-        <Table.Cell collapsing textAlign='right'>{fromNow(server.lastSeen)}</Table.Cell>
+      <Table.Row key={`playerInfo_${info.server.id}`}>
+        <Table.Cell>{info.server.name}</Table.Cell>
+        <Table.Cell>{info.ip}</Table.Cell>
+        <Table.Cell collapsing textAlign='right'>{fromNow(info.lastSeen)}</Table.Cell>
       </Table.Row>
     )
 

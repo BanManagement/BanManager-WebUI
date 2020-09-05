@@ -19,7 +19,13 @@ module.exports = async function playerWarning (obj, { id, serverId }, { state },
 
   const [data] = await query.exec()
 
-  if (data && calculateAcl) {
+  if (!data) return null
+
+  if (fields.fieldsByTypeName.PlayerWarning.server) {
+    data.server = server.config
+  }
+
+  if (calculateAcl) {
     data.acl = {
       update: state.acl.hasServerPermission(serverId, 'player.warnings', 'update.any') ||
       (state.acl.hasServerPermission(serverId, 'player.warnings', 'update.own') && state.acl.owns(data.actor_id)) ||

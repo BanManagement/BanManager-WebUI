@@ -1,40 +1,23 @@
+import React from 'react'
 import { Header, Image, List, Loader } from 'semantic-ui-react'
 import ErrorMessages from './ErrorMessages'
 import { useApi } from '../utils'
 
 export default function PlayerAlts ({ id, colour }) {
   const { loading, data, errors } = useApi({
-    variables: { id }, query: `
-    query player($id: UUID!) {
-      player(id: $id) {
-        servers {
-          alts {
-            id
-            name
-          }
-        }
+    variables: { id }, query: `query playerAlts($id: UUID!) {
+      playerAlts(player: $id) {
+        id
+        name
       }
-    }
-  `
+    }`
   })
 
   if (loading) return <Loader active />
   if (errors) return <ErrorMessages {...errors} />
-  if (!data || !data.player || !data.player.servers) return null
+  if (!data || !data.playerAlts || !data.playerAlts.length) return null
 
-  // @TODO Clean up, iterating mutliple times
-  const players = data.player.servers.reduce((data, server) => {
-    if (!server.alts) return data
-
-    data = data.concat(server.alts)
-
-    return data
-  }, [])
-
-  if (!players.length) return null
-
-  const uniq = players.filter((s1, pos, arr) => arr.findIndex((s2) => s2.id === s1.id) === pos)
-  const alts = uniq.map(alt => {
+  const alts = data.playerAlts.map(alt => {
     return (
       <List.Item key={alt.id}>
         <Image avatar src={`https://crafatar.com/avatars/${alt.id}?size=50&overlay=true`} />

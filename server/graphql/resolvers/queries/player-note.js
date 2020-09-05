@@ -19,7 +19,13 @@ module.exports = async function playerNote (obj, { id, serverId }, { state }, in
 
   const [data] = await query.exec()
 
-  if (data && calculateAcl) {
+  if (!data) return null
+
+  if (fields.fieldsByTypeName.PlayerNote.server) {
+    data.server = server.config
+  }
+
+  if (calculateAcl) {
     data.acl = {
       update: state.acl.hasServerPermission(serverId, 'player.notes', 'update.any') ||
       (state.acl.hasServerPermission(serverId, 'player.notes', 'update.own') && state.acl.owns(data.actor_id)) ||

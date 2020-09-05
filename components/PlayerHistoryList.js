@@ -5,18 +5,14 @@ import { useApi } from '../utils'
 import ServerSelector from './admin/ServerSelector'
 
 const query = `
-query listSessionHistory($serverId: ID!, $player: UUID, $limit: Int, $offset: Int) {
-  listSessionHistory(serverId: $serverId, player: $player, limit: $limit, offset: $offset) {
+query listPlayerSessionHistory($serverId: ID!, $player: UUID, $limit: Int, $offset: Int) {
+  listPlayerSessionHistory(serverId: $serverId, player: $player, limit: $limit, offset: $offset) {
     total
     records {
       id
       join
       leave
       ip
-      server {
-        id
-        name
-      }
     }
   }
 }`
@@ -37,8 +33,8 @@ export default function PlayerHistoryList ({ id }) {
 
   const handlePageChange = (e, { activePage }) => setTableState({ ...tableState, activePage, offset: (activePage - 1) * limit })
   const handleFieldChange = (field) => (id) => setTableState({ ...tableState, [field]: id || null })
-  const total = data?.listSessionHistory.total || 0
-  const rows = data?.listSessionHistory?.records || []
+  const total = data?.listPlayerSessionHistory.total || 0
+  const rows = data?.listPlayerSessionHistory?.records || []
   const totalPages = Math.ceil(total / limit)
   const dateFormat = 'yyyy-MM-dd HH:mm:ss'
 
@@ -47,10 +43,12 @@ export default function PlayerHistoryList ({ id }) {
   return (
     <>
       <Header>Player Session History</Header>
-      <Table selectable>
+      <Table selectable structured striped>
         <Table.Header>
           <Table.Row>
-            <Table.HeaderCell><ServerSelector handleChange={handleFieldChange('serverId')} /></Table.HeaderCell>
+            <Table.HeaderCell colSpan='3'><ServerSelector handleChange={handleFieldChange('serverId')} /></Table.HeaderCell>
+          </Table.Row>
+          <Table.Row>
             <Table.HeaderCell>Joined</Table.HeaderCell>
             <Table.HeaderCell>Left</Table.HeaderCell>
             <Table.HeaderCell>IP Address</Table.HeaderCell>
@@ -61,7 +59,6 @@ export default function PlayerHistoryList ({ id }) {
             ? <Table.Row><Table.Cell colSpan='6'><Loader active inline='centered' /></Table.Cell></Table.Row>
             : rows.map((row, i) => (
               <Table.Row key={i}>
-                <Table.Cell>{row.server.name}</Table.Cell>
                 <Table.Cell>{format(fromUnixTime(row.join), dateFormat)}</Table.Cell>
                 <Table.Cell>{format(fromUnixTime(row.leave), dateFormat)}</Table.Cell>
                 <Table.Cell>{row.ip}</Table.Cell>

@@ -19,7 +19,13 @@ module.exports = async function playerMute (obj, { id, serverId }, { state }, in
 
   const [data] = await query.exec()
 
-  if (data && calculateAcl) {
+  if (!data) return null
+
+  if (fields.fieldsByTypeName.PlayerMute.server) {
+    data.server = server.config
+  }
+
+  if (calculateAcl) {
     data.acl = {
       update: state.acl.hasServerPermission(serverId, 'player.mutes', 'update.any') ||
       (state.acl.hasServerPermission(serverId, 'player.mutes', 'update.own') && state.acl.owns(data.actor_id)) ||
