@@ -28,7 +28,7 @@ export const absoluteUrl = (req, localhostAddress = 'localhost:3000') => {
   return {
     protocol,
     host,
-    origin: protocol + '//' + host,
+    origin: protocol + '//' + host
   }
 }
 

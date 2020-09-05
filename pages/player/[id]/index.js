@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Icon, Loader, Menu } from 'semantic-ui-react'
+import { Button, Loader } from 'semantic-ui-react'
 import { useRouter } from 'next/router'
 import DefaultLayout from '../../../components/DefaultLayout'
 import PageContainer from '../../../components/PageContainer'
@@ -46,10 +46,10 @@ export default function Page () {
   if (!data.player) return <ErrorLayout errors={{ error: new Error('Player not found') }} />
 
   // @TODO Reduce
-  let canCreateBan = false
-  let canCreateMute = false
-  let canCreateNote = false
-  let canCreateWarning = false
+  const canCreateBan = false
+  const canCreateMute = false
+  const canCreateNote = false
+  const canCreateWarning = false
 
   // data.player.servers.forEach(server => {
   //   if (server.acl.bans.create) canCreateBan = true

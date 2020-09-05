@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { Card, Dropdown, Header, Image, Loader, Pagination, Table } from 'semantic-ui-react'
+import { Dropdown, Header, Image, Loader, Pagination, Table } from 'semantic-ui-react'
 import { format, fromUnixTime, formatDistance } from 'date-fns'
-import PlayerPunishment, { metaMap } from './PlayerPunishment'
 import ServerSelector from './admin/ServerSelector'
-import ErrorMessages from './ErrorMessages'
 import { useApi } from '../utils'
 
 const query = `
@@ -98,14 +96,15 @@ const types = {
 
 const PlayerBanRecordTable = (rows, dateFormat) => {
   return {
-    headers: <Table.Row>
-      <Table.HeaderCell>Reason</Table.HeaderCell>
-      <Table.HeaderCell>By</Table.HeaderCell>
-      <Table.HeaderCell>On</Table.HeaderCell>
-      <Table.HeaderCell>Length</Table.HeaderCell>
-      <Table.HeaderCell>Unbanned By</Table.HeaderCell>
-      <Table.HeaderCell>At</Table.HeaderCell>
-    </Table.Row>,
+    headers:
+  <Table.Row>
+    <Table.HeaderCell>Reason</Table.HeaderCell>
+    <Table.HeaderCell>By</Table.HeaderCell>
+    <Table.HeaderCell>On</Table.HeaderCell>
+    <Table.HeaderCell>Length</Table.HeaderCell>
+    <Table.HeaderCell>Unbanned By</Table.HeaderCell>
+    <Table.HeaderCell>At</Table.HeaderCell>
+  </Table.Row>,
     body: rows.map((row, i) => (
       <Table.Row key={i}>
         <Table.Cell>{row.reason}</Table.Cell>
@@ -131,11 +130,12 @@ const PlayerBanRecordTable = (rows, dateFormat) => {
 
 const PlayerKickTable = (rows, dateFormat) => {
   return {
-    headers: <Table.Row>
-      <Table.HeaderCell>Reason</Table.HeaderCell>
-      <Table.HeaderCell>By</Table.HeaderCell>
-      <Table.HeaderCell>At</Table.HeaderCell>
-    </Table.Row>,
+    headers:
+  <Table.Row>
+    <Table.HeaderCell>Reason</Table.HeaderCell>
+    <Table.HeaderCell>By</Table.HeaderCell>
+    <Table.HeaderCell>At</Table.HeaderCell>
+  </Table.Row>,
     body: rows.map((row, i) => (
       <Table.Row key={i}>
         <Table.Cell>{row.reason}</Table.Cell>
@@ -153,11 +153,12 @@ const PlayerKickTable = (rows, dateFormat) => {
 
 const PlayerNoteTable = (rows, dateFormat) => {
   return {
-    headers: <Table.Row>
-      <Table.HeaderCell>Message</Table.HeaderCell>
-      <Table.HeaderCell>By</Table.HeaderCell>
-      <Table.HeaderCell>At</Table.HeaderCell>
-    </Table.Row>,
+    headers:
+  <Table.Row>
+    <Table.HeaderCell>Message</Table.HeaderCell>
+    <Table.HeaderCell>By</Table.HeaderCell>
+    <Table.HeaderCell>At</Table.HeaderCell>
+  </Table.Row>,
     body: rows.map((row, i) => (
       <Table.Row key={i}>
         <Table.Cell>{row.message}</Table.Cell>
@@ -175,12 +176,13 @@ const PlayerNoteTable = (rows, dateFormat) => {
 
 const PlayerWarningTable = (rows, dateFormat) => {
   return {
-    headers: <Table.Row>
-      <Table.HeaderCell>Reason</Table.HeaderCell>
-      <Table.HeaderCell>By</Table.HeaderCell>
-      <Table.HeaderCell>Length</Table.HeaderCell>
-      <Table.HeaderCell>At</Table.HeaderCell>
-    </Table.Row>,
+    headers:
+  <Table.Row>
+    <Table.HeaderCell>Reason</Table.HeaderCell>
+    <Table.HeaderCell>By</Table.HeaderCell>
+    <Table.HeaderCell>Length</Table.HeaderCell>
+    <Table.HeaderCell>At</Table.HeaderCell>
+  </Table.Row>,
     body: rows.map((row, i) => (
       <Table.Row key={i}>
         <Table.Cell>{row.reason}</Table.Cell>
@@ -243,7 +245,7 @@ export default function PlayerPunishmentRecords ({ id }) {
           <Table.Row>
             <Table.HeaderCell>
               <Dropdown
-                fluid={true}
+                fluid
                 options={options}
                 onChange={(e, { value }) => handleFieldChange('type')(value)}
                 disabled={loading}

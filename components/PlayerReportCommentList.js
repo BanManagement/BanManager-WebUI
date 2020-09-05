@@ -39,7 +39,7 @@ query listPlayerReportComments($report: ID!, $serverId: ID!, $actor: UUID, $limi
 
 export default function PlayerReportCommentList ({ serverId, report, handleCommentCreate, showReply, limit = 10 }) {
   const [tableState, setTableState] = useState({ serverId, report, activePage: 1, limit, offset: 0, actor: null, order: 'created_DESC' })
-  const { load, loading, data, errors } = useApi({ query, variables: tableState }, {
+  const { load, loading, data } = useApi({ query, variables: tableState }, {
     loadOnMount: false,
     loadOnReload: false,
     loadOnReset: false,
