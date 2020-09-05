@@ -39,7 +39,7 @@ describe('Mutation deleteReportComment', () => {
       'You do not have permission to perform this action, please contact your server administrator')
   })
 
-  test.skip('should allow comment.delete.any', async () => {
+  test('should allow comment.delete.any', async () => {
     const cookie = await getAuthPassword(request, 'user@banmanagement.com')
     const account = await getAccount(request, cookie)
     const { config: server, pool } = setup.serversPool.values().next().value
