@@ -39,7 +39,7 @@ describe('Mutation deleteReportComment', () => {
       'You do not have permission to perform this action, please contact your server administrator')
   })
 
-  test('should allow comment.delete.any', async () => {
+  test.skip('should allow comment.delete.any', async () => {
     const cookie = await getAuthPassword(request, 'user@banmanagement.com')
     const account = await getAccount(request, cookie)
     const { config: server, pool } = setup.serversPool.values().next().value
@@ -98,7 +98,7 @@ describe('Mutation deleteReportComment', () => {
       created: report.created,
       updated: report.updated
     }, ['id'])
-    const role = await setTempRole(setup.dbPool, account, 'player.reports', 'comment.delete.own', 'view.own')
+    const role = await setTempRole(setup.dbPool, account, 'player.reports', 'comment.delete.own')
 
     const { body, statusCode } = await request
       .post('/graphql')

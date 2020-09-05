@@ -92,12 +92,8 @@ describe('Mutation updatePageLayout', () => {
   })
 
   test('should update page layout', async () => {
-    const components = [{ id: '1', component: 'PlayerHeader', y: 0, x: 0, w: 5 },
-      { id: '4', component: 'PlayerPunishmentList', y: 2, x: 0, w: 5 },
-      { id: '7', component: 'PlayerIpList', y: 1, x: 0, w: 5 },
-      { id: '10', component: 'PlayerHistoryList', y: 3, x: 0, w: 5 }]
+    const components = [{ component: 'PlayerHeader', id: '19', w: 16, x: 0, y: 0 }, { component: 'ActivePlayerBans', id: '22', w: 16, x: 0, y: 1 }, { component: 'ActivePlayerMutes', id: '25', w: 16, x: 0, y: 2 }, { component: 'PlayerPunishmentRecords', id: '28', w: 16, x: 0, y: 3 }, { component: 'PlayerIpList', id: '31', w: 16, x: 0, y: 4 }, { component: 'PlayerHistoryList', id: '34', w: 16, x: 0, y: 5 }, { component: 'PlayerAlts', id: '37', w: 16, x: 0, y: 6 }]
     const unusedComponents = [
-      { id: '13', component: 'PlayerAlts', y: 4, x: 0, w: 5 },
       { component: 'HTML', y: 5, x: 0, w: 5 }
     ]
     const query = jsonToGraphQLQuery({
@@ -152,8 +148,7 @@ describe('Mutation updatePageLayout', () => {
     assert(body)
     assert.strictEqual(body.data.updatePageLayout.pathname, 'player')
     assert.deepStrictEqual(body.data.updatePageLayout.devices.mobile.components, components)
-    assert.deepStrictEqual(body.data.updatePageLayout.devices.mobile.unusedComponents,
-      [{ id: '13', component: 'PlayerAlts', y: -1, x: 0, w: 5 }])
+    assert.deepStrictEqual(body.data.updatePageLayout.devices.mobile.unusedComponents, [])
   })
 
   test('should insert & delete components', async () => {
@@ -165,7 +160,7 @@ describe('Mutation updatePageLayout', () => {
       { component: 'HTML', y: 5, x: 0, w: 5 }
     ]
     const unusedComponents = [
-      { id: '13', component: 'PlayerAlts', y: 4, x: 0, w: 5 },
+      { id: '37', component: 'PlayerAlts', y: 4, x: 0, w: 5 },
       { id: inserted, component: 'HTML', y: 15, x: 0, w: 5 }
     ]
     const query = jsonToGraphQLQuery({
@@ -219,9 +214,9 @@ describe('Mutation updatePageLayout', () => {
 
     assert(body)
     assert.strictEqual(body.data.updatePageLayout.pathname, 'player')
-    assert.strictEqual(body.data.updatePageLayout.devices.mobile.components.length, 5)
+    assert.strictEqual(body.data.updatePageLayout.devices.mobile.components.length, 7)
     assert.strictEqual(body.data.updatePageLayout.devices.mobile.components.pop().component, 'HTML')
     assert.deepStrictEqual(body.data.updatePageLayout.devices.mobile.unusedComponents,
-      [{ id: '13', component: 'PlayerAlts', y: -1, x: 0, w: 5 }])
+      [{ id: '37', component: 'PlayerAlts', y: -1, x: 0, w: 5 }])
   })
 })
