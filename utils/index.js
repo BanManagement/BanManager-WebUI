@@ -70,7 +70,15 @@ export const useApi = (operation, options) => {
   return { load, loading, errors, data }
 }
 
-export const fromNow = (timestamp) => formatDistance(fromUnixTime(timestamp), new Date(), { addSuffix: true })
+export const fromNow = (timestamp) => {
+  try {
+    formatDistance(fromUnixTime(timestamp), new Date(), { addSuffix: true })
+  } catch (e) {
+    console.error(e)
+
+    return timestamp
+  }
+}
 
 export const currentVersion = () => {
   let versionStr
