@@ -3,6 +3,7 @@ node_js:
 - 12
 cache: npm
 services:
+  - docker
   - mysql
 env:
   global:
@@ -22,6 +23,10 @@ after_success:
   - npm run coveralls
 jobs:
   include:
+    - stage: test
+      script: npm test
+    - stage: build
+      script: docker build .
     - stage: deploy
       node_js: 12
       if: branch = master

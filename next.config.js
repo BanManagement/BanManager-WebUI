@@ -3,7 +3,6 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.BUNDLE_ANALYZE === 'true'
 })
 const withTM = require('next-transpile-modules')(['lodash-es'])
-const { withGraphQLConfig } = require('next-graphql-react/server')
 
 const nextConfig = {
   webpack (config) {
@@ -28,6 +27,5 @@ const nextConfig = {
 
 module.exports = withPlugins([
   [withBundleAnalyzer],
-  [withTM],
-  [withGraphQLConfig]
+  [withTM]
 ], nextConfig)
