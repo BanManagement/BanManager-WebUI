@@ -80,7 +80,7 @@
     "faker": "5.1.0",
     "jest": "25.5.4",
     "json-to-graphql-query": "2.0.0",
-    "mockdate": "2.0.5",
+    "mockdate": "3.0.2",
     "nixt": "0.5.1",
     "nock": "12.0.3",
     "nyc": "15.1.0",
