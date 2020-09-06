@@ -23,6 +23,8 @@ after_success:
   - npm run coveralls
 jobs:
   include:
+    - stage: test
+      script: npm test
     - stage: build
       script: docker build .
     - stage: deploy
