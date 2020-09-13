@@ -22,7 +22,7 @@
     "babel-plugin-git-version": "0.2.0",
     "babel-runtime": "6.26.0",
     "compare-versions": "3.6.0",
-    "cross-fetch": "3.0.5",
+    "cross-fetch": "3.0.6",
     "dataloader": "2.0.0",
     "date-fns": "2.16.1",
     "db-migrate": "0.11.11",
