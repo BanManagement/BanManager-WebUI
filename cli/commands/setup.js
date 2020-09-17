@@ -118,11 +118,11 @@ class SetupCommand extends Command {
       this.log('Attempting to connect to database')
 
       if (setEnv) {
-        DB_HOST = dbAnswers.host
-        DB_PORT = dbAnswers.port
-        DB_USER = dbAnswers.user
-        DB_PASSWORD = dbAnswers.password
-        DB_NAME = dbAnswers.database
+        DB_HOST = dbAnswers.host + ''
+        DB_PORT = dbAnswers.port + ''
+        DB_USER = dbAnswers.user + ''
+        DB_PASSWORD = dbAnswers.password + ''
+        DB_NAME = dbAnswers.database + ''
       }
 
       const conn = await connectToDb(dbAnswers)
