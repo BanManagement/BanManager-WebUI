@@ -2,7 +2,7 @@ import React from 'react'
 import { Container, Grid, Header, List, Segment } from 'semantic-ui-react'
 
 export default function Footer ({ isMobileFromSSR }) {
-  const yearNow = new Date().getFullYear()
+  // const yearNow = new Date().getFullYear()
 
   return (
     <Segment inverted vertical style={{ padding: '5em 0em' }}>
