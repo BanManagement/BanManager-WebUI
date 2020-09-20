@@ -10,7 +10,7 @@ export default function PlayerLoginPinForm () {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [inputState, setInputState] = useState({
-    server: '',
+    serverId: '',
     name: '',
     pin: ''
   })
@@ -32,7 +32,7 @@ export default function PlayerLoginPinForm () {
   const onSubmit = async (e) => {
     e.preventDefault()
 
-    if (!inputState.server) inputState.server = servers[0].value
+    if (!inputState.serverId) inputState.serverId = servers[0].value
 
     setLoading(true)
 
@@ -71,7 +71,7 @@ export default function PlayerLoginPinForm () {
       <ErrorMessages error={error} />
       <Form.Field
         required
-        name='server'
+        name='serverId'
         control={Select}
         options={servers}
         placeholder='Server'
