@@ -7,7 +7,6 @@ export default class MyDocument extends Document {
       <html lang='en'>
         <Head>
           <meta charSet='utf-8' />
-          <meta name='viewport' content='initial-scale=1.0, width=device-width' />
           <meta name='author' content='BanManager-WebUI' />
 
           <link rel='apple-touch-icon' sizes='76x76' href='/images/apple-touch-icon.png' />

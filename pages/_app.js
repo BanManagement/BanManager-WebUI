@@ -1,5 +1,6 @@
 import React from 'react'
 import App from 'next/app'
+import Head from 'next/head'
 import { DefaultSeo } from 'next-seo'
 import MobileDetect from 'mobile-detect'
 import 'cross-fetch/polyfill'
@@ -107,6 +108,9 @@ class MyApp extends App {
 
     return (
       <GlobalStoreProvider initValues={init}>
+        <Head>
+          <meta name='viewport' content='initial-scale=1.0, width=device-width' />
+        </Head>
         <DefaultSeo
           openGraph={{
             type: 'website',
