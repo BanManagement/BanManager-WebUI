@@ -329,12 +329,12 @@ type AdminNavigation {
 type Role @sqlTable(name: "roles") {
   id: ID! @sqlColumn(name: "role_id")
   name: String!
-  parent: ID
+  parent: ID @sqlColumn(name: "parent_role_id")
   resources: [Resources!]
 }
 
-type Resources {
-  id: ID!
+type Resources @sqlTable(name: "resources") {
+  id: ID! @sqlColumn(name: "resource_id")
   name: String!
   permissions: [Permission]
 }
