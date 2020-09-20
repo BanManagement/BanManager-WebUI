@@ -1,3 +1,4 @@
+import React from 'react'
 import { Grid, Label, Loader, Menu } from 'semantic-ui-react'
 import DefaultLayout from './DefaultLayout'
 import MenuLink from './MenuLink'
@@ -38,12 +39,12 @@ export default function AdminLayout ({ children, title }) {
       <PageContainer>
         <Grid columns={2}>
           <Grid.Row>
-            <Grid.Column width={4}>
-              <Menu vertical>
+            <Grid.Column computer={4} tablet={4} mobile={16}>
+              <Menu vertical fluid>
                 {items}
               </Menu>
             </Grid.Column>
-            <Grid.Column width={12}>
+            <Grid.Column computer={12} tablet={12} mobile={16}>
               {children}
             </Grid.Column>
           </Grid.Row>
