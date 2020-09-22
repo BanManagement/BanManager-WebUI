@@ -257,7 +257,7 @@ describe('/api/session', () => {
       const player = createPlayer()
 
       await pool('bm_players').insert(player)
-      await pool('bm_player_pins').insert({ player_id: player.id, pin: await hash('123456'), expires: 0 })
+      await pool('bm_player_pins').insert({ player_id: player.id, pin: await hash('123456'), expires: Math.floor(Date.now() / 1000) + 1000 })
 
       const { body, statusCode } = await request
         .post('/api/session')
