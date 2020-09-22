@@ -49,29 +49,37 @@ async function handlePinLogin (ctx) {
   if (!server) return throwError(400, 'Server does not exist')
 
   const { playerPins, players } = server.config.tables
-  const result = await server.pool(players + ' AS p')
+  const results = await server.pool(players + ' AS p')
     .select('pins.id AS id', 'p.id AS playerId', 'pins.pin AS pin')
     .rightJoin(playerPins + ' AS pins', 'pins.player_id', 'p.id')
     .where('p.name', request.body.name)
-    .limit(1)
-    .first()
+    .andWhere('pins.expires', '>', server.pool.raw('UNIX_TIMESTAMP()'))
 
-  if (!result) return throwError(400, 'Incorrect login details')
+  if (!results) return throwError(400, 'Incorrect login details')
 
-  const match = await verify(result.pin, request.body.pin)
+  let matchedPin = null
 
-  if (!match) return throwError(400, 'Incorrect login details')
+  for (const result of results) {
+    const match = await verify(result.pin, request.body.pin)
+
+    if (match) {
+      matchedPin = result
+      break
+    }
+  }
+
+  if (!matchedPin) return throwError(400, 'Incorrect login details')
 
   await server.pool(playerPins)
-    .where('id', result.id)
+    .where('id', matchedPin.id)
     .del()
 
   const checkResult = await state.dbPool('bm_web_users')
     .select('updated')
-    .where('player_id', result.playerId)
+    .where('player_id', matchedPin.playerId)
     .first()
 
-  ctx.session = create(result.playerId, checkResult ? checkResult.updated : null, 'pin')
+  ctx.session = create(matchedPin.playerId, checkResult ? checkResult.updated : null, 'pin')
   await ctx.session.manuallyCommit()
 
   response.body = { hasAccount: !!checkResult }
