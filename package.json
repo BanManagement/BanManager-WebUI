@@ -85,7 +85,7 @@
     "nock": "13.0.4",
     "nyc": "15.1.0",
     "standard": "14.3.4",
-    "supertest": "4.0.2"
+    "supertest": "5.0.0"
   },
   "engines": {
     "node": "12"
