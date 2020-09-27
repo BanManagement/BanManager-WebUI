@@ -76,7 +76,7 @@
     "@oclif/test": "1.2.7",
     "babel-eslint": "10.1.0",
     "coveralls": "3.1.0",
-    "eslint-plugin-react": "7.20.6",
+    "eslint-plugin-react": "7.21.2",
     "faker": "5.1.0",
     "jest": "26.4.2",
     "json-to-graphql-query": "2.0.0",
