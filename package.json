@@ -12,7 +12,7 @@
   "dependencies": {
     "@koa/router": "8.0.8",
     "@nateradebaugh/react-datetime": "4.4.3",
-    "@next/bundle-analyzer": "9.5.3",
+    "@next/bundle-analyzer": "9.5.4",
     "@oclif/command": "1.8.0",
     "@oclif/config": "1.17.0",
     "@oclif/plugin-help": "3.2.0",
