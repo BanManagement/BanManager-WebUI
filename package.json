@@ -100,7 +100,7 @@
     "lint": "standard",
     "start": "node server.js",
     "test": "npm run lint && jest --coverage",
-    "setup": "node bin/run setup"
+    "setup": "node bin/run setup --writeFile .env"
   },
   "oclif": {
     "commands": "./cli/commands",
