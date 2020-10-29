@@ -84,7 +84,7 @@
     "nixt": "0.5.1",
     "nock": "13.0.4",
     "nyc": "15.1.0",
-    "standard": "14.3.4",
+    "standard": "15.0.1",
     "supertest": "5.0.0"
   },
   "engines": {
