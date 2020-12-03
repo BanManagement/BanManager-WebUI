@@ -73,7 +73,7 @@
     "web-push": "3.4.4"
   },
   "devDependencies": {
-    "@oclif/test": "1.2.7",
+    "@oclif/test": "1.2.8",
     "babel-eslint": "10.1.0",
     "coveralls": "3.1.0",
     "eslint-plugin-react": "7.21.5",
