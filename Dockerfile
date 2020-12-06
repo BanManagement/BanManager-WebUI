@@ -1,5 +1,5 @@
 # ---- Base Node ----
-FROM node:12-alpine AS base
+FROM node:14-alpine AS base
 
 # set working directory
 WORKDIR /usr/src/app
