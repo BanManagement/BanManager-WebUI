@@ -25,7 +25,7 @@
     "cross-fetch": "3.0.6",
     "dataloader": "2.0.0",
     "date-fns": "2.16.1",
-    "db-migrate": "0.11.11",
+    "db-migrate": "0.11.12",
     "db-migrate-mysql": "2.1.2",
     "dotenv": "8.2.0",
     "edit-dotenv": "1.0.4",
