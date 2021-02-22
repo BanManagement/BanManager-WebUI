@@ -47,7 +47,7 @@
     "koa-bodyparser": "4.3.0",
     "koa-pino-logger": "3.0.0",
     "koa-session": "6.1.0",
-    "lodash-es": "4.17.20",
+    "lodash-es": "4.17.21",
     "memoizee": "0.4.15",
     "mobile-detect": "1.4.4",
     "mysql2": "github:confuser/node-mysql2#fix/nested-cache-key",
