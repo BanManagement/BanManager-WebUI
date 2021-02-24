@@ -55,7 +55,7 @@
     "next-absolute-url": "1.2.2",
     "next-compose-plugins": "2.2.1",
     "next-graphql-react": "8.0.3",
-    "next-seo": "4.19.0",
+    "next-seo": "4.20.0",
     "next-transpile-modules": "4.1.0",
     "pino": "6.11.1",
     "prop-types": "15.7.2",
