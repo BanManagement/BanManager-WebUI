@@ -82,7 +82,7 @@
     "json-to-graphql-query": "2.0.0",
     "mockdate": "3.0.2",
     "nixt": "0.5.1",
-    "nock": "13.0.9",
+    "nock": "13.0.10",
     "nyc": "15.1.0",
     "standard": "14.3.4",
     "supertest": "5.0.0"
