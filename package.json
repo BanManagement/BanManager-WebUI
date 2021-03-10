@@ -10,7 +10,7 @@
     "mobile-detect": false
   },
   "dependencies": {
-    "@koa/router": "8.0.8",
+    "@koa/router": "10.0.0",
     "@nateradebaugh/react-datetime": "4.4.6",
     "@next/bundle-analyzer": "9.5.5",
     "@oclif/command": "1.8.0",
