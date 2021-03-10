@@ -36,7 +36,7 @@
     "graphql-depth-limit": "1.1.0",
     "graphql-parse-resolve-info": "4.11.0",
     "graphql-react": "11.2.0",
-    "graphql-tools": "4.0.8",
+    "graphql-tools": "7.0.4",
     "graphql-type-json": "0.3.2",
     "hibp": "9.0.3",
     "inquirer": "7.3.3",
