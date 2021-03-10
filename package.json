@@ -31,7 +31,7 @@
     "edit-dotenv": "1.0.4",
     "es6-dynamic-template": "2.0.0",
     "file-loader": "6.2.0",
-    "graphql": "14.7.0",
+    "graphql": "15.5.0",
     "graphql-constraint-directive": "1.4.1",
     "graphql-depth-limit": "1.1.0",
     "graphql-parse-resolve-info": "4.11.0",
