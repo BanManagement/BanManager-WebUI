@@ -57,7 +57,7 @@
     "next-graphql-react": "8.0.4",
     "next-seo": "4.20.0",
     "next-transpile-modules": "4.1.0",
-    "pino": "6.11.1",
+    "pino": "6.11.2",
     "prop-types": "15.7.2",
     "react": "16.14.0",
     "react-dom": "16.14.0",
