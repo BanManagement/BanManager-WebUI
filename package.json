@@ -51,7 +51,7 @@
     "memoizee": "0.4.15",
     "mobile-detect": "1.4.5",
     "mysql2": "github:confuser/node-mysql2#fix/nested-cache-key",
-    "next": "10.0.6",
+    "next": "10.0.9",
     "next-absolute-url": "1.2.2",
     "next-compose-plugins": "2.2.1",
     "next-graphql-react": "8.0.4",
