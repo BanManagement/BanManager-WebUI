@@ -46,7 +46,7 @@
     "koa": "2.13.1",
     "koa-bodyparser": "4.3.0",
     "koa-pino-logger": "3.0.0",
-    "koa-session": "6.1.0",
+    "koa-session": "6.2.0",
     "lodash-es": "4.17.21",
     "memoizee": "0.4.15",
     "mobile-detect": "1.4.5",
