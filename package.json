@@ -38,7 +38,7 @@
     "graphql-react": "11.2.0",
     "graphql-tools": "4.0.8",
     "graphql-type-json": "0.3.2",
-    "hibp": "9.0.3",
+    "hibp": "10.0.1",
     "inquirer": "7.3.3",
     "js-yaml": "3.14.1",
     "knex": "0.95.4",
