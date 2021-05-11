@@ -54,7 +54,7 @@
     "next": "10.2.0",
     "next-absolute-url": "1.2.2",
     "next-compose-plugins": "2.2.1",
-    "next-graphql-react": "8.0.4",
+    "next-graphql-react": "9.0.0",
     "next-seo": "4.24.0",
     "next-transpile-modules": "4.1.0",
     "pino": "6.11.3",
