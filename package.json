@@ -27,7 +27,7 @@
     "date-fns": "2.21.3",
     "db-migrate": "0.11.12",
     "db-migrate-mysql": "2.1.2",
-    "dotenv": "8.6.0",
+    "dotenv": "9.0.2",
     "edit-dotenv": "1.0.4",
     "es6-dynamic-template": "2.0.0",
     "file-loader": "6.2.0",
