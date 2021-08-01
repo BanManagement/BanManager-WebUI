@@ -50,4 +50,5 @@ jobs:
   build_docker:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - run: docker build . # TODO cache
