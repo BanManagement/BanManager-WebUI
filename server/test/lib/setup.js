@@ -15,6 +15,7 @@ module.exports = async (disableTestMigrations) => { // eslint-disable-line max-s
     {
       host: process.env.DB_HOST,
       user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
       multipleStatements: true
     }
   const logger = pino(
