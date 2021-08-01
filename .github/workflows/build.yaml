@@ -1,0 +1,46 @@
+name: Node.js CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+  schedule:
+    - cron: '0 0 * * 0' # weekly
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Node.js ${{ matrix.java }} - ${{ matrix.storageType }}
+    strategy:
+      matrix:
+        node-version: [12.x, 14.x, 16.x]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Cache Node.js modules
+        uses: actions/cache@v2
+        with:
+          # npm cache files are stored in `~/.npm` on Linux/macOS
+          path: ~/.npm
+          key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-node-
+            ${{ runner.OS }}-
+      - run: npm ci
+      - run: npm test
+        env:
+          LOG_LEVEL: debug
+          PORT: 3001
+          ENCRYPTION_KEY: b097b390a68441cc3bb151dd0171f25c3aabc688c50eeb26dc5e13254b333911
+          SESSION_KEY: a73545a5f08d2906e39a4438014200303f9269f3ade9227525ffb141294f1b62
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_USER: root
+          DB_PASSWORD:
+          DB_CONNECTION_LIMIT: 5
+      - run: docker build . # TODO cache
