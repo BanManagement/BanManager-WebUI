@@ -27,7 +27,9 @@ export default function PlayerSelector ({ clearable = false, handleChange, multi
     setLoading(true)
     load()
   }, [name])
-  useEffect(() => handleChange(selected), [selected])
+  useEffect(() => {
+    handleChange(selected)
+  }, [selected])
 
   const handlePlayerChange = (e, { value }) => setSelected(value)
   const handleSearchChange = (e, { searchQuery }) => {
