@@ -32,6 +32,9 @@ jobs:
             ${{ runner.OS }}-node-
             ${{ runner.OS }}-
       - run: npm ci
+      - name: Set up MySQL
+        run: |
+          sudo /etc/init.d/mysql start
       - run: npm test
         env:
           LOG_LEVEL: debug
@@ -41,7 +44,7 @@ jobs:
           DB_HOST: 127.0.0.1
           DB_PORT: 3306
           DB_USER: root
-          DB_PASSWORD:
+          DB_PASSWORD: root
           DB_CONNECTION_LIMIT: 5
 
   build_docker:
