@@ -43,4 +43,8 @@ jobs:
           DB_USER: root
           DB_PASSWORD:
           DB_CONNECTION_LIMIT: 5
+
+  build_docker:
+    runs-on: ubuntu-latest
+    steps:
       - run: docker build . # TODO cache
