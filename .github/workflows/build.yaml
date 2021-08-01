@@ -35,6 +35,7 @@ jobs:
       - name: Set up MySQL
         run: |
           sudo /etc/init.d/mysql start
+          mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '${{ env.DB_PASSWORD }}';" -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
       - run: npm test
         env:
           LOG_LEVEL: debug
