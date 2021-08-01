@@ -38,7 +38,7 @@ class Error extends React.Component {
 
   render () {
     return (
-      <DefaultLayout title='Error' heading={this.heading} isMobileFromSSR={this.props.isMobileFromSSR} />
+      <DefaultLayout title='Error' heading={this.heading} />
     )
   }
 }

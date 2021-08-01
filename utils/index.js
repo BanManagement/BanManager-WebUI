@@ -1,4 +1,3 @@
-import { Responsive } from 'semantic-ui-react'
 import { useGraphQL } from 'graphql-react'
 import { formatDistance, fromUnixTime } from 'date-fns'
 import { version } from '../package.json'
@@ -30,19 +29,6 @@ export const absoluteUrl = (req, localhostAddress = 'localhost:3000') => {
     host,
     origin: protocol + '//' + host
   }
-}
-
-export const getWidthFactory = (isMobileFromSSR, isTabletFromSSR) => () => {
-  const isSSR = typeof window === 'undefined'
-  let ssrValue = Responsive.onlyComputer.minWidth
-
-  if (isMobileFromSSR) {
-    ssrValue = Responsive.onlyMobile.maxWidth
-  } else if (isTabletFromSSR) {
-    ssrValue = Responsive.onlyTablet.minWidth
-  }
-
-  return isSSR ? ssrValue : window.innerWidth
 }
 
 export const useApi = (operation, options) => {

@@ -1,9 +1,9 @@
 import React from 'react'
-import { Container, Grid, Loader, Responsive } from 'semantic-ui-react'
+import { Container, Grid, Loader } from 'semantic-ui-react'
 import ErrorMessages from './ErrorMessages'
 import PageContainer from './PageContainer'
-import { GlobalStore } from '../components/GlobalContext'
-import { getWidthFactory, useApi } from '../utils'
+import { useApi } from '../utils'
+import { Media, MediaContextProvider } from '../components/media'
 
 const query = `query pageLayout($pathname: String!) {
   pageLayout(pathname: $pathname) {
@@ -106,8 +106,6 @@ function createComponents (rows, availableComponents, props) {
 }
 
 export default function PageLayout ({ availableComponents, pathname, props = {} }) {
-  const store = GlobalStore()
-  const { mobile, tablet } = store.get('deviceInfo')
   const { loading, data, errors } = useApi({ query, variables: { pathname } })
 
   if (loading) return <Loader active />
@@ -124,18 +122,17 @@ export default function PageLayout ({ availableComponents, pathname, props = {} 
   const deviceComponents = Object.assign({}, ...devices.map(device => {
     return { [device]: createComponents(rows[device], availableComponents, props) }
   }))
-  const getWidth = getWidthFactory(mobile, tablet)
 
   return (
-    <>
-      <Responsive {...Responsive.onlyMobile} fireOnMount getWidth={getWidth} maxWidth={Responsive.onlyMobile.maxWidth}>
+    <MediaContextProvider>
+      <Media at='mobile'>
         <Grid>{deviceComponents.mobile}</Grid>
-      </Responsive>
-      <Responsive {...Responsive.onlyTablet} fireOnMount getWidth={getWidth} minWidth={Responsive.onlyTablet.minWidth}>
+      </Media>
+      <Media at='tablet'>
         <Grid>{deviceComponents.tablet}</Grid>
-      </Responsive>
-      <Responsive {...Responsive.onlyComputer} fireOnMount getWidth={getWidth} minWidth={Responsive.onlyComputer.minWidth}>
+      </Media>
+      <Media greaterThanOrEqual='computer'>
         <Grid>{deviceComponents.desktop}</Grid>
-      </Responsive>
-    </>)
+      </Media>
+    </MediaContextProvider>)
 }

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Container, Grid, Header, List, Segment } from 'semantic-ui-react'
 
-export default function Footer ({ isMobileFromSSR }) {
+export default function Footer () {
   // const yearNow = new Date().getFullYear()
 
   return (

@@ -4,12 +4,12 @@ import {
   Container,
   Icon,
   Menu,
-  Responsive,
   Segment,
   Sidebar,
   Visibility
 } from 'semantic-ui-react'
 import MenuLink from '../components/MenuLink'
+import { Media, MediaContextProvider } from '../components/media'
 
 const renderMenu = (items = []) => items.map(item => {
   if (item.as === 'a') {
@@ -28,44 +28,46 @@ class DesktopContainer extends Component {
   handleShowFixedMenu = () => this.setState({ fixed: true })
 
   render () {
-    const { children, getWidth, heading, leftItems, rightItems } = this.props
+    const { children, heading, leftItems, rightItems } = this.props
     const { fixed } = this.state
     const style = heading ? { minHeight: 500, padding: '1em 0em', display: 'flex', flexDirection: 'column' } : {}
 
     return (
-      <Responsive getWidth={getWidth} minWidth={Responsive.onlyTablet.minWidth} fireOnMount>
-        <Visibility
-          once={false}
-          onBottomPassed={this.handleShowFixedMenu}
-          onBottomPassedReverse={this.handleHideFixedMenu}
-        >
-          <Segment
-            inverted
-            color='blue'
-            textAlign='center'
-            style={style}
-            vertical
+      <MediaContextProvider>
+        <Media greaterThanOrEqual='tablet'>
+          <Visibility
+            once={false}
+            onBottomPassed={this.handleShowFixedMenu}
+            onBottomPassedReverse={this.handleHideFixedMenu}
           >
-            <Menu
-              fixed={fixed ? 'top' : null}
-              inverted={!fixed}
-              secondary={!fixed}
-              size='large'
-              style={{ borderTop: 0 }}
+            <Segment
+              inverted
+              color='blue'
+              textAlign='center'
+              style={style}
+              vertical
             >
-              <Container>
-                {renderMenu(leftItems)}
-                <Menu.Menu position='right' style={{ padding: 0 }}>
-                  {renderMenu(rightItems)}
-                </Menu.Menu>
-              </Container>
-            </Menu>
-            {heading}
-          </Segment>
-        </Visibility>
+              <Menu
+                fixed={fixed ? 'top' : null}
+                inverted={!fixed}
+                secondary={!fixed}
+                size='large'
+                style={{ borderTop: 0 }}
+              >
+                <Container>
+                  {renderMenu(leftItems)}
+                  <Menu.Menu position='right' style={{ padding: 0 }}>
+                    {renderMenu(rightItems)}
+                  </Menu.Menu>
+                </Container>
+              </Menu>
+              {heading}
+            </Segment>
+          </Visibility>
 
-        {children}
-      </Responsive>
+          {children}
+        </Media>
+      </MediaContextProvider>
     )
   }
 }
@@ -83,52 +85,49 @@ class MobileContainer extends Component {
   handleToggle = () => this.setState({ sidebarOpened: true })
 
   render () {
-    const { children, getWidth, heading, leftItems, rightItems } = this.props
+    const { children, heading, leftItems, rightItems } = this.props
     const { sidebarOpened } = this.state
     const style = heading ? { minHeight: 350, padding: '1em 0em', display: 'flex', flexDirection: 'column' } : { padding: 0 }
 
     return (
-      <Responsive
-        fireOnMount
-        as={Sidebar.Pushable}
-        getWidth={getWidth}
-        maxWidth={Responsive.onlyMobile.maxWidth}
-      >
-        <Sidebar
-          as={Menu}
-          animation='push'
-          inverted
-          onHide={this.handleSidebarHide}
-          vertical
-          visible={sidebarOpened}
-        >
-          {renderMenu(leftItems)}
-        </Sidebar>
-
-        <Sidebar.Pusher dimmed={sidebarOpened}>
-          <Segment
-            color='blue'
+      <MediaContextProvider>
+        <Media at='mobile'>
+          <Sidebar
+            as={Menu}
+            animation='push'
             inverted
-            textAlign='center'
-            style={style}
+            onHide={this.handleSidebarHide}
             vertical
+            visible={sidebarOpened}
           >
-            <Container>
-              <Menu inverted secondary size='large' style={{ border: 'none' }}>
-                <Menu.Item onClick={this.handleToggle}>
-                  <Icon name='sidebar' />
-                </Menu.Item>
-                <Menu.Menu position='right'>
-                  {renderMenu(rightItems)}
-                </Menu.Menu>
-              </Menu>
-            </Container>
-            {heading}
-          </Segment>
+            {renderMenu(leftItems)}
+          </Sidebar>
 
-          {children}
-        </Sidebar.Pusher>
-      </Responsive>
+          <Sidebar.Pusher dimmed={sidebarOpened}>
+            <Segment
+              color='blue'
+              inverted
+              textAlign='center'
+              style={style}
+              vertical
+            >
+              <Container>
+                <Menu inverted secondary size='large' style={{ border: 'none' }}>
+                  <Menu.Item onClick={this.handleToggle}>
+                    <Icon name='sidebar' />
+                  </Menu.Item>
+                  <Menu.Menu position='right'>
+                    {renderMenu(rightItems)}
+                  </Menu.Menu>
+                </Menu>
+              </Container>
+              {heading}
+            </Segment>
+
+            {children}
+          </Sidebar.Pusher>
+        </Media>
+      </MediaContextProvider>
     )
   }
 }
@@ -137,10 +136,10 @@ MobileContainer.propTypes = {
   children: PropTypes.node
 }
 
-const ResponsiveContainer = ({ children, getWidth, heading, mobile, leftItems, rightItems }) => (
+const ResponsiveContainer = ({ children, heading, leftItems, rightItems }) => (
   <div>
-    <DesktopContainer getWidth={getWidth} heading={heading ? heading({}) : null} leftItems={leftItems} rightItems={rightItems}>{children}</DesktopContainer>
-    <MobileContainer getWidth={getWidth} heading={heading ? heading({ mobile }) : null} leftItems={leftItems} rightItems={rightItems}>{children}</MobileContainer>
+    <DesktopContainer heading={heading ? heading({}) : null} leftItems={leftItems} rightItems={rightItems}>{children}</DesktopContainer>
+    <MobileContainer heading={heading ? heading({ mobile: true }) : null} leftItems={leftItems} rightItems={rightItems}>{children}</MobileContainer>
   </div>
 )
 

@@ -2,7 +2,6 @@ import React from 'react'
 import App from 'next/app'
 import Head from 'next/head'
 import { DefaultSeo } from 'next-seo'
-import MobileDetect from 'mobile-detect'
 import 'cross-fetch/polyfill'
 import { GraphQLProvider } from 'graphql-react'
 import { withGraphQLApp } from 'next-graphql-react'
@@ -50,23 +49,6 @@ class MyApp extends App {
 
     pageProps.origin = absoluteUrl(ctx.req).origin
 
-    if (!ctx.req) {
-      pageProps.deviceInfo = {
-        mobile: false,
-        tablet: false,
-        os: null,
-        userAgent: null
-      }
-    } else {
-      const md = new MobileDetect(ctx.req.headers['user-agent'])
-      pageProps.deviceInfo = {
-        mobile: md.mobile(),
-        tablet: md.tablet(),
-        os: md.os(),
-        userAgent: md.userAgent()
-      }
-    }
-
     if (ctx.req && !ctx.req.headers.cookie) return { pageProps }
 
     try {
@@ -102,7 +84,7 @@ class MyApp extends App {
 
   render () {
     const { Component, pageProps, graphql } = this.props
-    const init = { user: pageProps.user || {}, cookie: pageProps.cookie, deviceInfo: pageProps.deviceInfo, origin: pageProps.origin }
+    const init = { user: pageProps.user || {}, cookie: pageProps.cookie, origin: pageProps.origin }
 
     if (process.browser) init.origin = window.location.origin
 

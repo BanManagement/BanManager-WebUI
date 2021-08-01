@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useRouter } from 'next/router'
-import { Comment, Grid, Header, Image, Loader, Responsive, Segment } from 'semantic-ui-react'
+import { Comment, Grid, Header, Image, Loader, Segment } from 'semantic-ui-react'
 import { format, fromUnixTime } from 'date-fns'
 import { fromNow, useApi } from '../../../utils'
 import DefaultLayout from '../../../components/DefaultLayout'
@@ -13,7 +13,6 @@ import PlayerReportState from '../../../components/PlayerReportState'
 export default function Page () {
   const router = useRouter()
   const { id, serverId } = router.query
-  const [width, setWidth] = useState(null)
   const { loading, data, errors } = useApi({
     variables: { serverId, id },
     query: `query report($id: ID!, $serverId: ID!) {
@@ -101,7 +100,6 @@ export default function Page () {
   if (loading) return <Loader active />
   if (errors || !data) return <ErrorLayout errors={errors} />
 
-  const handleOnScreenUpdate = (e, { width }) => setWidth(width)
   const renderLocation = (location, player) => (
     <>
       <p>
@@ -118,11 +116,7 @@ export default function Page () {
   return (
     <DefaultLayout title={`#${id} Report`}>
       <PageContainer>
-        <Responsive
-          as={Grid}
-          fireOnMount
-          onUpdate={handleOnScreenUpdate}
-        >
+        <Grid>
           <Grid.Row>
             <Grid.Column width={12}>
               <Comment.Group>
@@ -160,7 +154,7 @@ export default function Page () {
                 </>}
             </Grid.Column>
             <Grid.Column computer={4} mobile={16}>
-              <Grid.Row style={{ marginTop: width <= Responsive.onlyComputer.minWidth ? '1em' : 0 }}>
+              <Grid.Row>
                 <Grid.Column width={16}>
                   <Header dividing>Details</Header>
                   <Grid.Row>
@@ -215,7 +209,7 @@ export default function Page () {
             </Grid.Column>
           </Grid.Row>
           <PlayerReportCommentList report={id} serverId={serverId} showReply={canComment} />
-        </Responsive>
+        </Grid>
       </PageContainer>
     </DefaultLayout>
   )

@@ -1,10 +1,10 @@
 import React from 'react'
-import Document, { Head, Main, NextScript } from 'next/document'
-
+import Document, { Html, Head, Main, NextScript } from 'next/document'
+import { mediaStyles } from '../components/media'
 export default class MyDocument extends Document {
   render () {
     return (
-      <html lang='en'>
+      <Html lang='en'>
         <Head>
           <meta charSet='utf-8' />
           <meta name='author' content='BanManager-WebUI' />
@@ -16,12 +16,17 @@ export default class MyDocument extends Document {
           <link rel='mask-icon' href='/images/safari-pinned-tab.svg' color='#5bbad5' />
           <meta name='msapplication-TileColor' content='#da532c' />
           <meta name='theme-color' content='#ffffff' />
+
+          <style
+            type='text/css'
+            dangerouslySetInnerHTML={{ __html: mediaStyles }}
+          />
         </Head>
         <body>
           <Main />
           <NextScript />
         </body>
-      </html>
+      </Html>
     )
   }
 }

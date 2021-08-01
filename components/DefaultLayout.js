@@ -7,13 +7,12 @@ import Footer from './Footer'
 import ResponsiveContainer from './ResponsiveContainer'
 import ErrorMessages from './ErrorMessages'
 import SessionNavProfile from './SessionNavProfile'
-import { getWidthFactory, useApi } from '../utils'
+import { useApi } from '../utils'
 import { GlobalStore } from '../components/GlobalContext'
 
 function DefaultLayout ({ title = 'Default Title', children, heading, description }) {
   const store = GlobalStore()
   const user = store.get('user')
-  const { mobile, tablet } = store.get('deviceInfo')
   const { loading, data, errors } = useApi({
     query: `{
       navigation {
@@ -46,12 +45,12 @@ function DefaultLayout ({ title = 'Default Title', children, heading, descriptio
         <title>{title}</title>
       </Head>
       <NextSeo description={description} title={title} />
-      <ResponsiveContainer heading={heading} leftItems={left} rightItems={right} getWidth={getWidthFactory(mobile, tablet)} mobile={!!mobile}>
+      <ResponsiveContainer heading={heading} leftItems={left} rightItems={right}>
         <div style={{ display: 'flex', minHeight: '100vh', flexDirection: 'column' }}>
           <div style={{ flex: 1, marginBottom: '1em' }}>
             {children}
           </div>
-          <Footer isMobileFromSSR={mobile} />
+          <Footer />
         </div>
       </ResponsiveContainer>
     </>
