@@ -41,13 +41,13 @@ jobs:
       - name: Set up MySQL
         run: |
           sudo systemctl start mysql.service
-          sleep 5 && mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '${{ env.DB_PASSWORD }}';" -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
+          sleep 5 && mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '';" -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
       - run: npm test
         env:
           DB_HOST: localhost
           DB_PORT: 3306
           DB_USER: root
-          DB_PASSWORD: root
+          DB_PASSWORD:
           LOG_LEVEL: debug
           PORT: 3001
           ENCRYPTION_KEY: b097b390a68441cc3bb151dd0171f25c3aabc688c50eeb26dc5e13254b333911
