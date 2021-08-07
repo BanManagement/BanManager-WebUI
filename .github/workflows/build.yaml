@@ -9,7 +9,7 @@ on:
     - cron: '0 0 * * 0' # weekly
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     name: Node.js ${{ matrix.java }} - ${{ matrix.storageType }}
     strategy:
