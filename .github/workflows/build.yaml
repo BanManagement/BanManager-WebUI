@@ -1,0 +1,78 @@
+name: Node.js CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+  schedule:
+    - cron: '0 0 * * 0' # weekly
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Node.js ${{ matrix.java }} - ${{ matrix.storageType }}
+    strategy:
+      matrix:
+        node-version: [12.x, 14.x, 16.x]
+
+    env:
+      DB_HOST: localhost
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: root
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Cache Node.js modules
+        uses: actions/cache@v2
+        with:
+          # npm cache files are stored in `~/.npm` on Linux/macOS
+          path: ~/.npm
+          key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-node-
+            ${{ runner.OS }}-
+      - run: npm ci
+      - name: Set up MySQL
+        run: |
+          sudo systemctl start mysql.service
+          sleep 5 && mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '';" -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
+      - run: npm test
+        env:
+          DB_HOST: localhost
+          DB_PORT: 3306
+          DB_USER: root
+          DB_PASSWORD:
+          LOG_LEVEL: debug
+          PORT: 3001
+          ENCRYPTION_KEY: b097b390a68441cc3bb151dd0171f25c3aabc688c50eeb26dc5e13254b333911
+          SESSION_KEY: a73545a5f08d2906e39a4438014200303f9269f3ade9227525ffb141294f1b62
+          DB_CONNECTION_LIMIT: 5
+      - run: npm run coveralls
+      - name: Coveralls Parallel
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.github_token }}
+          flag-name: run-${{ matrix.test_number }}
+          parallel: true
+
+  build_docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: docker build . # TODO cache
+
+  finish:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+    - name: Coveralls Finished
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.github_token }}
+        parallel-finished: true

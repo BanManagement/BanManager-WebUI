@@ -9,7 +9,7 @@ import {
   Visibility
 } from 'semantic-ui-react'
 import MenuLink from '../components/MenuLink'
-import { Media, MediaContextProvider } from '../components/media'
+import { Media, MediaContextProvider } from '../components/Media'
 
 const renderMenu = (items = []) => items.map(item => {
   if (item.as === 'a') {

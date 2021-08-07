@@ -3,7 +3,7 @@ import { Container, Grid, Loader } from 'semantic-ui-react'
 import ErrorMessages from './ErrorMessages'
 import PageContainer from './PageContainer'
 import { useApi } from '../utils'
-import { Media, MediaContextProvider } from '../components/media'
+import { Media, MediaContextProvider } from '../components/Media'
 
 const query = `query pageLayout($pathname: String!) {
   pageLayout(pathname: $pathname) {

@@ -222,13 +222,15 @@ describe('Mutation update server', () => {
     await pool('bm_players').insert(player)
 
     // Create temp user
-    await pool.raw('GRANT ALL PRIVILEGES ON *.* TO \'foobar\'@\'localhost\' IDENTIFIED BY \'password\';')
+    await pool.raw('CREATE USER \'foobarupdate\'@\'localhost\' IDENTIFIED BY \'password\';')
+    await pool.raw('GRANT ALL ON *.* TO \'foobarupdate\'@\'localhost\';')
+    await pool.raw('FLUSH PRIVILEGES;')
     const server = createServer(unparse(player.id), setup.dbPool.client.config.connection.database)
     const serverId = config.id
 
     delete server.id
 
-    server.user = 'foobar'
+    server.user = 'foobarupdate'
     server.password = 'password'
     server.tables = JSON.parse(server.tables)
 

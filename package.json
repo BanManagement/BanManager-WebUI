@@ -50,7 +50,7 @@
     "koa-session": "6.2.0",
     "lodash-es": "4.17.21",
     "memoizee": "0.4.15",
-    "mysql2": "github:confuser/node-mysql2#fix/nested-cache-key",
+    "mysql2": "2.2.5",
     "next": "10.2.2",
     "next-absolute-url": "1.2.2",
     "next-compose-plugins": "2.2.1",
