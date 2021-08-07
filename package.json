@@ -10,7 +10,7 @@
     "mobile-detect": false
   },
   "dependencies": {
-    "@artsy/fresnel": "^1.9.0",
+    "@artsy/fresnel": "1.9.0",
     "@koa/router": "8.0.8",
     "@nateradebaugh/react-datetime": "4.4.6",
     "@next/bundle-analyzer": "9.5.5",
