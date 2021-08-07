@@ -31,7 +31,7 @@ module.exports = async (disableTestMigrations) => { // eslint-disable-line max-s
 
   dbConfig.database = dbName
 
-  console.log(`Using database ${dbName}`, dbConfig)
+  console.log(`Using database ${dbName}`)
 
   // Recreate the pool, as USE DATABASE would only apply to one connection, not the whole pool?
   // @TODO Confirm above

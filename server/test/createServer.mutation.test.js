@@ -192,7 +192,9 @@ describe('Mutation create server', () => {
     await pool('bm_players').insert(player)
 
     // Create temp user
-    await pool.raw('GRANT ALL PRIVILEGES ON *.* TO \'foobar\'@\'localhost\' IDENTIFIED BY \'password\';')
+    await pool.raw('CREATE USER \'foobar\'@\'localhost\' IDENTIFIED BY \'password\';')
+    await pool.raw('GRANT ALL ON *.* TO \'foobar\'@\'localhost\';')
+    await pool.raw('FLUSH PRIVILEGES;')
     const server = createServer(unparse(player.id), setup.dbPool.client.config.connection.database)
 
     delete server.id
