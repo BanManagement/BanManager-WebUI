@@ -230,7 +230,7 @@ describe('Mutation update server', () => {
 
     delete server.id
 
-    server.user = 'foobar'
+    server.user = 'foobarupdate'
     server.password = 'password'
     server.tables = JSON.parse(server.tables)
 

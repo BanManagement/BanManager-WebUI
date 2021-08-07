@@ -198,7 +198,7 @@ describe('Mutation create server', () => {
     const server = createServer(unparse(player.id), setup.dbPool.client.config.connection.database)
 
     delete server.id
-    server.user = 'foobar'
+    server.user = 'foobarcreate'
     server.password = 'password'
     server.tables = JSON.parse(server.tables)
 
