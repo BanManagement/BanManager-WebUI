@@ -53,7 +53,6 @@ jobs:
           ENCRYPTION_KEY: b097b390a68441cc3bb151dd0171f25c3aabc688c50eeb26dc5e13254b333911
           SESSION_KEY: a73545a5f08d2906e39a4438014200303f9269f3ade9227525ffb141294f1b62
           DB_CONNECTION_LIMIT: 5
-      - run: npm run coveralls
       - name: Coveralls Parallel
         uses: coverallsapp/github-action@master
         with:
@@ -71,8 +70,8 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     steps:
-    - name: Coveralls Finished
-      uses: coverallsapp/github-action@master
-      with:
-        github-token: ${{ secrets.github_token }}
-        parallel-finished: true
+      - name: Coveralls Finished
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.github_token }}
+          parallel-finished: true
