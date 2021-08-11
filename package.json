@@ -70,7 +70,7 @@
     "url-loader": "4.1.1",
     "uuid-parse": "1.1.0",
     "validator": "13.6.0",
-    "web-push": "3.4.4"
+    "web-push": "3.4.5"
   },
   "devDependencies": {
     "@oclif/test": "1.2.8",
