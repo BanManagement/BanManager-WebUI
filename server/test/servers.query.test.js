@@ -59,8 +59,8 @@ describe('Query servers', () => {
 
     assert.strictEqual(serverData.id, server.id)
     assert.strictEqual(serverData.name, server.name)
-    assert.strictEqual(serverData.host, '127.0.0.1')
-    assert.strictEqual(serverData.port, 3306)
+    assert.strictEqual(serverData.host, process.env.DB_HOST || '127.0.0.1')
+    assert.strictEqual(serverData.port, parseInt(process.env.DB_PORT, 10) || 3306)
     assert.strictEqual(serverData.database, server.database)
     assert.strictEqual(serverData.user, 'root')
     assert.strictEqual(serverData.console.id, unparse(server.console))
