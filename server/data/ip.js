@@ -1,8 +1,8 @@
 // Based on https://github.com/kvz/locutus/blob/master/test/languages/php/network/test-inet_ntop.js
 function inetTop (a) {
-  var i = 0
-  var m = ''
-  var c = []
+  let i = 0
+  let m = ''
+  const c = []
 
   a += ''
   if (a.length === 4) {
@@ -31,12 +31,12 @@ function inetTop (a) {
 }
 
 function inetPton (a) {
-  var r
-  var m
-  var x
-  var i
-  var j
-  var f = String.fromCharCode
+  let r
+  let m
+  let x
+  let i
+  let j
+  const f = String.fromCharCode
 
   // IPv4
   m = a.match(/^(?:\d{1,3}(?:\.|$)){4}/)

@@ -31,7 +31,7 @@ export default function Page () {
   const router = useRouter()
   const { id } = router.query
   const { loading, data, errors } = useApi({
-    query: ` query player($id: UUID!) {
+    query: !id ? null : `query player($id: UUID!) {
     player(player: $id) {
       id
       name
@@ -60,13 +60,6 @@ export default function Page () {
 
   return (
     <>
-      {/* <Menu icon='labeled'>
-        <Menu.Item name='ban'><Icon name='ban' />Bans</Menu.Item>
-        <Menu.Item name='mute'><Icon name='mute' />Mutes</Menu.Item>
-        <Menu.Item name='sticky note outline'><Icon name='sticky note outline' />Notes</Menu.Item>
-        <Menu.Item>Reports</Menu.Item>
-        <Menu.Item name='warning'><Icon name='warning' />Warnings</Menu.Item>
-      </Menu> */}
       <DefaultLayout title={data.player.name}>
         <PageLayout
           availableComponents={availableComponents}

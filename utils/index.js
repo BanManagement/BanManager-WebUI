@@ -1,7 +1,10 @@
-import { useGraphQL } from 'graphql-react'
+import { useEffect, useState } from 'react'
+import { GraphQLClient } from 'graphql-request'
+import { useRouter } from 'next/router'
 import { formatDistance, fromUnixTime } from 'date-fns'
+import useSWR from 'swr'
+import { toPairs } from 'lodash-es'
 import { version } from '../package.json'
-import { GlobalStore } from '../components/GlobalContext'
 
 export const absoluteUrl = (req, localhostAddress = 'localhost:3000') => {
   let host =
@@ -31,34 +34,102 @@ export const absoluteUrl = (req, localhostAddress = 'localhost:3000') => {
   }
 }
 
-export const useApi = (operation, options) => {
-  const store = GlobalStore()
-  const res = useGraphQL({
-    operation,
-    fetchOptionsOverride (options) {
-      const origin = !process.browser && process.env.SSR_API_HOST ? process.env.SSR_API_HOST : store.get('origin')
+const graphQLClient = new GraphQLClient('/graphql', {
+  credentials: 'include'
+})
 
-      options.url = origin + '/graphql'
-      options.credentials = 'include'
+const graphqlFetcher = (query, ...args) => {
+  // Creates an object. Odd indexes are keys and even indexes are values.
+  // Needs to be flat to avoid unnecessary rerendering since swr does shallow comparison.
+  const variables = [...(args || [])].reduce((acc, arg, index, arr) => {
+    if (index % 2 === 0) acc[arg] = arr[index + 1]
+    return acc
+  }, {})
 
-      const cookie = store.get('cookie')
+  return graphQLClient.request(query, variables)
+}
 
-      if (cookie) options.headers.Cookie = cookie
-    },
-    loadOnMount: true,
-    loadOnReload: false,
-    loadOnReset: false,
-    ...options
+export const useApi = (operation) => {
+  const variables = toPairs(operation.variables).flat()
+  const { data, error, mutate } = useSWR([operation.query, ...variables], graphqlFetcher)
+  const loading = !data && !error
+  const errors = error?.response?.errors
+
+  return { data, errors, loading, mutate }
+}
+
+export const useMutateApi = (operation) => {
+  const [loading, setLoading] = useState(false)
+  const [state, setState] = useState({ data: null, errors: null })
+  const load = async (variables) => {
+    const flatVars = toPairs(variables).flat()
+
+    setLoading(true)
+
+    try {
+      const data = await graphqlFetcher(operation.query, ...flatVars)
+
+      setState({ ...state, data })
+    } catch (error) {
+      setState({ ...state, errors: error?.response?.errors })
+    }
+
+    setLoading(false)
+  }
+
+  return { load, loading, ...state }
+}
+
+const userFetcher = () =>
+  fetch('/graphql', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify({
+      query: `{ me {
+    id
+    name
+    hasAccount
+    session {
+      type
+    }
+  }}`
+    })
   })
-  const { load, loading, cacheValue: { data, ...possibleErrors } = {} } = res
-  const errors = Object.keys(possibleErrors).length === 0 && possibleErrors.constructor === Object ? null : possibleErrors
+    .then((r) => r.json())
+    .then(({ data }) => {
+      return { user: data?.me || null }
+    })
 
-  return { load, loading, errors, data }
+export const useUser = ({
+  redirectTo = false,
+  redirectIfFound = false
+} = {}) => {
+  const router = useRouter()
+  const { data } = useSWR('/api/user', userFetcher)
+  const user = data?.user
+  const finished = Boolean(data)
+  const hasUser = Boolean(user)
+
+  useEffect(() => {
+    if (!redirectTo && !finished) return
+
+    if (
+      // If redirectTo is set, redirect if the user was not found.
+      (redirectTo && !redirectIfFound && !hasUser) ||
+      // If redirectIfFound is also set, redirect if the user was found
+      (redirectIfFound && hasUser)
+    ) {
+      router.push(redirectTo)
+    }
+  }, [redirectTo, redirectIfFound, finished, hasUser])
+
+  return { user }
 }
 
 export const fromNow = (timestamp) => {
   try {
-    formatDistance(fromUnixTime(timestamp), new Date(), { addSuffix: true })
+    return formatDistance(fromUnixTime(timestamp), new Date(), { addSuffix: true })
   } catch (e) {
     console.error(e)
 

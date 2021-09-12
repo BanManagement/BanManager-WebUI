@@ -1,33 +1,24 @@
 import React, { useEffect, useState } from 'react'
 import { Form, Message } from 'semantic-ui-react'
 import ErrorMessages from './ErrorMessages'
-import { useApi } from '../utils'
+import { useMutateApi } from '../utils'
 
 export default function ResetPasswordForm () {
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
-  const [variables, setVariables] = useState({})
   const [inputState, setInputState] = useState({
     newPassword: '',
     confirmPassword: '',
     currentPassword: ''
   })
 
-  useEffect(() => setVariables(inputState), [inputState])
-
-  const { load, data, errors } = useApi({
+  const { load, data, errors } = useMutateApi({
     query: `mutation setPassword($currentPassword: String!, $newPassword: String!) {
     setPassword(currentPassword: $currentPassword, newPassword: $newPassword) {
       id
     }
-  }`,
-    variables
-  }, {
-    loadOnMount: false,
-    loadOnReload: false,
-    loadOnReset: false,
-    reloadOnLoad: true
+  }`
   })
 
   useEffect(() => {
@@ -44,7 +35,7 @@ export default function ResetPasswordForm () {
     if (error) return
 
     setLoading(true)
-    load()
+    load(inputState)
   }
   const handleChange = async (e, { name, value }) => {
     setInputState({ ...inputState, [name]: value })

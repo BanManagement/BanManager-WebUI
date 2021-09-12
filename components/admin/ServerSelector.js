@@ -11,13 +11,7 @@ export default function ServerSelector ({ handleChange, value, fluid = true, sel
       name
     }
   }`
-
-  const { data, errors } = useApi({ query }, {
-    loadOnMount: true,
-    loadOnReload: false,
-    loadOnReset: false,
-    reloadOnLoad: false
-  })
+  const { data, errors } = useApi({ query })
 
   useEffect(() => {
     setLoading(false)
@@ -44,7 +38,3 @@ export default function ServerSelector ({ handleChange, value, fluid = true, sel
     />
   )
 }
-
-export const query = `
-
-`

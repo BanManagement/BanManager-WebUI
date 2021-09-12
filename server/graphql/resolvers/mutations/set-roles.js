@@ -25,8 +25,14 @@ module.exports = async function setRoles (obj, { player, input: { roles, serverR
     await trx('bm_web_users').insert({ player_id: player }).onDuplicateUpdate('player_id')
     await trx('bm_web_player_roles').where({ player_id: player }).del()
     await trx('bm_web_player_server_roles').where({ player_id: player }).del()
-    await trx('bm_web_player_roles').insert(globalRoles)
-    await trx('bm_web_player_server_roles').insert(serverDataRoles)
+
+    if (globalRoles.length) {
+      await trx('bm_web_player_roles').insert(globalRoles)
+    }
+
+    if (serverDataRoles.length) {
+      await trx('bm_web_player_server_roles').insert(serverDataRoles)
+    }
 
     await trx.commit()
   })

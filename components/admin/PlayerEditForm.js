@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Form, Header, Image, Modal, Select } from 'semantic-ui-react'
 import ErrorMessages from '../ErrorMessages'
-import { useApi } from '../../utils'
+import { useMutateApi } from '../../utils'
 
 export default function PlayerEditForm ({ open, onFinished, player, roles, servers }) {
   if (!player) return null
@@ -12,39 +12,50 @@ export default function PlayerEditForm ({ open, onFinished, player, roles, serve
     roles: player.roles.map(({ role }) => role.id),
     serverRoles: player.serverRoles
   })
-  const [variables, setVariables] = useState({})
-  const { load, data, errors } = useApi({
+  const { load, data, errors } = useMutateApi({
     query: `mutation setRoles($player: UUID!, $input: SetRolesInput!) {
       setRoles(player: $player, input: $input) {
         id
+        player {
+          name
+        }
+        email
+        roles {
+          role {
+            id
+            name
+          }
+        }
+        serverRoles {
+          serverRole {
+            id
+            name
+          }
+          server {
+            id
+          }
+        }
       }
-    }`,
-    variables
-  }, {
-    loadOnMount: false,
-    loadOnReload: false,
-    loadOnReset: false,
-    reloadOnLoad: true
+    }`
   })
 
-  useEffect(() => setVariables({
-    player: player.id,
-    input: {
-      roles: inputState.roles.map(id => ({ id })),
-      serverRoles: inputState.serverRoles.map(role => ({ role: { id: role.serverRole.id }, server: { id: role.server.id } }))
-    }
-  }), [inputState])
   useEffect(() => setLoading(false), [errors])
   useEffect(() => {
     if (!data) return
-    if (Object.keys(data).some(key => !!data[key].id)) onFinished(true)
+    if (Object.keys(data).some(key => !!data[key].id)) onFinished(data)
   }, [data])
 
   const onSubmit = (e) => {
     e.preventDefault()
     setLoading(true)
 
-    load()
+    load({
+      player: player.id,
+      input: {
+        roles: inputState.roles.map(id => ({ id })),
+        serverRoles: inputState.serverRoles.map(role => ({ role: { id: role.serverRole.id }, server: { id: role.server.id } }))
+      }
+    })
   }
   const handleChange = (e, { name, value }) => setInputState({ ...inputState, [name]: value })
   const handleServerRoleChange = (e, { name, value }) => {
@@ -115,5 +126,6 @@ export default function PlayerEditForm ({ open, onFinished, player, roles, serve
       <Modal.Actions>
         <Button fluid primary size='large' content='Save' loading={loading} onClick={onSubmit} />
       </Modal.Actions>
-    </Modal>)
+    </Modal>
+  )
 }

@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { Form } from 'semantic-ui-react'
 import { useRouter } from 'next/router'
-import { GlobalStore } from './GlobalContext'
 import ErrorMessages from './ErrorMessages'
 
 export default function PlayerRegisterForm () {
   const router = useRouter()
-  const store = GlobalStore()
-  const origin = store.get('origin')
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
@@ -28,7 +25,7 @@ export default function PlayerRegisterForm () {
     }
 
     try {
-      const response = await fetch(`${origin}/api/register`,
+      const response = await fetch('/api/register',
         {
           method: 'POST',
           body: JSON.stringify(inputState),

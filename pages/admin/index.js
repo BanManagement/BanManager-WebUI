@@ -31,7 +31,9 @@ function Page () {
   )
 }
 
-Page.getInitialProps = async () => {
+export default Page
+
+export const getServerSideProps = async () => {
   // Cache the lookup so we're not always hitting GitHub
   if (!process.browser) {
     const expired = (Date.now() - latestVersionCheck) > 3600000 // 1 hour
@@ -45,7 +47,5 @@ Page.getInitialProps = async () => {
     }
   }
 
-  return { latestVersion }
+  return { props: { latestVersion } }
 }
-
-export default Page

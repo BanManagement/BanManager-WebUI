@@ -74,7 +74,7 @@ function createComponents (rows, availableComponents, props) {
       props.colour = deviceComponent.colour
       props.meta = deviceComponent.meta || {}
 
-      const rendered =
+      const rendered = (
         <Grid.Column
           width={deviceComponent.w}
           color={deviceComponent.colour}
@@ -83,6 +83,7 @@ function createComponents (rows, availableComponents, props) {
         >
           <Container><Component {...props} /></Container>
         </Grid.Column>
+      )
 
       return rendered
     })
@@ -134,5 +135,6 @@ export default function PageLayout ({ availableComponents, pathname, props = {} 
       <Media greaterThanOrEqual='computer'>
         <Grid>{deviceComponents.desktop}</Grid>
       </Media>
-    </MediaContextProvider>)
+    </MediaContextProvider>
+  )
 }

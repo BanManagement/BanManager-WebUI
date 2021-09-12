@@ -2,25 +2,17 @@ import React, { useEffect, useState } from 'react'
 import { cloneDeep, find } from 'lodash-es'
 import { Form, Header, Select } from 'semantic-ui-react'
 import ErrorMessages from '../ErrorMessages'
-import { useApi } from '../../utils'
+import { useMutateApi } from '../../utils'
 
 export default function RoleForm ({ onFinished, query, parseVariables, parentRoles, resources, defaults = {} }) {
   const [loading, setLoading] = useState(false)
-  const [variables, setVariables] = useState({})
   const [inputState, setInputState] = useState({
     name: defaults.name || '',
     resources: defaults.resources || resources,
     parent: defaults.parent || parentRoles[0].value
   })
 
-  useEffect(() => setVariables(parseVariables(inputState)), [inputState])
-
-  const { load, data, errors } = useApi({ query, variables }, {
-    loadOnMount: false,
-    loadOnReload: false,
-    loadOnReset: false,
-    reloadOnLoad: true
-  })
+  const { load, data, errors } = useMutateApi({ query })
 
   useEffect(() => setLoading(false), [errors])
   useEffect(() => {
@@ -32,7 +24,7 @@ export default function RoleForm ({ onFinished, query, parseVariables, parentRol
     e.preventDefault()
     setLoading(true)
 
-    load()
+    load(parseVariables(inputState))
   }
   const handleChange = async (e, { name, value }) => {
     setInputState({ ...inputState, [name]: value })

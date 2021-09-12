@@ -10,7 +10,7 @@ export default function Page () {
   const { id } = router.query
   const { loading, data, errors } = useApi({
     variables: { id },
-    query: `query role($id: ID!) {
+    query: !id ? null : `query role($id: ID!) {
       role(id: $id) {
         id
         name
@@ -30,9 +30,6 @@ export default function Page () {
         name
       }
     }`
-  }, {
-    loadOnReload: false,
-    loadOnReset: false
   })
 
   if (loading) return <Loader active />

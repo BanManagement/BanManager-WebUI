@@ -8,9 +8,9 @@ import { useApi } from '../../../utils'
 
 export default function Page () {
   const router = useRouter()
-  const [serverId, id] = router.query.id.split('-')
+  const [serverId, id] = router.query.id?.split('-') || []
   const { loading, data, errors } = useApi({
-    query: `
+    query: !serverId || !id ? null : `
   query playerWarning($id: ID!, $serverId: ID!) {
     playerWarning(id: $id, serverId: $serverId) {
       id
@@ -29,9 +29,6 @@ export default function Page () {
     }
   }`,
     variables: { id, serverId }
-  }, {
-    loadOnReload: false,
-    loadOnReset: false
   })
 
   if (loading) return <Loader active />

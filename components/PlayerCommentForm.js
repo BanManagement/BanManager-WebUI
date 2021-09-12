@@ -1,23 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { Form } from 'semantic-ui-react'
 import ErrorMessages from './ErrorMessages'
-import { useApi } from '../utils'
+import { useMutateApi } from '../utils'
 
 export default function PlayerCommentForm ({ onFinish, parseVariables, query }) {
   const [loading, setLoading] = useState(false)
-  const [variables, setVariables] = useState({})
   const [inputState, setInputState] = useState({
     comment: ''
   })
 
-  useEffect(() => setVariables(parseVariables(inputState)), [inputState])
-
-  const { load, data, errors } = useApi({ query, variables }, {
-    loadOnMount: false,
-    loadOnReload: false,
-    loadOnReset: false,
-    reloadOnLoad: true
-  })
+  const { load, data, errors } = useMutateApi({ query })
 
   useEffect(() => {
     setLoading(false)
@@ -35,7 +27,7 @@ export default function PlayerCommentForm ({ onFinish, parseVariables, query }) 
     e.preventDefault()
 
     setLoading(true)
-    load()
+    load(parseVariables(inputState))
   }
   const handleChange = async (e, { name, value }) => {
     setInputState({ ...inputState, [name]: value })

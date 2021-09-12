@@ -1,9 +1,8 @@
-const { createKey } = require('./crypto')
-const argon2 = require('argon2-ffi').argon2i
+const argon2 = require('argon2')
 
 module.exports = {
   async hash (str) {
-    return argon2.hash(str, await createKey(32))
+    return argon2.hash(str)
   },
   async verify (hash, str) {
     return argon2.verify(hash, str)

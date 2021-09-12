@@ -18,9 +18,6 @@ export default function AdminLayout ({ children, title }) {
         }
       }
     }`
-  }, {
-    loadOnReload: false,
-    loadOnReset: false
   })
 
   if (loading && !data) return <Loader active />

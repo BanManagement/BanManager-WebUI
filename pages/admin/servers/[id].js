@@ -10,7 +10,7 @@ export default function Page () {
   const { id } = router.query
   const { loading, data, errors } = useApi({
     variables: { id },
-    query: `query server($id: ID!) {
+    query: !id ? null : `query server($id: ID!) {
       serverTables
       server(id: $id) {
         id
@@ -49,9 +49,6 @@ export default function Page () {
         }
       }
     }`
-  }, {
-    loadOnReload: false,
-    loadOnReset: false
   })
 
   if (loading) return <Loader active />

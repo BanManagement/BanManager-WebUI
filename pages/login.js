@@ -1,10 +1,15 @@
-import { Header, Message, Segment } from 'semantic-ui-react'
+import { Header, Message, Segment, Loader } from 'semantic-ui-react'
 import DefaultLayout from '../components/DefaultLayout'
 import PageContainer from '../components/PageContainer'
 import PlayerLoginPasswordForm from '../components/PlayerLoginPasswordForm'
 import PlayerLoginPinForm from '../components/PlayerLoginPinForm'
+import { useUser } from '../utils'
 
 function Page () {
+  const { user } = useUser({ redirectIfFound: true, redirectTo: '/' })
+
+  if (user) return <DefaultLayout><Loader active inline='centered' /></DefaultLayout>
+
   return (
     <DefaultLayout title='Login'>
       <PageContainer>

@@ -7,15 +7,10 @@ import ServerForm from '../../../components/admin/ServerForm'
 
 export default function Page () {
   const router = useRouter()
-  const { id } = router.query
   const { loading, data, errors } = useApi({
-    variables: { id },
     query: `query server {
       serverTables
     }`
-  }, {
-    loadOnReload: false,
-    loadOnReset: false
   })
 
   if (loading) return <Loader active />

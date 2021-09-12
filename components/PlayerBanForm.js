@@ -2,11 +2,10 @@ import React, { useEffect, useState } from 'react'
 import { Button, Form, Image, Select, Header } from 'semantic-ui-react'
 import ErrorMessages from './ErrorMessages'
 import DateTimePicker from './DateTimePicker'
-import { fromNow, useApi } from '../utils'
+import { fromNow, useMutateApi } from '../utils'
 
 export default function PlayerBanForm ({ player, servers, onFinished, query, parseVariables, disableServers = false, defaults = {} }) {
   const [loading, setLoading] = useState(false)
-  const [variables, setVariables] = useState({})
   const [typeState, setTypeState] = useState(defaults.expires ? 'temporary' : 'permanent')
   const [inputState, setInputState] = useState({
     reason: defaults.reason || '',
@@ -14,14 +13,7 @@ export default function PlayerBanForm ({ player, servers, onFinished, query, par
     server: defaults?.server?.id
   })
 
-  useEffect(() => setVariables(parseVariables(inputState)), [inputState])
-
-  const { load, data, errors } = useApi({ query, variables }, {
-    loadOnMount: false,
-    loadOnReload: false,
-    loadOnReset: false,
-    reloadOnLoad: true
-  })
+  const { load, data, errors } = useMutateApi({ query })
 
   useEffect(() => setLoading(false), [errors])
   useEffect(() => {
@@ -35,7 +27,7 @@ export default function PlayerBanForm ({ player, servers, onFinished, query, par
     e.preventDefault()
     setLoading(true)
 
-    load()
+    load(parseVariables(inputState))
   }
   const toggleExpiry = (e) => {
     e.preventDefault()

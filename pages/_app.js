@@ -1,12 +1,8 @@
 import React from 'react'
-import App from 'next/app'
+import PropTypes from 'prop-types'
 import Head from 'next/head'
 import { DefaultSeo } from 'next-seo'
 import 'cross-fetch/polyfill'
-import { GraphQLProvider } from 'graphql-react'
-import { withGraphQLApp } from 'next-graphql-react'
-import { absoluteUrl } from '../utils'
-import { GlobalStoreProvider } from '../components/GlobalContext'
 
 // Only import what we need
 import 'semantic-ui-css/components/button.css'
@@ -39,73 +35,29 @@ import '@nateradebaugh/react-datetime/scss/styles.scss'
 import 'react-grid-layout/css/styles.css'
 import 'react-resizable/css/styles.css'
 
-class MyApp extends App {
-  static async getInitialProps ({ Component, ctx }) {
-    let pageProps = {}
-
-    if (Component.getInitialProps) {
-      pageProps = await Component.getInitialProps(ctx)
-    }
-
-    pageProps.origin = absoluteUrl(ctx.req).origin
-
-    if (ctx.req && !ctx.req.headers.cookie) return { pageProps }
-
-    try {
-      const origin = ctx.req && process.env.SSR_API_HOST ? process.env.SSR_API_HOST : pageProps.origin
-      const response = await fetch(`${origin}/graphql`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Cookie: ctx.req ? ctx.req.headers.cookie : undefined },
-        credentials: 'include',
-        body: JSON.stringify({
-          query: `{ me {
-          id
-          name
-          hasAccount
-          session {
-            type
-          }
-        }}`
-        })
-      })
-
-      if (response.status === 200) {
-        const responseData = await response.json()
-
-        pageProps.user = responseData.data.me
-        if (ctx.req) pageProps.cookie = ctx.req.headers.cookie
-      }
-    } catch (e) {
-      console.error(e)
-    }
-
-    return { pageProps }
-  }
-
-  render () {
-    const { Component, pageProps, graphql } = this.props
-    const init = { user: pageProps.user || {}, cookie: pageProps.cookie, origin: pageProps.origin }
-
-    if (process.browser) init.origin = window.location.origin
-
-    return (
-      <GlobalStoreProvider initValues={init}>
-        <Head>
-          <meta name='viewport' content='initial-scale=1.0, width=device-width' />
-        </Head>
-        <DefaultSeo
-          openGraph={{
-            type: 'website',
-            locale: 'en_UK',
-            url: pageProps.origin,
-            site_name: 'Ban Management'
-          }}
-        />
-        <GraphQLProvider graphql={graphql}>
-          <Component {...pageProps} />
-        </GraphQLProvider>
-      </GlobalStoreProvider>)
-  }
+function MyApp ({ Component, pageProps, graphql }) {
+  return (
+    <>
+      <Head>
+        <meta name='viewport' content='initial-scale=1.0, width=device-width' />
+      </Head>
+      <DefaultSeo
+        openGraph={{
+          type: 'website',
+          locale: 'en_UK',
+          url: pageProps.origin,
+          site_name: 'Ban Management'
+        }}
+      />
+      <Component {...pageProps} />
+    </>
+  )
 }
 
-export default withGraphQLApp(MyApp)
+MyApp.propTypes = {
+  pageProps: PropTypes.object,
+  Component: PropTypes.elementType,
+  graphql: PropTypes.any
+}
+
+export default MyApp

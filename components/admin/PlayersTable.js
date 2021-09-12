@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Form, Image, Loader, Pagination, Table } from 'semantic-ui-react'
 import PlayerEditForm from './PlayerEditForm'
 import { useApi } from '../../utils'
@@ -35,23 +35,25 @@ query listUsers($email: String, $role: String, $serverRole: String, $limit: Int,
 export default function PlayersTable ({ limit = 30, roles, servers }) {
   const [tableState, setTableState] = useState({ activePage: 1, limit, offset: 0, email: '', role: '', serverRole: '' })
   const [editState, setEditState] = useState({ playerEditOpen: false, currentPlayer: null })
-  const { load, loading, data } = useApi({ query, variables: tableState }, {
-    loadOnMount: false,
-    loadOnReload: false,
-    loadOnReset: false,
-    reloadOnLoad: true
-  })
-
-  useEffect(() => {
-    load()
-  }, [tableState])
+  const { loading, data, mutate } = useApi({ query, variables: tableState })
 
   const handlePageChange = (e, { activePage }) => setTableState({ ...tableState, activePage, offset: (activePage - 1) * limit })
   const handleOpen = player => () => setEditState({ playerEditOpen: true, currentPlayer: player })
-  const handleplayerEditFinished = (updated) => {
+  const handleplayerEditFinished = ({ setRoles }) => {
     setEditState({ playerEditOpen: false, currentPlayer: null })
 
-    if (updated) load()
+    if (setRoles) {
+      const records = data.listUsers.records.slice()
+      const index = records.findIndex(p => p.id === setRoles.id)
+
+      if (index) {
+        records[index] = setRoles
+      } else {
+        records.push(setRoles)
+      }
+
+      mutate({ ...data, listUsers: { ...data.listUsers, records } })
+    }
   }
   const handleFilter = (e, { name, value }) => setTableState({ ...tableState, [name]: value })
   const rows = data?.listUsers?.records || []

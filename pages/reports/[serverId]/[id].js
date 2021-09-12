@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useRouter } from 'next/router'
 import { Comment, Grid, Header, Image, Loader, Segment } from 'semantic-ui-react'
 import { format, fromUnixTime } from 'date-fns'
@@ -13,9 +13,9 @@ import PlayerReportState from '../../../components/PlayerReportState'
 export default function Page () {
   const router = useRouter()
   const { id, serverId } = router.query
-  const { loading, data, errors } = useApi({
+  const { loading, data, errors, mutate } = useApi({
     variables: { serverId, id },
-    query: `query report($id: ID!, $serverId: ID!) {
+    query: !serverId && !id ? null : `query report($id: ID!, $serverId: ID!) {
       reportStates(serverId: $serverId) {
         id
         name
@@ -86,16 +86,9 @@ export default function Page () {
         }
       }
     }`
-  }, {
-    loadOnReload: false,
-    loadOnReset: false
   })
 
   const report = data?.report
-
-  const [state, setState] = useState(report?.state)
-  const [updated, setUpdated] = useState(report?.updated)
-  const [assignee, setAssignee] = useState(report?.assignee)
 
   if (loading) return <Loader active />
   if (errors || !data) return <ErrorLayout errors={errors} />
@@ -163,16 +156,15 @@ export default function Page () {
                         <PlayerReportState
                           id={report.id}
                           server={data.server.id}
-                          currentState={state}
+                          currentState={report?.state}
                           states={stateOptions}
                           onChange={({ reportState: { state, updated } }) => {
-                            setState(state)
-                            setUpdated(updated)
+                            mutate({ ...data, report: { ...data.report, state, updated } }, false)
                           }}
                         />
-                      ) : (
-                        <span>{report.state.name}</span>
-                      )}
+                    ) : (
+                      <span>{report.state.name}</span>
+                    )}
                     </Grid.Column>
                   </Grid.Row>
                   <Grid.Row>
@@ -180,21 +172,20 @@ export default function Page () {
                       Assigned: {canAssign ? (
                         <PlayerReportAssign
                           id={report.id}
-                          player={assignee}
+                          player={report.assignee}
                           server={data.server.id}
                           onChange={({ assignReport: { assignee, updated } }) => {
-                            setAssignee(assignee)
-                            setUpdated(updated)
+                            mutate({ ...data, report: { ...data.report, assignee, updated } }, false)
                           }}
                         />
-                      ) : (
-                        <span>{assignee ? assignee.name : ''}</span>
-                      )}
+                    ) : (
+                      <span>{report?.assignee?.name}</span>
+                    )}
                     </Grid.Column>
                   </Grid.Row>
                   <Grid.Row>
                     <Grid.Column>
-                      <p>Updated: {fromNow(updated)}</p>
+                      <p>Updated: {fromNow(report?.updated)}</p>
                     </Grid.Column>
                   </Grid.Row>
                 </Grid.Column>

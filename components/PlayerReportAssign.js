@@ -1,54 +1,37 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { Loader } from 'semantic-ui-react'
 import PlayerSelector from '../components/admin/PlayerSelector'
-import { useApi } from '../utils'
+import { useMutateApi } from '../utils'
 
 export default function PlayerReportAssign ({ id, player, server, onChange }) {
-  const [loading, setLoading] = useState(false)
-  const [variables, setVariables] = useState({ serverId: server, report: id, player: player ? player.id : null })
-
-  const { load, data, errors } = useApi({
-    query: `mutation assignReport($report: ID!, $serverId: ID!, $player: UUID!) {
-    assignReport(report: $report, serverId: $serverId, player: $player) {
-      updated
-      state {
-        id
-        name
-      }
-      assignee {
-        id
-        name
-      }
-    }
-  }`,
-    variables
-  }, {
-    loadOnMount: false,
-    loadOnReload: false,
-    loadOnReset: false,
-    reloadOnLoad: true
+  const { data, loading, load } = useMutateApi({
+    query: /* GraphQL */ `
+      mutation assignReport($report: ID!, $serverId: ID!, $player: UUID!) {
+        assignReport(report: $report, serverId: $serverId, player: $player) {
+          updated
+          state {
+            id
+            name
+          }
+          assignee {
+            id
+            name
+          }
+        }
+      }`
   })
 
-  useEffect(() => setLoading(false), [errors])
   useEffect(() => {
     if (!data) return
     if (Object.keys(data).some(key => !!data[key].updated)) {
-      setLoading(false)
       onChange(data)
     }
   }, [data])
-  useEffect(() => {
-    const playerId = player ? player.id : null
 
-    if (variables && variables.player !== playerId) {
-      load()
+  const handleChange = (newPlayer) => {
+    if (player?.id !== newPlayer) {
+      load({ serverId: server, report: id, player: newPlayer || null })
     }
-  }, [variables])
-
-  const handleChange = (player) => {
-    setLoading(true)
-
-    setVariables({ serverId: server, report: id, player: player || null })
   }
 
   if (loading) return <Loader active />

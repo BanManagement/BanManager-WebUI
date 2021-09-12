@@ -1,19 +1,13 @@
 import React, { useState } from 'react'
 import { Button, Confirm, List } from 'semantic-ui-react'
-import { useApi } from '../../utils'
+import { useMutateApi } from '../../utils'
 
 export default function ServerItem ({ canDelete, server }) {
   const [state, setState] = useState({ deleteConfirmShow: false, deleting: false })
-  const { load, loading } = useApi({
+  const { load, loading } = useMutateApi({
     query: `mutation deleteServer($id: ID!) {
         deleteServer(id: $id)
-      }`,
-    variables: { id: server.id }
-  }, {
-    loadOnMount: false,
-    loadOnReload: false,
-    loadOnReset: false,
-    reloadOnLoad: true
+      }`
   })
   const showConfirmDelete = () => setState({ deleteConfirmShow: true })
   const handleConfirmDelete = async () => {
@@ -21,7 +15,7 @@ export default function ServerItem ({ canDelete, server }) {
 
     setState({ deleteConfirmShow: false, deleting: true })
 
-    load()
+    load({ id: server.id })
 
     if (!loading) setState({ deleting: false })
   }
