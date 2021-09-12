@@ -29,6 +29,9 @@ COPY --from=dependencies /usr/src/app/node_modules ./node_modules
 # copy app sources
 COPY . .
 
+# needed to check version
+COPY .git/ ./.git/
+
 ENV NEXT_TELEMETRY_DISABLED 1
 ENV NODE_ENV production
 

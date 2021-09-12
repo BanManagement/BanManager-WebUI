@@ -119,9 +119,6 @@
     "parser": "babel-eslint",
     "env": {
       "browser": true
-    },
-    "globals": [
-      "GIT_COMMIT"
-    ]
+    }
   }
 }
