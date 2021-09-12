@@ -220,7 +220,7 @@ describe('Mutation create server', () => {
       .send({ query })
 
     // Delete custom user
-    await pool('mysql.user').where('user', 'foobar').del()
+    await pool('mysql.user').where('user', 'foobarcreate').del()
 
     assert.strictEqual(statusCode, 200)
 

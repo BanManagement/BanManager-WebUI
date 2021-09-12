@@ -103,7 +103,7 @@ describe('Mutation delete server', () => {
       'Server does not exist')
   })
 
-  test('should delete server', async () => {
+  test('should not allow deleting the only server', async () => {
     const { config } = setup.serversPool.values().next().value
     const cookie = await getAuthPassword(request, 'admin@banmanagement.com')
     const query = jsonToGraphQLQuery({
@@ -125,6 +125,67 @@ describe('Mutation delete server', () => {
     assert.strictEqual(statusCode, 200)
 
     assert(body)
-    assert.strictEqual(body.data.deleteServer, config.id)
+    assert.strictEqual(body.errors[0].message,
+      'Cannot delete only server, please add a new server and then delete the old one')
+  })
+
+  test('should delete server', async () => {
+    const { pool } = setup.serversPool.values().next().value
+    const cookie = await getAuthPassword(request, 'admin@banmanagement.com')
+    const player = createPlayer()
+
+    await pool('bm_players').insert(player)
+
+    // Create temp user
+    await pool.raw('CREATE USER \'foobardelete\'@\'localhost\' IDENTIFIED BY \'password\';')
+    await pool.raw('GRANT ALL ON *.* TO \'foobardelete\'@\'localhost\';')
+    await pool.raw('FLUSH PRIVILEGES;')
+    const server = createServer(unparse(player.id), setup.dbPool.client.config.connection.database)
+
+    delete server.id
+    server.user = 'foobardelete'
+    server.password = 'password'
+    server.tables = JSON.parse(server.tables)
+
+    const createQuery = jsonToGraphQLQuery({
+      mutation: {
+        createServer:
+          {
+            __args: {
+              input: server
+            },
+            id: true
+          }
+      }
+    })
+    const { body: createBody } = await request
+      .post('/graphql')
+      .set('Cookie', cookie)
+      .set('Accept', 'application/json')
+      .send({ createQuery })
+
+    // Delete custom user
+    await pool('mysql.user').where('user', 'foobardelete').del()
+
+    const query = jsonToGraphQLQuery({
+      mutation: {
+        deleteServer:
+          {
+            __args: {
+              id: createBody.data.createServer.id
+            }
+          }
+      }
+    })
+    const { body, statusCode } = await request
+      .post('/graphql')
+      .set('Cookie', cookie)
+      .set('Accept', 'application/json')
+      .send({ query })
+
+    assert.strictEqual(statusCode, 200)
+
+    assert(body)
+    assert.strictEqual(body.data.deleteServer, createBody.data.createServer.id)
   })
 })
