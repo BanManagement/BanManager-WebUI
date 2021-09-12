@@ -16,7 +16,7 @@
     "@next/bundle-analyzer": "9.5.5",
     "@oclif/command": "1.8.0",
     "@oclif/config": "1.17.0",
-    "@oclif/plugin-help": "3.2.3",
+    "@oclif/plugin-help": "3.3.0",
     "apollo-server-koa": "2.25.2",
     "apollo-server-plugin-response-cache": "0.9.0",
     "argon2": "^0.28.2",
