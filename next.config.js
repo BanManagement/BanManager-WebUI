@@ -31,7 +31,7 @@ const nextConfig = (phase) => {
       let version = 'unknown'
 
       try {
-        new GitRevisionPlugin().commithash()
+        version = new GitRevisionPlugin().commithash()
       } catch (e) {}
 
       return {
