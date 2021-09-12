@@ -3,7 +3,7 @@ const nixt = require('nixt')
 const crypto = require('../../server/data/crypto')
 
 describe('encrypt', () => {
-  test('should encrypt a value', async done => {
+  test('should encrypt a value', done => {
     nixt()
       .env('ENCRYPTION_KEY', (await crypto.createKey()).toString('hex'))
       .run('./bin/run encrypt')

@@ -12,7 +12,7 @@ describe('update', () => {
     await setup.teardown()
   }, 20000)
 
-  test('should update schema', async done => {
+  test('should update schema', done => {
     const dbPool = setup.dbPool.client.config.connection
 
     nixt()
