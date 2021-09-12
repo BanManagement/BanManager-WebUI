@@ -164,8 +164,6 @@ describe('Mutation delete server', () => {
       .set('Accept', 'application/json')
       .send({ createQuery })
 
-    console.log(createBody)
-
     // Delete custom user
     await pool('mysql.user').where('user', 'foobardelete').del()
 

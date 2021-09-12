@@ -30,11 +30,11 @@ module.exports = function (consoleId, database) {
   return {
     id: randomBytes(4).toString('hex'),
     name: 'Test' + randomBytes(2).toString('hex'),
-    host: '127.0.0.1',
-    port: 3306,
+    host: process.env.DB_HOST || '127.0.0.1',
+    port: process.env.DB_PORT || 3306,
     database,
-    user: 'root',
-    password: '',
+    user: process.env.DB_USER || 'root',
+    password: process.env.DB_PASSWORD || '',
     console: consoleId,
     tables
   }
