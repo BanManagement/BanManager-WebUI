@@ -28,8 +28,14 @@ const nextConfig = (phase) => {
       return config
     },
     env: (() => {
+      let version = 'unknown'
+
+      try {
+        new GitRevisionPlugin().commithash()
+      } catch (e) {}
+
       return {
-        GIT_COMMIT: new GitRevisionPlugin().commithash(),
+        GIT_COMMIT: version,
         IS_DEV: phase === PHASE_DEVELOPMENT_SERVER
       }
     })(),
