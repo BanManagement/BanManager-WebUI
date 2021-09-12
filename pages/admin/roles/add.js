@@ -7,9 +7,7 @@ import RoleForm from '../../../components/admin/RoleForm'
 
 export default function Page () {
   const router = useRouter()
-  const { id } = router.query
   const { loading, data, errors } = useApi({
-    variables: { id },
     query: `query parentRoles {
       roles(defaultOnly: true) {
         id
@@ -25,9 +23,6 @@ export default function Page () {
         }
       }
     }`
-  }, {
-    loadOnReload: false,
-    loadOnReset: false
   })
 
   if (loading) return <Loader active />

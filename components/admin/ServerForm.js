@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Form, Header, TextArea } from 'semantic-ui-react'
 import { safeLoad } from 'js-yaml'
 import { pick } from 'lodash-es'
 import ErrorMessages from '../ErrorMessages'
-import { useApi } from '../../utils'
+import { useMutateApi } from '../../utils'
 
 export default function ServerForm ({ onFinished, query, parseVariables, serverTables, defaults = {} }) {
   const [loading, setLoading] = useState(false)
-  const [variables, setVariables] = useState({})
   const [yamlState, setYamlState] = useState('')
   const [inputState, setInputState] = useState({
     name: defaults.name || '',
@@ -20,14 +19,7 @@ export default function ServerForm ({ onFinished, query, parseVariables, serverT
     tables: defaults.tables
   })
 
-  useEffect(() => setVariables(parseVariables(inputState)), [inputState])
-
-  const { load, data, errors } = useApi({ query, variables }, {
-    loadOnMount: false,
-    loadOnReload: false,
-    loadOnReset: false,
-    reloadOnLoad: true
-  })
+  const { load, data, errors } = useMutateApi({ query })
 
   useEffect(() => setLoading(false), [errors])
   useEffect(() => {
@@ -39,7 +31,7 @@ export default function ServerForm ({ onFinished, query, parseVariables, serverT
     e.preventDefault()
     setLoading(true)
 
-    load()
+    load(parseVariables(inputState))
   }
   const handleChange = async (e, { name, value }) => {
     setInputState({ ...inputState, [name]: value })

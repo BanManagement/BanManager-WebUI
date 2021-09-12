@@ -1,4 +1,3 @@
-import React from 'react'
 import { Message } from 'semantic-ui-react'
 import { uniqBy } from 'lodash-es'
 
@@ -7,7 +6,7 @@ export default function ErrorMessages ({
   fetchError,
   httpError,
   parseError,
-  graphQLErrors
+  errors
 }) {
   return (
     <>
@@ -41,11 +40,11 @@ export default function ErrorMessages ({
           </Message.List>
         </Message>
       )}
-      {graphQLErrors && (
+      {errors && (
         <Message error>
           <Message.Header>Error</Message.Header>
           <Message.List>
-            {uniqBy(graphQLErrors, 'message').map(({ message }, index) => (
+            {uniqBy(errors, 'message').map(({ message }, index) => (
               <Message.Item key={index}>{message}</Message.Item>
             ))}
           </Message.List>

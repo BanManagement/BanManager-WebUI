@@ -27,7 +27,9 @@ export default function Page () {
     textAlign
     meta
   }`
-  const query = `query pageLayout($pathname: String!) {
+  const query = !pathname
+    ? null
+    : `query pageLayout($pathname: String!) {
     pageLayout(pathname: $pathname) {
       devices {
         mobile {
@@ -68,10 +70,7 @@ export default function Page () {
   }
   ${fragment}`
 
-  const { loading, data, errors } = useApi({ variables: { pathname }, query }, {
-    loadOnReload: false,
-    loadOnReset: false
-  })
+  const { loading, data, errors } = useApi({ variables: { pathname }, query })
 
   if (loading) return <Loader active />
   if (errors || !data) return <ErrorLayout errors={errors} />

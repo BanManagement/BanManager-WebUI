@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Comment, Confirm } from 'semantic-ui-react'
 import ErrorMessages from './ErrorMessages'
-import { fromNow, useApi } from '../utils'
+import { fromNow, useMutateApi } from '../utils'
 
 export default function PlayerReportComment ({ id, actor, created, comment, acl, serverId, onFinish }) {
   const [state, setState] = useState({ deleteConfirmShow: false, deleting: false })
-  const { load, data, loading, errors } = useApi({
+  const { load, data, loading, errors } = useMutateApi({
     query: `mutation deleteReportComment($id: ID!, $serverId: ID!) {
       deleteReportComment(id: $id, serverId: $serverId) {
         id
@@ -13,14 +13,9 @@ export default function PlayerReportComment ({ id, actor, created, comment, acl,
           delete
         }
       }
-    }`,
-    variables: { id, serverId }
-  }, {
-    loadOnMount: false,
-    loadOnReload: false,
-    loadOnReset: false,
-    reloadOnLoad: true
+    }`
   })
+
   useEffect(() => {
     if (!data) return
     if (Object.keys(data).some(key => !!data[key].id)) {
@@ -33,7 +28,7 @@ export default function PlayerReportComment ({ id, actor, created, comment, acl,
 
     setState({ deleteConfirmShow: false, deleting: true })
 
-    load()
+    load({ id, serverId })
 
     if (!loading) setState({ deleting: false })
   }

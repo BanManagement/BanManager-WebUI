@@ -1,4 +1,3 @@
-import React from 'react'
 import { Container, Header, Image, Loader } from 'semantic-ui-react'
 import ErrorMessages from './ErrorMessages'
 import { fromNow, useApi } from '../utils'

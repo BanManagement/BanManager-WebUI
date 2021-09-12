@@ -1,4 +1,3 @@
-import React from 'react'
 import { Grid, Label, Loader, Menu } from 'semantic-ui-react'
 import DefaultLayout from './DefaultLayout'
 import MenuLink from './MenuLink'
@@ -18,9 +17,6 @@ export default function AdminLayout ({ children, title }) {
         }
       }
     }`
-  }, {
-    loadOnReload: false,
-    loadOnReset: false
   })
 
   if (loading && !data) return <Loader active />

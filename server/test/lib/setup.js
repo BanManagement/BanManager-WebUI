@@ -22,7 +22,7 @@ module.exports = async (disableTestMigrations) => { // eslint-disable-line max-s
   const logger = pino(
     {
       name: 'banmanager-api-test',
-      level: 'error'
+      level: 'info'
     })
   let dbPool = await setupPool(dbConfig)
 
@@ -76,7 +76,7 @@ module.exports = async (disableTestMigrations) => { // eslint-disable-line max-s
   ])
 
   // Create a server
-  const server = createServer(playerConsole.id, dbName)
+  const server = await createServer(playerConsole.id, dbName)
 
   await dbPool('bm_web_servers').insert(server)
 

@@ -1,21 +1,15 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Button, Confirm, List } from 'semantic-ui-react'
-import { useApi } from '../../utils'
+import { useMutateApi } from '../../utils'
 
 export default function RoleItem ({ role }) {
   const [state, setState] = useState({ deleteConfirmShow: false, deleting: false })
-  const { load, loading } = useApi({
+  const { load, loading } = useMutateApi({
     query: `mutation deleteRole($id: ID!) {
         deleteRole(id: $id) {
           id
         }
-      }`,
-    variables: { id: role.id }
-  }, {
-    loadOnMount: false,
-    loadOnReload: false,
-    loadOnReset: false,
-    reloadOnLoad: true
+      }`
   })
   const showConfirmDelete = () => setState({ deleteConfirmShow: true })
   const handleConfirmDelete = async () => {
@@ -23,7 +17,7 @@ export default function RoleItem ({ role }) {
 
     setState({ deleteConfirmShow: false, deleting: true })
 
-    load()
+    load({ id: role.id })
 
     if (!loading) setState({ deleting: false, deleted: true })
   }

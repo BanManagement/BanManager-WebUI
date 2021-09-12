@@ -1,12 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Form, Select } from 'semantic-ui-react'
 import ErrorMessages from './ErrorMessages'
-import { GlobalStore } from './GlobalContext'
 import { useApi } from '../utils'
 
 export default function PlayerLoginPinForm () {
-  const store = GlobalStore()
-  const origin = store.get('origin')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [inputState, setInputState] = useState({
@@ -37,7 +34,7 @@ export default function PlayerLoginPinForm () {
     setLoading(true)
 
     try {
-      const response = await fetch(`${origin}/api/session`,
+      const response = await fetch('/api/session',
         {
           method: 'POST',
           body: JSON.stringify(inputState),

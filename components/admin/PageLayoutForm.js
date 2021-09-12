@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button, Form, Grid, Label, Header, Modal, Segment, Responsive as ResponsiveUtil } from 'semantic-ui-react'
 import { COLORS as COLOURS, TEXT_ALIGNMENTS } from 'semantic-ui-react/dist/commonjs/lib/SUI'
 import GridLayout from 'react-grid-layout'
 import { capitalize, find, maxBy, pick } from 'lodash-es'
 import ErrorMessages from '../ErrorMessages'
-import { useApi } from '../../utils'
+import { useMutateApi } from '../../utils'
 import { componentsMeta } from './layout'
 
 const colourOptions = COLOURS.map(colour => {
@@ -54,12 +54,7 @@ export default function PageLayoutForm ({ pathname, pageLayout, onFinished, quer
     setVariables({ pathname, input: newLayout.devices })
   }, [currentPageLayout])
 
-  const { load, data, errors } = useApi({ query, variables }, {
-    loadOnMount: false,
-    loadOnReload: false,
-    loadOnReset: false,
-    reloadOnLoad: true
-  })
+  const { load, data, errors } = useMutateApi({ query })
 
   useEffect(() => setLoading(false), [errors])
   useEffect(() => {
@@ -185,7 +180,7 @@ export default function PageLayoutForm ({ pathname, pageLayout, onFinished, quer
     e.preventDefault()
     setLoading(true)
 
-    load()
+    load(variables)
   }
   const handleReset = () => {
     setCurrentPageLayout(pageLayout)

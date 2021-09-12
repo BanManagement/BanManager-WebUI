@@ -18,11 +18,6 @@ export default function Page () {
         name
       }
     }`
-  }, {
-    loadOnMount: true,
-    loadOnReload: false,
-    loadOnReset: false,
-    reloadOnLoad: false
   })
 
   if (loading) return <Loader active />

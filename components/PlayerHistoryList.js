@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Header, Loader, Pagination, Table } from 'semantic-ui-react'
 import { format, fromUnixTime } from 'date-fns'
 import { useApi } from '../utils'
@@ -20,16 +20,7 @@ query listPlayerSessionHistory($serverId: ID!, $player: UUID, $limit: Int, $offs
 export default function PlayerHistoryList ({ id }) {
   const limit = 10
   const [tableState, setTableState] = useState({ activePage: 1, limit, offset: 0, serverId: null, player: id })
-  const { load, loading, data, errors } = useApi({ query, variables: tableState }, {
-    loadOnMount: false,
-    loadOnReload: false,
-    loadOnReset: false,
-    reloadOnLoad: true
-  })
-
-  useEffect(() => {
-    if (tableState.serverId) load()
-  }, [tableState])
+  const { loading, data, errors } = useApi({ query: !tableState.serverId ? null : query, variables: tableState })
 
   const handlePageChange = (e, { activePage }) => setTableState({ ...tableState, activePage, offset: (activePage - 1) * limit })
   const handleFieldChange = (field) => (id) => setTableState({ ...tableState, [field]: id || null })

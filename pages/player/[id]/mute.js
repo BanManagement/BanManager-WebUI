@@ -10,7 +10,9 @@ export default function Page () {
   const router = useRouter()
   const { id } = router.query
   const { loading, data, errors } = useApi({
-    query: `query player($id: UUID!) {
+    query: !id
+      ? null
+      : `query player($id: UUID!) {
     player(player: $id) {
       id
       name
@@ -23,9 +25,6 @@ export default function Page () {
     }
   }`,
     variables: { id }
-  }, {
-    loadOnReload: false,
-    loadOnReset: false
   })
 
   if (loading) return <Loader active />

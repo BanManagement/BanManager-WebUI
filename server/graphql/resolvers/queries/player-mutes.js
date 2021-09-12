@@ -31,7 +31,7 @@ module.exports = async function playerMutes (obj, { player }, { state }, info) {
         }
       }
 
-      if (fields.fieldsByTypeName.PlayerBan.server) {
+      if (fields.fieldsByTypeName.PlayerMute.server) {
         d.server = server.config
       }
     })

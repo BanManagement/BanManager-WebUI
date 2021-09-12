@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Dropdown, Header, Image, Loader, Pagination, Table } from 'semantic-ui-react'
 import { format, fromUnixTime, formatDistance } from 'date-fns'
 import ServerSelector from './admin/ServerSelector'
@@ -210,18 +210,7 @@ const views = {
 export default function PlayerPunishmentRecords ({ id }) {
   const limit = 20
   const [tableState, setTableState] = useState({ activePage: 1, limit, offset: 0, serverId: null, player: id, type: 'PlayerBanRecord' })
-  const { load, loading, data, errors } = useApi({ query: query.replace('?', types[tableState.type]), variables: { ...tableState } }, {
-    loadOnMount: false,
-    loadOnReload: false,
-    loadOnReset: false,
-    reloadOnLoad: true
-  })
-
-  useEffect(() => {
-    if (tableState.serverId) {
-      load()
-    }
-  }, [tableState])
+  const { loading, data, errors } = useApi({ query: !tableState.serverId ? null : query.replace('?', types[tableState.type]), variables: { ...tableState } })
 
   const handlePageChange = (e, { activePage }) => setTableState({ ...tableState, activePage, offset: (activePage - 1) * limit })
   const handleFieldChange = (field) => (id) => setTableState({ ...tableState, [field]: id || null })

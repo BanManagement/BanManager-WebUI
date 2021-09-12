@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Form, Grid, Select } from 'semantic-ui-react'
 import PlayerSelector from './PlayerSelector'
 import ErrorMessages from '../ErrorMessages'
-import { useApi } from '../../utils'
+import { useMutateApi } from '../../utils'
 
 export default function AssignPlayersRoleForm ({ query, roles, servers = [] }) {
   const [loading, setLoading] = useState(false)
@@ -14,12 +14,7 @@ export default function AssignPlayersRoleForm ({ query, roles, servers = [] }) {
 
   useEffect(() => setVariables(inputState), [inputState])
 
-  const { data, load, errors } = useApi({ query, variables }, {
-    loadOnMount: false,
-    loadOnReload: false,
-    loadOnReset: false,
-    reloadOnLoad: true
-  })
+  const { load, data, errors } = useMutateApi({ query })
 
   useEffect(() => setLoading(false), [errors])
   useEffect(() => {
@@ -37,7 +32,7 @@ export default function AssignPlayersRoleForm ({ query, roles, servers = [] }) {
     e.preventDefault()
     setLoading(true)
 
-    await load()
+    await load(variables)
 
     setInputState({
       players: [],

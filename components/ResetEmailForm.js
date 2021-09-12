@@ -1,31 +1,22 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Form, Message } from 'semantic-ui-react'
 import ErrorMessages from './ErrorMessages'
-import { useApi } from '../utils'
+import { useMutateApi } from '../utils'
 
 export default function ResetEmailForm () {
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
-  const [variables, setVariables] = useState({})
   const [inputState, setInputState] = useState({
     email: '',
     currentPassword: ''
   })
 
-  useEffect(() => setVariables(inputState), [inputState])
-
-  const { load, data, errors } = useApi({
+  const { load, data, errors } = useMutateApi({
     query: `mutation setEmail($currentPassword: String!, $email: String!) {
     setEmail(currentPassword: $currentPassword, email: $email) {
       id
     }
-  }`,
-    variables
-  }, {
-    loadOnMount: false,
-    loadOnReload: false,
-    loadOnReset: false,
-    reloadOnLoad: true
+  }`
   })
 
   useEffect(() => {
@@ -41,7 +32,7 @@ export default function ResetEmailForm () {
     e.preventDefault()
     setLoading(true)
 
-    load()
+    load(inputState)
   }
   const handleChange = async (e, { name, value }) => {
     setInputState({ ...inputState, [name]: value })

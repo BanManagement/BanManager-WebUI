@@ -1,20 +1,14 @@
-import { Grid, Header } from 'semantic-ui-react'
-import { useRouter } from 'next/router'
-import { GlobalStore } from '../../components/GlobalContext'
+import { Grid, Header, Loader } from 'semantic-ui-react'
 import DefaultLayout from '../../components/DefaultLayout'
 import PageContainer from '../../components/PageContainer'
 import AccountMenu from '../../components/AccountMenu'
 import ResetEmailForm from '../../components/ResetEmailForm'
+import { useUser } from '../../utils'
 
 export default function Page () {
-  const router = useRouter()
-  const store = GlobalStore()
-  const user = store.get('user')
+  const { user } = useUser({ redirectTo: '/login' })
 
-  if (!user.id) {
-    router.push('/login')
-    return null
-  }
+  if (!user) return <DefaultLayout><Loader active inline='centered' /></DefaultLayout>
 
   return (
     <DefaultLayout title='Change Email'>

@@ -1,21 +1,18 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/router'
 import { Dropdown, Image, Menu } from 'semantic-ui-react'
-import { GlobalStore } from './GlobalContext'
+import { mutate } from 'swr'
 import MenuLink from './MenuLink'
 
-export default function SessionNavProfile () {
+export default function SessionNavProfile ({ user }) {
   const router = useRouter()
-  const store = GlobalStore()
-  const user = store.get('user')
-  const origin = store.get('origin')
   const [state, setState] = useState({ loggingOut: false })
   const handleLogout = async () => {
     setState({ loggingOut: true })
 
     // Using cookies for SSR instead of local storage, which are set to HttpOnly
     // requires server to delete cookie
-    const response = await fetch(`${origin}/api/logout`,
+    const response = await fetch('/api/logout',
       {
         method: 'POST',
         headers: new Headers({ 'Content-Type': 'application/json' }),
@@ -30,7 +27,7 @@ export default function SessionNavProfile () {
       throw new Error(responseData.error)
     }
 
-    store.set('user', {})
+    mutate('/api/user')
     router.replace('/')
   }
 

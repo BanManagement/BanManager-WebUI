@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Button, Card, Confirm, Label } from 'semantic-ui-react'
 import { format, fromUnixTime } from 'date-fns'
-import { fromNow, useApi } from '../utils'
+import { fromNow, useMutateApi } from '../utils'
 
 const metaMap = {
   ban: {
@@ -35,15 +35,7 @@ export default function PlayerPunishment ({ punishment, server, type }) {
   const meta = metaMap[type]
   const [state, setState] = useState({ deleteConfirmShow: false, deleting: false })
 
-  const { load, loading } = useApi({
-    query,
-    variables: { id: punishment.id, serverId: server.id, type: meta.recordType, keepHistory: true }
-  }, {
-    loadOnMount: false,
-    loadOnReload: false,
-    loadOnReset: false,
-    reloadOnLoad: true
-  })
+  const { load, loading } = useMutateApi({ query })
 
   const showConfirmDelete = () => setState({ deleteConfirmShow: true })
   const handleConfirmDelete = async () => {
@@ -51,7 +43,7 @@ export default function PlayerPunishment ({ punishment, server, type }) {
 
     setState({ deleteConfirmShow: false, deleting: true })
 
-    load()
+    load({ id: punishment.id, serverId: server.id, type: meta.recordType, keepHistory: true })
 
     if (!loading) setState({ deleting: false })
   }

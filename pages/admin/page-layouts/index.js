@@ -10,11 +10,6 @@ export default function Page () {
         pathname
       }
     }`
-  }, {
-    loadOnMount: true,
-    loadOnReload: false,
-    loadOnReset: false,
-    reloadOnLoad: false
   })
 
   if (loading) return <Loader active />

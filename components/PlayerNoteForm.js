@@ -1,24 +1,16 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Form, Image, Select, Header } from 'semantic-ui-react'
 import ErrorMessages from './ErrorMessages'
-import { fromNow, useApi } from '../utils'
+import { fromNow, useMutateApi } from '../utils'
 
 export default function PlayerNoteForm ({ player, servers, onFinished, query, parseVariables, disableServers = false, defaults = {} }) {
   const [loading, setLoading] = useState(false)
-  const [variables, setVariables] = useState({})
   const [inputState, setInputState] = useState({
     message: defaults.message || '',
     server: defaults?.server?.id
   })
 
-  useEffect(() => setVariables(parseVariables(inputState)), [inputState])
-
-  const { load, data, errors } = useApi({ query, variables }, {
-    loadOnMount: false,
-    loadOnReload: false,
-    loadOnReset: false,
-    reloadOnLoad: true
-  })
+  const { load, data, errors } = useMutateApi({ query })
 
   useEffect(() => setLoading(false), [errors])
   useEffect(() => {
@@ -32,7 +24,7 @@ export default function PlayerNoteForm ({ player, servers, onFinished, query, pa
     e.preventDefault()
     setLoading(true)
 
-    load()
+    load(parseVariables(inputState))
   }
 
   return (

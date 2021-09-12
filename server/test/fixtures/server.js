@@ -1,4 +1,5 @@
 const { randomBytes } = require('crypto')
+const { encrypt } = require('../../data/crypto')
 const tables = JSON.stringify(
   {
     players: 'bm_players',
@@ -26,16 +27,22 @@ const tables = JSON.stringify(
     ipRangeBanRecords: 'bm_ip_range_ban_records'
   })
 
-module.exports = function (consoleId, database) {
-  return {
+module.exports = async function (consoleId, database) {
+  const server = {
     id: randomBytes(4).toString('hex'),
     name: 'Test' + randomBytes(2).toString('hex'),
-    host: '127.0.0.1',
-    port: 3306,
+    host: process.env.DB_HOST || '127.0.0.1',
+    port: process.env.DB_PORT ? parseInt(process.env.DB_PORT, 10) : 3306,
     database,
-    user: 'root',
+    user: process.env.DB_USER || 'root',
     password: '',
     console: consoleId,
     tables
   }
+
+  if (process.env.DB_PASSWORD) {
+    server.password = await encrypt(process.env.ENCRYPTION_KEY, process.env.DB_PASSWORD)
+  }
+
+  return server
 }

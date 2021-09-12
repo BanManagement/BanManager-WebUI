@@ -24,7 +24,7 @@ describe('Mutation create server', () => {
 
   test('should error if unauthenticated', async () => {
     const player = createPlayer()
-    const server = createServer(unparse(player.id), 'test')
+    const server = await createServer(unparse(player.id), 'test')
 
     delete server.id
     server.tables = JSON.parse(server.tables)
@@ -56,7 +56,7 @@ describe('Mutation create server', () => {
   test('should require servers.manage', async () => {
     const cookie = await getAuthPassword(request, 'user@banmanagement.com')
     const player = createPlayer()
-    const server = createServer(unparse(player.id), 'test')
+    const server = await createServer(unparse(player.id), 'test')
 
     delete server.id
     server.tables = JSON.parse(server.tables)
@@ -88,7 +88,7 @@ describe('Mutation create server', () => {
   test('should error if tables missing', async () => {
     const cookie = await getAuthPassword(request, 'admin@banmanagement.com')
     const player = createPlayer()
-    const server = createServer(unparse(player.id), setup.dbPool.client.config.connection.database)
+    const server = await createServer(unparse(player.id), setup.dbPool.client.config.connection.database)
 
     delete server.id
     server.tables = JSON.parse(server.tables)
@@ -121,7 +121,7 @@ describe('Mutation create server', () => {
   test('should error if console does not exist', async () => {
     const cookie = await getAuthPassword(request, 'admin@banmanagement.com')
     const player = createPlayer()
-    const server = createServer(unparse(player.id), setup.dbPool.client.config.connection.database)
+    const server = await createServer(unparse(player.id), setup.dbPool.client.config.connection.database)
 
     delete server.id
     server.tables = JSON.parse(server.tables)
@@ -154,7 +154,7 @@ describe('Mutation create server', () => {
     const { config } = setup.serversPool.values().next().value
     const cookie = await getAuthPassword(request, 'admin@banmanagement.com')
     const player = createPlayer()
-    const server = createServer(unparse(player.id), setup.dbPool.client.config.connection.database)
+    const server = await createServer(unparse(player.id), setup.dbPool.client.config.connection.database)
 
     delete server.id
     server.tables = JSON.parse(server.tables)
@@ -195,7 +195,7 @@ describe('Mutation create server', () => {
     await pool.raw('CREATE USER \'foobarcreate\'@\'localhost\' IDENTIFIED BY \'password\';')
     await pool.raw('GRANT ALL ON *.* TO \'foobarcreate\'@\'localhost\';')
     await pool.raw('FLUSH PRIVILEGES;')
-    const server = createServer(unparse(player.id), setup.dbPool.client.config.connection.database)
+    const server = await createServer(unparse(player.id), setup.dbPool.client.config.connection.database)
 
     delete server.id
     server.user = 'foobarcreate'
@@ -220,7 +220,7 @@ describe('Mutation create server', () => {
       .send({ query })
 
     // Delete custom user
-    await pool('mysql.user').where('user', 'foobar').del()
+    await pool('mysql.user').where('user', 'foobarcreate').del()
 
     assert.strictEqual(statusCode, 200)
 

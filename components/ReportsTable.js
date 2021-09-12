@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Image, Loader, Pagination, Table } from 'semantic-ui-react'
 import PlayerSelector from './admin/PlayerSelector'
 import { useApi } from '../utils'
 import ServerSelector from './admin/ServerSelector'
 
-const query = `
-query listPlayerReports($serverId: ID!, $actor: UUID, $assigned: UUID, $player: UUID, $state: ID, $limit: Int, $offset: Int) {
+const query = `query listPlayerReports($serverId: ID!, $actor: UUID, $assigned: UUID, $player: UUID, $state: ID, $limit: Int, $offset: Int) {
   listPlayerReports(serverId: $serverId, actor: $actor, assigned: $assigned, player: $player, state: $state, limit: $limit, offset: $offset) {
     total
     records {
@@ -38,16 +37,7 @@ query listPlayerReports($serverId: ID!, $actor: UUID, $assigned: UUID, $player: 
 
 export default function ReportsTable ({ limit = 30 }) {
   const [tableState, setTableState] = useState({ serverId: null, activePage: 1, limit, offset: 0, actor: null, assigned: null, player: null, state: null })
-  const { load, loading, data } = useApi({ query, variables: tableState }, {
-    loadOnMount: false,
-    loadOnReload: false,
-    loadOnReset: false,
-    reloadOnLoad: true
-  })
-
-  useEffect(() => {
-    if (tableState.serverId) load()
-  }, [tableState])
+  const { loading, data } = useApi({ query: !tableState.serverId ? null : query, variables: tableState })
 
   const handlePageChange = (e, { activePage }) => setTableState({ ...tableState, activePage, offset: (activePage - 1) * limit })
   const handleFieldChange = (field) => (id) => setTableState({ ...tableState, [field]: id || null })
