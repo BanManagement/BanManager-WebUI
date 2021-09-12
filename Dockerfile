@@ -1,5 +1,5 @@
 # ---- Base Node ----
-FROM node:14-alpine AS base
+FROM node:16-alpine AS base
 
 # set working directory
 WORKDIR /usr/src/app
@@ -10,7 +10,7 @@ COPY package*.json ./
 # ---- Dependencies ----
 FROM base AS basedependencies
 ## Install build toolchain, install node deps and compile native add-ons
-RUN apk add --no-cache python make g++ git
+RUN apk add --no-cache python3 make g++ git
 
 FROM basedependencies as dependencies
 # install node packages
