@@ -40,6 +40,6 @@ const nextConfig = (phase) => {
 module.exports = (phase, ...rest) => {
   return withPlugins([
     [withBundleAnalyzer],
-    [withTM],
+    [withTM]
   ], nextConfig(phase))(phase, ...rest)
 }

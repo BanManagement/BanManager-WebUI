@@ -13,7 +13,7 @@ export async function getStaticProps () {
 }
 
 function Page ({ latestVersion }) {
-  let version = currentVersion()
+  const version = currentVersion()
 
   return (
     <AdminLayout title='Admin'>
