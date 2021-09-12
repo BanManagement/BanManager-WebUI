@@ -71,3 +71,5 @@ module.exports = async ({ dbPool, logger, disableInterval = false }) => {
 
   return servers
 }
+
+module.exports.interval = interval

@@ -5,6 +5,7 @@ const { jsonToGraphQLQuery } = require('json-to-graphql-query')
 const createApp = require('../app')
 const { createSetup, getAuthPassword } = require('./lib')
 const { createPlayer, createServer } = require('./fixtures')
+const { interval } = require('../connections/servers-pool')
 
 describe('Mutation delete server', () => {
   let setup
@@ -23,7 +24,7 @@ describe('Mutation delete server', () => {
 
   test('should error if unauthenticated', async () => {
     const player = createPlayer()
-    const { id } = createServer(unparse(player.id), 'test')
+    const { id } = await createServer(unparse(player.id), 'test')
 
     const query = jsonToGraphQLQuery({
       mutation: {
@@ -50,7 +51,7 @@ describe('Mutation delete server', () => {
   test('should require servers.manage', async () => {
     const cookie = await getAuthPassword(request, 'user@banmanagement.com')
     const player = createPlayer()
-    const { id } = createServer(unparse(player.id), 'test')
+    const { id } = await createServer(unparse(player.id), 'test')
 
     const query = jsonToGraphQLQuery({
       mutation: {
@@ -78,7 +79,7 @@ describe('Mutation delete server', () => {
   test('should error if server does not exist', async () => {
     const cookie = await getAuthPassword(request, 'admin@banmanagement.com')
     const player = createPlayer()
-    const { id } = createServer(unparse(player.id), 'test')
+    const { id } = await createServer(unparse(player.id), 'test')
 
     const query = jsonToGraphQLQuery({
       mutation: {
@@ -137,10 +138,10 @@ describe('Mutation delete server', () => {
     await pool('bm_players').insert(player)
 
     // Create temp user
-    await pool.raw('CREATE USER \'foobardelete\'@\'localhost\' IDENTIFIED BY \'password\';')
-    await pool.raw('GRANT ALL ON *.* TO \'foobardelete\'@\'localhost\';')
+    await pool.raw('CREATE USER \'foobardelete\'@\'%\' IDENTIFIED BY \'password\';')
+    await pool.raw('GRANT ALL ON *.* TO \'foobardelete\'@\'%\';')
     await pool.raw('FLUSH PRIVILEGES;')
-    const server = createServer(unparse(player.id), setup.dbPool.client.config.connection.database)
+    const server = await createServer(unparse(player.id), setup.dbPool.client.config.connection.database)
 
     delete server.id
     server.user = 'foobardelete'
@@ -158,14 +159,19 @@ describe('Mutation delete server', () => {
           }
       }
     })
-    const { body: createBody } = await request
+    const { body: createBody, statusCode: createStatusCode } = await request
       .post('/graphql')
       .set('Cookie', cookie)
       .set('Accept', 'application/json')
-      .send({ createQuery })
+      .send({ query: createQuery })
 
     // Delete custom user
     await pool('mysql.user').where('user', 'foobardelete').del()
+    await pool.raw('FLUSH PRIVILEGES;')
+
+    assert.strictEqual(createStatusCode, 200)
+
+    await interval({ ...setup, servers: setup.serversPool })
 
     const query = jsonToGraphQLQuery({
       mutation: {
