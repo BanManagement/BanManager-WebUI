@@ -79,14 +79,14 @@ module.exports = async function ({ dbPool, logger, serversPool, disableUI = fals
   router.use(apolloServer.getMiddleware())
 
   if (handle) {
-    router.all('*', async ctx => {
+    router.all('(.*)', async ctx => {
       if (ctx.session) await ctx.session.manuallyCommit()
 
       await handle(ctx.req, ctx.res)
       ctx.respond = false
     })
   } else {
-    router.all('*', async ctx => {
+    router.all('(.*)', async ctx => {
       if (ctx.session) await ctx.session.manuallyCommit()
 
       ctx.respond = false
