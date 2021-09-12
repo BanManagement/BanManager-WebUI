@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react'
 import { Button, Form, Image, Select, Header } from 'semantic-ui-react'
 import ErrorMessages from './ErrorMessages'
 import DateTimePicker from './DateTimePicker'

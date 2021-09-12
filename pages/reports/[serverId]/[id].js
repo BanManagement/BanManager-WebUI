@@ -14,7 +14,9 @@ export default function Page () {
   const { id, serverId } = router.query
   const { loading, data, errors, mutate } = useApi({
     variables: { serverId, id },
-    query: !serverId && !id ? null : `query report($id: ID!, $serverId: ID!) {
+    query: !serverId && !id
+      ? null
+      : `query report($id: ID!, $serverId: ID!) {
       reportStates(serverId: $serverId) {
         id
         name
@@ -151,7 +153,8 @@ export default function Page () {
                   <Header dividing>Details</Header>
                   <Grid.Row>
                     <Grid.Column>
-                      State: {canUpdateState ? (
+                      State: {canUpdateState
+                      ? (
                         <PlayerReportState
                           id={report.id}
                           server={data.server.id}
@@ -160,15 +163,16 @@ export default function Page () {
                           onChange={({ reportState: { state, updated } }) => {
                             mutate({ ...data, report: { ...data.report, state, updated } }, false)
                           }}
-                        />
-                    ) : (
-                      <span>{report.state.name}</span>
-                    )}
+                        />)
+                      : (
+                        <span>{report.state.name}</span>
+                        )}
                     </Grid.Column>
                   </Grid.Row>
                   <Grid.Row>
                     <Grid.Column>
-                      Assigned: {canAssign ? (
+                      Assigned: {canAssign
+                      ? (
                         <PlayerReportAssign
                           id={report.id}
                           player={report.assignee}
@@ -176,10 +180,8 @@ export default function Page () {
                           onChange={({ assignReport: { assignee, updated } }) => {
                             mutate({ ...data, report: { ...data.report, assignee, updated } }, false)
                           }}
-                        />
-                    ) : (
-                      <span>{report?.assignee?.name}</span>
-                    )}
+                        />)
+                      : (<span>{report?.assignee?.name}</span>)}
                     </Grid.Column>
                   </Grid.Row>
                   <Grid.Row>

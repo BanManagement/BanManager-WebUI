@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from 'react'
 import { Button, Card, Confirm, Label } from 'semantic-ui-react'
 import { format, fromUnixTime } from 'date-fns'
 import { fromNow, useMutateApi } from '../utils'

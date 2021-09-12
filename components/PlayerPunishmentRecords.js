@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from 'react'
 import { Dropdown, Header, Image, Loader, Pagination, Table } from 'semantic-ui-react'
 import { format, fromUnixTime, formatDistance } from 'date-fns'
 import ServerSelector from './admin/ServerSelector'

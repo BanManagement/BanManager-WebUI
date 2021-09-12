@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from 'react'
 import { Form, Image, Loader, Pagination, Table } from 'semantic-ui-react'
 import PlayerEditForm from './PlayerEditForm'
 import { useApi } from '../../utils'

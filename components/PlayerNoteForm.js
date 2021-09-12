@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react'
 import { Form, Image, Select, Header } from 'semantic-ui-react'
 import ErrorMessages from './ErrorMessages'
 import { fromNow, useMutateApi } from '../utils'

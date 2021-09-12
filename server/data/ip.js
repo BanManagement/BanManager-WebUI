@@ -31,7 +31,6 @@ function inetTop (a) {
 }
 
 function inetPton (a) {
-  let r
   let m
   let x
   let i
@@ -46,7 +45,7 @@ function inetPton (a) {
     // Return if 4 bytes, otherwise false.
     return m.length === 4 ? m : false
   }
-  r = /^((?:[\da-f]{1,4}(?::|)){0,8})(::)?((?:[\da-f]{1,4}(?::|)){0,8})$/
+  const r = /^((?:[\da-f]{1,4}(?::|)){0,8})(::)?((?:[\da-f]{1,4}(?::|)){0,8})$/
 
   // IPv6
   m = a.match(r)

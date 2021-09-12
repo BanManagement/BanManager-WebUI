@@ -10,8 +10,9 @@ export default function Page () {
   const router = useRouter()
   const [serverId, id] = router.query.id?.split('-') || []
   const { loading, data, errors } = useApi({
-    query: !serverId || !id ? null : `
-  query playerBan($id: ID!, $serverId: ID!) {
+    query: !serverId || !id
+      ? null
+      : `query playerBan($id: ID!, $serverId: ID!) {
     playerBan(id: $id, serverId: $serverId) {
       id
       reason

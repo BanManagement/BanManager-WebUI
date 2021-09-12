@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import { isValidElement, Component } from 'react';
+import { isValidElement, Component } from 'react'
 import {
   Container,
   Icon,

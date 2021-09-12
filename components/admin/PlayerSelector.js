@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react'
 import { Dropdown } from 'semantic-ui-react'
 import { useApi } from '../../utils'
 
@@ -23,9 +23,11 @@ export default function PlayerSelector ({ clearable = false, handleChange, multi
     setName(searchQuery)
   }
 
-  const options = data ? data.searchPlayers.map(result => ({
-    key: result.id, text: result.name, value: result.id, image: `https://crafatar.com/avatars/${result.id}?size=128&overlay=true`
-  })) : defaultOptions
+  const options = data
+    ? data.searchPlayers.map(result => ({
+        key: result.id, text: result.name, value: result.id, image: `https://crafatar.com/avatars/${result.id}?size=128&overlay=true`
+      }))
+    : defaultOptions
 
   return (
     <Dropdown

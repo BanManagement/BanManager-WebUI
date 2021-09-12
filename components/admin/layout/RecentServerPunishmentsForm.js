@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from 'react'
 import { Form, Loader, Select } from 'semantic-ui-react'
 import { useApi } from '../../../utils'
 import ErrorMessages from '../../ErrorMessages'

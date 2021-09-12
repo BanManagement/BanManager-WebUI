@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react'
 import { Dropdown } from 'semantic-ui-react'
 import { useApi } from '../../utils'
 
@@ -22,9 +22,11 @@ export default function ServerSelector ({ handleChange, value, fluid = true, sel
 
   const handleServerChange = (e, { value }) => setSelected(value)
 
-  const options = data ? data.servers.map(result => ({
-    key: result.id, text: result.name, value: result.id
-  })) : []
+  const options = data
+    ? data.servers.map(result => ({
+        key: result.id, text: result.name, value: result.id
+      }))
+    : []
 
   return (
     <Dropdown

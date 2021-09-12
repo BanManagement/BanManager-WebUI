@@ -30,7 +30,9 @@ export default function Page () {
   const router = useRouter()
   const { id } = router.query
   const { loading, data, errors } = useApi({
-    query: !id ? null : `query player($id: UUID!) {
+    query: !id
+      ? null
+      : `query player($id: UUID!) {
     player(player: $id) {
       id
       name

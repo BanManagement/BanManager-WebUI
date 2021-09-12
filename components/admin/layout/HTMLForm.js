@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from 'react'
 import { Form, TextArea } from 'semantic-ui-react'
 
 export default function HTMLForm ({ meta, setMeta }) {

@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react'
 import { cloneDeep, find } from 'lodash-es'
 import { Form, Header, Select } from 'semantic-ui-react'
 import ErrorMessages from '../ErrorMessages'

@@ -10,7 +10,9 @@ export default function Page () {
   const { id } = router.query
   const { loading, data, errors } = useApi({
     variables: { id },
-    query: !id ? null : `query role($id: ID!) {
+    query: !id
+      ? null
+      : `query role($id: ID!) {
       role(id: $id) {
         id
         name

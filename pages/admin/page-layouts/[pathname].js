@@ -27,7 +27,9 @@ export default function Page () {
     textAlign
     meta
   }`
-  const query = !pathname ? null : `query pageLayout($pathname: String!) {
+  const query = !pathname
+    ? null
+    : `query pageLayout($pathname: String!) {
     pageLayout(pathname: $pathname) {
       devices {
         mobile {

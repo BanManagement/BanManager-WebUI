@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react'
 import { Form, Header, TextArea } from 'semantic-ui-react'
 import { safeLoad } from 'js-yaml'
 import { pick } from 'lodash-es'
