@@ -1,4 +1,3 @@
-import React from 'react'
 import { useRouter } from 'next/router'
 import { Comment, Grid, Header, Image, Loader, Segment } from 'semantic-ui-react'
 import { format, fromUnixTime } from 'date-fns'

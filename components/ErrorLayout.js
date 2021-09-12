@@ -1,4 +1,3 @@
-import React from 'react'
 import DefaultLayout from './DefaultLayout'
 import ErrorMessages from './ErrorMessages'
 import PageContainer from './PageContainer'

@@ -1,4 +1,3 @@
-import React from 'react'
 import { Button, Loader } from 'semantic-ui-react'
 import { useRouter } from 'next/router'
 import DefaultLayout from '../../../components/DefaultLayout'

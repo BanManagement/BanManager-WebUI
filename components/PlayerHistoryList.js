@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react';
 import { Header, Loader, Pagination, Table } from 'semantic-ui-react'
 import { format, fromUnixTime } from 'date-fns'
 import { useApi } from '../utils'

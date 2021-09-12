@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react';
 import { Button, Form, Header, Image, Modal, Select } from 'semantic-ui-react'
 import ErrorMessages from '../ErrorMessages'
 import { useMutateApi } from '../../utils'
@@ -106,7 +106,7 @@ export default function PlayerEditForm ({ open, onFinished, player, roles, serve
               .map(({ serverRole }) => serverRole.id)
 
             return (
-              <React.Fragment key={server.value}>
+              <Fragment key={server.value}>
                 <Header size='small'>{server.text}</Header>
                 <Select
                   required
@@ -118,8 +118,8 @@ export default function PlayerEditForm ({ open, onFinished, player, roles, serve
                   fluid
                   multiple
                 />
-              </React.Fragment>
-            )
+              </Fragment>
+            );
           })}
         </Form>
       </Modal.Content>
@@ -127,5 +127,5 @@ export default function PlayerEditForm ({ open, onFinished, player, roles, serve
         <Button fluid primary size='large' content='Save' loading={loading} onClick={onSubmit} />
       </Modal.Actions>
     </Modal>
-  )
+  );
 }

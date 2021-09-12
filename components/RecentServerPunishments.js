@@ -1,4 +1,3 @@
-import React from 'react'
 import { Card, Image, List, Loader } from 'semantic-ui-react'
 import { useApi } from '../utils'
 

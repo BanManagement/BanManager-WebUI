@@ -1,4 +1,3 @@
-import React from 'react'
 import DefaultLayout from '../components/DefaultLayout'
 import PageLayout from '../components/PageLayout'
 import SearchBox from '../components/SearchBox'

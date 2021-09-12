@@ -1,4 +1,3 @@
-import React from 'react'
 import { Grid, Label, Loader, Menu } from 'semantic-ui-react'
 import DefaultLayout from './DefaultLayout'
 import MenuLink from './MenuLink'

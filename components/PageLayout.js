@@ -1,4 +1,3 @@
-import React from 'react'
 import { Container, Grid, Loader } from 'semantic-ui-react'
 import ErrorMessages from './ErrorMessages'
 import PageContainer from './PageContainer'

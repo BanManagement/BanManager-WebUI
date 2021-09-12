@@ -1,4 +1,3 @@
-import React from 'react'
 import DefaultLayout from '../components/DefaultLayout'
 import { Container, Header } from 'semantic-ui-react'
 

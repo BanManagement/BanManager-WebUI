@@ -1,4 +1,3 @@
-import React from 'react'
 import { Header, Loader, Card } from 'semantic-ui-react'
 import PlayerPunishment from './PlayerPunishment'
 import { useApi } from '../utils'

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react';
 import { Comment, Grid, Header, Loader, Pagination } from 'semantic-ui-react'
 import { useApi } from '../utils'
 import PlayerReportComment from './PlayerReportComment'

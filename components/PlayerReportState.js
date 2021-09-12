@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react';
 import { Dropdown, Loader } from 'semantic-ui-react'
 import { useMutateApi } from '../utils'
 

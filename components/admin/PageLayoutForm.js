@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 import { Button, Form, Grid, Label, Header, Modal, Segment, Responsive as ResponsiveUtil } from 'semantic-ui-react'
 import { COLORS as COLOURS, TEXT_ALIGNMENTS } from 'semantic-ui-react/dist/commonjs/lib/SUI'
 import GridLayout from 'react-grid-layout'

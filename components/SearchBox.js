@@ -1,4 +1,3 @@
-import React from 'react'
 import { Grid, Header, Image } from 'semantic-ui-react'
 import { useRouter } from 'next/router'
 import PlayerSelector from './admin/PlayerSelector'

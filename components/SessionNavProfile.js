@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react';
 import { useRouter } from 'next/router'
 import { Dropdown, Image, Menu } from 'semantic-ui-react'
 import { mutate } from 'swr'

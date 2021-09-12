@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react';
 import { Loader } from 'semantic-ui-react'
 import PlayerSelector from '../components/admin/PlayerSelector'
 import { useMutateApi } from '../utils'

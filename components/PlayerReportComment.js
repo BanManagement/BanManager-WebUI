@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 import { Comment, Confirm } from 'semantic-ui-react'
 import ErrorMessages from './ErrorMessages'
 import { fromNow, useMutateApi } from '../utils'

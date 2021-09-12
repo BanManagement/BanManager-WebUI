@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 import { Form, Grid, Select } from 'semantic-ui-react'
 import PlayerSelector from './PlayerSelector'
 import ErrorMessages from '../ErrorMessages'

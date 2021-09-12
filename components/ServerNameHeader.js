@@ -1,4 +1,3 @@
-import React from 'react'
 import { Header, Loader } from 'semantic-ui-react'
 import { useApi } from '../utils'
 

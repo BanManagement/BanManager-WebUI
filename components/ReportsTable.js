@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react';
 import { Image, Loader, Pagination, Table } from 'semantic-ui-react'
 import PlayerSelector from './admin/PlayerSelector'
 import { useApi } from '../utils'

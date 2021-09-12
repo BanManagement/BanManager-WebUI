@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react';
 import { cloneDeep, find } from 'lodash-es'
 import { Form, Header, Select } from 'semantic-ui-react'
 import ErrorMessages from '../ErrorMessages'
@@ -41,7 +41,7 @@ export default function RoleForm ({ onFinished, query, parseVariables, parentRol
   }
 
   const resourceInputs = resources.map(resource => (
-    <React.Fragment key={resource.name}>
+    <Fragment key={resource.name}>
       <Header>{resource.name}</Header>
       {resource.permissions.map(permission => (
         <Form.Checkbox
@@ -53,7 +53,7 @@ export default function RoleForm ({ onFinished, query, parseVariables, parentRol
           onChange={handlePermissionChange}
         />
       ))}
-    </React.Fragment>
+    </Fragment>
   ))
 
   return (

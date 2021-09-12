@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import { isValidElement, Component } from 'react';
 import {
   Container,
   Icon,
@@ -14,7 +14,7 @@ import { Media, MediaContextProvider } from '../components/Media'
 const renderMenu = (items = []) => items.map(item => {
   if (item.as === 'a') {
     return <a key={item.name} href={item.href}>{item.name}</a>
-  } else if (React.isValidElement(item)) {
+  } else if (isValidElement(item)) {
     return item
   } else {
     return <MenuLink key={item.name || item.icon} {...item} />
