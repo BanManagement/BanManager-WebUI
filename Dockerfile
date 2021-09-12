@@ -21,6 +21,9 @@ RUN npm ci --no-audit
 #
 # ---- Release ----
 FROM base AS release
+
+RUN apk add --no-cache git
+
 COPY --from=dependencies /usr/src/app/node_modules ./node_modules
 
 # copy app sources
