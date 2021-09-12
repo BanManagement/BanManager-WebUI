@@ -1,51 +1,34 @@
 import { Message } from 'semantic-ui-react'
-import compareVersions from 'compare-versions'
 import AdminLayout from '../../components/AdminLayout'
 import { currentVersion } from '../../utils'
 
-let latestVersion
-let latestVersionCheck = 0
+export async function getStaticProps () {
+  let latestVersion = 'unknown'
+  const response = await fetch('https://api.github.com/repos/BanManagement/BanManager-WebUI/commits/master')
+  const data = await response.json()
 
-function Page () {
-  const devMode = !!GIT_COMMIT
-  let outdated = false
+  latestVersion = data.sha
 
-  try {
-    outdated = compareVersions(currentVersion, latestVersion) < 0
-  } catch (e) {
-  }
+  return { props: { latestVersion }, revalidate: 3600 }
+}
+
+function Page ({ latestVersion }) {
+  let version = currentVersion()
 
   return (
     <AdminLayout title='Admin'>
-      {devMode &&
+      {process.env.IS_DEV &&
         <Message warning>
           <Message.Header>Developer Mode</Message.Header>
           <Message.Content>You are currently running in development mode, expect performance degradation</Message.Content>
         </Message>}
-      {outdated &&
+      {version !== latestVersion &&
         <Message info>
           <Message.Header>Update Available</Message.Header>
-          <Message.Content>Current version: {currentVersion}<br />Latest: {latestVersion}</Message.Content>
+          <Message.Content>Current version: {version}<br />Latest: {latestVersion}</Message.Content>
         </Message>}
     </AdminLayout>
   )
 }
 
 export default Page
-
-export const getServerSideProps = async () => {
-  // Cache the lookup so we're not always hitting GitHub
-  if (!process.browser) {
-    const expired = (Date.now() - latestVersionCheck) > 3600000 // 1 hour
-
-    if (!latestVersion || expired) {
-      const response = await fetch('https://api.github.com/repos/BanManagement/BanManager-WebUI/releases')
-      const data = await response.json()
-
-      latestVersion = data[0].tag_name
-      latestVersionCheck = Date.now()
-    }
-  }
-
-  return { props: { latestVersion } }
-}

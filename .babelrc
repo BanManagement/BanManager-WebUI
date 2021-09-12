@@ -2,7 +2,5 @@
   "presets": [
     "next/babel"
   ],
-  "plugins": [
-    "git-version"
-  ]
+  "plugins": []
 }

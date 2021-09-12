@@ -13,17 +13,13 @@
     "@artsy/fresnel": "1.9.0",
     "@koa/router": "8.0.8",
     "@nateradebaugh/react-datetime": "4.4.6",
-    "@next/bundle-analyzer": "9.5.5",
+    "@next/bundle-analyzer": "11.1.2",
     "@oclif/command": "1.8.0",
     "@oclif/config": "1.17.0",
     "@oclif/plugin-help": "3.2.3",
     "apollo-server-koa": "2.25.2",
     "apollo-server-plugin-response-cache": "0.9.0",
     "argon2": "^0.28.2",
-    "babel-plugin-git-version": "0.2.0",
-    "babel-runtime": "6.26.0",
-    "compare-versions": "3.6.0",
-    "cross-fetch": "3.1.4",
     "dataloader": "2.0.0",
     "date-fns": "2.23.0",
     "db-migrate": "0.11.12",
@@ -32,6 +28,7 @@
     "edit-dotenv": "1.0.4",
     "es6-dynamic-template": "2.0.0",
     "file-loader": "6.2.0",
+    "git-revision-webpack-plugin": "^5.0.0",
     "graphql": "14.7.0",
     "graphql-constraint-directive": "1.4.1",
     "graphql-depth-limit": "1.1.0",
@@ -51,11 +48,11 @@
     "lodash-es": "4.17.21",
     "memoizee": "0.4.15",
     "mysql2": "2.3.0",
-    "next": "10.2.3",
+    "next": "11.1.2",
     "next-absolute-url": "1.2.2",
     "next-compose-plugins": "2.2.1",
     "next-seo": "4.26.0",
-    "next-transpile-modules": "4.1.0",
+    "next-transpile-modules": "^8.0.0",
     "pino": "6.13.1",
     "prop-types": "15.7.2",
     "react": "17.0.2",
@@ -73,6 +70,7 @@
     "web-push": "3.4.5"
   },
   "devDependencies": {
+    "@next/eslint-plugin-next": "^11.1.2",
     "@oclif/test": "1.2.8",
     "babel-eslint": "10.1.0",
     "coveralls": "3.1.0",
@@ -123,8 +121,7 @@
       "browser": true
     },
     "globals": [
-      "GIT_COMMIT",
-      "GIT_TAG"
+      "GIT_COMMIT"
     ]
   }
 }

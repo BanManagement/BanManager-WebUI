@@ -4,7 +4,6 @@ import { useRouter } from 'next/router'
 import { formatDistance, fromUnixTime } from 'date-fns'
 import useSWR from 'swr'
 import { toPairs } from 'lodash-es'
-import { version } from '../package.json'
 
 export const absoluteUrl = (req, localhostAddress = 'localhost:3000') => {
   let host =
@@ -138,11 +137,9 @@ export const fromNow = (timestamp) => {
 }
 
 export const currentVersion = () => {
-  let versionStr
+  let versionStr = 'unknown'
 
-  if (GIT_TAG && GIT_TAG !== 'unknown') versionStr = GIT_TAG
-  if (GIT_COMMIT && GIT_COMMIT !== 'unknown') versionStr = GIT_COMMIT
-  if (!versionStr) versionStr = version
+  if (process.env.GIT_COMMIT) versionStr = process.env.GIT_COMMIT
 
   return versionStr
 }

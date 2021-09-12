@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types'
 import Head from 'next/head'
 import { DefaultSeo } from 'next-seo'
-import 'cross-fetch/polyfill'
 
 // Only import what we need
 import 'semantic-ui-css/components/button.css'
