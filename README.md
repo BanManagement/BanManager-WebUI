@@ -18,7 +18,7 @@ This version of BanManager-WebUI is no longer maintained or supported. Please se
 ##### Preperation
 
 1. Clone this repository into your Nginx/Apache document root:
-  `git clone https://github.com/BanManagement/BanManager-WebUI.git /var/www/banmanager`
+  `git clone -b legacy https://github.com/BanManagement/BanManager-WebUI.git /var/www/banmanager`
 1. Make sure cache is writeable:
   `cd /var/www/banmanager`
   `chmod 777 cache/`
