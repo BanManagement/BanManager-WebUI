@@ -53,7 +53,7 @@ function mysql_escape_mimic($inp) {
  * Why repeat it twice? Checking magic quotes everytime in a loop is slow and so is any additional if statements ;)
  */
 $in = array(&$_GET, &$_POST);
-if(get_magic_quotes_gpc()) {
+if(version_compare(PHP_VERSION, '7.4.0', '<') && function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc()) {
 	while(list($k, $v) = each($in)) {
 		foreach($v as $key => $val) {
 			if(!is_array($val))
