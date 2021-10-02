@@ -111,8 +111,8 @@ function latestWarnings($server, $serverID) {
 			echo '<li class="latestban"><a href="index.php?action=viewplayer&player='.$playername.'&server='.$serverID.'"><img src="'.str_replace(array('%name%', '%uuid%'), array($playername, $r['player_id']), $settings['skin']['helm']).'" class="skin-helm" /> '.$playername.'</a><button class="btn btn-info ban-info" rel="popover" data-html="true" data-content="'.str_replace('"', '&quot;', $r['reason']).'" data-original-title="'.$actorname;
 			if($r['expires'] == 0)
 				echo ' <span class=\'label label-danger\'>Never</span>';
-			else if($expires > 0)
-				echo ' <span class=\'label label-warning\'>'.secs_to_hmini($expires).'</span>';
+			else if($r['expires'] > 0)
+				echo ' <span class=\'label label-warning\'>'.secs_to_hmini($r['expires']).'</span>';
 			else
 				echo ' <span class=\'label label-success\'>Now</span>';
 			echo '"><span class="glyphicon glyphicon-info-sign"></span></button></li>';
