@@ -13,7 +13,11 @@ requireEnv(
 const logger = require('pino')(
   {
     name: 'banmanager-webui',
-    level: process.env.LOG_LEVEL || 'debug'
+    level: process.env.LOG_LEVEL || 'debug',
+    redact: {
+      paths: ['req.headers.cookie', 'res.headers["set-cookie"]'],
+      censor: '*******'
+    }
   })
 const createApp = require('./server/app')
 const { setupPool, setupServersPool } = require('./server/connections')
