@@ -111,7 +111,7 @@ export const useUser = ({
   const hasUser = Boolean(user)
 
   useEffect(() => {
-    if (!redirectTo && !finished) return
+    if (!redirectTo || !finished) return
 
     if (
       // If redirectTo is set, redirect if the user was not found.
