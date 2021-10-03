@@ -53,7 +53,7 @@ export default function PlayerBanForm ({ player, servers, onFinished, query, par
   return (
     <Form size='large' onSubmit={onSubmit} error loading={loading}>
       <Header>Ban</Header>
-      <ErrorMessages {...errors} />
+      <ErrorMessages errors={errors} />
       <Form.Group inline>
         <label>
           <Image fluid inline src={`https://crafatar.com/avatars/${player.id}?size=50&overlay=true`} />

@@ -77,7 +77,7 @@ export default function ServerForm ({ onFinished, query, parseVariables, serverT
 
   return (
     <Form size='large' onSubmit={onSubmit} error loading={loading}>
-      <ErrorMessages {...errors} />
+      <ErrorMessages errors={errors} />
       <Form.Input
         fluid
         required

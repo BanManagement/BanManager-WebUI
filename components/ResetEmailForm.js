@@ -43,7 +43,7 @@ export default function ResetEmailForm () {
       {success &&
         <Message success header='Email successfully updated' />}
       <Form size='large' onSubmit={onSubmit} error loading={loading}>
-        <ErrorMessages {...errors} />
+        <ErrorMessages errors={errors} />
         <Form.Input
           required
           name='email'

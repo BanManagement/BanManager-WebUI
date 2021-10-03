@@ -19,7 +19,7 @@ export default function PlayerIpList ({ id }) {
   })
 
   if (loading) return <Loader active />
-  if (errors) return <ErrorMessages {...errors} />
+  if (errors) return <ErrorMessages errors={errors} />
   if (!data || !data.playerInfo) return null
 
   const ips = data.playerInfo.reduce((rows, info) => {

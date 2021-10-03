@@ -30,7 +30,7 @@ export default function PlayerNoteForm ({ player, servers, onFinished, query, pa
   return (
     <Form size='large' onSubmit={onSubmit} error loading={loading}>
       <Header>Note</Header>
-      <ErrorMessages {...errors} />
+      <ErrorMessages errors={errors} />
       <Form.Group inline>
         <label>
           <Image fluid inline src={`https://crafatar.com/avatars/${player.id}?size=50&overlay=true`} />

@@ -109,7 +109,7 @@ export default function PageLayout ({ availableComponents, pathname, props = {} 
   const { loading, data, errors } = useApi({ query, variables: { pathname } })
 
   if (loading) return <Loader active />
-  if (errors || !data) return <PageContainer><ErrorMessages {...errors} /></PageContainer>
+  if (errors || !data) return <PageContainer><ErrorMessages errors={errors} /></PageContainer>
 
   const { pageLayout } = data
   const devices = Object.keys(pageLayout.devices).filter(name => name !== '__typename')

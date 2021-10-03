@@ -13,7 +13,7 @@ export default function PlayerAlts ({ id, colour }) {
   })
 
   if (loading) return <Loader active />
-  if (errors) return <ErrorMessages {...errors} />
+  if (errors) return <ErrorMessages errors={errors} />
   if (!data || !data.playerAlts || !data.playerAlts.length) return null
 
   const alts = data.playerAlts.map(alt => {

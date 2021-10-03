@@ -48,7 +48,7 @@ export default function AssignPlayersRoleForm ({ query, roles, servers = [] }) {
     <Grid doubling>
       <Grid.Row>
         <Grid.Column desktop={4} mobile={16}>
-          <ErrorMessages {...errors} />
+          <ErrorMessages errors={errors} />
           <PlayerSelector handleChange={handlePlayerChange} />
         </Grid.Column>
         <Grid.Column desktop={4} mobile={16}>

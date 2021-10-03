@@ -16,7 +16,7 @@ export default function ServerNameHeaderForm ({ meta, setMeta }) {
   })
 
   if (loading) return <Loader active />
-  if (errors || !data) return <ErrorMessages {...errors} />
+  if (errors || !data) return <ErrorMessages errors={errors} />
 
   const handleChange = (e, { name, value }) => setInput({ ...input, [name]: value })
   const onSubmit = (e) => {
