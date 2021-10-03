@@ -28,7 +28,6 @@ const cleanUpComponent = (component) => {
 }
 
 export default function PageLayoutForm ({ pathname, pageLayout, onFinished, query }) {
-  const [loading, setLoading] = useState(false)
   const [variables, setVariables] = useState({})
   const [currentDevice, setCurrentDevice] = useState({ name: 'desktop', width: ResponsiveUtil.onlyComputer.minWidth })
   const [currentLayout, setCurrentLayout] = useState(pageLayout.devices.desktop)
@@ -54,9 +53,8 @@ export default function PageLayoutForm ({ pathname, pageLayout, onFinished, quer
     setVariables({ pathname, input: newLayout.devices })
   }, [currentPageLayout])
 
-  const { load, data, errors } = useMutateApi({ query })
+  const { load, loading, data, errors } = useMutateApi({ query })
 
-  useEffect(() => setLoading(false), [errors])
   useEffect(() => {
     if (!data) return
     if (Object.keys(data).some(key => !!data[key].pathname)) onFinished()
@@ -178,7 +176,6 @@ export default function PageLayoutForm ({ pathname, pageLayout, onFinished, quer
   }
   const onSubmit = (e) => {
     e.preventDefault()
-    setLoading(true)
 
     load(variables)
   }

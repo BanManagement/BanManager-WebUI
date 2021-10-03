@@ -5,7 +5,6 @@ import DateTimePicker from './DateTimePicker'
 import { fromNow, useMutateApi } from '../utils'
 
 export default function PlayerBanForm ({ player, servers, onFinished, query, parseVariables, disableServers = false, defaults = {} }) {
-  const [loading, setLoading] = useState(false)
   const [typeState, setTypeState] = useState(defaults.expires ? 'temporary' : 'permanent')
   const [inputState, setInputState] = useState({
     reason: defaults.reason || '',
@@ -13,9 +12,8 @@ export default function PlayerBanForm ({ player, servers, onFinished, query, par
     server: defaults?.server?.id
   })
 
-  const { load, data, errors } = useMutateApi({ query })
+  const { load, loading, data, errors } = useMutateApi({ query })
 
-  useEffect(() => setLoading(false), [errors])
   useEffect(() => {
     if (!data) return
     if (Object.keys(data).some(key => !!data[key].id)) onFinished()
@@ -25,7 +23,6 @@ export default function PlayerBanForm ({ player, servers, onFinished, query, par
 
   const onSubmit = (e) => {
     e.preventDefault()
-    setLoading(true)
 
     load(parseVariables(inputState))
   }

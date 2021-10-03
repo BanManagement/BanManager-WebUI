@@ -4,15 +4,13 @@ import ErrorMessages from './ErrorMessages'
 import { fromNow, useMutateApi } from '../utils'
 
 export default function PlayerNoteForm ({ player, servers, onFinished, query, parseVariables, disableServers = false, defaults = {} }) {
-  const [loading, setLoading] = useState(false)
   const [inputState, setInputState] = useState({
     message: defaults.message || '',
     server: defaults?.server?.id
   })
 
-  const { load, data, errors } = useMutateApi({ query })
+  const { load, loading, data, errors } = useMutateApi({ query })
 
-  useEffect(() => setLoading(false), [errors])
   useEffect(() => {
     if (!data) return
     if (Object.keys(data).some(key => !!data[key].id)) onFinished()
@@ -22,7 +20,6 @@ export default function PlayerNoteForm ({ player, servers, onFinished, query, pa
 
   const onSubmit = (e) => {
     e.preventDefault()
-    setLoading(true)
 
     load(parseVariables(inputState))
   }

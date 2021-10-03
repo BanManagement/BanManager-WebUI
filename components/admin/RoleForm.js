@@ -5,16 +5,14 @@ import ErrorMessages from '../ErrorMessages'
 import { useMutateApi } from '../../utils'
 
 export default function RoleForm ({ onFinished, query, parseVariables, parentRoles, resources, defaults = {} }) {
-  const [loading, setLoading] = useState(false)
   const [inputState, setInputState] = useState({
     name: defaults.name || '',
     resources: defaults.resources || resources,
     parent: defaults.parent || parentRoles[0].value
   })
 
-  const { load, data, errors } = useMutateApi({ query })
+  const { load, loading, data, errors } = useMutateApi({ query })
 
-  useEffect(() => setLoading(false), [errors])
   useEffect(() => {
     if (!data) return
     if (Object.keys(data).some(key => data[key] && data[key].id)) onFinished()
@@ -22,7 +20,6 @@ export default function RoleForm ({ onFinished, query, parseVariables, parentRol
 
   const onSubmit = (e) => {
     e.preventDefault()
-    setLoading(true)
 
     load(parseVariables(inputState))
   }

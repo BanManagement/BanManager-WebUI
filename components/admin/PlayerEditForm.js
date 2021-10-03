@@ -6,13 +6,12 @@ import { useMutateApi } from '../../utils'
 export default function PlayerEditForm ({ open, onFinished, player, roles, servers }) {
   if (!player) return null
 
-  const [loading, setLoading] = useState(false)
   const [inputState, setInputState] = useState({
     email: player.email || '',
     roles: player.roles.map(({ role }) => role.id),
     serverRoles: player.serverRoles
   })
-  const { load, data, errors } = useMutateApi({
+  const { load, loading, data, errors } = useMutateApi({
     query: `mutation setRoles($player: UUID!, $input: SetRolesInput!) {
       setRoles(player: $player, input: $input) {
         id
@@ -39,7 +38,6 @@ export default function PlayerEditForm ({ open, onFinished, player, roles, serve
     }`
   })
 
-  useEffect(() => setLoading(false), [errors])
   useEffect(() => {
     if (!data) return
     if (Object.keys(data).some(key => !!data[key].id)) onFinished(data)
@@ -47,7 +45,6 @@ export default function PlayerEditForm ({ open, onFinished, player, roles, serve
 
   const onSubmit = (e) => {
     e.preventDefault()
-    setLoading(true)
 
     load({
       player: player.id,

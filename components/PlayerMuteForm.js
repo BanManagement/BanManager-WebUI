@@ -5,7 +5,6 @@ import DateTimePicker from './DateTimePicker'
 import { fromNow, useMutateApi } from '../utils'
 
 export default function PlayerMuteForm ({ player, servers, onFinished, query, parseVariables, disableServers = false, defaults = {} }) {
-  const [loading, setLoading] = useState(false)
   const [typeState, setTypeState] = useState(defaults.expires ? 'temporary' : 'permanent')
   const [inputState, setInputState] = useState({
     reason: defaults.reason || '',
@@ -14,9 +13,8 @@ export default function PlayerMuteForm ({ player, servers, onFinished, query, pa
     soft: defaults.soft
   })
 
-  const { load, data, errors } = useMutateApi({ query })
+  const { load, loading, data, errors } = useMutateApi({ query })
 
-  useEffect(() => setLoading(false), [errors])
   useEffect(() => {
     if (!data) return
     if (Object.keys(data).some(key => !!data[key].id)) onFinished()
@@ -26,7 +24,6 @@ export default function PlayerMuteForm ({ player, servers, onFinished, query, pa
 
   const onSubmit = (e) => {
     e.preventDefault()
-    setLoading(true)
 
     load(parseVariables(inputState))
   }

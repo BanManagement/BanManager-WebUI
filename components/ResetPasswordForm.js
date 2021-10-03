@@ -5,7 +5,6 @@ import { useMutateApi } from '../utils'
 
 export default function ResetPasswordForm () {
   const [error, setError] = useState(null)
-  const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const [inputState, setInputState] = useState({
     newPassword: '',
@@ -13,7 +12,7 @@ export default function ResetPasswordForm () {
     currentPassword: ''
   })
 
-  const { load, data, errors } = useMutateApi({
+  const { load, data, errors, loading } = useMutateApi({
     query: `mutation setPassword($currentPassword: String!, $newPassword: String!) {
     setPassword(currentPassword: $currentPassword, newPassword: $newPassword) {
       id
@@ -22,7 +21,6 @@ export default function ResetPasswordForm () {
   })
 
   useEffect(() => {
-    setLoading(false)
     setSuccess(false)
   }, [errors])
   useEffect(() => {
@@ -34,7 +32,6 @@ export default function ResetPasswordForm () {
     e.preventDefault()
     if (error) return
 
-    setLoading(true)
     load(inputState)
   }
   const handleChange = async (e, { name, value }) => {

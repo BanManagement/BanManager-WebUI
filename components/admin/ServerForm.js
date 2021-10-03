@@ -6,7 +6,6 @@ import ErrorMessages from '../ErrorMessages'
 import { useMutateApi } from '../../utils'
 
 export default function ServerForm ({ onFinished, query, parseVariables, serverTables, defaults = {} }) {
-  const [loading, setLoading] = useState(false)
   const [yamlState, setYamlState] = useState('')
   const [inputState, setInputState] = useState({
     name: defaults.name || '',
@@ -19,9 +18,8 @@ export default function ServerForm ({ onFinished, query, parseVariables, serverT
     tables: defaults.tables
   })
 
-  const { load, data, errors } = useMutateApi({ query })
+  const { load, loading, data, errors } = useMutateApi({ query })
 
-  useEffect(() => setLoading(false), [errors])
   useEffect(() => {
     if (!data) return
     if (Object.keys(data).some(key => data[key] && data[key].id)) onFinished()
@@ -29,7 +27,6 @@ export default function ServerForm ({ onFinished, query, parseVariables, serverT
 
   const onSubmit = (e) => {
     e.preventDefault()
-    setLoading(true)
 
     load(parseVariables(inputState))
   }

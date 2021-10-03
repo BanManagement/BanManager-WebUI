@@ -4,20 +4,15 @@ import ErrorMessages from './ErrorMessages'
 import { useMutateApi } from '../utils'
 
 export default function PlayerCommentForm ({ onFinish, parseVariables, query }) {
-  const [loading, setLoading] = useState(false)
   const [inputState, setInputState] = useState({
     comment: ''
   })
 
-  const { load, data, errors } = useMutateApi({ query })
+  const { load, loading, data, errors } = useMutateApi({ query })
 
-  useEffect(() => {
-    setLoading(false)
-  }, [errors])
   useEffect(() => {
     if (!data) return
     if (Object.keys(data).some(key => !!data[key].id)) {
-      setLoading(false)
       setInputState({ ...inputState, comment: '' })
       onFinish(data)
     }
@@ -26,7 +21,6 @@ export default function PlayerCommentForm ({ onFinish, parseVariables, query }) 
   const onSubmit = (e) => {
     e.preventDefault()
 
-    setLoading(true)
     load(parseVariables(inputState))
   }
   const handleChange = async (e, { name, value }) => {

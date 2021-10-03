@@ -5,7 +5,6 @@ import ErrorMessages from '../ErrorMessages'
 import { useMutateApi } from '../../utils'
 
 export default function AssignPlayersRoleForm ({ query, roles, servers = [] }) {
-  const [loading, setLoading] = useState(false)
   const [variables, setVariables] = useState({})
   const [inputState, setInputState] = useState({
     players: [],
@@ -14,15 +13,7 @@ export default function AssignPlayersRoleForm ({ query, roles, servers = [] }) {
 
   useEffect(() => setVariables(inputState), [inputState])
 
-  const { load, data, errors } = useMutateApi({ query })
-
-  useEffect(() => setLoading(false), [errors])
-  useEffect(() => {
-    if (!data) return
-    if (Object.keys(data).some(key => data[key] && data[key].id)) {
-      setLoading(false)
-    }
-  }, [data])
+  const { load, loading, errors } = useMutateApi({ query })
 
   const handlePlayerChange = (value) => {
     setInputState({ ...inputState, players: value })
@@ -30,7 +21,6 @@ export default function AssignPlayersRoleForm ({ query, roles, servers = [] }) {
   const handleChange = (e, { name, value }) => setInputState({ ...inputState, [name]: value })
   const onSubmit = async (e) => {
     e.preventDefault()
-    setLoading(true)
 
     await load(variables)
 

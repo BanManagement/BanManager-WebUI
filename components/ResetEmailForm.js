@@ -4,14 +4,13 @@ import ErrorMessages from './ErrorMessages'
 import { useMutateApi } from '../utils'
 
 export default function ResetEmailForm () {
-  const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const [inputState, setInputState] = useState({
     email: '',
     currentPassword: ''
   })
 
-  const { load, data, errors } = useMutateApi({
+  const { load, loading, data, errors } = useMutateApi({
     query: `mutation setEmail($currentPassword: String!, $email: String!) {
     setEmail(currentPassword: $currentPassword, email: $email) {
       id
@@ -20,7 +19,6 @@ export default function ResetEmailForm () {
   })
 
   useEffect(() => {
-    setLoading(false)
     setSuccess(false)
   }, [errors])
   useEffect(() => {
@@ -30,7 +28,6 @@ export default function ResetEmailForm () {
 
   const onSubmit = (e) => {
     e.preventDefault()
-    setLoading(true)
 
     load(inputState)
   }
