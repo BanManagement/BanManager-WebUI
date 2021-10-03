@@ -53,8 +53,18 @@ function mysql_escape_mimic($inp) {
  * Why repeat it twice? Checking magic quotes everytime in a loop is slow and so is any additional if statements ;)
  */
 $in = array(&$_GET, &$_POST);
+
+// Fix for PHP 8+
+// NB: sanitising should be done where necessary but legacy is deprecated, this is a quick fix
+function myEach(&$arr) {
+    $key = key($arr);
+    $result = ($key === null) ? false : [$key, current($arr), 'key' => $key, 'value' => current($arr)];
+    next($arr);
+    return $result;
+}
+
 if(version_compare(PHP_VERSION, '7.4.0', '<') && function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc()) {
-	while(list($k, $v) = each($in)) {
+	while(list($k, $v) = myEach($in)) {
 		foreach($v as $key => $val) {
 			if(!is_array($val))
 				$in[$k][mysql_escape_mimic(htmlspecialchars(stripslashes($key), ENT_QUOTES))] = mysql_escape_mimic(htmlspecialchars(stripslashes($val), ENT_QUOTES));
@@ -63,7 +73,7 @@ if(version_compare(PHP_VERSION, '7.4.0', '<') && function_exists('get_magic_quot
 		}
 	}
 } else {
-	while(list($k, $v) = each($in)) {
+	while(list($k, $v) = myEach($in)) {
 		foreach($v as $key => $val) {
 			if(!is_array($val))
 				$in[$k][mysql_escape_mimic(htmlspecialchars($key, ENT_QUOTES))] = mysql_escape_mimic(htmlspecialchars($val, ENT_QUOTES));
@@ -264,7 +274,7 @@ function cache($query, $time, $folder = '', $server = array(), $name = '', $asso
 		if(apc_exists($file))
 			return apc_fetch($file);
 		else {
-			return createCache($query, $server, $file, $time, $assoc);
+			return createCache($query, $server, $file, $assoc, $time);
 		}
 	} else {
 		$file = IN_PATH.'cache/'.$file.'.php';
@@ -273,19 +283,19 @@ function cache($query, $time, $folder = '', $server = array(), $name = '', $asso
 		if(file_exists($file)) {
 			if(time() - filemtime($file) > $time) {
 				// Needs recache
-				return createCache($query, $server, $file, 0, $assoc); // Return the fresh data
+				return createCache($query, $server, $file, $assoc, 0); // Return the fresh data
 			} else {
 				// Serve the cache
 				return unserialize(file_get_contents($file, NULL, NULL, 16));
 			}
 		} else {
 			// Cache needs creating
-			return createCache($query, $server, $file, 0, $assoc); // Return the fresh data
+			return createCache($query, $server, $file, $assoc, 0); // Return the fresh data
 		}
 	}
 }
 
-function createCache($query, $server, $file, $time = 0, $assoc) {
+function createCache($query, $server, $file, $assoc, $time = 0) {
 	global $settings;
 
 	// if(!empty($server)) {
