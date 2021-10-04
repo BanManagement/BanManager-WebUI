@@ -65,13 +65,13 @@ export default function ReportsTable ({ limit = 30 }) {
               <Table.Cell>{data.listPlayerReports.server.name}</Table.Cell>
               <Table.Cell><a href={`/reports/${data.listPlayerReports.server.id}/${row.id}`}>#{row.id}</a></Table.Cell>
               <Table.Cell>
-                <a href={`player/${row.actor.id}`}>
+                <a href={`/player/${row.actor.id}`}>
                   <Image src={`https://crafatar.com/avatars/${row.actor.id}?size=26&overlay=true`} fluid avatar />
                   {row.actor.name}
                 </a>
               </Table.Cell>
               <Table.Cell>
-                <a href={`player/${row.player.id}`}>
+                <a href={`/player/${row.player.id}`}>
                   <Image src={`https://crafatar.com/avatars/${row.player.id}?size=26&overlay=true`} fluid avatar />
                   {row.player.name}
                 </a>
@@ -79,7 +79,7 @@ export default function ReportsTable ({ limit = 30 }) {
               <Table.Cell>{row.state.name}</Table.Cell>
               <Table.Cell>
                 {row.assignee &&
-                  <a href={`player/${row.assignee.id}`}>
+                  <a href={`/player/${row.assignee.id}`}>
                     <Image src={`https://crafatar.com/avatars/${row.assignee.id}?size=26&overlay=true`} fluid avatar />
                     {row.assignee.name}
                   </a>}

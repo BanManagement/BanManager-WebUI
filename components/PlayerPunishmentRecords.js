@@ -109,7 +109,7 @@ const PlayerBanRecordTable = (rows, dateFormat) => {
       <Table.Row key={i}>
         <Table.Cell>{row.reason}</Table.Cell>
         <Table.Cell>
-          <a href={`player/${row.pastActor.id}`}>
+          <a href={`/player/${row.pastActor.id}`}>
             <Image src={`https://crafatar.com/avatars/${row.pastActor.id}?size=26&overlay=true`} fluid avatar />
             {row.pastActor.name}
           </a>
@@ -117,7 +117,7 @@ const PlayerBanRecordTable = (rows, dateFormat) => {
         <Table.Cell>{format(fromUnixTime(row.pastCreated), dateFormat)}</Table.Cell>
         <Table.Cell>{row.expired === 0 ? 'Permanent' : formatDistance(fromUnixTime(row.pastCreated), fromUnixTime(row.expired), { includeSeconds: true })}</Table.Cell>
         <Table.Cell>
-          <a href={`player/${row.actor.id}`}>
+          <a href={`/player/${row.actor.id}`}>
             <Image src={`https://crafatar.com/avatars/${row.actor.id}?size=26&overlay=true`} fluid avatar />
             {row.actor.name}
           </a>
@@ -140,7 +140,7 @@ const PlayerKickTable = (rows, dateFormat) => {
       <Table.Row key={i}>
         <Table.Cell>{row.reason}</Table.Cell>
         <Table.Cell>
-          <a href={`player/${row.actor.id}`}>
+          <a href={`/player/${row.actor.id}`}>
             <Image src={`https://crafatar.com/avatars/${row.actor.id}?size=26&overlay=true`} fluid avatar />
             {row.actor.name}
           </a>
@@ -163,7 +163,7 @@ const PlayerNoteTable = (rows, dateFormat) => {
       <Table.Row key={i}>
         <Table.Cell>{row.message}</Table.Cell>
         <Table.Cell>
-          <a href={`player/${row.actor.id}`}>
+          <a href={`/player/${row.actor.id}`}>
             <Image src={`https://crafatar.com/avatars/${row.actor.id}?size=26&overlay=true`} fluid avatar />
             {row.actor.name}
           </a>
@@ -187,7 +187,7 @@ const PlayerWarningTable = (rows, dateFormat) => {
       <Table.Row key={i}>
         <Table.Cell>{row.reason}</Table.Cell>
         <Table.Cell>
-          <a href={`player/${row.actor.id}`}>
+          <a href={`/player/${row.actor.id}`}>
             <Image src={`https://crafatar.com/avatars/${row.actor.id}?size=26&overlay=true`} fluid avatar />
             {row.actor.name}
           </a>
