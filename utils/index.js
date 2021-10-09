@@ -92,6 +92,14 @@ const userFetcher = () =>
     session {
       type
     }
+    resources {
+      name
+      permissions {
+        name
+        allowed
+        serversAllowed
+      }
+    }
   }}`
     })
   })
@@ -109,6 +117,41 @@ export const useUser = ({
   const user = data?.user
   const finished = Boolean(data)
   const hasUser = Boolean(user)
+  const hasPermission = (resource, permission) => {
+    if (!user) return false
+
+    const foundResource = user.resources.find(r => r.name === resource)
+
+    if (!foundResource) {
+      console.warn(`Resource ${foundResource} not found`)
+      return false;
+    }
+
+    const foundPermission = foundResource.permissions.find(p => p.name === permission)
+
+    return foundPermission?.allowed || false
+  }
+  const hasServerPermission = (resource, permission, serverId, any = false) => {
+    if (!user) return false
+
+    const foundResource = user.resources.find(r => r.name === resource)
+
+    if (!foundResource) {
+      console.warn(`Resource ${resource} not found`)
+      return false;
+    }
+
+    const foundPermission = foundResource.permissions.find(p => p.name === permission)
+
+    if (!foundPermission) {
+      console.warn(`Permission ${permission} not found in resource ${resource}`)
+      return false
+    }
+
+    if (any && foundPermission.serversAllowed.length) return true
+
+    return foundPermission.serversAllowed && foundPermission.serversAllowed.include(serverId) || false
+  }
 
   useEffect(() => {
     if (!redirectTo || !finished) return
@@ -123,7 +166,7 @@ export const useUser = ({
     }
   }, [redirectTo, redirectIfFound, finished, hasUser])
 
-  return { user }
+  return { user, hasPermission, hasServerPermission }
 }
 
 export const fromNow = (timestamp) => {

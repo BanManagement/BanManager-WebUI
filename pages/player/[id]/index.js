@@ -1,7 +1,6 @@
-import { Button, Loader } from 'semantic-ui-react'
+import { Loader } from 'semantic-ui-react'
 import { useRouter } from 'next/router'
 import DefaultLayout from '../../../components/DefaultLayout'
-import PageContainer from '../../../components/PageContainer'
 import PageLayout from '../../../components/PageLayout'
 import { useApi } from '../../../utils'
 
@@ -46,19 +45,6 @@ export default function Page () {
   if (errors || !data) return <ErrorLayout errors={errors} />
   if (!data.player) return <ErrorLayout errors={{ error: new Error('Player not found') }} />
 
-  // @TODO Reduce
-  const canCreateBan = false
-  const canCreateMute = false
-  const canCreateNote = false
-  const canCreateWarning = false
-
-  // data.player.servers.forEach(server => {
-  //   if (server.acl.bans.create) canCreateBan = true
-  //   if (server.acl.mutes.create) canCreateMute = true
-  //   if (server.acl.notes.create) canCreateNote = true
-  //   if (server.acl.warnings.create) canCreateWarning = true
-  // })
-
   return (
     <>
       <DefaultLayout title={data.player.name}>
@@ -67,46 +53,6 @@ export default function Page () {
           pathname='player'
           props={{ id }}
         />
-        <PageContainer>
-          <Button.Group size='large' widths='4'>
-            {canCreateBan &&
-              <Button
-                as='a'
-                href={`/player/${id}/ban`}
-                circular
-                icon='ban'
-                color='green'
-                title='Ban Player'
-              />}
-            {canCreateMute &&
-              <Button
-                as='a'
-                href={`/player/${id}/mute`}
-                circular
-                icon='mute'
-                color='green'
-                title='Mute Player'
-              />}
-            {canCreateNote &&
-              <Button
-                as='a'
-                href={`/player/${id}/note`}
-                circular
-                icon='sticky note outline'
-                color='green'
-                title='Add Note'
-              />}
-            {canCreateWarning &&
-              <Button
-                as='a'
-                href={`/player/${id}/warn`}
-                circular
-                icon='warning'
-                color='green'
-                title='Warn Player'
-              />}
-          </Button.Group>
-        </PageContainer>
       </DefaultLayout>
     </>
   )
