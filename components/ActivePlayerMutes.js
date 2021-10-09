@@ -26,13 +26,23 @@ query playerMutes($id: UUID!) {
 }`
 
 export default function ActivePlayerMutes ({ id }) {
-  const { loading, data, errors } = useApi({ query, variables: { id } })
+  const { loading, data, errors, mutate } = useApi({ query, variables: { id } })
 
   if (loading) return <Loader active inline='centered' />
   if (errors || !data || !data.playerMutes || !data.playerMutes.length) return null
 
   const rows = data.playerMutes.map((row, i) => (
-    <PlayerPunishment key={row.server.id + row.id + 'mute'} type='mute' server={row.server} punishment={row} />
+    <PlayerPunishment
+      key={row.server.id + row.id + 'mute'}
+      type='mute'
+      server={row.server}
+      punishment={row}
+      onDeleted={({ deletePlayerMute: { id } }) => {
+        const records = data.playerMutes.filter(c => c.id !== id)
+
+        mutate({ ...data, playerMutes: records }, false)
+      }}
+    />
   ))
 
   return (

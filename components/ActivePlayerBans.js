@@ -26,13 +26,23 @@ query playerBans($id: UUID!) {
 }`
 
 export default function ActivePlayerBans ({ id }) {
-  const { loading, data, errors } = useApi({ query, variables: { id } })
+  const { loading, data, mutate, errors } = useApi({ query, variables: { id } })
 
   if (loading) return <Loader active inline='centered' />
   if (errors || !data || !data.playerBans || !data.playerBans.length) return null
 
   const rows = data.playerBans.map((row, i) => (
-    <PlayerPunishment key={row.server.id + row.id + 'ban'} type='ban' server={row.server} punishment={row} />
+    <PlayerPunishment
+      key={row.server.id + row.id + 'ban'}
+      type='ban'
+      server={row.server}
+      punishment={row}
+      onDeleted={({ deletePlayerBan: { id } }) => {
+        const records = data.playerBans.filter(c => c.id !== id)
+
+        mutate({ ...data, playerBans: records }, false)
+      }}
+    />
   ))
 
   return (

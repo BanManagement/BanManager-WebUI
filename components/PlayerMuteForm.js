@@ -10,7 +10,7 @@ export default function PlayerMuteForm ({ player, servers, onFinished, query, pa
     reason: defaults.reason || '',
     expires: defaults.expires * 1000 || 0,
     server: defaults?.server?.id,
-    soft: defaults.soft
+    soft: defaults.soft || false
   })
 
   const { load, loading, data, errors } = useMutateApi({ query })

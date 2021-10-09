@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button, Card, Confirm, Label } from 'semantic-ui-react'
 import { format, fromUnixTime } from 'date-fns'
 import { fromNow, useMutateApi } from '../utils'
@@ -20,26 +20,41 @@ const metaMap = {
   },
   mute: {
     editPath: 'mute',
-    recordType: 'PlayerMute'
+    recordType: 'PlayerMute',
+    deleteMutation: `mutation deletePlayerMute($id: ID!, $serverId: ID!) {
+      deletePlayerMute(id: $id, serverId: $serverId) {
+        id
+      }
+    }`
   },
   note: {
     editPath: 'note',
-    recordType: 'PlayerNote'
+    recordType: 'PlayerNote',
+    deleteMutation: `mutation deletePlayerNote($id: ID!, $serverId: ID!) {
+      deletePlayerNote(id: $id, serverId: $serverId) {
+        id
+      }
+    }`
   },
   warning: {
     editPath: 'warning',
-    recordType: 'PlayerWarning'
+    recordType: 'PlayerWarning',
+    deleteMutation: `mutation deletePlayerWarning($id: ID!, $serverId: ID!) {
+      deletePlayerWarning(id: $id, serverId: $serverId) {
+        id
+      }
+    }`
   }
 }
 const buttonWords = { 1: 'one', 2: 'two', 3: 'three' }
 
-export default function PlayerPunishment ({ punishment, server, type }) {
+export default function PlayerPunishment ({ punishment, server, type, onDeleted }) {
   const meta = metaMap[type]
   const [state, setState] = useState({ deleteConfirmShow: false, deleting: false })
 
-  const { load, loading, errors } = useMutateApi({ query: meta.deleteMutation })
+  const { load, data, loading, errors } = useMutateApi({ query: meta.deleteMutation })
 
-  const showConfirmDelete = () => setState({ deleteConfirmShow: true })
+  const showConfirmDelete = () => setState({ ...state, deleteConfirmShow: true })
   const handleConfirmDelete = async () => {
     if (state.deleting) return
 
@@ -47,9 +62,16 @@ export default function PlayerPunishment ({ punishment, server, type }) {
 
     load({ id: punishment.id, serverId: server.id })
 
-    if (!loading) setState({ deleting: false })
+    if (!loading) setState({ ...state, deleting: false })
   }
-  const handleDeleteCancel = () => setState({ deleteConfirmShow: false })
+  const handleDeleteCancel = () => setState({ ...state, deleteConfirmShow: false })
+
+  useEffect(() => {
+    if (!data) return
+    if (Object.keys(data).some(key => !!data[key].id)) {
+      onDeleted(data)
+    }
+  }, [data])
 
   let label = ''
 
