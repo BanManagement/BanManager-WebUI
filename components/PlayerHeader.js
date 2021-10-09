@@ -74,8 +74,7 @@ export default function PlayerHeader ({ id, colour }) {
               color='green'
               title='Warn Player'
             />}
-        </Button.Group>
-      }
+        </Button.Group>}
     </Container>
   )
 }

@@ -100,7 +100,7 @@ const deleteMutations = {
         id
       }
     }`,
-  PlayerKick:  `mutation deletePlayerKick($id: ID!, $serverId: ID!) {
+  PlayerKick: `mutation deletePlayerKick($id: ID!, $serverId: ID!) {
     deletePlayerKick(id: $id, serverId: $serverId) {
       id
     }
@@ -115,7 +115,7 @@ const deleteMutations = {
         id
       }
     }`,
-    PlayerWarning: `mutation deletePlayerWarning($id: ID!, $serverId: ID!) {
+  PlayerWarning: `mutation deletePlayerWarning($id: ID!, $serverId: ID!) {
       deletePlayerWarning(id: $id, serverId: $serverId) {
         id
       }
@@ -134,7 +134,7 @@ const PlayerBanRecordTable = (rows, dateFormat, showConfirmDelete) => {
     <Table.HeaderCell>Length</Table.HeaderCell>
     <Table.HeaderCell>Unbanned By</Table.HeaderCell>
     <Table.HeaderCell>At</Table.HeaderCell>
-    {canDelete && <Table.HeaderCell></Table.HeaderCell>}
+    {canDelete && <Table.HeaderCell />}
   </Table.Row>,
     body: rows.map((row, i) => (
       <Table.Row key={i}>
@@ -157,8 +157,7 @@ const PlayerBanRecordTable = (rows, dateFormat, showConfirmDelete) => {
         {canDelete &&
           <Table.Cell>
             <Button as='a' icon='trash' color='red' title='Delete' onClick={showConfirmDelete(row.id)} />
-          </Table.Cell>
-        }
+          </Table.Cell>}
       </Table.Row>
     ))
   }
@@ -173,7 +172,7 @@ const PlayerKickTable = (rows, dateFormat, showConfirmDelete) => {
     <Table.HeaderCell>Reason</Table.HeaderCell>
     <Table.HeaderCell>By</Table.HeaderCell>
     <Table.HeaderCell>At</Table.HeaderCell>
-    {canDelete && <Table.HeaderCell></Table.HeaderCell>}
+    {canDelete && <Table.HeaderCell />}
   </Table.Row>,
     body: rows.map((row, i) => (
       <Table.Row key={i}>
@@ -188,8 +187,7 @@ const PlayerKickTable = (rows, dateFormat, showConfirmDelete) => {
         {canDelete &&
           <Table.Cell>
             <Button as='a' icon='trash' color='red' title='Delete' onClick={showConfirmDelete(row.id)} />
-          </Table.Cell>
-        }
+          </Table.Cell>}
       </Table.Row>
     ))
   }
@@ -204,7 +202,7 @@ const PlayerNoteTable = (rows, dateFormat, showConfirmDelete) => {
     <Table.HeaderCell>Message</Table.HeaderCell>
     <Table.HeaderCell>By</Table.HeaderCell>
     <Table.HeaderCell>At</Table.HeaderCell>
-    {canDelete && <Table.HeaderCell></Table.HeaderCell>}
+    {canDelete && <Table.HeaderCell />}
   </Table.Row>,
     body: rows.map((row, i) => (
       <Table.Row key={i}>
@@ -219,8 +217,7 @@ const PlayerNoteTable = (rows, dateFormat, showConfirmDelete) => {
         {canDelete &&
           <Table.Cell>
             <Button as='a' icon='trash' color='red' title='Delete' onClick={showConfirmDelete(row.id)} />
-          </Table.Cell>
-        }
+          </Table.Cell>}
       </Table.Row>
     ))
   }
@@ -236,7 +233,7 @@ const PlayerWarningTable = (rows, dateFormat, showConfirmDelete) => {
     <Table.HeaderCell>By</Table.HeaderCell>
     <Table.HeaderCell>Length</Table.HeaderCell>
     <Table.HeaderCell>At</Table.HeaderCell>
-    {canDelete && <Table.HeaderCell></Table.HeaderCell>}
+    {canDelete && <Table.HeaderCell />}
   </Table.Row>,
     body: rows.map((row, i) => (
       <Table.Row key={i}>
@@ -252,8 +249,7 @@ const PlayerWarningTable = (rows, dateFormat, showConfirmDelete) => {
         {canDelete &&
           <Table.Cell>
             <Button as='a' icon='trash' color='red' title='Delete' onClick={showConfirmDelete(row.id)} />
-          </Table.Cell>
-        }
+          </Table.Cell>}
       </Table.Row>
     ))
   }
@@ -296,7 +292,7 @@ export default function PlayerPunishmentRecords ({ id }) {
   useEffect(() => {
     if (!deleteData) return
 
-    const key = Object.keys(deleteData).find(key => !!deleteData[key].id);
+    const key = Object.keys(deleteData).find(key => !!deleteData[key].id)
 
     if (key) {
       const records = rows.filter(c => c.id !== deleteData[key].id)

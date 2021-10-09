@@ -124,7 +124,7 @@ export const useUser = ({
 
     if (!foundResource) {
       console.warn(`Resource ${foundResource} not found`)
-      return false;
+      return false
     }
 
     const foundPermission = foundResource.permissions.find(p => p.name === permission)
@@ -138,7 +138,7 @@ export const useUser = ({
 
     if (!foundResource) {
       console.warn(`Resource ${resource} not found`)
-      return false;
+      return false
     }
 
     const foundPermission = foundResource.permissions.find(p => p.name === permission)
@@ -150,7 +150,7 @@ export const useUser = ({
 
     if (any && foundPermission.serversAllowed.length) return true
 
-    return foundPermission.serversAllowed && foundPermission.serversAllowed.includes(serverId) || false
+    return (foundPermission.serversAllowed && foundPermission.serversAllowed.includes(serverId)) || false
   }
 
   useEffect(() => {

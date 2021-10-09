@@ -5,8 +5,8 @@ module.exports = async function me (obj, info, { session, state }) {
   if (!session || !session.playerId) throw new ExposedError('Invalid session')
 
   const [checkResult] = await state.dbPool('bm_web_users').select('email').where('player_id', session.playerId)
-  const allResources = await resources(obj, info, { state });
-  const servers = Array.from(state.serversPool.values()).map(server => server.config.id);
+  const allResources = await resources(obj, info, { state })
+  const servers = Array.from(state.serversPool.values()).map(server => server.config.id)
 
   allResources.forEach(resource => {
     resource.permissions.forEach(permission => {
