@@ -41,7 +41,7 @@ export default function ResetPasswordForm () {
   return (
     <>
       {success &&
-        <Message success header='Password successfully updated' />}
+        <Message success header='Password successfully updated' data-cy='success' />}
       <Form size='large' onSubmit={onSubmit} error loading={loading}>
         <ErrorMessages error={error} errors={errors} />
         <Form.Input
@@ -52,6 +52,7 @@ export default function ResetPasswordForm () {
           icon='lock'
           iconPosition='left'
           onChange={handleChange}
+          data-cy='currentPassword'
         />
         <Form.Input
           required
@@ -61,6 +62,7 @@ export default function ResetPasswordForm () {
           icon='lock'
           iconPosition='left'
           onChange={handleChange}
+          data-cy='newPassword'
         />
         <Form.Input
           required
@@ -70,8 +72,9 @@ export default function ResetPasswordForm () {
           icon='lock'
           iconPosition='left'
           onChange={(e, { value }) => value !== inputState.newPassword ? setError(new Error('Passwords do not match')) : setError(null)}
+          data-cy='confirmPassword'
         />
-        <Form.Button fluid primary size='large' content='Save' />
+        <Form.Button fluid primary size='large' content='Save' data-cy='submit-password-change' />
       </Form>
     </>
   )
