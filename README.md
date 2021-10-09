@@ -1,6 +1,6 @@
 # BanManager-WebUI
 
-[![Build Status](https://api.travis-ci.org/BanManagement/BanManager-WebUI.svg?branch=master)](https://travis-ci.org/BanManagement/BanManager-WebUI)
+[![Node.js CI](https://github.com/BanManagement/BanManager-WebUI/actions/workflows/build.yaml/badge.svg)](https://github.com/BanManagement/BanManager-WebUI/actions/workflows/build.yaml)
 [![Coverage Status](https://coveralls.io/repos/github/BanManagement/BanManager-WebUI/badge.svg)](https://coveralls.io/github/BanManagement/BanManager-WebUI)
 [![Known Vulnerabilities](https://snyk.io/test/github/banmanagement/banmanager-webui/badge.svg?targetFile=package.json)](https://snyk.io/test/github/banmanagement/banmanager-webui?targetFile=package.json)
 
