@@ -299,6 +299,7 @@ type Me {
   email: String!
   hasAccount: Boolean!
   session: PlayerSession!
+  resources: [Resources!]
 }
 
 type PlayerSession {
@@ -343,6 +344,7 @@ type Permission {
   id: ID!
   name: String!
   allowed: Boolean!
+  serversAllowed: [String!]
 }
 
 enum RecordType {

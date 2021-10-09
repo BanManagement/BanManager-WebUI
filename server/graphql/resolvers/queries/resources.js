@@ -11,7 +11,8 @@ module.exports = async function resources (obj, info, { state: { dbPool } }) {
       {
         id: perm.permission_id,
         name: perm.name,
-        allowed: false
+        allowed: false,
+        serversAllowed: []
       }
     ))
   })
