@@ -1,8 +1,9 @@
-import { useState } from 'react'
-import { Dropdown, Header, Image, Loader, Pagination, Table } from 'semantic-ui-react'
+import { useEffect, useState } from 'react'
+import { Button, Confirm, Dropdown, Header, Image, Loader, Pagination, Table } from 'semantic-ui-react'
 import { format, fromUnixTime, formatDistance } from 'date-fns'
 import ServerSelector from './admin/ServerSelector'
-import { useApi } from '../utils'
+import ErrorMessages from './ErrorMessages'
+import { useApi, useMutateApi } from '../utils'
 
 const query = `
   query listPlayerPunishmentRecords($serverId: ID!, $player: UUID!, $type: RecordType!, $limit: Int, $offset: Int) {
@@ -93,8 +94,37 @@ const types = {
     }
   }`
 }
+const deleteMutations = {
+  PlayerBanRecord: `mutation deletePlayerBanRecord($id: ID!, $serverId: ID!) {
+    deletePlayerBanRecord(id: $id, serverId: $serverId) {
+        id
+      }
+    }`,
+  PlayerKick:  `mutation deletePlayerKick($id: ID!, $serverId: ID!) {
+    deletePlayerKick(id: $id, serverId: $serverId) {
+      id
+    }
+  }`,
+  PlayerMuteRecord: `mutation deletePlayerMuteRecord($id: ID!, $serverId: ID!) {
+    deletePlayerMuteRecord(id: $id, serverId: $serverId) {
+        id
+      }
+    }`,
+  PlayerNote: `mutation deletePlayerNote($id: ID!, $serverId: ID!) {
+      deletePlayerNote(id: $id, serverId: $serverId) {
+        id
+      }
+    }`,
+    PlayerWarning: `mutation deletePlayerWarning($id: ID!, $serverId: ID!) {
+      deletePlayerWarning(id: $id, serverId: $serverId) {
+        id
+      }
+    }`
+}
 
-const PlayerBanRecordTable = (rows, dateFormat) => {
+const PlayerBanRecordTable = (rows, dateFormat, showConfirmDelete) => {
+  const canDelete = rows.some(row => row.acl.delete === true)
+
   return {
     headers:
   <Table.Row>
@@ -104,6 +134,7 @@ const PlayerBanRecordTable = (rows, dateFormat) => {
     <Table.HeaderCell>Length</Table.HeaderCell>
     <Table.HeaderCell>Unbanned By</Table.HeaderCell>
     <Table.HeaderCell>At</Table.HeaderCell>
+    {canDelete && <Table.HeaderCell></Table.HeaderCell>}
   </Table.Row>,
     body: rows.map((row, i) => (
       <Table.Row key={i}>
@@ -123,18 +154,26 @@ const PlayerBanRecordTable = (rows, dateFormat) => {
           </a>
         </Table.Cell>
         <Table.Cell>{format(fromUnixTime(row.created), dateFormat)}</Table.Cell>
+        {canDelete &&
+          <Table.Cell>
+            <Button as='a' icon='trash' color='red' title='Delete' onClick={showConfirmDelete(row.id)} />
+          </Table.Cell>
+        }
       </Table.Row>
     ))
   }
 }
 
-const PlayerKickTable = (rows, dateFormat) => {
+const PlayerKickTable = (rows, dateFormat, showConfirmDelete) => {
+  const canDelete = rows.some(row => row.acl.delete === true)
+
   return {
     headers:
   <Table.Row>
     <Table.HeaderCell>Reason</Table.HeaderCell>
     <Table.HeaderCell>By</Table.HeaderCell>
     <Table.HeaderCell>At</Table.HeaderCell>
+    {canDelete && <Table.HeaderCell></Table.HeaderCell>}
   </Table.Row>,
     body: rows.map((row, i) => (
       <Table.Row key={i}>
@@ -146,18 +185,26 @@ const PlayerKickTable = (rows, dateFormat) => {
           </a>
         </Table.Cell>
         <Table.Cell>{format(fromUnixTime(row.created), dateFormat)}</Table.Cell>
+        {canDelete &&
+          <Table.Cell>
+            <Button as='a' icon='trash' color='red' title='Delete' onClick={showConfirmDelete(row.id)} />
+          </Table.Cell>
+        }
       </Table.Row>
     ))
   }
 }
 
-const PlayerNoteTable = (rows, dateFormat) => {
+const PlayerNoteTable = (rows, dateFormat, showConfirmDelete) => {
+  const canDelete = rows.some(row => row.acl.delete === true)
+
   return {
     headers:
   <Table.Row>
     <Table.HeaderCell>Message</Table.HeaderCell>
     <Table.HeaderCell>By</Table.HeaderCell>
     <Table.HeaderCell>At</Table.HeaderCell>
+    {canDelete && <Table.HeaderCell></Table.HeaderCell>}
   </Table.Row>,
     body: rows.map((row, i) => (
       <Table.Row key={i}>
@@ -169,12 +216,19 @@ const PlayerNoteTable = (rows, dateFormat) => {
           </a>
         </Table.Cell>
         <Table.Cell>{format(fromUnixTime(row.created), dateFormat)}</Table.Cell>
+        {canDelete &&
+          <Table.Cell>
+            <Button as='a' icon='trash' color='red' title='Delete' onClick={showConfirmDelete(row.id)} />
+          </Table.Cell>
+        }
       </Table.Row>
     ))
   }
 }
 
-const PlayerWarningTable = (rows, dateFormat) => {
+const PlayerWarningTable = (rows, dateFormat, showConfirmDelete) => {
+  const canDelete = rows.some(row => row.acl.delete === true)
+
   return {
     headers:
   <Table.Row>
@@ -182,6 +236,7 @@ const PlayerWarningTable = (rows, dateFormat) => {
     <Table.HeaderCell>By</Table.HeaderCell>
     <Table.HeaderCell>Length</Table.HeaderCell>
     <Table.HeaderCell>At</Table.HeaderCell>
+    {canDelete && <Table.HeaderCell></Table.HeaderCell>}
   </Table.Row>,
     body: rows.map((row, i) => (
       <Table.Row key={i}>
@@ -194,6 +249,11 @@ const PlayerWarningTable = (rows, dateFormat) => {
         </Table.Cell>
         <Table.Cell>{row.expires === 0 ? 'Permanent' : formatDistance(fromUnixTime(row.created), fromUnixTime(row.expires), { includeSeconds: true })}</Table.Cell>
         <Table.Cell>{format(fromUnixTime(row.created), dateFormat)}</Table.Cell>
+        {canDelete &&
+          <Table.Cell>
+            <Button as='a' icon='trash' color='red' title='Delete' onClick={showConfirmDelete(row.id)} />
+          </Table.Cell>
+        }
       </Table.Row>
     ))
   }
@@ -209,8 +269,10 @@ const views = {
 
 export default function PlayerPunishmentRecords ({ id }) {
   const limit = 20
+  const [deleteState, setDeleteState] = useState({ deleteConfirmShow: false, deleting: false, id: null })
   const [tableState, setTableState] = useState({ activePage: 1, limit, offset: 0, serverId: null, player: id, type: 'PlayerBanRecord' })
-  const { loading, data, errors } = useApi({ query: !tableState.serverId ? null : query.replace('?', types[tableState.type]), variables: { ...tableState } })
+  const { loading, data, errors, mutate } = useApi({ query: !tableState.serverId ? null : query.replace('?', types[tableState.type]), variables: { ...tableState } })
+  const { load: loadDelete, data: deleteData, loading: deleteLoading, errors: deleteErrors } = useMutateApi({ query: deleteMutations[tableState.type] })
 
   const handlePageChange = (e, { activePage }) => setTableState({ ...tableState, activePage, offset: (activePage - 1) * limit })
   const handleFieldChange = (field) => (id) => setTableState({ ...tableState, [field]: id || null })
@@ -219,12 +281,36 @@ export default function PlayerPunishmentRecords ({ id }) {
   const totalPages = Math.ceil(total / limit)
   const dateFormat = 'yyyy-MM-dd HH:mm:ss'
 
+  const showConfirmDelete = (id) => () => setDeleteState({ ...deleteState, id, deleteConfirmShow: true })
+  const handleConfirmDelete = async () => {
+    if (deleteState.deleting) return
+
+    loadDelete({ id: deleteState.id, serverId: tableState.serverId })
+
+    setDeleteState({ deleteConfirmShow: false, deleting: true })
+
+    if (!deleteLoading) setDeleteState({ ...deleteState, deleteConfirmShow: false, deleting: false, id: null })
+  }
+  const handleDeleteCancel = () => setDeleteState({ ...deleteState, deleteConfirmShow: false, id: null })
+
+  useEffect(() => {
+    if (!deleteData) return
+
+    const key = Object.keys(deleteData).find(key => !!deleteData[key].id);
+
+    if (key) {
+      const records = rows.filter(c => c.id !== deleteData[key].id)
+
+      mutate({ ...data, listPlayerPunishmentRecords: { records, total: total - 1 } }, false)
+    }
+  }, [deleteData])
+
   if (errors) return null
 
   const options = Object.keys(views).map(option => ({
     key: option, text: option, value: option
   }))
-  const view = views[tableState.type](rows, dateFormat)
+  const view = views[tableState.type](rows, dateFormat, showConfirmDelete)
 
   return (
     <>
@@ -252,7 +338,7 @@ export default function PlayerPunishmentRecords ({ id }) {
         </Table.Body>
         <Table.Footer>
           <Table.Row>
-            <Table.HeaderCell colSpan='6'>
+            <Table.HeaderCell colSpan='7'>
               <Pagination
                 fluid
                 totalPages={totalPages}
@@ -263,6 +349,13 @@ export default function PlayerPunishmentRecords ({ id }) {
           </Table.Row>
         </Table.Footer>
       </Table>
+      <Confirm
+        open={deleteState.deleteConfirmShow}
+        onConfirm={handleConfirmDelete}
+        onCancel={handleDeleteCancel}
+        header={`Delete ${tableState.type}?`}
+        content={deleteErrors ? <ErrorMessages errors={deleteErrors} /> : 'Are you sure?'}
+      />
     </>
   )
 }

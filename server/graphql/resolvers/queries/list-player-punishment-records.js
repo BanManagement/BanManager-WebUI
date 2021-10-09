@@ -85,14 +85,14 @@ module.exports = async function listPlayerPunishmentRecords (obj, { serverId, ac
 
       if (calculateAcl) {
         const acl = {
-          update: state.acl.hasServerPermission(serverId, 'player.bans', 'update.any') ||
-          (state.acl.hasServerPermission(serverId, 'player.bans', 'update.own') && state.acl.owns(result.actor_id)) ||
-          (state.acl.hasServerPermission(serverId, 'player.bans', 'update.any')) ||
-          (state.acl.hasServerPermission(serverId, 'player.bans', 'update.own') && state.acl.owns(result.actor_id)),
-          delete: state.acl.hasServerPermission(serverId, 'player.bans', 'delete.any') ||
-          (state.acl.hasServerPermission(serverId, 'player.bans', 'delete.own') && state.acl.owns(result.actor_id)) ||
-          (state.acl.hasServerPermission(serverId, 'player.bans', 'delete.any')) ||
-          (state.acl.hasServerPermission(serverId, 'player.bans', 'delete.own') && state.acl.owns(result.actor_id)),
+          update: state.acl.hasServerPermission(serverId, typeInfo.resource, 'update.any') ||
+          (state.acl.hasServerPermission(serverId, typeInfo.resource, 'update.own') && state.acl.owns(result.actor_id)) ||
+          (state.acl.hasServerPermission(serverId, typeInfo.resource, 'update.any')) ||
+          (state.acl.hasServerPermission(serverId, typeInfo.resource, 'update.own') && state.acl.owns(result.actor_id)),
+          delete: state.acl.hasServerPermission(serverId, typeInfo.resource, 'delete.any') ||
+          (state.acl.hasServerPermission(serverId, typeInfo.resource, 'delete.own') && state.acl.owns(result.actor_id)) ||
+          (state.acl.hasServerPermission(serverId, typeInfo.resource, 'delete.any')) ||
+          (state.acl.hasServerPermission(serverId, typeInfo.resource, 'delete.own') && state.acl.owns(result.actor_id)),
           actor: state.acl.owns(result.actor_id),
           yours: state.acl.owns(result.player_id)
         }
