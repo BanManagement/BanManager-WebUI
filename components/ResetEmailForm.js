@@ -38,7 +38,7 @@ export default function ResetEmailForm () {
   return (
     <>
       {success &&
-        <Message success header='Email successfully updated' />}
+        <Message success header='Email successfully updated' data-cy='success' />}
       <Form size='large' onSubmit={onSubmit} error loading={loading}>
         <ErrorMessages errors={errors} />
         <Form.Input
@@ -49,6 +49,7 @@ export default function ResetEmailForm () {
           icon='mail'
           iconPosition='left'
           onChange={handleChange}
+          data-cy='email'
         />
         <Form.Input
           required
@@ -58,8 +59,9 @@ export default function ResetEmailForm () {
           icon='lock'
           iconPosition='left'
           onChange={handleChange}
+          data-cy='currentPassword'
         />
-        <Form.Button fluid primary size='large' content='Save' />
+        <Form.Button fluid primary size='large' content='Save' data-cy='submit-email-change' />
       </Form>
     </>
   )

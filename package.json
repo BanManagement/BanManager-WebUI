@@ -96,7 +96,7 @@
   "scripts": {
     "build": "next build",
     "coveralls": "cat ./coverage/lcov.info | coveralls",
-    "dev": "node server.js",
+    "dev": "npx nodemon server.js | npx pino-pretty",
     "heroku-postbuild": "npm run build && node bin/run update",
     "lint": "standardx",
     "start": "node server.js",

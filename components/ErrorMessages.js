@@ -13,7 +13,7 @@ export default function ErrorMessages ({
       {error && (
         <Message error>
           <Message.Header>Error</Message.Header>
-          <Message.List>
+          <Message.List data-cy='errors'>
             <Message.Item>{error.message}</Message.Item>
           </Message.List>
         </Message>
@@ -43,7 +43,7 @@ export default function ErrorMessages ({
       {errors && (
         <Message error>
           <Message.Header>Error</Message.Header>
-          <Message.List>
+          <Message.List data-cy='errors'>
             {uniqBy(errors, 'message').map(({ message }, index) => (
               <Message.Item key={index}>{message}</Message.Item>
             ))}

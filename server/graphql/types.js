@@ -299,6 +299,7 @@ type Me {
   email: String!
   hasAccount: Boolean!
   session: PlayerSession!
+  resources: [Resources!]
 }
 
 type PlayerSession {
@@ -343,6 +344,7 @@ type Permission {
   id: ID!
   name: String!
   allowed: Boolean!
+  serversAllowed: [String!]
 }
 
 enum RecordType {
@@ -605,10 +607,12 @@ type Mutation {
   createPlayerBan(input: CreatePlayerBanInput!): PlayerBan @allowIf(resource: "player.bans", permission: "create", serverVar: "input.server")
   updatePlayerBan(id: ID!, serverId: ID!, input: UpdatePlayerBanInput!): PlayerBan @allowIf(resource: "player.bans", permission: "update.any", serverVar: "serverId")
   deletePlayerBan(id: ID!, serverId: ID!): PlayerBan @allowIfLoggedIn
+  deletePlayerBanRecord(id: ID!, serverId: ID!): PlayerBanRecord @allowIfLoggedIn
 
   createPlayerMute(input: CreatePlayerMuteInput!): PlayerMute @allowIf(resource: "player.mutes", permission: "create", serverVar: "input.server")
   updatePlayerMute(id: ID!, serverId: ID!, input: UpdatePlayerMuteInput!): PlayerMute @allowIf(resource: "player.mutes", permission: "update.any", serverVar: "serverId")
   deletePlayerMute(id: ID!, serverId: ID!): PlayerMute @allowIfLoggedIn
+  deletePlayerMuteRecord(id: ID!, serverId: ID!): PlayerMuteRecord @allowIfLoggedIn
 
   createPlayerWarning(input: CreatePlayerWarningInput!): PlayerWarning @allowIf(resource: "player.warnings", permission: "create", serverVar: "input.server")
   updatePlayerWarning(id: ID!, serverId: ID!, input: UpdatePlayerWarningInput!): PlayerWarning @allowIf(resource: "player.warnings", permission: "update.any", serverVar: "serverId")
