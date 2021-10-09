@@ -4,7 +4,7 @@ import DefaultLayout from '../../../components/DefaultLayout'
 import PageContainer from '../../../components/PageContainer'
 import PlayerBanForm from '../../../components/PlayerBanForm'
 import ErrorLayout from '../../../components/ErrorLayout'
-import { useApi } from '../../../utils'
+import { useApi, useUser } from '../../../utils'
 
 export default function Page () {
   const router = useRouter()
@@ -16,16 +16,15 @@ export default function Page () {
     player(player: $id) {
       id
       name
-      servers {
-        server {
-          id
-          name
-        }
-      }
+    }
+    servers {
+      id
+      name
     }
   }`,
     variables: { id }
   })
+  const { hasServerPermission } = useUser({ redirectIfFound: false, redirectTo: '/' })
 
   if (loading) return <Loader active />
   if (errors || !data) return <ErrorLayout errors={errors} />
@@ -41,7 +40,7 @@ export default function Page () {
       <PageContainer>
         <PlayerBanForm
           player={data.player}
-          servers={data.player.servers}
+          servers={data.servers.filter(server => hasServerPermission('player.bans', 'create', server.id))}
           query={query}
           parseVariables={(input) => ({
             input: {

@@ -10,7 +10,7 @@ export default function PlayerWarnForm ({ player, servers, onFinished, query, pa
     reason: defaults.reason || '',
     expires: defaults.expires * 1000 || 0,
     server: defaults?.server?.id,
-    points: defaults.points
+    points: defaults.points || 1
   })
 
   const { load, loading, data, errors } = useMutateApi({ query })
@@ -20,7 +20,7 @@ export default function PlayerWarnForm ({ player, servers, onFinished, query, pa
     if (Object.keys(data).some(key => !!data[key].id)) onFinished()
   }, [data])
 
-  const serversDropdown = servers.map(({ server }) => ({ key: server.id, value: server.id, text: server.name }))
+  const serversDropdown = servers.map(server => ({ key: server.id, value: server.id, text: server.name }))
 
   const onSubmit = (e) => {
     e.preventDefault()

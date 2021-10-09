@@ -150,7 +150,7 @@ export const useUser = ({
 
     if (any && foundPermission.serversAllowed.length) return true
 
-    return foundPermission.serversAllowed && foundPermission.serversAllowed.include(serverId) || false
+    return foundPermission.serversAllowed && foundPermission.serversAllowed.includes(serverId) || false
   }
 
   useEffect(() => {

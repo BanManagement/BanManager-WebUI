@@ -2,11 +2,17 @@ import { useState } from 'react'
 import { Button, Card, Confirm, Label } from 'semantic-ui-react'
 import { format, fromUnixTime } from 'date-fns'
 import { fromNow, useMutateApi } from '../utils'
+import ErrorMessages from './ErrorMessages'
 
 const metaMap = {
   ban: {
     editPath: 'ban',
-    recordType: 'PlayerBan'
+    recordType: 'PlayerBan',
+    deleteMutation: `mutation deletePlayerBan($id: ID!, $serverId: ID!) {
+      deletePlayerBan(id: $id, serverId: $serverId) {
+        id
+      }
+    }`
   },
   kick: {
     editPath: 'kick',
@@ -26,16 +32,12 @@ const metaMap = {
   }
 }
 const buttonWords = { 1: 'one', 2: 'two', 3: 'three' }
-const query = `
-  mutation deletePunishmentRecord($id: ID!, $serverId: ID!, $type: RecordType!, $keepHistory: Boolean!) {
-    deletePunishmentRecord(id: $id, serverId: $serverId, type: $type, keepHistory: $keepHistory)
-  }`
 
 export default function PlayerPunishment ({ punishment, server, type }) {
   const meta = metaMap[type]
   const [state, setState] = useState({ deleteConfirmShow: false, deleting: false })
 
-  const { load, loading } = useMutateApi({ query })
+  const { load, loading, errors } = useMutateApi({ query: meta.deleteMutation })
 
   const showConfirmDelete = () => setState({ deleteConfirmShow: true })
   const handleConfirmDelete = async () => {
@@ -43,7 +45,7 @@ export default function PlayerPunishment ({ punishment, server, type }) {
 
     setState({ deleteConfirmShow: false, deleting: true })
 
-    load({ id: punishment.id, serverId: server.id, type: meta.recordType, keepHistory: true })
+    load({ id: punishment.id, serverId: server.id })
 
     if (!loading) setState({ deleting: false })
   }
@@ -97,6 +99,8 @@ export default function PlayerPunishment ({ punishment, server, type }) {
               open={state.deleteConfirmShow}
               onConfirm={handleConfirmDelete}
               onCancel={handleDeleteCancel}
+              header={`Delete ${type}?`}
+              content={errors ? <ErrorMessages errors={errors} /> : 'Are you sure?'}
             />
           </div>
         </Card.Content>}

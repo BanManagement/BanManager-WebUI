@@ -16,7 +16,7 @@ export default function PlayerNoteForm ({ player, servers, onFinished, query, pa
     if (Object.keys(data).some(key => !!data[key].id)) onFinished()
   }, [data])
 
-  const serversDropdown = servers.map(({ server }) => ({ key: server.id, value: server.id, text: server.name }))
+  const serversDropdown = servers.map(server => ({ key: server.id, value: server.id, text: server.name }))
 
   const onSubmit = (e) => {
     e.preventDefault()
