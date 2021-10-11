@@ -32,8 +32,8 @@ describe('Login', () => {
   it('logs in via email', () => {
     cy.get('form').then($element => $element[0].reset())
 
-    cy.get('[data-cy=email]').type('admin@banmanagement.com')
-    cy.get('[data-cy=password]').type('P%@#fjdVJ3Y%pdGR')
+    cy.get('[data-cy=email]').type(Cypress.env('admin_username'))
+    cy.get('[data-cy=password]').type(Cypress.env('admin_password'))
 
     cy.get('[data-cy=submit-login-password]').click()
 

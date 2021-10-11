@@ -25,7 +25,7 @@ describe('Account/Email', () => {
     cy.login(Cypress.env('admin_username'), Cypress.env('admin_password'))
     cy.get('form').then($element => $element[0].reset())
 
-    cy.get('[data-cy=email]').type('admin@banmanagement.com')
+    cy.get('[data-cy=email]').type(Cypress.env('admin_username'))
     cy.get('[data-cy=currentPassword]').type(Cypress.env('admin_password'))
 
     cy.get('[data-cy=submit-email-change]').click()
@@ -46,7 +46,7 @@ describe('Account/Email', () => {
 
     // Reset it
     cy.get('form').then($element => $element[0].reset())
-    cy.get('[data-cy=email]').type('admin@banmanagement.com')
+    cy.get('[data-cy=email]').type(Cypress.env('admin_username'))
     cy.get('[data-cy=currentPassword]').type(Cypress.env('admin_password'))
 
     cy.get('[data-cy=submit-email-change]').click()
