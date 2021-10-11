@@ -21,6 +21,9 @@ jobs:
       DB_PORT: 3306
       DB_USER: root
       DB_PASSWORD: root
+      ENCRYPTION_KEY: b097b390a68441cc3bb151dd0171f25c3aabc688c50eeb26dc5e13254b333911
+      SESSION_KEY: a73545a5f08d2906e39a4438014200303f9269f3ade9227525ffb141294f1b62
+      DB_CONNECTION_LIMIT: 5
 
     steps:
       - uses: actions/checkout@v2
@@ -44,15 +47,22 @@ jobs:
           sleep 5 && mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '';" -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
       - run: npm test
         env:
-          DB_HOST: localhost
-          DB_PORT: 3306
-          DB_USER: root
           DB_PASSWORD:
           LOG_LEVEL: debug
           PORT: 3001
-          ENCRYPTION_KEY: b097b390a68441cc3bb151dd0171f25c3aabc688c50eeb26dc5e13254b333911
-          SESSION_KEY: a73545a5f08d2906e39a4438014200303f9269f3ade9227525ffb141294f1b62
-          DB_CONNECTION_LIMIT: 5
+
+      - name: Cypress run
+        uses: cypress-io/github-action@v2
+        env:
+          DB_PASSWORD:
+          DB_NAME: bm_e2e_tests
+          LOG_LEVEL: debug
+          PORT: 3001
+        with:
+          build: npm run e2e:build
+          start: npm start
+          wait-on: 'http://localhost:3001'
+
       - name: Coveralls Parallel
         uses: coverallsapp/github-action@master
         with:
