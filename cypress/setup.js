@@ -6,7 +6,7 @@ const { setupPool } = require('../server/connections')
 const { createServer, createPlayer } = require('../server/test/fixtures')
 const { hash } = require('../server/data/hash')
 
-(async () => { // eslint-disable-line max-statements
+;(async () => { // eslint-disable-line max-statements
   const dbName = 'bm_e2e_tests'
   const dbConfig =
     {
