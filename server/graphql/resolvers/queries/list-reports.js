@@ -12,19 +12,15 @@ module.exports = async function listPlayerReports (obj, { serverId, actor, assig
   if (!state.serversPool.has(serverId)) throw new ExposedError('Server does not exist')
   if (limit > 50) throw new ExposedError('Limit too large')
 
+  const data = { server: await getServer(obj, { id: serverId }, { state }, info) }
   const aclFilter = []
-  const handleAclFilter = query => {
-    for (const [field, value] of aclFilter) {
-      query.orWhere(field, value)
-    }
-  }
 
   if (!state.acl.hasServerPermission(serverId, 'player.reports', 'view.any')) {
-    if (!session || !session.playerId) return { total: 0, records: [] }
+    if (!session || !session.playerId) return { ...data, total: 0, records: [] }
 
     const deny = viewPerms.every(([perm]) => state.acl.hasServerPermission(serverId, 'player.reports', perm) === false)
 
-    if (deny) return { total: 0, records: [] }
+    if (deny) return { ...data, total: 0, records: [] }
 
     viewPerms.forEach(([perm, field]) => {
       const allowed = state.acl.hasServerPermission(serverId, 'player.reports', perm)
@@ -33,11 +29,15 @@ module.exports = async function listPlayerReports (obj, { serverId, actor, assig
     })
   }
 
+  const handleAclFilter = query => {
+    for (const [field, value] of aclFilter) {
+      query.orWhere(field, value)
+    }
+  }
   const server = state.serversPool.get(serverId)
   const tables = server.config.tables
   const parsedResolveInfoFragment = parseResolveInfo(info)
   const { fields } = simplifyParsedResolveInfoFragmentWithType(parsedResolveInfoFragment, info.returnType)
-  const data = { server: await getServer(obj, { id: serverId }, { state }, info) }
   const filter = {}
 
   if (actor) filter.actor_id = actor
