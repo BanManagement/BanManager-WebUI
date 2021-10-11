@@ -65,7 +65,7 @@ const { hash } = require('../server/data/hash')
   await dbPool('bm_web_users').insert([
     { player_id: guestUser.id, email: 'guest@banmanagement.com', password: await hash('testing'), updated },
     { player_id: loggedInUser.id, email: 'user@banmanagement.com', password: await hash('testing'), updated },
-    { player_id: adminUser.id, email: 'admin@banmanagement.com', password: await hash('testing'), updated }
+    { player_id: adminUser.id, email: process.env.ADMIN_USERNAME || 'admin@banmanagement.com', password: await hash(process.env.ADMIN_PASSWORD || 'testing'), updated }
   ])
 
   // Create a server
