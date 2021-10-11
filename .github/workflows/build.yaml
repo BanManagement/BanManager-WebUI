@@ -58,6 +58,7 @@ jobs:
           DB_NAME: bm_e2e_tests
           LOG_LEVEL: debug
           PORT: 3000
+          NODE_ENV: production
         with:
           install: false
           build: npm run e2e:build
