@@ -2,6 +2,7 @@ require('dotenv').config()
 
 const path = require('path')
 const DBMigrate = require('db-migrate')
+const { parse } = require('uuid-parse')
 const { setupPool } = require('../server/connections')
 const { createServer, createPlayer } = require('../server/test/fixtures')
 const { hash } = require('../server/data/hash')
@@ -49,7 +50,7 @@ const { hash } = require('../server/data/hash')
   // Create three users, guest, logged in and admin
   const guestUser = createPlayer()
   const loggedInUser = createPlayer()
-  const adminUser = createPlayer({ name: 'confuser' })
+  const adminUser = createPlayer({ id: parse('ae51c849-3f2a-4a37-986d-55ed5b02307f', Buffer.alloc(16)), name: 'confuser' })
 
   await dbPool('bm_players').insert([playerConsole, guestUser, loggedInUser, adminUser])
 
