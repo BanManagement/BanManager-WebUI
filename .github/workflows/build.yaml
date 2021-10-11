@@ -57,12 +57,12 @@ jobs:
           DB_PASSWORD:
           DB_NAME: bm_e2e_tests
           LOG_LEVEL: debug
-          PORT: 3001
+          PORT: 3000
         with:
           install: false
           build: npm run e2e:build
           start: npm start
-          wait-on: 'http://localhost:3001'
+          wait-on: 'http://localhost:3000'
 
       - name: Coveralls Parallel
         uses: coverallsapp/github-action@master
