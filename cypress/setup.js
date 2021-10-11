@@ -2,9 +2,9 @@ require('dotenv').config()
 
 const path = require('path')
 const DBMigrate = require('db-migrate')
-const { setupPool } = require('../../connections')
-const { createServer, createPlayer } = require('../fixtures')
-const { hash } = require('../../data/hash')
+const { setupPool } = require('../server/connections')
+const { createServer, createPlayer } = require('../server/test/fixtures')
+const { hash } = require('../server/data/hash')
 
 module.exports = async () => { // eslint-disable-line max-statements
   const dbName = 'bm_e2e_tests'
