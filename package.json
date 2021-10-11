@@ -63,7 +63,7 @@
     "semantic-ui-css": "2.4.1",
     "semantic-ui-react": "0.88.2",
     "semver": "7.3.5",
-    "swr": "0.5.7",
+    "swr": "1.0.1",
     "url-loader": "4.1.1",
     "uuid-parse": "1.1.0",
     "validator": "13.6.0",
