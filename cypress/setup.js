@@ -49,7 +49,7 @@ const { hash } = require('../server/data/hash')
   // Create three users, guest, logged in and admin
   const guestUser = createPlayer()
   const loggedInUser = createPlayer()
-  const adminUser = createPlayer()
+  const adminUser = createPlayer({ name: 'confuser' })
 
   await dbPool('bm_players').insert([playerConsole, guestUser, loggedInUser, adminUser])
 
