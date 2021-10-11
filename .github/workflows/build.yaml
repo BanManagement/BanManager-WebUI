@@ -48,7 +48,7 @@ jobs:
       - run: npm test
         env:
           DB_PASSWORD:
-          LOG_LEVEL: debug
+          LOG_LEVEL: warn
           PORT: 3001
 
       - name: Cypress run
@@ -56,7 +56,7 @@ jobs:
         env:
           DB_PASSWORD:
           DB_NAME: bm_e2e_tests
-          LOG_LEVEL: debug
+          LOG_LEVEL: warn
           PORT: 3000
           NODE_ENV: production
         with:
