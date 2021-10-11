@@ -59,6 +59,7 @@ jobs:
           LOG_LEVEL: debug
           PORT: 3001
         with:
+          install: false
           build: npm run e2e:build
           start: npm start
           wait-on: 'http://localhost:3001'
