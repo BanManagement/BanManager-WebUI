@@ -59,11 +59,15 @@ jobs:
           LOG_LEVEL: warn
           PORT: 3000
           NODE_ENV: production
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CYPRESS_PROJECT_ID: ${{ secrets.PROJECT_ID }}
         with:
           install: false
           build: npm run e2e:build
           start: npm start
           wait-on: 'http://localhost:3000'
+          record: true
 
       - name: Coveralls Parallel
         uses: coverallsapp/github-action@master
