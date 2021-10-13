@@ -74,7 +74,7 @@
     "@oclif/test": "1.2.8",
     "babel-eslint": "10.1.0",
     "coveralls": "3.1.0",
-    "cypress": "8.5.0",
+    "cypress": "8.6.0",
     "eslint-plugin-cypress": "2.12.1",
     "eslint-plugin-react": "7.26.1",
     "faker": "5.5.3",
