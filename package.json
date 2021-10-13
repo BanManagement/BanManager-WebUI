@@ -33,7 +33,7 @@
     "graphql-constraint-directive": "1.4.1",
     "graphql-depth-limit": "1.1.0",
     "graphql-parse-resolve-info": "4.12.0",
-    "graphql-request": "3.5.0",
+    "graphql-request": "3.6.0",
     "graphql-tools": "4.0.8",
     "graphql-type-json": "0.3.2",
     "hibp": "11.0.0",
