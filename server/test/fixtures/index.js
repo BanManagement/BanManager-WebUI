@@ -8,5 +8,6 @@ module.exports = {
   createMuteRecord: require('./mute-record'),
   createNote: require('./note'),
   createReport: require('./report'),
-  createWarning: require('./warning')
+  createWarning: require('./warning'),
+  createAppeal: require('./appeal')
 }

@@ -1,0 +1,25 @@
+const ExposedError = require('../../../data/exposed-error')
+const appealComment = require('../queries/appeal-comment')
+
+module.exports = async function createAppealComment (obj, { id: appealId, input }, { session, state }, info) {
+  const [data] = await state.dbPool('bm_web_appeals')
+    .where({ id: appealId })
+
+  if (!data) throw new ExposedError(`Appeal ${appealId} does not exist`)
+
+  const hasPermission = state.acl.hasServerPermission(data.server_id, 'player.appeals', 'comment.any') ||
+    (state.acl.hasServerPermission(data.server_id, 'player.appeals', 'comment.own') && state.acl.owns(data.actor_id)) ||
+    (state.acl.hasServerPermission(data.server_id, 'player.appeals', 'comment.assigned') && state.acl.owns(data.assignee_id))
+
+  if (!hasPermission) throw new ExposedError('You do not have permission to perform this action, please contact your server administrator')
+
+  const [id] = await state.dbPool('bm_web_appeal_comments').insert({
+    appeal_id: appealId,
+    actor_id: session.playerId,
+    comment: input.comment,
+    created: state.dbPool.raw('UNIX_TIMESTAMP()'),
+    updated: state.dbPool.raw('UNIX_TIMESTAMP()')
+  }, ['id'])
+
+  return appealComment(obj, { id }, { state }, info)
+}

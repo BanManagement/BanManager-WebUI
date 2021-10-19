@@ -180,6 +180,17 @@ type PlayerReportCommentList {
   records: [PlayerReportComment!]!
 }
 
+type PlayerAppealList {
+  total: Int! @cacheControl(scope: PUBLIC, maxAge: 300)
+  records: [PlayerAppeal!]! @cacheControl(scope: PUBLIC, maxAge: 300)
+  server: Server!
+}
+
+type PlayerAppealCommentList {
+  total: Int!
+  records: [PlayerAppealComment!]!
+}
+
 type PlayerBanList {
   total: Int! @cacheControl(scope: PUBLIC, maxAge: 300)
   records: [PlayerBan!]! @cacheControl(scope: PUBLIC, maxAge: 300)
@@ -266,6 +277,41 @@ type PlayerReportState @sqlTable(name: "playerReportStates") {
   name: String!
 }
 
+type PlayerAppeal @sqlTable(name: "appeals") {
+  id: ID!
+  server: Server! @sqlRelation(joinOn: "id", field: "server_id", table: "servers")
+  actor: Player! @cacheControl(scope: PUBLIC, maxAge: 3600) @sqlRelation(joinOn: "id", field: "actor_id", table: "players", joinType: "leftJoin")
+  assignee: Player @sqlRelation(joinOn: "id", field: "assignee_id", table: "players", joinType: "leftJoin")
+  punishment: PlayerPunishment!
+  type: RecordType!
+  reason: String!
+  created: Timestamp!
+  updated: Timestamp!
+  state: PlayerAppealState! @sqlRelation(joinOn: "id", field: "state_id", table: "appealStates")
+  acl: PlayerAppealACL!
+}
+
+type PlayerAppealACL {
+  state: Boolean!
+  comment: Boolean!
+  assign: Boolean!
+  delete: Boolean!
+}
+
+type PlayerAppealState @sqlTable(name: "appealStates") {
+  id: ID!
+  name: String!
+}
+
+type PlayerAppealComment @sqlTable(name: "appealComments") {
+  id: ID!
+  comment: String!
+  actor: Player! @cacheControl(scope: PUBLIC, maxAge: 3600) @sqlRelation(joinOn: "id", field: "actor_id", table: "players")
+  created: Timestamp!
+  updated: Timestamp!
+  acl: EntityACL!
+}
+
 type EntityTypeACL {
   create: Boolean!
   update: Boolean!
@@ -285,6 +331,7 @@ type PlayerWarning @sqlTable(name: "playerWarnings") {
   acl: EntityACL!
 }
 
+union PlayerPunishment = PlayerBan | PlayerBanRecord | PlayerKick | PlayerMute | PlayerMuteRecord | PlayerWarning
 union PlayerPunishmentRecord = PlayerBanRecord | PlayerKick | PlayerMuteRecord | PlayerNote | PlayerWarning
 
 type PlayerPunishmentRecords {
@@ -456,6 +503,12 @@ type Query {
 
   listPlayerSessionHistory(serverId: ID!, player: UUID, limit: Int = 10, offset: Int = 0, order: OrderBySessionHistoryInput): PlayerSessionHistoryList! @cacheControl(scope: PRIVATE, maxAge: 300) @allowIf(resource: "player.history", permission: "view")
 
+  appealStates: [PlayerAppealState!]
+  appeal(id: ID!): PlayerAppeal
+  listPlayerAppeals(serverId: ID!, actor: UUID, assigned: UUID, player: UUID, state: ID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerAppealList! @cacheControl(scope: PRIVATE, maxAge: 300)
+
+  listPlayerAppealComments(id: ID!, actor: UUID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerAppealCommentList! @allowIf(resource: "player.appeals", permission: "view.comments")
+  appealComment(id: ID!): PlayerAppealComment! @allowIf(resource: "player.appeals", permission: "view.comments")
 }
 
 input CreatePlayerNoteInput {
@@ -553,6 +606,17 @@ input PermissionInput {
   allowed: Boolean!
 }
 
+input CreateAppealInput {
+  serverId: ID!
+  punishmentId: ID!
+  type: RecordType!
+  reason: String! @constraint(minLength: 2, maxLength: 65535)
+}
+
+input AppealCommentInput {
+  comment: String! @constraint(minLength: 2, maxLength: 255)
+}
+
 input ReportCommentInput {
   comment: String! @constraint(minLength: 2, maxLength: 255)
 }
@@ -635,6 +699,12 @@ type Mutation {
   reportState(report: ID!, serverId: ID!, state: ID!): PlayerReport! @allowIfLoggedIn
   deleteReportComment(id: ID!, serverId: ID!): PlayerReportComment! @allowIfLoggedIn
   createReportComment(report: ID!, serverId: ID!, input: ReportCommentInput!): PlayerReportComment! @allowIfLoggedIn
+
+  createAppeal(input: CreateAppealInput!): PlayerAppeal! @allowIfLoggedIn
+  assignAppeal(id: ID!, player: UUID!): PlayerAppeal! @allowIfLoggedIn
+  appealState(id: ID!, state: ID!): PlayerAppeal! @allowIfLoggedIn
+  deleteAppealComment(id: ID!): PlayerAppealComment! @allowIfLoggedIn
+  createAppealComment(id: ID!, input: AppealCommentInput!): PlayerAppealComment! @allowIfLoggedIn
 
   setPassword(currentPassword: String, newPassword: String!): Me! @allowIfLoggedIn
   setEmail(currentPassword: String!, email: String!): Me! @allowIfLoggedIn

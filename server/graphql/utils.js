@@ -34,11 +34,13 @@ function getCol (field) {
   }
 }
 
-function getSql (schema, server, fields, tableKey, nested) {
+function getSql (schema, server, fields, tableKey, returnType, nested) {
   const tables = server.config.tables
   const queries = { core: server.pool(tables[tableKey]).options({ nestTables: true }), additional: [] }
 
   for (const [nodeType, nodeField] of Object.entries(fields.fieldsByTypeName)) {
+    if (returnType && nodeType !== returnType) continue
+
     const fieldInfo = schema.getType(nodeType)
 
     if (!fieldInfo.sqlMeta) continue
@@ -79,7 +81,7 @@ function getSql (schema, server, fields, tableKey, nested) {
 
           if (!listField.sqlMeta) continue
 
-          const query = getSql(schema, server, field, listField.sqlMeta.tableKey, true)
+          const query = getSql(schema, server, field, listField.sqlMeta.tableKey, returnType, true)
 
           if (join.whereKey) {
             queries.core.select(`${tableName}.${join.field}`)

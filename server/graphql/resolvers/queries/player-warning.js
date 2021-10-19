@@ -7,7 +7,7 @@ module.exports = async function playerWarning (obj, { id, serverId }, { state },
 
   const server = state.serversPool.get(serverId)
   const fields = parseResolveInfo(info)
-  const query = getSql(info.schema, server, fields, 'playerWarnings')
+  const query = getSql(info.schema, server, fields, 'playerWarnings', 'PlayerWarning')
     .where(`${server.config.tables.playerWarnings}.id`, id)
 
   let calculateAcl = false
