@@ -118,7 +118,7 @@ describe('Query role', () => {
     assert.strictEqual(body.data.role.name, 'Guest')
     assert.strictEqual(body.data.role.parent, null)
 
-    assert.strictEqual(body.data.role.resources.length, 11)
+    assert.strictEqual(body.data.role.resources.length, 12)
 
     const [serverResource] = body.data.role.resources.filter((resource) => resource.name === 'servers')
 

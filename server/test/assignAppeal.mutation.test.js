@@ -134,7 +134,7 @@ describe('Mutation assignAppeal', () => {
     const [id] = await pool('bm_player_bans').insert(punishment, ['id'])
     const data = createAppeal(id, 'PlayerBan', server, actor, account)
     const [inserted] = await pool('bm_web_appeals').insert(data, ['id'])
-    const role = await setTempRole(setup.dbPool, account, 'player.appeals', 'update.assign.assigned')
+    const role = await setTempRole(setup.dbPool, account, 'player.appeals', 'update.assign.assigned', 'view.any')
 
     const { body, statusCode } = await request
       .post('/graphql')
@@ -151,8 +151,6 @@ describe('Mutation assignAppeal', () => {
     await role.reset()
 
     assert.strictEqual(statusCode, 200)
-
-    console.log(body)
 
     assert(body)
     assert(body.data)
