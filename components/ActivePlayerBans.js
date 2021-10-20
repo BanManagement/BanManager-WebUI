@@ -17,6 +17,7 @@ query playerBans($id: UUID!) {
     acl {
       update
       delete
+      yours
     }
     server {
       id

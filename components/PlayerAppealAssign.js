@@ -1,13 +1,13 @@
 import { useEffect } from 'react'
 import { Loader } from 'semantic-ui-react'
-import PlayerSelector from '../components/admin/PlayerSelector'
+import PlayerSelector from './admin/PlayerSelector'
 import { useMutateApi } from '../utils'
 
-export default function PlayerReportAssign ({ id, player, server, onChange }) {
+export default function PlayerAppealAssign ({ id, player, onChange }) {
   const { data, loading, load } = useMutateApi({
     query: /* GraphQL */ `
-      mutation assignReport($report: ID!, $serverId: ID!, $player: UUID!) {
-        assignReport(report: $report, serverId: $serverId, player: $player) {
+      mutation assignAppeal($id: ID!,$player: UUID!) {
+        assignAppeal(id: $id, player: $player) {
           updated
           state {
             id
@@ -30,7 +30,7 @@ export default function PlayerReportAssign ({ id, player, server, onChange }) {
 
   const handleChange = (newPlayer) => {
     if (newPlayer && player?.id !== newPlayer) {
-      load({ serverId: server, report: id, player: newPlayer || null })
+      load({ id, player: newPlayer || null })
     }
   }
 

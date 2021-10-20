@@ -17,6 +17,7 @@ query playerMutes($id: UUID!) {
     acl {
       update
       delete
+      yours
     }
     server {
       id

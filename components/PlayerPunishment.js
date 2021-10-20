@@ -96,7 +96,7 @@ export default function PlayerPunishment ({ punishment, server, type, onDeleted 
               <Button
                 basic
                 color='blue'
-                href={`/appeal/${server.id}/${punishment.id}/${meta.editPath.replace('edit-', '')}`}
+                href={`/player/appeal/${server.id}-${punishment.id}/${meta.editPath.replace('edit-', '')}`}
               >
                 Appeal
               </Button>}

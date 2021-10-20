@@ -1,7 +1,7 @@
 module.exports = function navigation (obj, info, { state }) {
   const left =
   [{ id: 1, name: 'Home', href: '/' },
-    { id: 2, name: 'Appeal' },
+    { id: 2, name: 'Appeals', href: '/appeals' },
     { id: 3, name: 'Reports', href: '/reports' },
     { id: 4, name: 'Statistics', href: '/statistics' }
   ]

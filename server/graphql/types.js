@@ -505,7 +505,7 @@ type Query {
 
   appealStates: [PlayerAppealState!]
   appeal(id: ID!): PlayerAppeal
-  listPlayerAppeals(serverId: ID!, actor: UUID, assigned: UUID, player: UUID, state: ID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerAppealList! @cacheControl(scope: PRIVATE, maxAge: 300)
+  listPlayerAppeals(serverId: ID, actor: UUID, assigned: UUID, player: UUID, state: ID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerAppealList! @cacheControl(scope: PRIVATE, maxAge: 300)
 
   listPlayerAppealComments(id: ID!, actor: UUID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerAppealCommentList! @allowIf(resource: "player.appeals", permission: "view.comments")
   appealComment(id: ID!): PlayerAppealComment! @allowIf(resource: "player.appeals", permission: "view.comments")

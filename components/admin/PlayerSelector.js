@@ -12,7 +12,7 @@ export default function PlayerSelector ({ clearable = false, handleChange, multi
     }
   }`
 
-  const { loading, data } = useApi({ query, variables: { limit, name } })
+  const { loading, data } = useApi({ query: !name ? null : query, variables: { limit, name } })
 
   useEffect(() => {
     handleChange(selected)

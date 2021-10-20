@@ -51,22 +51,20 @@ module.exports = async function listPlayerAppealComments (obj, { id, actor, limi
     const results = await query
 
     data.records = results.map(result => {
-      return {
+      const record = {
         ...result,
         actor: state.loaders.player.load({ id: result.actor_id, fields: ['name'] })
       }
-    })
 
-    if (fields.records.fieldsByTypeName.PlayerAppealComment.acl) {
-      for (const result of results) {
-        const acl = {
+      if (fields.records.fieldsByTypeName.PlayerAppealComment.acl) {
+        record.acl = {
           delete: state.acl.hasServerPermission(appeal.server_id, 'player.appeals', 'comment.delete.any') ||
-            (state.acl.hasServerPermission(appeal.server_id, 'player.appeals', 'comment.delete.own') && state.acl.owns(data.actor_id))
+            (state.acl.hasServerPermission(appeal.server_id, 'player.appeals', 'comment.delete.own') && state.acl.owns(result.actor_id))
         }
-
-        result.acl = acl
       }
-    }
+
+      return record
+    })
   }
 
   return data
