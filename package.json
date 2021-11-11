@@ -76,7 +76,7 @@
     "coveralls": "3.1.0",
     "cypress": "8.7.0",
     "eslint-plugin-cypress": "2.12.1",
-    "eslint-plugin-react": "7.26.1",
+    "eslint-plugin-react": "7.27.0",
     "faker": "5.5.3",
     "jest": "27.3.1",
     "json-to-graphql-query": "2.1.0",
