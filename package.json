@@ -21,7 +21,7 @@
     "apollo-server-plugin-response-cache": "0.9.0",
     "argon2": "0.28.3",
     "dataloader": "2.0.0",
-    "date-fns": "2.26.0",
+    "date-fns": "2.27.0",
     "db-migrate": "0.11.13",
     "db-migrate-mysql": "2.2.0",
     "dotenv": "10.0.0",
