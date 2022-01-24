@@ -30,7 +30,7 @@
     "file-loader": "6.2.0",
     "git-revision-webpack-plugin": "5.0.0",
     "graphql": "14.7.0",
-    "graphql-constraint-directive": "1.4.1",
+    "graphql-constraint-directive": "2.3.0",
     "graphql-depth-limit": "1.1.0",
     "graphql-parse-resolve-info": "4.12.0",
     "graphql-request": "3.6.1",
