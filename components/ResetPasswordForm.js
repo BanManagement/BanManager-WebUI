@@ -1,18 +1,19 @@
 import { useEffect, useState } from 'react'
-import { Form, Message } from 'semantic-ui-react'
+import { useForm } from 'react-hook-form'
+import { MdLock } from 'react-icons/md'
 import ErrorMessages from './ErrorMessages'
+import Message from './Message'
+import Input from './Input'
+import Button from './Button'
 import { useMutateApi } from '../utils'
 
 export default function ResetPasswordForm () {
   const [error, setError] = useState(null)
   const [success, setSuccess] = useState(false)
-  const [inputState, setInputState] = useState({
-    newPassword: '',
-    confirmPassword: '',
-    currentPassword: ''
-  })
+  const { handleSubmit, formState, register, reset } = useForm()
+  const { isSubmitting } = formState
 
-  const { load, data, errors, loading } = useMutateApi({
+  const { load, data, errors } = useMutateApi({
     query: `mutation setPassword($currentPassword: String!, $newPassword: String!) {
     setPassword(currentPassword: $currentPassword, newPassword: $newPassword) {
       id
@@ -25,57 +26,62 @@ export default function ResetPasswordForm () {
   }, [errors])
   useEffect(() => {
     if (!data) return
-    if (Object.keys(data).some(key => !!data[key].id)) setSuccess(true)
+    if (Object.keys(data).some(key => !!data[key].id)) {
+      reset()
+      setSuccess(true)
+    }
   }, [data])
 
-  const onSubmit = (e) => {
-    e.preventDefault()
-    if (error) return
-
-    load(inputState)
-  }
-  const handleChange = async (e, { name, value }) => {
-    setInputState({ ...inputState, [name]: value })
+  const onSubmit = async (data) => {
+    if (data.confirmPassword !== data.newPassword) {
+      setError(new Error('Passwords do not match'))
+    } else {
+      setError(null)
+      return load(data)
+    }
   }
 
   return (
     <>
       {success &&
-        <Message success header='Password successfully updated' data-cy='success' />}
-      <Form size='large' onSubmit={onSubmit} error loading={loading}>
-        <ErrorMessages error={error} errors={errors} />
-        <Form.Input
-          required
-          name='currentPassword'
-          placeholder='Current Password'
-          type='password'
-          icon='lock'
-          iconPosition='left'
-          onChange={handleChange}
-          data-cy='currentPassword'
-        />
-        <Form.Input
-          required
-          name='newPassword'
-          placeholder='New Password'
-          type='password'
-          icon='lock'
-          iconPosition='left'
-          onChange={handleChange}
-          data-cy='newPassword'
-        />
-        <Form.Input
-          required
-          name='confirmPassword'
-          placeholder='Confirm New Password'
-          type='password'
-          icon='lock'
-          iconPosition='left'
-          onChange={(e, { value }) => value !== inputState.newPassword ? setError(new Error('Passwords do not match')) : setError(null)}
-          data-cy='confirmPassword'
-        />
-        <Form.Button fluid primary size='large' content='Save' data-cy='submit-password-change' />
-      </Form>
+        <Message success data-cy='success'>
+          <Message.Header>Password updated</Message.Header>
+        </Message>}
+      <form onSubmit={handleSubmit(onSubmit)} className='mx-auto'>
+        <div className='flex flex-col relative w-full max-w-md px-4 sm:px-6 md:px-8 lg:px-10'>
+          <ErrorMessages errors={errors} error={error} />
+          <Input
+            required
+            placeholder='Current password'
+            type='password'
+            icon={<MdLock />}
+            iconPosition='left'
+            data-cy='currentPassword'
+            {...register('currentPassword')}
+          />
+          <Input
+            required
+            placeholder='New password'
+            type='password'
+            icon={<MdLock />}
+            iconPosition='left'
+            data-cy='newPassword'
+            {...register('newPassword')}
+          />
+          <Input
+            required
+            placeholder='Confirm new password'
+            type='password'
+            icon={<MdLock />}
+            iconPosition='left'
+            data-cy='confirmPassword'
+            {...register('confirmPassword')}
+          />
+          <Button data-cy='submit-password-change' disabled={isSubmitting} loading={isSubmitting}>
+            Save
+          </Button>
+        </div>
+      </form>
     </>
   )
 }

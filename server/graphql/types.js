@@ -167,6 +167,7 @@ type PlayerNote @sqlTable(name: "playerNotes") {
   message: String!
   created: Timestamp!
   acl: EntityACL!
+  server: Server!
 }
 
 type PlayerReportList {
@@ -329,6 +330,7 @@ type PlayerWarning @sqlTable(name: "playerWarnings") {
   read: Boolean!
   points: Float!
   acl: EntityACL!
+  server: Server!
 }
 
 union PlayerPunishment = PlayerBan | PlayerBanRecord | PlayerKick | PlayerMute | PlayerMuteRecord | PlayerWarning
@@ -341,11 +343,11 @@ type PlayerPunishmentRecords {
 }
 
 type Me {
-  id: UUID!
-  name: String!
-  email: String!
-  hasAccount: Boolean!
-  session: PlayerSession!
+  id: UUID
+  name: String
+  email: String
+  hasAccount: Boolean
+  session: PlayerSession
   resources: [Resources!]
 }
 
@@ -422,8 +424,7 @@ type DeviceComponent {
   x: Int!
   y: Int!
   w: Int!
-  colour: String
-  textAlign: String
+  h: Int!
   meta: JSONObject
 }
 
@@ -432,8 +433,7 @@ type ReusableDeviceComponent {
   x: Int
   y: Int
   w: Int
-  colour: String
-  textAlign: String
+  h: Int
   meta: JSONObject
 }
 
@@ -452,6 +452,22 @@ type PageDevices {
 type PageLayout @cacheControl(scope: PUBLIC, maxAge: 300) {
   pathname: ID! @cacheControl(scope: PUBLIC, maxAge: 300)
   devices: PageDevices! @cacheControl(scope: PUBLIC, maxAge: 300)
+}
+
+type Statistics {
+  totalActiveBans: Int!
+  totalActiveMutes: Int!
+  totalPlayers: Int!
+  totalAppeals: Int!
+}
+
+type PlayerStatistics {
+  totalActiveBans: Int!
+  totalActiveMutes: Int!
+  totalBans: Int!
+  totalMutes: Int!
+  totalReports: Int!
+  totalWarnings: Int!
 }
 
 type Query {
@@ -509,6 +525,9 @@ type Query {
 
   listPlayerAppealComments(id: ID!, actor: UUID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerAppealCommentList! @allowIf(resource: "player.appeals", permission: "view.comments")
   appealComment(id: ID!): PlayerAppealComment! @allowIf(resource: "player.appeals", permission: "view.comments")
+
+  statistics: Statistics! @cacheControl(scope: PUBLIC, maxAge: 3600)
+  playerStatistics(player: UUID!): PlayerStatistics!
 }
 
 input CreatePlayerNoteInput {
@@ -638,8 +657,7 @@ input PageLayoutComponentInput {
   x: Int!
   y: Int!
   w: Int!
-  colour: String
-  textAlign: String
+  h: Int!
   meta: JSONObject
 }
 

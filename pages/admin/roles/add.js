@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router'
-import { Loader } from 'semantic-ui-react'
+import Loader from '../../../components/Loader'
 import AdminLayout from '../../../components/AdminLayout'
 import ErrorLayout from '../../../components/ErrorLayout'
 import { useApi } from '../../../utils'
@@ -25,7 +25,7 @@ export default function Page () {
     }`
   })
 
-  if (loading) return <Loader active />
+  if (loading) return <Loader />
   if (errors || !data) return <ErrorLayout errors={errors} />
 
   const query = `mutation createRole($input: UpdateRoleInput!) {
@@ -33,7 +33,7 @@ export default function Page () {
       id
     }
   }`
-  const parentRoles = data.roles.map(role => ({ key: role.id, value: role.id, text: role.name }))
+  const parentRoles = data.roles.map(role => ({ value: role.id, label: role.name }))
 
   return (
     <AdminLayout title='Add Role'>

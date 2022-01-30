@@ -290,25 +290,6 @@ class SetupCommand extends Command {
       }
 
       await conn('bm_web_servers').insert({ ...server, tables: JSON.stringify(server.tables) })
-
-      // Setup default homepage
-      await conn('bm_web_page_layouts').insert([
-        { pathname: 'home', component: 'ServerNameHeader', x: 0, y: 1, w: 16, meta: JSON.stringify({ serverId: server.id, as: 'h2' }), device: 'desktop' },
-        { pathname: 'home', component: 'ServerNameHeader', x: 0, y: 1, w: 16, meta: JSON.stringify({ serverId: server.id, as: 'h2' }), device: 'tablet' },
-        { pathname: 'home', component: 'ServerNameHeader', x: 0, y: 1, w: 16, meta: JSON.stringify({ serverId: server.id, as: 'h2' }), device: 'mobile' },
-        { pathname: 'home', component: 'RecentServerPunishments', x: 0, y: 2, w: 4, meta: JSON.stringify({ serverId: server.id, type: 'bans' }), device: 'desktop' },
-        { pathname: 'home', component: 'RecentServerPunishments', x: 4, y: 2, w: 4, meta: JSON.stringify({ serverId: server.id, type: 'mutes' }), device: 'desktop' },
-        { pathname: 'home', component: 'RecentServerPunishments', x: 8, y: 2, w: 4, meta: JSON.stringify({ serverId: server.id, type: 'reports' }), device: 'desktop' },
-        { pathname: 'home', component: 'RecentServerPunishments', x: 12, y: 2, w: 4, meta: JSON.stringify({ serverId: server.id, type: 'warnings' }), device: 'desktop' },
-        { pathname: 'home', component: 'RecentServerPunishments', x: 0, y: 2, w: 4, meta: JSON.stringify({ serverId: server.id, type: 'bans' }), device: 'tablet' },
-        { pathname: 'home', component: 'RecentServerPunishments', x: 4, y: 2, w: 4, meta: JSON.stringify({ serverId: server.id, type: 'mutes' }), device: 'tablet' },
-        { pathname: 'home', component: 'RecentServerPunishments', x: 8, y: 2, w: 4, meta: JSON.stringify({ serverId: server.id, type: 'reports' }), device: 'tablet' },
-        { pathname: 'home', component: 'RecentServerPunishments', x: 12, y: 2, w: 4, meta: JSON.stringify({ serverId: server.id, type: 'warnings' }), device: 'tablet' },
-        { pathname: 'home', component: 'RecentServerPunishments', x: 0, y: 2, w: 16, meta: JSON.stringify({ serverId: server.id, type: 'bans' }), device: 'mobile' },
-        { pathname: 'home', component: 'RecentServerPunishments', x: 0, y: 3, w: 16, meta: JSON.stringify({ serverId: server.id, type: 'mutes' }), device: 'mobile' },
-        { pathname: 'home', component: 'RecentServerPunishments', x: 0, y: 4, w: 16, meta: JSON.stringify({ serverId: server.id, type: 'reports' }), device: 'mobile' },
-        { pathname: 'home', component: 'RecentServerPunishments', x: 0, y: 5, w: 16, meta: JSON.stringify({ serverId: server.id, type: 'warnings' }), device: 'mobile' }
-      ])
     }
 
     const roleResults = await conn('bm_web_player_roles').select('player_id').where('role_id', 3).limit(1)

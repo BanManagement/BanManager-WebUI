@@ -1,9 +1,11 @@
-import { useEffect, useState } from 'react'
-import { Dropdown } from 'semantic-ui-react'
-import { useApi } from '../../utils'
+import { forwardRef, useCallback, useEffect, useMemo, useState } from 'react'
+import Select from '../Select'
+import { useMutateApi } from '../../utils'
+import Avatar from '../Avatar'
 
-export default function PlayerSelector ({ clearable = false, handleChange, multiple = true, value, options: defaultOptions = [], fluid = true, placeholder = 'Select players', limit = 5, selectOnBlur = false }) {
+const PlayerSelector = forwardRef(({ clearable = false, onChange, multiple = true, value, options: defaultOptions = [], placeholder = 'Select players', limit = 5, ...rest }, ref) => {
   const [name, setName] = useState('')
+  const [options, setOptions] = useState(defaultOptions)
   const [selected, setSelected] = useState(multiple ? [] : value || null)
   const query = `query searchPlayers($name: String!, $limit: Int!) {
     searchPlayers(name: $name, limit: $limit) {
@@ -12,42 +14,66 @@ export default function PlayerSelector ({ clearable = false, handleChange, multi
     }
   }`
 
-  const { loading, data } = useApi({ query: !name ? null : query, variables: { limit, name } })
+  const { loading, load, data } = useMutateApi({ query })
 
   useEffect(() => {
-    handleChange(selected)
+    onChange(selected)
   }, [selected])
+  useEffect(() => {
+    if (name) load({ limit, name })
+  }, [name])
+  useEffect(() => {
+    const newOptions = data
+      ? data.searchPlayers.map(result => ({
+          label: (
+            <div className='flex items-center'>
+              <Avatar
+                width='28'
+                height='28'
+                uuid={result.id}
+                className='flex-shrink-0 h-6 w-6'
+              />
+              <span className='ml-3 block font-normal truncate'>
+                {result.name}
+              </span>
+            </div>
+          ),
+          value: result.id
+        }))
+      : defaultOptions
 
-  const handlePlayerChange = (e, { value }) => setSelected(value)
-  const handleSearchChange = (e, { searchQuery }) => {
-    setName(searchQuery)
+    setOptions(newOptions)
+  }, [data])
+
+  const filterOption = useCallback(() => true, [])
+  const noOptionsMessage = useMemo(() => (loading ? () => 'Loading…' : () => 'No players found'), [loading])
+  const handlePlayerChange = (selectedOptions) => {
+    if (selectedOptions.value) return setSelected(selectedOptions.value)
+
+    setSelected(selectedOptions.map(selected => selected.value))
+  }
+  const handleSearchChange = (value) => {
+    if (value) {
+      setName(value)
+    }
   }
 
-  const options = data
-    ? data.searchPlayers.map(result => ({
-        key: result.id, text: result.name, value: result.id, image: `https://crafatar.com/avatars/${result.id}?size=128&overlay=true`
-      }))
-    : defaultOptions
-
   return (
-    <Dropdown
-      fluid={fluid}
-      selection
-      clearable={clearable}
-      multiple={multiple}
-      search
+    <Select
+      ref={ref}
       options={options}
-      value={selected}
-      placeholder={placeholder}
+      isLoading={loading}
+      onInputChange={handleSearchChange}
       onChange={handlePlayerChange}
-      onSearchChange={handleSearchChange}
-      disabled={loading}
-      loading={loading}
-      selectOnBlur={selectOnBlur}
+      value={value}
+      filterOption={filterOption}
+      noOptionsMessage={noOptionsMessage}
+      isClearable={clearable}
+      placeholder={placeholder}
+      isMulti={multiple}
+      {...rest}
     />
   )
-}
+})
 
-export const query = `
-
-`
+export default PlayerSelector

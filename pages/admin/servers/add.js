@@ -1,7 +1,8 @@
 import { useRouter } from 'next/router'
-import { Loader } from 'semantic-ui-react'
+import Loader from '../../../components/Loader'
 import AdminLayout from '../../../components/AdminLayout'
 import ErrorMessages from '../../../components/ErrorMessages'
+import PageHeader from '../../../components/PageHeader'
 import { useApi } from '../../../utils'
 import ServerForm from '../../../components/admin/ServerForm'
 
@@ -13,7 +14,7 @@ export default function Page () {
     }`
   })
 
-  if (loading) return <Loader active />
+  if (loading) return <Loader />
   if (errors || !data) return <ErrorMessages errors={errors} />
 
   const query = ` mutation createServer($input: CreateServerInput!) {
@@ -24,6 +25,7 @@ export default function Page () {
 
   return (
     <AdminLayout title='Add Server'>
+      <PageHeader title='Add Server' />
       <ServerForm
         query={query}
         serverTables={data.serverTables}

@@ -1,10 +1,11 @@
-import { Loader } from 'semantic-ui-react'
 import { useRouter } from 'next/router'
+import Loader from '../../../components/Loader'
 import DefaultLayout from '../../../components/DefaultLayout'
 import PageContainer from '../../../components/PageContainer'
 import PlayerBanForm from '../../../components/PlayerBanForm'
 import ErrorLayout from '../../../components/ErrorLayout'
-import { useApi } from '../../../utils'
+import PageHeader from '../../../components/PageHeader'
+import { fromNow, useApi } from '../../../utils'
 
 export default function Page () {
   const router = useRouter()
@@ -31,7 +32,7 @@ export default function Page () {
     variables: { id, serverId }
   })
 
-  if (loading) return <Loader active />
+  if (loading) return <Loader />
   if (errors || !data) return <ErrorLayout errors={errors} />
 
   const query = `mutation updatePlayerBan($id: ID!, $serverId: ID!, $input: UpdatePlayerBanInput!) {
@@ -41,24 +42,25 @@ export default function Page () {
   }`
 
   return (
-    <DefaultLayout title={`Ban ${data.playerBan.player.name}`}>
+    <DefaultLayout title={`Updatte ${data.playerBan.player.name} ban`}>
       <PageContainer>
-        <PlayerBanForm
-          player={data.playerBan.player}
-          servers={[{ server: data.playerBan.server }]}
-          defaults={data.playerBan}
-          query={query}
-          parseVariables={(input) => ({
-            id,
-            serverId,
-            input: {
-              reason: input.reason,
-              expires: Math.floor(input.expires / 1000)
-            }
-          })}
-          disableServers
-          onFinished={() => router.push(`/player/${data.playerBan.player.id}`)}
-        />
+        <div className='mx-auto flex flex-col w-full max-w-md px-4 py-8 sm:px-6 md:px-8 lg:px-10 text-center md:border-2 md:rounded-lg md:border-black'>
+          <PageHeader title='Edit ban' subTitle={`Created ${fromNow(data.playerBan.created)}`} />
+          <PlayerBanForm
+            defaults={data.playerBan}
+            query={query}
+            parseVariables={(input) => ({
+              id,
+              serverId,
+              input: {
+                reason: input.reason,
+                expires: Math.floor(input.expires / 1000)
+              }
+            })}
+            disableServers
+            onFinished={() => router.push(`/player/${data.playerBan.player.id}`)}
+          />
+        </div>
       </PageContainer>
     </DefaultLayout>
   )

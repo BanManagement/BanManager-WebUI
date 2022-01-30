@@ -1,4 +1,5 @@
-import { Header, Loader, Card } from 'semantic-ui-react'
+import Loader from './Loader'
+import PageHeader from './PageHeader'
 import PlayerPunishment from './PlayerPunishment'
 import { useApi } from '../utils'
 
@@ -26,10 +27,10 @@ query playerMutes($id: UUID!) {
   }
 }`
 
-export default function ActivePlayerMutes ({ id }) {
+export default function ActivePlayerMutes ({ id, color }) {
   const { loading, data, errors, mutate } = useApi({ query, variables: { id } })
 
-  if (loading) return <Loader active inline='centered' />
+  if (loading) return <Loader />
   if (errors || !data || !data.playerMutes || !data.playerMutes.length) return null
 
   const rows = data.playerMutes.map((row, i) => (
@@ -47,11 +48,11 @@ export default function ActivePlayerMutes ({ id }) {
   ))
 
   return (
-    <>
-      <Header>Active Mutes</Header>
-      <Card.Group itemsPerRow={3} stackable>
+    <div>
+      <PageHeader title='Active Mutes' style={{ borderColor: `${color}` }} />
+      <div className='grid grid-cols-1 lg:grid-cols-3 gap-4'>
         {rows}
-      </Card.Group>
-    </>
+      </div>
+    </div>
   )
 }

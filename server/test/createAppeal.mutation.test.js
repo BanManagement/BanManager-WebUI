@@ -96,8 +96,6 @@ describe('Mutation create appeal', () => {
 
     assert.strictEqual(statusCode, 200)
 
-    console.log(body)
-
     assert(body)
     assert(body.errors)
 

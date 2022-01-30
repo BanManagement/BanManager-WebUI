@@ -35,6 +35,7 @@ module.exports = async function listPlayerWarnings (obj, { serverId, actor, play
       .options({ nestTables: true })
       .where(filter)
       .limit(limit)
+      .offset(offset)
 
     if (order) {
       query.orderByRaw(order.replace('_', ' '))

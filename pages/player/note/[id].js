@@ -1,10 +1,11 @@
-import { Loader } from 'semantic-ui-react'
 import { useRouter } from 'next/router'
+import Loader from '../../../components/Loader'
 import DefaultLayout from '../../../components/DefaultLayout'
 import PageContainer from '../../../components/PageContainer'
 import PlayerNoteForm from '../../../components/PlayerNoteForm'
 import ErrorLayout from '../../../components/ErrorLayout'
-import { useApi } from '../../../utils'
+import PageHeader from '../../../components/PageHeader'
+import { fromNow, useApi } from '../../../utils'
 
 export default function Page () {
   const router = useRouter()
@@ -30,7 +31,7 @@ export default function Page () {
     variables: { id, serverId }
   })
 
-  if (loading) return <Loader active />
+  if (loading) return <Loader />
   if (errors || !data) return <ErrorLayout errors={errors} />
 
   const query = `mutation updatePlayerNote($id: ID!, $serverId: ID!, $input: UpdatePlayerNoteInput!) {
@@ -40,21 +41,22 @@ export default function Page () {
   }`
 
   return (
-    <DefaultLayout title={`Update ${data.playerNote.player.name} Note`}>
+    <DefaultLayout title={`Update ${data.playerNote.player.name} note`}>
       <PageContainer>
-        <PlayerNoteForm
-          player={data.playerNote.player}
-          servers={[{ server: data.playerNote.server }]}
-          defaults={data.playerNote}
-          query={query}
-          parseVariables={(input) => ({
-            id,
-            serverId,
-            input: { message: input.message }
-          })}
-          disableServers
-          onFinished={() => router.push(`/player/${data.playerNote.player.id}`)}
-        />
+        <div className='mx-auto flex flex-col w-full max-w-md px-4 py-8 sm:px-6 md:px-8 lg:px-10 text-center md:border-2 md:rounded-lg md:border-black'>
+          <PageHeader title='Edit note' subTitle={`Created ${fromNow(data.playerNote.created)}`} />
+          <PlayerNoteForm
+            defaults={data.playerNote}
+            query={query}
+            parseVariables={(input) => ({
+              id,
+              serverId,
+              input: { message: input.message }
+            })}
+            disableServers
+            onFinished={() => router.push(`/player/${data.playerNote.player.id}`)}
+          />
+        </div>
       </PageContainer>
     </DefaultLayout>
   )

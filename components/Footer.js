@@ -1,42 +1,18 @@
-import { Container, Grid, Header, List, Segment } from 'semantic-ui-react'
+import Image from 'next/image'
 
 export default function Footer () {
-  // const yearNow = new Date().getFullYear()
+  const currentYear = new Date().getFullYear()
 
   return (
-    <Segment inverted vertical style={{ padding: '5em 0em' }}>
-      <Container>
-        <Grid divided inverted stackable>
-          <Grid.Row>
-            <Grid.Column width={3}>
-              <Header inverted as='h4' content='About' />
-              <List link inverted>
-                <List.Item as='a' href='https://dev.bukkit.org/projects/ban-management'>Bukkit Plugin</List.Item>
-                <List.Item as='a' href='https://ore.spongepowered.org/confuser/BanManager'>Sponge Plugin</List.Item>
-                {/* <List.Item as='a' href='https://github.com/BanManagement/banmanagement.com'>Source</List.Item> */}
-                {/* <List.Item as='a' href='https://github.com/BanManagement/banmanagement.com/issues'>Report Issues</List.Item> */}
-              </List>
-            </Grid.Column>
-            {/* <Grid.Column width={3}>
-              <Header inverted as='h4' content='Services' />
-              <List link inverted>
-                <List.Item as='a'>Banana Pre-Order</List.Item>
-                <List.Item as='a'>DNA FAQ</List.Item>
-                <List.Item as='a'>How To Access</List.Item>
-                <List.Item as='a'>Favorite X-Men</List.Item>
-              </List>
-            </Grid.Column> */}
-            <Grid.Column width={7}>
-              <Header as='h4' inverted>
-                BanManagement
-              </Header>
-              {/* <p>
-                &copy; 2012 - {yearNow}
-              </p> */}
-            </Grid.Column>
-          </Grid.Row>
-        </Grid>
-      </Container>
-    </Segment>
+    <footer className='text-white bg-primary-900'>
+      <div className='container px-5 py-8 mx-auto flex items-center sm:flex-row flex-col'>
+        <a className='flex title-font font-medium items-center md:justify-start justify-center'>
+          <Image src='/images/banmanager-icon.png' width='35' height='35' />
+          <span className='ml-3 text-xl text-white'>Your Server Name</span>
+        </a>
+        <p className='text-sm text-gray-200 sm:ml-4 sm:pl-4 sm:border-l-2 sm:border-gray-200 sm:py-2 sm:mt-0 mt-4'>&copy; {currentYear}
+        </p>
+      </div>
+    </footer>
   )
 }

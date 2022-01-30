@@ -1,10 +1,11 @@
-import { Loader } from 'semantic-ui-react'
 import { useRouter } from 'next/router'
+import Loader from '../../../components/Loader'
 import DefaultLayout from '../../../components/DefaultLayout'
 import PageContainer from '../../../components/PageContainer'
 import PlayerMuteForm from '../../../components/PlayerMuteForm'
 import ErrorLayout from '../../../components/ErrorLayout'
-import { useApi } from '../../../utils'
+import PageHeader from '../../../components/PageHeader'
+import { fromNow, useApi } from '../../../utils'
 
 export default function Page () {
   const router = useRouter()
@@ -32,7 +33,7 @@ export default function Page () {
     variables: { id, serverId }
   })
 
-  if (loading) return <Loader active />
+  if (loading) return <Loader />
   if (errors || !data) return <ErrorLayout errors={errors} />
 
   const query = `mutation updatePlayerMute($id: ID!, $serverId: ID!, $input: UpdatePlayerMuteInput!) {
@@ -42,25 +43,26 @@ export default function Page () {
   }`
 
   return (
-    <DefaultLayout title={`Mute ${data.playerMute.player.name}`}>
+    <DefaultLayout title={`Update ${data.playerMute.player.name} mute`}>
       <PageContainer>
-        <PlayerMuteForm
-          player={data.playerMute.player}
-          servers={[{ server: data.playerMute.server }]}
-          defaults={data.playerMute}
-          query={query}
-          parseVariables={(input) => ({
-            id,
-            serverId,
-            input: {
-              reason: input.reason,
-              expires: Math.floor(input.expires / 1000),
-              soft: input.soft
-            }
-          })}
-          disableServers
-          onFinished={() => router.push(`/player/${data.playerMute.player.id}`)}
-        />
+        <div className='mx-auto flex flex-col w-full max-w-md px-4 py-8 sm:px-6 md:px-8 lg:px-10 text-center md:border-2 md:rounded-lg md:border-black'>
+          <PageHeader title='Edit mute' subTitle={`Created ${fromNow(data.playerMute.created)}`} />
+          <PlayerMuteForm
+            defaults={data.playerMute}
+            query={query}
+            parseVariables={(input) => ({
+              id,
+              serverId,
+              input: {
+                reason: input.reason,
+                expires: Math.floor(input.expires / 1000),
+                soft: input.soft
+              }
+            })}
+            disableServers
+            onFinished={() => router.push(`/player/${data.playerMute.player.id}`)}
+          />
+        </div>
       </PageContainer>
     </DefaultLayout>
   )

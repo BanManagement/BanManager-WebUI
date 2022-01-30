@@ -1,4 +1,4 @@
-import { Message } from 'semantic-ui-react'
+import Message from '../../components/Message'
 import AdminLayout from '../../components/AdminLayout'
 import { currentVersion } from '../../utils'
 
@@ -20,12 +20,16 @@ function Page ({ latestVersion }) {
       {process.env.IS_DEV &&
         <Message warning>
           <Message.Header>Developer Mode</Message.Header>
-          <Message.Content>You are currently running in development mode, expect performance degradation</Message.Content>
+          <Message.List>
+            <Message.Item>You are currently running in development mode, expect performance degradation</Message.Item>
+          </Message.List>
         </Message>}
       {version !== latestVersion &&
         <Message info>
           <Message.Header>Update Available</Message.Header>
-          <Message.Content>Current version: {version}<br />Latest: {latestVersion}</Message.Content>
+          <Message.List>
+            <Message.Item>Current version: {version}<br />Latest: {latestVersion}</Message.Item>
+          </Message.List>
         </Message>}
     </AdminLayout>
   )

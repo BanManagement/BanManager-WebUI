@@ -39,7 +39,10 @@ const nextConfig = (phase) => {
         IS_DEV: phase === PHASE_DEVELOPMENT_SERVER
       }
     })(),
-    poweredByHeader: false
+    poweredByHeader: false,
+    images: {
+      domains: ['crafatar.com']
+    }
   }
 }
 

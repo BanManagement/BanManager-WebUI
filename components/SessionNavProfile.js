@@ -1,14 +1,16 @@
 import { useState } from 'react'
 import { useRouter } from 'next/router'
-import { Dropdown, Image, Menu } from 'semantic-ui-react'
 import { mutate } from 'swr'
-import MenuLink from './MenuLink'
+import Dropdown from './Dropdown'
+import Avatar from './Avatar'
+import { CgProfile } from 'react-icons/cg'
+import { MdLogout, MdSettings } from 'react-icons/md'
 
 export default function SessionNavProfile ({ user }) {
   const router = useRouter()
-  const [state, setState] = useState({ loggingOut: false })
+  const [loggingOut, setLoggingOut] = useState(false)
   const handleLogout = async () => {
-    setState({ loggingOut: true })
+    setLoggingOut(true)
 
     // Using cookies for SSR instead of local storage, which are set to HttpOnly
     // requires server to delete cookie
@@ -20,7 +22,7 @@ export default function SessionNavProfile ({ user }) {
       })
 
     if (response.status !== 204) {
-      setState({ loggingOut: false })
+      setLoggingOut(false)
 
       const responseData = await response.json()
 
@@ -28,20 +30,39 @@ export default function SessionNavProfile ({ user }) {
     }
 
     mutate('/api/user')
-    router.replace('/')
+    router.push('/')
   }
 
   return (
-    <Dropdown
-      item
-      trigger={<Image fluid bordered centered rounded src={`https://crafatar.com/avatars/${user.id}?size=36&overlay=true`} />}
-      icon={null}
-    >
-      <Dropdown.Menu>
-        <MenuLink name={user.name} href={'/player/' + user.id} />
-        <MenuLink name='Settings' href='/account' />
-        <Menu.Item name='Logout' onClick={handleLogout} disabled={state.loggingOut} />
-      </Dropdown.Menu>
-    </Dropdown>
+    <>
+      <div className='hidden md:block'>
+        <Dropdown
+          trigger={(
+            <>
+              <Avatar width='36' height='36' uuid={user.id} />
+              <span className='hidden md:inline-block ml-4'>
+                {user.name}
+              </span>
+            </>
+          )}
+        >
+          <Dropdown.Item name='Profile' href={'/player/' + user.id} icon={<CgProfile />} />
+          <Dropdown.Item name='Settings' href='/account' icon={<MdSettings />} />
+          <Dropdown.Item name='Logout' onClick={handleLogout} disabled={loggingOut} icon={<MdLogout />} />
+        </Dropdown>
+      </div>
+      <div className='md:hidden flex flex-col sm:flex-row sm:justify-around'>
+        <div className='text-gray-100 grid items-center text-center mb-3'>
+          <div className='grid-flow-row'>
+            <Avatar width='64' height='64' uuid={user.id} />
+          </div>
+          <span className='grid-flow-row mx-4 text-lg font-normal'>{user.name}</span>
+        </div>
+        <Dropdown.Item name='Profile' href={'/player/' + user.id} icon={<CgProfile />} />
+        <Dropdown.Item name='Settings' href='/account' icon={<MdSettings />} />
+        <Dropdown.Item name='Logout' onClick={handleLogout} disabled={loggingOut} icon={<MdLogout />} />
+        <span className='text-5xl pb-4 mb-4 border-b border-accent-200 leading-none' />
+      </div>
+    </>
   )
 }

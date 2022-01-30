@@ -1,17 +1,19 @@
-import { Message } from 'semantic-ui-react'
+import { forwardRef } from 'react'
+import Message from './Message'
 import { uniqBy } from 'lodash-es'
 
-export default function ErrorMessages ({
+// eslint-disable-next-line react/display-name
+const ErrorMessages = forwardRef(({
   error,
   fetchError,
   httpError,
   parseError,
   errors
-}) {
+}, ref) => {
   return (
     <>
       {error && (
-        <Message error>
+        <Message ref={ref} error>
           <Message.Header>Error</Message.Header>
           <Message.List data-cy='errors'>
             <Message.Item>{error.message}</Message.Item>
@@ -19,7 +21,7 @@ export default function ErrorMessages ({
         </Message>
       )}
       {fetchError && (
-        <Message error>
+        <Message ref={ref} error>
           <Message.Header>Fetch Error</Message.Header>
           <Message.List>
             <Message.Item>{fetchError}</Message.Item>
@@ -27,13 +29,13 @@ export default function ErrorMessages ({
         </Message>
       )}
       {httpError && (
-        <Message error>
+        <Message ref={ref} error>
           <Message.Header>HTTP error: {httpError.status}</Message.Header>
           {httpError.statusText && <Message.List><Message.Item>{httpError.statusText}</Message.Item></Message.List>}
         </Message>
       )}
       {parseError && (
-        <Message error>
+        <Message ref={ref} error>
           <Message.Header>Parse Error</Message.Header>
           <Message.List>
             <Message.Item>{parseError}</Message.Item>
@@ -41,7 +43,7 @@ export default function ErrorMessages ({
         </Message>
       )}
       {errors && (
-        <Message error>
+        <Message ref={ref} error>
           <Message.Header>Error</Message.Header>
           <Message.List data-cy='errors'>
             {uniqBy(errors, 'message').map(({ message }, index) => (
@@ -52,4 +54,6 @@ export default function ErrorMessages ({
       )}
     </>
   )
-}
+})
+
+export default ErrorMessages

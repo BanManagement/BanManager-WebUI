@@ -1,29 +1,33 @@
-import { Grid, Header, Loader } from 'semantic-ui-react'
 import DefaultLayout from '../../components/DefaultLayout'
 import PageContainer from '../../components/PageContainer'
-import AccountMenu from '../../components/AccountMenu'
 import ResetPasswordForm from '../../components/ResetPasswordForm'
+import PageHeader from '../../components/PageHeader'
+import Loader from '../../components/Loader'
+import Button from '../../components/Button'
 import { useUser } from '../../utils'
+import { useRouter } from 'next/router'
 
 export default function Page () {
+  const router = useRouter()
   const { user } = useUser({ redirectTo: '/login' })
+  const onBack = () => router.push('/account')
 
-  if (!user) return <DefaultLayout><Loader active inline='centered' /></DefaultLayout>
+  if (!user) return <DefaultLayout><Loader /></DefaultLayout>
 
   return (
-    <DefaultLayout title='Change Password'>
+    <DefaultLayout title='Change Email'>
       <PageContainer>
-        <Header>Change Password</Header>
-        <Grid columns={2} stackable>
-          <Grid.Row>
-            <Grid.Column width={4}>
-              <AccountMenu user={user} />
-            </Grid.Column>
-            <Grid.Column width={12}>
-              <ResetPasswordForm showCurrentPassword={user.type === 'password'} />
-            </Grid.Column>
-          </Grid.Row>
-        </Grid>
+        <div className='mx-auto flex flex-col w-full max-w-md px-4 py-8 sm:px-6 md:px-8 lg:px-10 text-center md:border-2 md:rounded-lg md:border-black'>
+          <PageHeader title='Change Password' subTitle='Settings' />
+          <div className='mt-5'>
+            <ResetPasswordForm showCurrentPassword={user.type === 'password'} />
+            <div className='flex flex-col relative w-full max-w-md px-4 sm:px-6 md:px-8 lg:px-10'>
+              <Button className='bg-black mt-5' data-cy='submit-register-skip' onClick={onBack}>
+                Back
+              </Button>
+            </div>
+          </div>
+        </div>
       </PageContainer>
     </DefaultLayout>
   )
