@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Responsive as ResponsiveUtil } from 'semantic-ui-react'
 import GridLayout from 'react-grid-layout'
 import { find, maxBy, pick } from 'lodash-es'
 import ErrorMessages from '../ErrorMessages'
 import PageHeader from '../PageHeader'
 import Button from '../Button'
+import { breakpoints } from '../Media'
 import { useMutateApi } from '../../utils'
 import { componentsMeta } from './layout'
 
@@ -16,7 +16,7 @@ const cleanUpComponent = (component) => {
 
 export default function PageLayoutForm ({ pathname, pageLayout, onFinished, query }) {
   const [variables, setVariables] = useState({})
-  const [currentDevice, setCurrentDevice] = useState({ name: 'desktop', width: ResponsiveUtil.onlyComputer.minWidth })
+  const [currentDevice, setCurrentDevice] = useState({ name: 'desktop', width: breakpoints.computer })
   const [currentLayout, setCurrentLayout] = useState(pageLayout.devices.desktop)
   const [currentPageLayout, setCurrentPageLayout] = useState(pageLayout)
   const [selectedComponent, setSelectedComponent] = useState(null)
@@ -65,7 +65,7 @@ export default function PageLayoutForm ({ pathname, pageLayout, onFinished, quer
 
   const changeDevice = (name, widthName) => {
     setSelectedComponent(null)
-    setCurrentDevice({ name, width: ResponsiveUtil[widthName].minWidth })
+    setCurrentDevice({ name, width: breakpoints[widthName] })
     setCurrentLayout(currentPageLayout.devices[name])
   }
   const onSelectComponent = (id) => {
@@ -229,19 +229,19 @@ export default function PageLayoutForm ({ pathname, pageLayout, onFinished, quer
             <div className='bg-black p-5'>
               <div className='grid grid-flow-row gap-6'>
                 <Button
-                  onClick={changeDevice.bind(this, 'mobile', 'onlyMobile')}
+                  onClick={changeDevice.bind(this, 'mobile', 'mobile')}
                   disabled={currentDevice.name === 'mobile'}
                 >
                   Mobile
                 </Button>
                 <Button
-                  onClick={changeDevice.bind(this, 'tablet', 'onlyTablet')}
+                  onClick={changeDevice.bind(this, 'tablet', 'tablet')}
                   disabled={currentDevice.name === 'tablet'}
                 >
                   Tablet
                 </Button>
                 <Button
-                  onClick={changeDevice.bind(this, 'desktop', 'onlyComputer')}
+                  onClick={changeDevice.bind(this, 'desktop', 'computer')}
                   disabled={currentDevice.name === 'desktop'}
                 >
                   Desktop

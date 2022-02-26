@@ -71,8 +71,6 @@
     "react-select": "^5.1.0",
     "require-environment-variables": "1.2.0",
     "sass": "1.42.1",
-    "semantic-ui-css": "2.4.1",
-    "semantic-ui-react": "0.88.2",
     "semver": "7.3.5",
     "swr": "1.2.2",
     "tailwindcss": "^2.2.17",
