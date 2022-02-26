@@ -1,10 +1,11 @@
 import { useEffect } from 'react'
-import { Loader } from 'semantic-ui-react'
-import PlayerSelector from '../components/admin/PlayerSelector'
-import { useMutateApi } from '../utils'
+import Loader from '../Loader'
+import PlayerSelector from '../admin/PlayerSelector'
+import { useMutateApi } from '../../utils'
+import ErrorMessages from '../ErrorMessages'
 
 export default function PlayerReportAssign ({ id, player, server, onChange }) {
-  const { data, loading, load } = useMutateApi({
+  const { data, loading, load, errors } = useMutateApi({
     query: /* GraphQL */ `
       mutation assignReport($report: ID!, $serverId: ID!, $player: UUID!) {
         assignReport(report: $report, serverId: $serverId, player: $player) {
@@ -34,27 +35,17 @@ export default function PlayerReportAssign ({ id, player, server, onChange }) {
     }
   }
 
-  if (loading) return <Loader active />
-
-  const options = []
-
-  if (player) {
-    options.push({
-      key: player.id,
-      value: player.id,
-      text: player.name,
-      image: `https://crafatar.com/avatars/${player.id}?size=128&overlay=true`
-    })
-  }
+  if (loading) return <Loader />
 
   return (
-    <PlayerSelector
-      fluid={false}
-      multiple={false}
-      // clearable
-      value={player ? player.id : null}
-      options={options}
-      handleChange={handleChange}
-    />
+    <>
+      <ErrorMessages errors={errors} />
+      <PlayerSelector
+        multiple={false}
+        onChange={handleChange}
+        placeholder='Search by player name'
+        defaultValue={player ? ({ value: player.id, label: <PlayerSelector.Label player={player} /> }) : null}
+        />
+    </>
   )
 }

@@ -7,7 +7,7 @@ import DateTimePicker from './DateTimePicker'
 import { useMutateApi } from '../utils'
 import ServerSelector from './admin/ServerSelector'
 
-export default function PlayerBanForm ({ serverFilter, onFinished, query, parseVariables, disableServers = false, defaults = {} }) {
+export default function PlayerBanForm ({ serverFilter, onFinished, query, parseVariables, disableServers = false, defaults = {}, submitRef = null }) {
   const { handleSubmit, formState, register, control, setValue } = useForm({ defaultValues: { ...defaults, server: defaults?.server, expires: defaults?.expires * 1000 || 0 } })
   const { isSubmitting } = formState
   const [typeState, setTypeState] = useState(defaults.expires ? 'temporary' : 'permanent')
@@ -16,7 +16,7 @@ export default function PlayerBanForm ({ serverFilter, onFinished, query, parseV
 
   useEffect(() => {
     if (!data) return
-    if (Object.keys(data).some(key => !!data[key].id)) onFinished()
+    if (Object.keys(data).some(key => !!data[key])) onFinished(data)
   }, [data])
 
   const onSubmit = (data) => {
@@ -72,7 +72,7 @@ export default function PlayerBanForm ({ serverFilter, onFinished, query, parseV
             render={({ field: { onChange, value } }) => <DateTimePicker isValidDate={disablePast} onChange={onChange} value={value} />}
           />
         </div>}
-      <Button disabled={isSubmitting} loading={isSubmitting}>
+      <Button ref={submitRef} disabled={isSubmitting} loading={isSubmitting} className={submitRef ? 'hidden' : ''}>
         Save
       </Button>
     </form>

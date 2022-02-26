@@ -1,4 +1,4 @@
-const { parseResolveInfo } = require('graphql-parse-resolve-info')
+const { parseResolveInfo, simplifyParsedResolveInfoFragmentWithType } = require('graphql-parse-resolve-info')
 const ExposedError = require('../../../data/exposed-error')
 
 // eslint-disable-next-line complexity
@@ -30,20 +30,32 @@ module.exports = async function appeal (obj, { id }, { state }, info) {
     name: data.name
   }
 
-  const fields = parseResolveInfo(info)
+  const parsedResolveInfoFragment = parseResolveInfo(info)
+  const { fields } = simplifyParsedResolveInfoFragmentWithType(parsedResolveInfoFragment, info.returnType)
   const server = state.serversPool.get(data.server_id)
 
   data.server = server.config
 
-  if (fields.fieldsByTypeName.PlayerAppeal.actor) {
+  if (fields.actor) {
     data.actor = await state.loaders.player.load({ id: data.actor_id, fields: ['name'] })
   }
 
-  if (fields.fieldsByTypeName.PlayerAppeal.assignee && data.assignee_id) {
+  if (fields.assignee && data.assignee_id) {
     data.assignee = await state.loaders.player.load({ id: data.assignee_id, fields: ['name'] })
   }
 
-  if (fields.fieldsByTypeName.PlayerAppeal.acl) {
+  if (fields.punishmentActor) {
+    data.punishmentActor = await state.loaders.player.load({ id: data.punishment_actor_id, fields: ['name'] })
+  }
+
+  if (fields.punishmentReason) data.punishmentReason = data.punishment_reason
+  if (fields.punishmentCreated) data.punishmentCreated = data.punishment_created
+  if (fields.punishmentExpires) data.punishmentExpires = data.punishment_expires
+  if (fields.punishmentType) data.punishmentType = data.punishment_type
+  if (fields.punishmentSoft) data.punishmentSoft = data.punishment_soft
+  if (fields.punishmentPoints) data.punishmentPoints = data.punishment_points
+
+  if (fields.acl) {
     data.acl = {
       comment: state.acl.hasServerPermission(data.server_id, 'player.appeals', 'comment.any') ||
         (state.acl.hasServerPermission(data.server_id, 'player.appeals', 'comment.own') && state.acl.owns(data.actor_id)) ||

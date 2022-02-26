@@ -1,5 +1,6 @@
 const ExposedError = require('../../../data/exposed-error')
 const appealComment = require('../queries/appeal-comment')
+const { getAppealCommentType } = require('../../utils')
 
 module.exports = async function createAppealComment (obj, { id: appealId, input }, { session, state }, info) {
   const [data] = await state.dbPool('bm_web_appeals')
@@ -16,7 +17,8 @@ module.exports = async function createAppealComment (obj, { id: appealId, input 
   const [id] = await state.dbPool('bm_web_appeal_comments').insert({
     appeal_id: appealId,
     actor_id: session.playerId,
-    comment: input.comment,
+    content: input.content,
+    type: getAppealCommentType('comment'),
     created: state.dbPool.raw('UNIX_TIMESTAMP()'),
     updated: state.dbPool.raw('UNIX_TIMESTAMP()')
   }, ['id'])

@@ -51,7 +51,7 @@ describe('Query appeal', () => {
     await pool('bm_players').insert([actor])
 
     const [id] = await pool('bm_player_bans').insert(punishment, ['id'])
-    const data = createAppeal(id, 'PlayerBan', server, account)
+    const data = createAppeal({ ...punishment, id }, 'PlayerBan', server, account)
     const [inserted] = await pool('bm_web_appeals').insert(data, ['id'])
 
     const { body, statusCode } = await request
@@ -120,7 +120,7 @@ describe('Query appeal', () => {
     const punishment = createBan(account, actor)
 
     const [id] = await pool('bm_player_bans').insert(punishment, ['id'])
-    const data = createAppeal(id, 'PlayerBan', server, account, assignee)
+    const data = createAppeal({ ...punishment, id }, 'PlayerBan', server, account, assignee)
     const [inserted] = await pool('bm_web_appeals').insert(data, ['id'])
 
     const { body, statusCode } = await request
@@ -139,100 +139,25 @@ describe('Query appeal', () => {
               id
               name
             }
+            punishmentActor {
+              id
+              name
+            }
+            punishmentType
+            punishmentReason
+            punishmentCreated
+            punishmentExpires
             reason
             created
             updated
-            punishment {
-              ... on PlayerBan {
-                id
-                actor {
-                  id
-                  name
-                }
-                created
-                reason
-                expires
-              }
-              ... on PlayerBanRecord {
-                id
-                actor {
-                  id
-                  name
-                }
-                pastActor {
-                  id
-                  name
-                }
-                created
-                pastCreated
-                reason
-                expired
-                acl {
-                  delete
-                }
-              }
-              ... on PlayerKick {
-                id
-                actor {
-                  id
-                  name
-                }
-                created
-                reason
-                acl {
-                  delete
-                }
-              }
-              ... on PlayerMute {
-                id
-                actor {
-                  id
-                  name
-                }
-                created
-                reason
-                expires
-              }
-              ... on PlayerMuteRecord {
-                id
-                actor {
-                  id
-                  name
-                }
-                pastActor {
-                  id
-                  name
-                }
-                created
-                pastCreated
-                reason
-                expired
-                acl {
-                  delete
-                }
-              }
-              ... on PlayerWarning {
-                id
-                actor {
-                  id
-                  name
-                }
-                created
-                reason
-                expires
-                acl {
-                  delete
-                }
-              }
-            }
             state {
               id
               name
             }
             acl {
-              comment
-              assign
               state
+              assign
+              comment
               delete
             }
           }
@@ -250,16 +175,14 @@ describe('Query appeal', () => {
       created: data.created,
       updated: data.updated,
       assignee: { id: unparse(assignee.id), name: assignee.name },
-      punishment: {
-        id: id.toString(),
-        actor: {
-          id: unparse(actor.id),
-          name: actor.name
-        },
-        reason: punishment.reason,
-        created: punishment.created,
-        expires: punishment.expires
+      punishmentActor: {
+        id: unparse(actor.id),
+        name: actor.name
       },
+      punishmentReason: punishment.reason,
+      punishmentCreated: punishment.created,
+      punishmentExpires: punishment.expires,
+      punishmentType: 'PlayerBan',
       state: {
         id: '1',
         name: 'Open'

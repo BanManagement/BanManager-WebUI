@@ -21,10 +21,10 @@ module.exports = new GraphQLScalarType(
         throw new GraphQLError('Query error: Can only parse integers got a: ' + ast.kind, [ast])
       }
 
-      if (ast.value !== 0 && !regex.test(ast.value)) {
+      if (ast.value !== 0 && ast.value !== '0' && !regex.test(ast.value)) {
         throw new GraphQLError('Query error: Not a valid Timestamp: ', [ast])
       }
 
-      return ast.value
+      return parseInt(ast.value, 10)
     }
   })

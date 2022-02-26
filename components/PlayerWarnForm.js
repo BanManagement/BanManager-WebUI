@@ -7,7 +7,7 @@ import DateTimePicker from './DateTimePicker'
 import { useMutateApi } from '../utils'
 import ServerSelector from './admin/ServerSelector'
 
-export default function PlayerWarnForm ({ serverFilter, onFinished, query, parseVariables, disableServers = false, defaults = {} }) {
+export default function PlayerWarnForm ({ serverFilter, onFinished, query, parseVariables, disableServers = false, defaults = {}, submitRef = null }) {
   const { handleSubmit, formState, register, control, setValue } = useForm({ defaultValues: { ...defaults, server: defaults?.server, expires: defaults?.expires * 1000 || 0, points: defaults?.points || 1 } })
   const { isSubmitting } = formState
   const [typeState, setTypeState] = useState(defaults.expires ? 'temporary' : 'permanent')
@@ -16,7 +16,7 @@ export default function PlayerWarnForm ({ serverFilter, onFinished, query, parse
 
   useEffect(() => {
     if (!data) return
-    if (Object.keys(data).some(key => !!data[key].id)) onFinished()
+    if (Object.keys(data).some(key => !!data[key].id)) onFinished(data)
   }, [data])
 
   const onSubmit = (data) => {
@@ -67,7 +67,10 @@ export default function PlayerWarnForm ({ serverFilter, onFinished, query, parse
         required
         name='points'
         placeholder='Points'
-        {...register('points')}
+        type='number'
+        min='0'
+        step=".01"
+        {...register('points', { valueAsNumber: true })}
       />
       <Button className={`mb-6 ${expiryColour}`} onClick={toggleExpiry}>{expiryLabel}</Button>
       {typeState === 'temporary' &&
@@ -78,7 +81,7 @@ export default function PlayerWarnForm ({ serverFilter, onFinished, query, parse
             render={({ field: { onChange, value } }) => <DateTimePicker isValidDate={disablePast} onChange={onChange} value={value} />}
           />
         </div>}
-      <Button disabled={isSubmitting} loading={isSubmitting}>
+        <Button ref={submitRef} disabled={isSubmitting} loading={isSubmitting} className={submitRef ? 'hidden' : ''}>
         Save
       </Button>
     </form>

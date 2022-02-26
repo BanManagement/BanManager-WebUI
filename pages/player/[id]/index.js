@@ -20,6 +20,7 @@ import PlayerBans from '../../../components/PlayerBans'
 import PlayerMutes from '../../../components/PlayerMutes'
 import PlayerKicks from '../../../components/PlayerKicks'
 import PlayerHistoryList from '../../../components/PlayerHistoryList'
+import PageContainer from '../../../components/PageContainer'
 
 const fullConfig = resolveConfig(tailwindConfig)
 
@@ -50,7 +51,7 @@ export default function Page () {
   return (
     <>
       <DefaultLayout title={data.player.name}>
-        <div className='container mx-auto px-4 sm:px-6'>
+        <PageContainer>
           <div className='grid grid-flow-row md:grid-flow-col grid-cols-12'>
             <div className='col-span-12 md:col-span-9 space-y-10'>
               <PlayerHeader id={id} color={color} colourData={colourData} />
@@ -72,7 +73,7 @@ export default function Page () {
           <div className='md:hidden col-span-12 space-y-10'>
             {hasServerPermission('player.history', 'view', null, true) && <PlayerHistoryList id={id} color={color} />}
           </div>
-        </div>
+        </PageContainer>
       </DefaultLayout>
     </>
   )

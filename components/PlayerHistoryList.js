@@ -50,7 +50,7 @@ export default function PlayerHistoryList ({ id, color }) {
           </div>
         </div>
       </h1>
-      <Table selectable structured striped>
+      <Table>
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell>Joined</Table.HeaderCell>

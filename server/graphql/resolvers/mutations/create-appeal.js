@@ -1,5 +1,5 @@
 const ExposedError = require('../../../data/exposed-error')
-const appeal = require('../queries/appeal')
+const appealResolver = require('../queries/appeal')
 
 module.exports = async function createAppeal (obj, { input: { serverId, punishmentId, type, reason } }, { state, session }, info) {
   if (!state.serversPool.has(serverId)) throw new ExposedError('Server does not exist')
@@ -58,17 +58,33 @@ module.exports = async function createAppeal (obj, { input: { serverId, punishme
 
   if (!data) throw new ExposedError(`Could not find ${type} of id ${punishmentId}`)
 
-  const [id] = await state.dbPool('bm_web_appeals').insert({
+  if (!state.acl.owns(data.player_id)) throw new ExposedError('You cannot appeal a punishment you do not own')
+
+  const appeal = {
     server_id: serverId,
     punishment_id: punishmentId,
     punishment_type: type,
+    punishment_reason: data.reason,
+    punishment_created: data.created,
+    punishment_expires: data.expires || 0,
+    punishment_actor_id: data.actor_id,
     actor_id: session.playerId,
     assignee_id: null,
-    reason: reason,
+    reason,
     created: state.dbPool.raw('UNIX_TIMESTAMP()'),
     updated: state.dbPool.raw('UNIX_TIMESTAMP()'),
     state_id: 1
-  }, ['id'])
+  }
 
-  return appeal(obj, { id }, { state }, info)
+  if (type === 'PlayerMute') {
+    appeal.punishment_soft = data.soft
+  }
+
+  if (type === 'PlayerWarning') {
+    appeal.punishment_points = data.points
+  }
+
+  const [id] = await state.dbPool('bm_web_appeals').insert(appeal, ['id'])
+
+  return appealResolver(obj, { id }, { state }, info)
 }

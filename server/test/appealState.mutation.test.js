@@ -26,9 +26,11 @@ describe('Mutation appealState', () => {
       .send({
         query: `mutation appealState {
         appealState(state: 1, id: 1) {
-          id
-          state {
+          appeal {
             id
+            state {
+              id
+            }
           }
         }
       }`
@@ -52,7 +54,7 @@ describe('Mutation appealState', () => {
     await pool('bm_players').insert([player, actor])
 
     const [id] = await pool('bm_player_bans').insert(punishment, ['id'])
-    const data = createAppeal(id, 'PlayerBan', server, account)
+    const data = createAppeal({ ...punishment, id }, 'PlayerBan', server, account)
     const [inserted] = await pool('bm_web_appeals').insert(data, ['id'])
     const role = await setTempRole(setup.dbPool, account, 'player.appeals', 'update.state.any', 'view.any')
 
@@ -63,9 +65,17 @@ describe('Mutation appealState', () => {
       .send({
         query: `mutation appealState {
         appealState(state: 2, id: ${inserted}) {
-          id
-          state {
+          appeal {
             id
+            state {
+              id
+            }
+          }
+          comment {
+            type
+            state {
+              id
+            }
           }
         }
       }`
@@ -77,7 +87,9 @@ describe('Mutation appealState', () => {
 
     assert(body)
     assert(body.data)
-    assert.strictEqual(body.data.appealState.state.id, '2')
+    assert.strictEqual(body.data.appealState.appeal.state.id, '2')
+    assert.strictEqual(body.data.appealState.comment.type, 'state')
+    assert.strictEqual(body.data.appealState.comment.state.id, '2')
   })
 
   test('should allow update.state.own', async () => {
@@ -90,7 +102,7 @@ describe('Mutation appealState', () => {
     await pool('bm_players').insert([actor])
 
     const [id] = await pool('bm_player_bans').insert(punishment, ['id'])
-    const data = createAppeal(id, 'PlayerBan', server, account)
+    const data = createAppeal({ ...punishment, id }, 'PlayerBan', server, account)
     const [inserted] = await pool('bm_web_appeals').insert(data, ['id'])
     const role = await setTempRole(setup.dbPool, account, 'player.appeals', 'update.state.own')
 
@@ -101,9 +113,17 @@ describe('Mutation appealState', () => {
       .send({
         query: `mutation appealState {
         appealState(state: 2, id: ${inserted}) {
-          id
-          state {
+          appeal {
             id
+            state {
+              id
+            }
+          }
+          comment {
+            type
+            state {
+              id
+            }
           }
         }
       }`
@@ -115,7 +135,9 @@ describe('Mutation appealState', () => {
 
     assert(body)
     assert(body.data)
-    assert.strictEqual(body.data.appealState.state.id, '2')
+    assert.strictEqual(body.data.appealState.appeal.state.id, '2')
+    assert.strictEqual(body.data.appealState.comment.type, 'state')
+    assert.strictEqual(body.data.appealState.comment.state.id, '2')
   })
 
   test('should allow update.state.assigned', async () => {
@@ -129,7 +151,7 @@ describe('Mutation appealState', () => {
     await pool('bm_players').insert([player, actor])
 
     const [id] = await pool('bm_player_bans').insert(punishment, ['id'])
-    const data = createAppeal(id, 'PlayerBan', server, actor, account)
+    const data = createAppeal({ ...punishment, id }, 'PlayerBan', server, actor, account)
     const [inserted] = await pool('bm_web_appeals').insert(data, ['id'])
     const role = await setTempRole(setup.dbPool, account, 'player.appeals', 'update.state.assigned')
 
@@ -140,9 +162,17 @@ describe('Mutation appealState', () => {
       .send({
         query: `mutation appealState {
         appealState(state: 2, id: ${inserted}) {
-          id
-          state {
+          appeal {
             id
+            state {
+              id
+            }
+          }
+          comment {
+            type
+            state {
+              id
+            }
           }
         }
       }`
@@ -154,7 +184,9 @@ describe('Mutation appealState', () => {
 
     assert(body)
     assert(body.data)
-    assert.strictEqual(body.data.appealState.state.id, '2')
+    assert.strictEqual(body.data.appealState.appeal.state.id, '2')
+    assert.strictEqual(body.data.appealState.comment.type, 'state')
+    assert.strictEqual(body.data.appealState.comment.state.id, '2')
   })
 
   test('should error if report does not exist', async () => {
@@ -167,9 +199,11 @@ describe('Mutation appealState', () => {
       .send({
         query: `mutation appealState {
         appealState(state: 2, id: 123123) {
-          id
-          state {
+          appeal {
             id
+            state {
+              id
+            }
           }
         }
       }`
@@ -190,9 +224,11 @@ describe('Mutation appealState', () => {
       .send({
         query: `mutation appealState {
         appealState(state: 2123, id: 3) {
-          id
-          state {
+          appeal {
             id
+            state {
+              id
+            }
           }
         }
       }`

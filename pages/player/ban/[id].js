@@ -42,7 +42,7 @@ export default function Page () {
   }`
 
   return (
-    <DefaultLayout title={`Updatte ${data.playerBan.player.name} ban`}>
+    <DefaultLayout title={`Update ${data.playerBan.player.name} ban`}>
       <PageContainer>
         <div className='mx-auto flex flex-col w-full max-w-md px-4 py-8 sm:px-6 md:px-8 lg:px-10 text-center md:border-2 md:rounded-lg md:border-black'>
           <PageHeader title='Edit ban' subTitle={`Created ${fromNow(data.playerBan.created)}`} />

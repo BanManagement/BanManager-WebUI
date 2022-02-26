@@ -8,7 +8,7 @@ import DateTimePicker from './DateTimePicker'
 import { useMutateApi } from '../utils'
 import ServerSelector from './admin/ServerSelector'
 
-export default function PlayerMuteForm ({ serverFilter, onFinished, query, parseVariables, disableServers = false, defaults = {} }) {
+export default function PlayerMuteForm ({ serverFilter, onFinished, query, parseVariables, disableServers = false, defaults = {}, submitRef = null }) {
   const { handleSubmit, formState, register, control, setValue } = useForm({
     defaultValues: {
       ...defaults,
@@ -24,7 +24,7 @@ export default function PlayerMuteForm ({ serverFilter, onFinished, query, parse
 
   useEffect(() => {
     if (!data) return
-    if (Object.keys(data).some(key => !!data[key].id)) onFinished()
+    if (Object.keys(data).some(key => !!data[key])) onFinished(data)
   }, [data])
 
   const onSubmit = (data) => {
@@ -85,7 +85,7 @@ export default function PlayerMuteForm ({ serverFilter, onFinished, query, parse
         label='Soft/Shadow'
         {...register('soft')}
       />
-      <Button disabled={isSubmitting} loading={isSubmitting}>
+      <Button ref={submitRef} disabled={isSubmitting} loading={isSubmitting} className={submitRef ? 'hidden' : ''}>
         Save
       </Button>
     </form>

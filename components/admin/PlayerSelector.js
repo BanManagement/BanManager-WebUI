@@ -76,4 +76,22 @@ const PlayerSelector = forwardRef(({ clearable = false, onChange, multiple = tru
   )
 })
 
+const Label = ({ player }) => {
+  return (
+    <div className='flex items-center'>
+      <Avatar
+        width='28'
+        height='28'
+        uuid={player.id}
+        className='flex-shrink-0 h-6 w-6'
+      />
+      <span className='ml-3 block font-normal truncate'>
+        {player.name}
+      </span>
+    </div>
+  )
+}
+
+PlayerSelector.Label = Label
+
 export default PlayerSelector

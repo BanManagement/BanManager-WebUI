@@ -29,7 +29,7 @@ describe('Mutation assignAppeal', () => {
     await pool('bm_players').insert([actor])
 
     const [id] = await pool('bm_player_bans').insert(punishment, ['id'])
-    const data = createAppeal(id, 'PlayerBan', server, actor)
+    const data = createAppeal({ ...punishment, id }, 'PlayerBan', server, actor)
     const [inserted] = await pool('bm_web_appeals').insert(data, ['id'])
 
     const { body, statusCode } = await request
@@ -38,7 +38,9 @@ describe('Mutation assignAppeal', () => {
       .send({
         query: `mutation assignAppeal {
         assignAppeal(player: "${unparse(player.id)}", id: ${inserted}) {
-          id
+          appeal {
+            id
+          }
         }
       }`
       })
@@ -61,7 +63,7 @@ describe('Mutation assignAppeal', () => {
     await pool('bm_players').insert([player, actor])
 
     const [id] = await pool('bm_player_bans').insert(punishment, ['id'])
-    const data = createAppeal(id, 'PlayerBan', server, account)
+    const data = createAppeal({ ...punishment, id }, 'PlayerBan', server, account)
     const [inserted] = await pool('bm_web_appeals').insert(data, ['id'])
     const role = await setTempRole(setup.dbPool, account, 'player.appeals', 'update.assign.any', 'view.any')
 
@@ -72,7 +74,9 @@ describe('Mutation assignAppeal', () => {
       .send({
         query: `mutation assignAppeal {
         assignAppeal(player: "${unparse(actor.id)}", id: ${inserted}) {
-          id
+          appeal {
+            id
+          }
         }
       }`
       })
@@ -83,7 +87,7 @@ describe('Mutation assignAppeal', () => {
 
     assert(body)
     assert(body.data)
-    assert.strictEqual(body.data.assignAppeal.id, '' + inserted)
+    assert.strictEqual(body.data.assignAppeal.appeal.id, '' + inserted)
   })
 
   test('should allow update.assign.own', async () => {
@@ -96,7 +100,7 @@ describe('Mutation assignAppeal', () => {
     await pool('bm_players').insert([actor])
 
     const [id] = await pool('bm_player_bans').insert(punishment, ['id'])
-    const data = createAppeal(id, 'PlayerBan', server, account)
+    const data = createAppeal({ ...punishment, id }, 'PlayerBan', server, account)
     const [inserted] = await pool('bm_web_appeals').insert(data, ['id'])
     const role = await setTempRole(setup.dbPool, account, 'player.appeals', 'update.assign.own')
 
@@ -107,7 +111,9 @@ describe('Mutation assignAppeal', () => {
       .send({
         query: `mutation assignAppeal {
         assignAppeal(player: "${unparse(actor.id)}", id: ${inserted}) {
-          id
+          appeal {
+            id
+          }
         }
       }`
       })
@@ -118,7 +124,7 @@ describe('Mutation assignAppeal', () => {
 
     assert(body)
     assert(body.data)
-    assert.strictEqual(body.data.assignAppeal.id, '' + inserted)
+    assert.strictEqual(body.data.assignAppeal.appeal.id, '' + inserted)
   })
 
   test('should allow update.assign.assigned', async () => {
@@ -132,7 +138,7 @@ describe('Mutation assignAppeal', () => {
     await pool('bm_players').insert([player, actor])
 
     const [id] = await pool('bm_player_bans').insert(punishment, ['id'])
-    const data = createAppeal(id, 'PlayerBan', server, actor, account)
+    const data = createAppeal({ ...punishment, id }, 'PlayerBan', server, actor, account)
     const [inserted] = await pool('bm_web_appeals').insert(data, ['id'])
     const role = await setTempRole(setup.dbPool, account, 'player.appeals', 'update.assign.assigned', 'view.any')
 
@@ -143,7 +149,9 @@ describe('Mutation assignAppeal', () => {
       .send({
         query: `mutation assignAppeal {
         assignAppeal(player: "${unparse(actor.id)}", id: ${inserted}) {
-          id
+          appeal {
+            id
+          }
         }
       }`
       })
@@ -154,7 +162,7 @@ describe('Mutation assignAppeal', () => {
 
     assert(body)
     assert(body.data)
-    assert.strictEqual(body.data.assignAppeal.id, '' + inserted)
+    assert.strictEqual(body.data.assignAppeal.appeal.id, '' + inserted)
   })
 
   test('should error if appeal does not exist', async () => {
@@ -171,7 +179,9 @@ describe('Mutation assignAppeal', () => {
       .send({
         query: `mutation assignAppeal {
         assignAppeal(player: "${unparse(player.id)}", id: 123123) {
-          id
+          appeal {
+            id
+          }
         }
       }`
       })
@@ -193,7 +203,9 @@ describe('Mutation assignAppeal', () => {
       .send({
         query: `mutation assignAppeal {
         assignAppeal(player: "${unparse(player.id)}", id: 3) {
-          id
+          appeal {
+            id
+          }
         }
       }`
       })
@@ -218,9 +230,17 @@ describe('Mutation assignAppeal', () => {
       .send({
         query: `mutation assignAppeal {
         assignAppeal(player: "${unparse(player.id)}", id: 3) {
-          id
-          assignee {
+          appeal {
             id
+            assignee {
+              id
+            }
+          }
+          comment {
+            type
+            assignee {
+              id
+            }
           }
         }
       }`
@@ -231,7 +251,9 @@ describe('Mutation assignAppeal', () => {
     assert(body)
     assert(body.data)
 
-    assert.strictEqual(body.data.assignAppeal.id, '3')
-    assert.strictEqual(body.data.assignAppeal.assignee.id, unparse(player.id))
+    assert.strictEqual(body.data.assignAppeal.appeal.id, '3')
+    assert.strictEqual(body.data.assignAppeal.appeal.assignee.id, unparse(player.id))
+    assert.strictEqual(body.data.assignAppeal.comment.type, 'assigned')
+    assert.strictEqual(body.data.assignAppeal.comment.assignee.id, unparse(player.id))
   })
 })

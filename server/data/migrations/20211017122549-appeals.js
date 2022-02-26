@@ -25,6 +25,12 @@ exports.up = async function (db) {
       assignee_id: { type: 'binary', length: 16, notNull: false },
       punishment_id: { type: 'int', notNull: true },
       punishment_type: { type: 'string', notNull: true },
+      punishment_reason: { type: 'string', notNull: true },
+      punishment_created: { type: 'int', length: 10, notNull: true },
+      punishment_expires: { type: 'int', length: 10, notNull: true },
+      punishment_points: { type: 'decimal(60,2)' },
+      punishment_soft: { type: 'tinyint', length: 1 },
+      punishment_actor_id: { type: 'binary', length: 16, notNull: true },
       state_id: {
         type: 'int',
         notNull: true,
@@ -47,6 +53,7 @@ exports.up = async function (db) {
 
   await db.addIndex('bm_web_appeals', 'bm_web_appeals_server_idx', ['server_id'])
   await db.addIndex('bm_web_appeals', 'bm_web_appeals_actor_idx', ['actor_id'])
+  await db.addIndex('bm_web_appeals', 'bm_web_appeals_punishment_actor_idx', ['punishment_actor_id'])
 
   await db.insert('bm_web_appeal_states', ['id', 'name'], [1, 'Open'])
   await db.insert('bm_web_appeal_states', ['id', 'name'], [2, 'Assigned'])
@@ -55,7 +62,8 @@ exports.up = async function (db) {
 
   await db.createTable('bm_web_appeal_comments', {
     columns: {
-      id: { type: 'int', notNull: true, primaryKey: true, autoIncrement: true },
+      id: { type: 'bigint', length: 20, notNull: true, primaryKey: true, autoIncrement: true },
+      type: { type: 'int', length: 11, notNull: true },
       appeal_id: {
         type: 'int',
         notNull: true,
@@ -70,7 +78,29 @@ exports.up = async function (db) {
         }
       },
       actor_id: { type: 'binary', length: 16, notNull: true },
-      comment: { type: 'string', notNull: true },
+      assignee_id: { type: 'binary', length: 16, notNull: false },
+      state_id: {
+        type: 'int',
+        notNull: false,
+        foreignKey: {
+          name: 'bm_web_appeal_comments_state_id_fk',
+          table: 'bm_web_appeal_states',
+          mapping: 'id',
+          rules: {
+            onDelete: 'RESTRICT',
+            onUpdate: 'CASCADE'
+          }
+        }
+      },
+      old_reason: { type: 'string' },
+      new_reason: { type: 'string' },
+      old_expires: { type: 'int', length: 10 },
+      new_expires: { type: 'int', length: 10 },
+      old_points: { type: 'decimal(60,2)' },
+      new_points: { type: 'decimal(60,2)' },
+      old_soft: { type: 'tinyint', length: 1 },
+      new_soft: { type: 'tinyint', length: 1 },
+      content: { type: 'string' },
       created: { type: 'int', length: 10, notNull: true },
       updated: { type: 'int', length: 10, notNull: true }
     },

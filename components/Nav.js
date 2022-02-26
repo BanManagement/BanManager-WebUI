@@ -6,6 +6,7 @@ import clsx from 'clsx'
 import { Transition } from '@headlessui/react'
 import { RemoveScroll } from 'react-remove-scroll'
 import { FaBars } from 'react-icons/fa'
+import PageContainer from './PageContainer'
 
 export default function Nav ({ leftItems, mobileItems, rightItems }) {
   const router = useRouter()
@@ -41,7 +42,7 @@ export default function Nav ({ leftItems, mobileItems, rightItems }) {
 
   return (
     <div className='relative bg-primary-500'>
-      <div className='container mx-auto px-4 sm:px-6'>
+      <PageContainer>
         <div className='flex justify-between items-center my-6 pb-6 md:justify-start md:space-x-10'>
           <div className='flex justify-start lg:w-0 lg:flex-1'>
             <Link href='/' passHref>
@@ -64,7 +65,7 @@ export default function Nav ({ leftItems, mobileItems, rightItems }) {
             {renderMenu(rightItems)}
           </div>
         </div>
-      </div>
+      </PageContainer>
       <Transition
         show={drawerOpen}
         enter='duration-200 ease-out'

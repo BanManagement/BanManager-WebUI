@@ -14,7 +14,7 @@
 }
 
 .react_select .react_select__option {
-  @apply text-white cursor-default hover:bg-accent-500 select-none relative py-2 pl-3 pr-9
+  @apply text-white cursor-default hover:bg-gray-500 select-none relative py-2 pl-3 pr-9
 }
 
 .react_select .react_select__option--is-focused {

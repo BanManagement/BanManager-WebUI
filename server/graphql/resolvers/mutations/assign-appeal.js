@@ -1,8 +1,8 @@
 const { unparse } = require('uuid-parse')
-const appeal = require('../queries/appeal')
 const ExposedError = require('../../../data/exposed-error')
+const { getAppealCommentType } = require('../../utils')
 
-module.exports = async function assignAppeal (obj, { player, id }, { state }, info) {
+module.exports = async function assignAppeal (obj, { player, id }, { session, state }, info) {
   const data = await state.dbPool('bm_web_appeals')
     .where({ id })
     .first()
@@ -26,13 +26,29 @@ module.exports = async function assignAppeal (obj, { player, id }, { state }, in
 
   if (!playerData) throw new ExposedError(`Player ${unparse(player)} does not exist`)
 
-  await state.dbPool('bm_web_appeals')
-    .update({
-      updated: state.dbPool.raw('UNIX_TIMESTAMP()'),
-      state_id: 2,
-      assignee_id: player
-    })
-    .where({ id })
+  let commentId
 
-  return appeal(obj, { id }, { state }, info)
+  await state.dbPool.transaction(async trx => {
+    await trx('bm_web_appeals')
+      .update({
+        updated: trx.raw('UNIX_TIMESTAMP()'),
+        state_id: 2,
+        assignee_id: player
+      })
+      .where({ id })
+
+    const [insertId] = await trx('bm_web_appeal_comments').insert({
+      appeal_id: id,
+      actor_id: session.playerId,
+      assignee_id: player,
+      state_id: 2,
+      type: getAppealCommentType('assigned'),
+      created: trx.raw('UNIX_TIMESTAMP()'),
+      updated: trx.raw('UNIX_TIMESTAMP()')
+    }, ['id'])
+
+    commentId = insertId
+  })
+
+  return { appealId: id, commentId }
 }

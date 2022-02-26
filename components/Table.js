@@ -15,9 +15,9 @@ const Table = ({ children }) => {
   )
 }
 
-const Header = ({ children }) => {
+const Header = ({ children, className = '' }) => {
   return (
-    <thead className=''>
+    <thead className={className}>
       <TableContext.Provider value={{ type: 'header' }}>
         {children}
       </TableContext.Provider>
@@ -25,16 +25,16 @@ const Header = ({ children }) => {
   )
 }
 
-const Row = ({ children }) => {
+const Row = ({ children, className = '' }) => {
   return (
     <TableContext.Consumer>
       {({ type }) => {
-        const className = clsx('bg-black border-black border-l-2 border-r-2', {
+        const rowClassName = clsx(`bg-black border-black border-l-2 border-r-2 ${className}`, {
           'hover:bg-gray-900 hover:border-accent-600': type === 'body'
         })
 
         return (
-          <tr className={className}>{children}</tr>
+          <tr className={rowClassName}>{children}</tr>
         )
       }}
     </TableContext.Consumer>

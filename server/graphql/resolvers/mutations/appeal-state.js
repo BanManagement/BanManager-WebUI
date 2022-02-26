@@ -1,7 +1,7 @@
-const appeal = require('../queries/appeal')
 const ExposedError = require('../../../data/exposed-error')
+const { getAppealCommentType } = require('../../utils')
 
-module.exports = async function appealState (obj, { state: stateId, id }, { state }, info) {
+module.exports = async function appealState (obj, { state: stateId, id }, { session, state }, info) {
   const [data] = await state.dbPool('bm_web_appeals').where({ id })
 
   if (!data) throw new ExposedError(`Appeal ${id} does not exist`)
@@ -18,7 +18,27 @@ module.exports = async function appealState (obj, { state: stateId, id }, { stat
 
   if (!row) throw new ExposedError(`Appeal State ${stateId} does not exist`)
 
-  await state.dbPool('bm_web_appeals').update({ updated: state.dbPool.raw('UNIX_TIMESTAMP()'), state_id: stateId }).where({ id })
+  let commentId
 
-  return appeal(obj, { id }, { state }, info)
+  await state.dbPool.transaction(async trx => {
+    await trx('bm_web_appeals')
+      .update({
+        updated: trx.raw('UNIX_TIMESTAMP()'),
+        state_id: stateId
+      })
+      .where({ id })
+
+    const [insertId] = await trx('bm_web_appeal_comments').insert({
+      appeal_id: id,
+      actor_id: session.playerId,
+      state_id: stateId,
+      type: getAppealCommentType('state'),
+      created: trx.raw('UNIX_TIMESTAMP()'),
+      updated: trx.raw('UNIX_TIMESTAMP()')
+    }, ['id'])
+
+    commentId = insertId
+  })
+
+  return { appealId: id, commentId }
 }

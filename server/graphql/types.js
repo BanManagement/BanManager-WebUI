@@ -283,8 +283,13 @@ type PlayerAppeal @sqlTable(name: "appeals") {
   server: Server! @sqlRelation(joinOn: "id", field: "server_id", table: "servers")
   actor: Player! @cacheControl(scope: PUBLIC, maxAge: 3600) @sqlRelation(joinOn: "id", field: "actor_id", table: "players", joinType: "leftJoin")
   assignee: Player @sqlRelation(joinOn: "id", field: "assignee_id", table: "players", joinType: "leftJoin")
-  punishment: PlayerPunishment!
-  type: RecordType!
+  punishmentActor: Player! @cacheControl(scope: PUBLIC, maxAge: 3600) @sqlRelation(joinOn: "id", field: "punishment_actor_id", table: "players", joinType: "leftJoin")
+  punishmentType: RecordType! @sqlColumn(name: "punishment_type")
+  punishmentCreated: Timestamp! @sqlColumn(name: "punishment_created")
+  punishmentExpires: Timestamp! @sqlColumn(name: "punishment_expires")
+  punishmentReason: String! @sqlColumn(name: "punishment_reason")
+  punishmentSoft: Boolean @sqlColumn(name: "punishment_soft")
+  punishmentPoints: Float @sqlColumn(name: "punishment_points")
   reason: String!
   created: Timestamp!
   updated: Timestamp!
@@ -299,6 +304,11 @@ type PlayerAppealACL {
   delete: Boolean!
 }
 
+type PlayerAppealUpdated {
+  appeal: PlayerAppeal!
+  comment: PlayerAppealComment!
+}
+
 type PlayerAppealState @sqlTable(name: "appealStates") {
   id: ID!
   name: String!
@@ -306,8 +316,19 @@ type PlayerAppealState @sqlTable(name: "appealStates") {
 
 type PlayerAppealComment @sqlTable(name: "appealComments") {
   id: ID!
-  comment: String!
+  type: String!
+  content: String
+  assignee: Player @cacheControl(scope: PUBLIC, maxAge: 3600) @sqlRelation(joinOn: "id", field: "assignee_id", table: "players")
+  state: PlayerAppealState @sqlRelation(joinOn: "id", field: "state_id", table: "appealStates")
   actor: Player! @cacheControl(scope: PUBLIC, maxAge: 3600) @sqlRelation(joinOn: "id", field: "actor_id", table: "players")
+  oldReason: String @sqlColumn(name: "old_reason")
+  newReason: String @sqlColumn(name: "new_reason")
+  oldExpires: Timestamp @sqlColumn(name: "old_expires")
+  newExpires: Timestamp @sqlColumn(name: "new_expires")
+  oldPoints: Float @sqlColumn(name: "old_points")
+  newPoints: Float @sqlColumn(name: "new_points")
+  oldSoft: Boolean @sqlColumn(name: "old_soft")
+  newSoft: Boolean @sqlColumn(name: "new_soft")
   created: Timestamp!
   updated: Timestamp!
   acl: EntityACL!
@@ -333,7 +354,6 @@ type PlayerWarning @sqlTable(name: "playerWarnings") {
   server: Server!
 }
 
-union PlayerPunishment = PlayerBan | PlayerBanRecord | PlayerKick | PlayerMute | PlayerMuteRecord | PlayerWarning
 union PlayerPunishmentRecord = PlayerBanRecord | PlayerKick | PlayerMuteRecord | PlayerNote | PlayerWarning
 
 type PlayerPunishmentRecords {
@@ -520,10 +540,10 @@ type Query {
   listPlayerSessionHistory(serverId: ID!, player: UUID, limit: Int = 10, offset: Int = 0, order: OrderBySessionHistoryInput): PlayerSessionHistoryList! @cacheControl(scope: PRIVATE, maxAge: 300) @allowIf(resource: "player.history", permission: "view")
 
   appealStates: [PlayerAppealState!]
-  appeal(id: ID!): PlayerAppeal
+  appeal(id: ID!): PlayerAppeal!
   listPlayerAppeals(serverId: ID, actor: UUID, assigned: UUID, player: UUID, state: ID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerAppealList! @cacheControl(scope: PRIVATE, maxAge: 300)
 
-  listPlayerAppealComments(id: ID!, actor: UUID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerAppealCommentList! @allowIf(resource: "player.appeals", permission: "view.comments")
+  listPlayerAppealComments(id: ID!, actor: UUID, order: OrderByInput): PlayerAppealCommentList! @allowIf(resource: "player.appeals", permission: "view.comments")
   appealComment(id: ID!): PlayerAppealComment! @allowIf(resource: "player.appeals", permission: "view.comments")
 
   statistics: Statistics! @cacheControl(scope: PUBLIC, maxAge: 3600)
@@ -629,11 +649,13 @@ input CreateAppealInput {
   serverId: ID!
   punishmentId: ID!
   type: RecordType!
-  reason: String! @constraint(minLength: 2, maxLength: 65535)
+  reason: String! @constraint(minLength: 20, maxLength: 65535)
+  soft: Boolean
+  points: Float
 }
 
 input AppealCommentInput {
-  comment: String! @constraint(minLength: 2, maxLength: 255)
+  content: String! @constraint(minLength: 2, maxLength: 255)
 }
 
 input ReportCommentInput {
@@ -717,12 +739,21 @@ type Mutation {
   reportState(report: ID!, serverId: ID!, state: ID!): PlayerReport! @allowIfLoggedIn
   deleteReportComment(id: ID!, serverId: ID!): PlayerReportComment! @allowIfLoggedIn
   createReportComment(report: ID!, serverId: ID!, input: ReportCommentInput!): PlayerReportComment! @allowIfLoggedIn
+  resolveReportBan(report: ID!, serverId: ID!, input: CreatePlayerBanInput!): PlayerReport! @allowIf(resource: "player.bans", permission: "create", serverVar: "serverId")
+  resolveReportMute(report: ID!, serverId: ID!, input: CreatePlayerMuteInput!): PlayerReport! @allowIf(resource: "player.mutes", permission: "create", serverVar: "serverId")
+  resolveReportWarning(report: ID!, serverId: ID!, input: CreatePlayerWarningInput!): PlayerReport! @allowIf(resource: "player.warnings", permission: "create", serverVar: "serverId")
 
   createAppeal(input: CreateAppealInput!): PlayerAppeal! @allowIfLoggedIn
-  assignAppeal(id: ID!, player: UUID!): PlayerAppeal! @allowIfLoggedIn
-  appealState(id: ID!, state: ID!): PlayerAppeal! @allowIfLoggedIn
+  assignAppeal(id: ID!, player: UUID!): PlayerAppealUpdated! @allowIfLoggedIn
+  appealState(id: ID!, state: ID!): PlayerAppealUpdated! @allowIfLoggedIn
   deleteAppealComment(id: ID!): PlayerAppealComment! @allowIfLoggedIn
   createAppealComment(id: ID!, input: AppealCommentInput!): PlayerAppealComment! @allowIfLoggedIn
+  resolveAppealUpdateBan(id: ID!, input: UpdatePlayerBanInput!): PlayerAppealUpdated! @allowIfLoggedIn
+  resolveAppealDeleteBan(id: ID!): PlayerAppealUpdated! @allowIfLoggedIn
+  resolveAppealUpdateMute(id: ID!, input: UpdatePlayerMuteInput!): PlayerAppealUpdated! @allowIfLoggedIn
+  resolveAppealDeleteMute(id: ID!): PlayerAppealUpdated! @allowIfLoggedIn
+  resolveAppealUpdateWarning(id: ID!, input: UpdatePlayerWarningInput!): PlayerAppealUpdated! @allowIfLoggedIn
+  resolveAppealDeleteWarning(id: ID!): PlayerAppealUpdated! @allowIfLoggedIn
 
   setPassword(currentPassword: String, newPassword: String!): Me! @allowIfLoggedIn
   setEmail(currentPassword: String!, email: String!): Me! @allowIfLoggedIn

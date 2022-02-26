@@ -27,7 +27,7 @@ describe('Mutation createAppealComment', () => {
     await pool('bm_players').insert([actor])
 
     const [id] = await pool('bm_player_bans').insert(punishment, ['id'])
-    const data = createAppeal(id, 'PlayerBan', server, actor)
+    const data = createAppeal({ ...punishment, id }, 'PlayerBan', server, actor)
     const [inserted] = await pool('bm_web_appeals').insert(data, ['id'])
 
     const { body, statusCode } = await request
@@ -35,7 +35,7 @@ describe('Mutation createAppealComment', () => {
       .set('Accept', 'application/json')
       .send({
         query: `mutation createAppealComment {
-        createAppealComment(id: ${inserted}, input: { comment: "test" }) {
+        createAppealComment(id: ${inserted}, input: { content: "test" }) {
           id
         }
       }`
@@ -59,7 +59,7 @@ describe('Mutation createAppealComment', () => {
     await pool('bm_players').insert([player, actor])
 
     const [id] = await pool('bm_player_bans').insert(punishment, ['id'])
-    const data = createAppeal(id, 'PlayerBan', server, account)
+    const data = createAppeal({ ...punishment, id }, 'PlayerBan', server, account)
     const [inserted] = await pool('bm_web_appeals').insert(data, ['id'])
     const role = await setTempRole(setup.dbPool, account, 'player.appeals', 'comment.any', 'view.any')
 
@@ -69,8 +69,8 @@ describe('Mutation createAppealComment', () => {
       .set('Accept', 'application/json')
       .send({
         query: `mutation createAppealComment {
-        createAppealComment(id: ${inserted} input: { comment: "test" }) {
-          comment
+        createAppealComment(id: ${inserted} input: { content: "test" }) {
+          content
         }
       }`
       })
@@ -81,7 +81,7 @@ describe('Mutation createAppealComment', () => {
 
     assert(body)
     assert(body.data)
-    assert.strictEqual(body.data.createAppealComment.comment, 'test')
+    assert.strictEqual(body.data.createAppealComment.content, 'test')
   })
 
   test('should allow comment.own', async () => {
@@ -94,7 +94,7 @@ describe('Mutation createAppealComment', () => {
     await pool('bm_players').insert([actor])
 
     const [id] = await pool('bm_player_bans').insert(punishment, ['id'])
-    const data = createAppeal(id, 'PlayerBan', server, account)
+    const data = createAppeal({ ...punishment, id }, 'PlayerBan', server, account)
     const [inserted] = await pool('bm_web_appeals').insert(data, ['id'])
     const role = await setTempRole(setup.dbPool, account, 'player.appeals', 'comment.own', 'view.own')
 
@@ -104,8 +104,8 @@ describe('Mutation createAppealComment', () => {
       .set('Accept', 'application/json')
       .send({
         query: `mutation createAppealComment {
-        createAppealComment(id: ${inserted} input: { comment: "test" }) {
-          comment
+        createAppealComment(id: ${inserted} input: { content: "test" }) {
+          content
         }
       }`
       })
@@ -116,7 +116,7 @@ describe('Mutation createAppealComment', () => {
 
     assert(body)
     assert(body.data)
-    assert.strictEqual(body.data.createAppealComment.comment, 'test')
+    assert.strictEqual(body.data.createAppealComment.content, 'test')
   })
 
   test('should allow comment.assigned', async () => {
@@ -130,7 +130,7 @@ describe('Mutation createAppealComment', () => {
     await pool('bm_players').insert([player, actor])
 
     const [id] = await pool('bm_player_bans').insert(punishment, ['id'])
-    const data = createAppeal(id, 'PlayerBan', server, actor, account)
+    const data = createAppeal({ ...punishment, id }, 'PlayerBan', server, actor, account)
     const [inserted] = await pool('bm_web_appeals').insert(data, ['id'])
     const role = await setTempRole(setup.dbPool, account, 'player.appeals', 'comment.assigned', 'view.assigned')
 
@@ -140,8 +140,8 @@ describe('Mutation createAppealComment', () => {
       .set('Accept', 'application/json')
       .send({
         query: `mutation createAppealComment {
-        createAppealComment(id: ${inserted} input: { comment: "test" }) {
-          comment
+        createAppealComment(id: ${inserted} input: { content: "test" }) {
+          content
         }
       }`
       })
@@ -152,7 +152,7 @@ describe('Mutation createAppealComment', () => {
 
     assert(body)
     assert(body.data)
-    assert.strictEqual(body.data.createAppealComment.comment, 'test')
+    assert.strictEqual(body.data.createAppealComment.content, 'test')
   })
 
   test('should error if appeal does not exist', async () => {
@@ -164,7 +164,7 @@ describe('Mutation createAppealComment', () => {
       .set('Accept', 'application/json')
       .send({
         query: `mutation createAppealComment {
-        createAppealComment(id: 123123 input: { comment: "test" }) {
+        createAppealComment(id: 123123 input: { content: "test" }) {
           id
         }
       }`

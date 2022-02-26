@@ -50,12 +50,13 @@ describe('Query appealComment', () => {
     await pool('bm_players').insert([actor])
 
     const [id] = await pool('bm_player_bans').insert(punishment, ['id'])
-    const data = createAppeal(id, 'PlayerBan', server, account)
+    const data = createAppeal({ ...punishment, id }, 'PlayerBan', server, account)
     const [inserted] = await pool('bm_web_appeals').insert(data, ['id'])
     const [commentId] = await pool('bm_web_appeal_comments').insert({
       appeal_id: inserted,
       actor_id: actor.id,
-      comment: 'asdasdasd',
+      content: 'asdasdasd',
+      type: 0,
       created: punishment.created,
       updated: punishment.updated
     }, ['id'])
@@ -67,7 +68,8 @@ describe('Query appealComment', () => {
         query: `query appealComment {
           appealComment(id:"${commentId}") {
             id
-            comment
+            content
+            type
             created
             updated
             actor {
@@ -88,7 +90,8 @@ describe('Query appealComment', () => {
     assert.deepStrictEqual(body.data.appealComment,
       {
         id: commentId.toString(),
-        comment: 'asdasdasd',
+        content: 'asdasdasd',
+        type: 'comment',
         created: punishment.created,
         updated: punishment.updated,
         actor: { id: unparse(actor.id), name: actor.name },

@@ -80,8 +80,8 @@ export default function PlayerPunishment ({ punishment, server, type, onDeleted 
 
   let label = ''
 
-  if (punishment.expires === 0) label = <Badge className='bg-red-500 sm:mx-auto' horizontal>Permanent</Badge>
-  if (punishment.expires) label = <Badge className='bg-yellow-500 sm:mx-auto' horizontal>{fromNow(punishment.expires)}</Badge>
+  if (punishment.expires === 0) label = <Badge className='bg-red-500 sm:mx-auto'>Permanent</Badge>
+  if (punishment.expires) label = <Badge className='bg-yellow-500 sm:mx-auto'>{fromNow(punishment.expires)}</Badge>
 
   const dateFormat = 'yyyy-MM-dd HH:mm:ss'
 
@@ -137,7 +137,7 @@ export default function PlayerPunishment ({ punishment, server, type, onDeleted 
             </ul>
           </div>
           {punishment.acl.yours &&
-            <Link href={`/player/appeal/${server.id}-${punishment.id}/${meta.editPath.replace('edit-', '')}`} passHref>
+            <Link href={`/player/appeal/${server.id}/${punishment.id}/${meta.editPath.replace('edit-', '')}`} passHref>
               <a>
                 <Button className='bg-blue-600 hover:bg-blue-900 mt-4'>
                   Appeal

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { GraphQLClient } from 'graphql-request'
 import { useRouter } from 'next/router'
 import { formatDistanceStrict, fromUnixTime } from 'date-fns'
-import useSWR from 'swr'
+import useSWR, { useSWRConfig, unstable_serialize } from 'swr'
 import { toPairs } from 'lodash-es'
 
 export const absoluteUrl = (req, localhostAddress = 'localhost:3000') => {
@@ -77,6 +77,42 @@ export const useMutateApi = (operation) => {
   }
 
   return { load, loading, ...state }
+}
+
+export const useMatchMutate = () => {
+  const { cache, mutate } = useSWRConfig()
+
+  return (operation, executor, args = {}) => {
+    if (!(cache instanceof Map)) {
+      throw new Error('matchMutate requires the cache provider to be a Map instance')
+    }
+
+    const flatVars = toPairs(args).flat()
+    const argKey = unstable_serialize(flatVars).slice(1)
+
+    let matchingKey
+
+    for (const key of cache.keys()) {
+      if (key.includes(operation)) {
+        const value = cache.get(key)
+
+        if (!value || !value[operation]) {
+          continue
+        }
+
+        if (!argKey || key.includes(argKey)) {
+          matchingKey = key
+          break
+        }
+      }
+    }
+
+    if (!matchingKey) return () => {}
+
+    return executor(cache.get(matchingKey), (...args) => {
+      mutate(matchingKey, ...args)
+    })
+  }
 }
 
 const userFetcher = () =>

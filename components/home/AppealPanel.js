@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import Button from '../Button'
 
 const AppealPanel = () => {
@@ -9,9 +10,13 @@ const AppealPanel = () => {
         If you believe your account has been wrongfully punished, create an appeal justifying why including any relevant evidence
       </p>
       <p className='text-xs mb-3'>There is no guarantee your appeal will be successful</p>
-      <Button className='max-w-md mx-auto'>
-        Create Appeal
-      </Button>
+      <Link href='/tutorial' passHref>
+        <a>
+          <Button className='max-w-md mx-auto'>
+            Create Appeal
+          </Button>
+        </a>
+      </Link>
     </div>
   )
 }
