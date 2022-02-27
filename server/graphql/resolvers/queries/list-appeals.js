@@ -1,15 +1,37 @@
 const { parseResolveInfo, simplifyParsedResolveInfoFragmentWithType } = require('graphql-parse-resolve-info')
 const ExposedError = require('../../../data/exposed-error')
+const viewPerms = [
+  ['view.own', 'actor_id'],
+  ['view.assigned', 'assignee_id']
+]
 
-module.exports = async function listPlayerAppeals (obj, { serverId, actor, assigned, state: stateId, limit, offset, order }, { state }, info) {
+module.exports = async function listPlayerAppeals (obj, { serverId, actor, assigned, state: stateId, limit, offset, order }, { session, state }, info) {
   if (serverId && !state.serversPool.has(serverId)) throw new ExposedError('Server does not exist')
   if (limit > 50) throw new ExposedError('Limit too large')
-  if (!state.acl.hasServerPermission(serverId, 'player.appeals', 'view.any')) {
-    throw new ExposedError('You do not have permission to perform this action, please contact your server administrator')
-  }
 
   const data = {}
-  const server = state.serversPool.get(serverId)
+  const aclFilter = []
+
+  if (!state.acl.hasServerPermission(serverId, 'player.appeals', 'view.any')) {
+    if (!session || !session.playerId) return { ...data, total: 0, records: [] }
+
+    const deny = viewPerms.every(([perm]) => state.acl.hasServerPermission(serverId, 'player.appeals', perm) === false)
+
+    if (deny) return { ...data, total: 0, records: [] }
+
+    viewPerms.forEach(([perm, field]) => {
+      const allowed = state.acl.hasServerPermission(serverId, 'player.appeals', perm)
+
+      if (allowed) aclFilter.push([field, session.playerId])
+    })
+  }
+
+  const handleAclFilter = query => {
+    for (const [field, value] of aclFilter) {
+      query.orWhere(field, value)
+    }
+  }
+
   const parsedResolveInfoFragment = parseResolveInfo(info)
   const { fields } = simplifyParsedResolveInfoFragmentWithType(parsedResolveInfoFragment, info.returnType)
   const filter = {}
@@ -17,24 +39,27 @@ module.exports = async function listPlayerAppeals (obj, { serverId, actor, assig
   if (actor) filter.actor_id = actor
   if (assigned) filter.assignee_id = assigned
   if (stateId) filter.state_id = stateId
+  if (serverId) filter.server_id = serverId
 
   if (fields.total) {
     const { total } = await state.dbPool('bm_web_appeals')
-      .select(server.pool.raw('COUNT(*) as total'))
+      .select(state.dbPool.raw('COUNT(*) as total'))
       .where(filter)
+      .where(handleAclFilter)
       .first()
 
     data.total = total
   }
 
   if (fields.records) {
-    const query = await state.dbPool('bm_web_appeals')
+    const query = state.dbPool('bm_web_appeals')
       .select([
         'bm_web_appeals.*',
         'states.name AS name'
       ])
       .leftJoin('bm_web_appeal_states AS states', 'states.id', 'bm_web_appeals.state_id')
       .where(filter)
+      .where(handleAclFilter)
       .limit(limit)
       .offset(offset)
 
@@ -47,6 +72,10 @@ module.exports = async function listPlayerAppeals (obj, { serverId, actor, assig
     data.records = results.map(result => {
       if (fields.records.fieldsByTypeName.PlayerAppeal.actor) {
         result.actor = state.loaders.player.load({ id: result.actor_id, fields: ['name'] })
+      }
+
+      if (fields.records.fieldsByTypeName.PlayerAppeal.punishmentActor) {
+        result.punishmentActor = state.loaders.player.load({ id: result.punishment_actor_id, fields: ['name'] })
       }
 
       if (fields.records.fieldsByTypeName.PlayerAppeal.assignee && result.assignee_id) {
@@ -63,6 +92,13 @@ module.exports = async function listPlayerAppeals (obj, { serverId, actor, assig
           name: result.name
         }
       }
+
+      if (fields.records.fieldsByTypeName.PlayerAppeal.punishmentReason) result.punishmentReason = result.punishment_reason
+      if (fields.records.fieldsByTypeName.PlayerAppeal.punishmentCreated) result.punishmentCreated = result.punishment_created
+      if (fields.records.fieldsByTypeName.PlayerAppeal.punishmentExpires) result.punishmentExpires = result.punishment_expires
+      if (fields.records.fieldsByTypeName.PlayerAppeal.punishmentType) result.punishmentType = result.punishment_type
+      if (fields.records.fieldsByTypeName.PlayerAppeal.punishmentSoft) result.punishmentSoft = result.punishment_soft
+      if (fields.records.fieldsByTypeName.PlayerAppeal.punishmentPoints) result.punishmentPoints = result.punishment_points
 
       if (fields.records.fieldsByTypeName.PlayerAppeal.acl) {
         result.acl = {

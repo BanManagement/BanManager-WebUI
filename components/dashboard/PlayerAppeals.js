@@ -6,22 +6,20 @@ import Loader from '../Loader'
 import Avatar from '../Avatar'
 import Table from '../Table'
 import Pagination from '../Pagination'
-import ServerSelector from '../admin/ServerSelector'
+import PlayerAppealBadge from '../appeals/PlayerAppealBadge'
 import { fromNow, useApi, useUser } from '../../utils'
 
 const query = `
-  query listPlayerReports($serverId: ID!, $id: UUID, $assigned: UUID, $player: UUID, $state: ID, $limit: Int, $offset: Int) {
-    listPlayerReports(serverId: $serverId, actor: $id, assigned: $assigned, player: $player, state: $state, limit: $limit, offset: $offset) {
+  query listPlayerAppeals($id: UUID, $assigned: UUID, $state: ID, $limit: Int, $offset: Int) {
+    listPlayerAppeals(actor: $id, assigned: $assigned, state: $state, limit: $limit, offset: $offset) {
       total
       records {
         id
         created
         updated
+        punishmentType
+        punishmentReason
         state {
-          id
-          name
-        }
-        player {
           id
           name
         }
@@ -33,31 +31,18 @@ const query = `
     }
   }`
 
-const ReportRow = ({ serverId, row, dateFormat }) => {
+const AppealRow = ({ row, dateFormat }) => {
   return (
     <Table.Row>
       <Table.Cell>
-        <Link href={`/reports/${serverId}/${row.id}`} passHref>
+        <Link href={`/appeals/${row.id}`} passHref>
           <a>
             <Badge className='bg-accent-500 sm:mx-auto'>#{row.id}</Badge>
           </a>
         </Link>
       </Table.Cell>
       <Table.Cell>
-        <Link href={`/player/${row.player.id}`} passHref>
-          <a>
-            <div className='flex items-center'>
-              <div className='flex-shrink-0'>
-                <Avatar uuid={row.player.id} height='26' width='26' />
-              </div>
-              <div className='ml-3'>
-                <p className='whitespace-no-wrap'>
-                  {row.player.name}
-                </p>
-              </div>
-            </div>
-          </a>
-        </Link>
+        <PlayerAppealBadge appeal={row} />
       </Table.Cell>
       <Table.Cell>{format(fromUnixTime(row.created), dateFormat)}</Table.Cell>
       <Table.Cell>{row.state.name}</Table.Cell>
@@ -84,10 +69,10 @@ const ReportRow = ({ serverId, row, dateFormat }) => {
   )
 }
 
-export default function PlayerReports ({ id, title }) {
+export default function PlayerAppeals ({ id, title }) {
   const { hasPermission } = useUser()
   const [tableState, setTableState] = useState({ id, serverId: null, activePage: 1, limit: 10, offset: 0, actor: null, assigned: null, state: null })
-  const { loading, data } = useApi({ query: !tableState.serverId ? null : query, variables: tableState })
+  const { loading, data } = useApi({ query, variables: tableState })
 
   if (loading) return <Loader />
 
@@ -103,14 +88,9 @@ export default function PlayerReports ({ id, title }) {
       >
         <div className='flex items-center'>
           <p className='mr-6'>{title}</p>
-          <div className='w-40 inline-block'>
-            <ServerSelector
-              onChange={serverId => setTableState({ ...tableState, serverId })}
-            />
-          </div>
-          {(hasPermission('player.reports', 'view.any') || hasPermission('player.reports', 'view.assigned')) &&
+          {(hasPermission('player.appeals', 'view.any') || hasPermission('player.appeals', 'view.assigned')) &&
             <div className='ml-3 text-sm'>
-              <Link href='/dashboard/reports'>View All</Link>
+              <Link href='/dashboard/appeals'>View All</Link>
             </div>
           }
         </div>
@@ -119,7 +99,7 @@ export default function PlayerReports ({ id, title }) {
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell>ID</Table.HeaderCell>
-            <Table.HeaderCell>Player</Table.HeaderCell>
+            <Table.HeaderCell>Type</Table.HeaderCell>
             <Table.HeaderCell>At</Table.HeaderCell>
             <Table.HeaderCell>State</Table.HeaderCell>
             <Table.HeaderCell>Assigned</Table.HeaderCell>
@@ -129,7 +109,7 @@ export default function PlayerReports ({ id, title }) {
         <Table.Body>
           {loading
             ? <Table.Row><Table.Cell colSpan='6'><Loader /></Table.Cell></Table.Row>
-            : data?.listPlayerReports?.records?.map((row, i) => (<ReportRow serverId={tableState.serverId} row={row} dateFormat={dateFormat} key={i} />))}
+            : data?.listPlayerAppeals?.records?.map((row, i) => (<AppealRow serverId={tableState.serverId} row={row} dateFormat={dateFormat} key={i} />))}
         </Table.Body>
         <Table.Footer>
           <Table.Row>

@@ -40,7 +40,7 @@ module.exports = async function ({ dbPool, logger, serversPool, disableUI = fals
       ctx.log.error(err)
 
       ctx.status = err.status || 500
-      ctx.body = { error: err.exposed ? err.message : 'Internal Server Error' }
+      ctx.body = { error: (err.exposed || err.expose) ? err.message : 'Internal Server Error' }
       ctx.app.emit('error', err, ctx)
     }
   })

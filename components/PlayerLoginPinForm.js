@@ -39,7 +39,7 @@ export default function PlayerLoginPinForm ({ onSuccess }) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className='mx-auto'>
-      <div className='flex flex-col relative w-full max-w-md px-4 sm:px-6 md:px-8 lg:px-10'>
+      <div className='flex flex-col relative w-full max-w-md md:px-8 lg:px-10'>
         <ErrorMessages error={error} />
         <Controller
           name='serverId'
@@ -50,7 +50,7 @@ export default function PlayerLoginPinForm ({ onSuccess }) {
         />
         <Input
           required
-          placeholder='Player name'
+          placeholder='Minecraft Username'
           icon={<AiOutlineUser />}
           iconPosition='left'
           {...register('name')}

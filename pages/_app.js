@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types'
 import Head from 'next/head'
 import { DefaultSeo } from 'next-seo'
 
@@ -22,12 +21,6 @@ function MyApp ({ Component, pageProps, graphql }) {
       <Component {...pageProps} />
     </>
   )
-}
-
-MyApp.propTypes = {
-  pageProps: PropTypes.object,
-  Component: PropTypes.elementType,
-  graphql: PropTypes.any
 }
 
 export default MyApp
