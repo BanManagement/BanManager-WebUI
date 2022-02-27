@@ -40,7 +40,7 @@ export default function PlayerReportState ({ id, currentState, states, server, o
         defaultValue={currentState ? ({ value: currentState.id, label: currentState.name }) : null}
         options={states}
         onChange={handleChange}
-        />
+      />
     </>
   )
 }

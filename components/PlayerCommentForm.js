@@ -32,7 +32,7 @@ export default function PlayerCommentForm ({ onFinish, parseVariables, query }) 
         placeholder='Leave a comment'
         {...register('comment')}
       />
-      <div className="-mr-1">
+      <div className='-mr-1'>
         <Button data-cy='submit-report-comment-form' disabled={isSubmitting} loading={loading}>Comment</Button>
       </div>
     </form>

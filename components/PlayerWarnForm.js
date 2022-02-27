@@ -69,7 +69,7 @@ export default function PlayerWarnForm ({ serverFilter, onFinished, query, parse
         placeholder='Points'
         type='number'
         min='0'
-        step=".01"
+        step='.01'
         {...register('points', { valueAsNumber: true })}
       />
       <Button className={`mb-6 ${expiryColour}`} onClick={toggleExpiry}>{expiryLabel}</Button>
@@ -81,7 +81,7 @@ export default function PlayerWarnForm ({ serverFilter, onFinished, query, parse
             render={({ field: { onChange, value } }) => <DateTimePicker isValidDate={disablePast} onChange={onChange} value={value} />}
           />
         </div>}
-        <Button ref={submitRef} disabled={isSubmitting} loading={isSubmitting} className={submitRef ? 'hidden' : ''}>
+      <Button ref={submitRef} disabled={isSubmitting} loading={isSubmitting} className={submitRef ? 'hidden' : ''}>
         Save
       </Button>
     </form>

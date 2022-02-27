@@ -123,11 +123,13 @@ export default function Page () {
               <a>
                 {report.actor.name}
               </a>
-            </Link> reported <Link href={`/player/${report.player.id}`}>
+            </Link> reported&nbsp;
+            <Link href={`/player/${report.player.id}`}>
               <a>
                 {report.player.name}
               </a>
-            </Link> on {format(fromUnixTime(report.created), 'dd MMM yyyy')}
+            </Link>
+            &nbsp;on {format(fromUnixTime(report.created), 'dd MMM yyyy')}
           </p>
         </div>
         <div className='grid grid-flow-row md:grid-flow-col grid-cols-12'>
@@ -168,10 +170,10 @@ export default function Page () {
           </div>
           <div className='hidden md:block col-span-3 space-y-6 mx-6'>
             <div className='sticky top-6'>
-              <ul role="list" className="divide-y divide-gray-700">
-                <li className="pb-3">
-                  <div className="flex items-center">
-                    <div className="flex-1 min-w-0 space-y-3">
+              <ul role='list' className='divide-y divide-gray-700'>
+                <li className='pb-3'>
+                  <div className='flex items-center'>
+                    <div className='flex-1 min-w-0 space-y-3'>
                       <p>
                         State
                       </p>
@@ -186,13 +188,13 @@ export default function Page () {
                               mutate({ ...data, report: { ...data.report, state, updated } }, false)
                             }}
                           />)
-                        : (<p className="text-sm text-gray-400">{report?.state?.name}</p>)}
+                        : (<p className='text-sm text-gray-400'>{report?.state?.name}</p>)}
                     </div>
                   </div>
                 </li>
-                <li className="py-3 sm:py-4">
-                  <div className="flex items-center space-x-4">
-                    <div className="flex-1 min-w-0 space-y-3">
+                <li className='py-3 sm:py-4'>
+                  <div className='flex items-center space-x-4'>
+                    <div className='flex-1 min-w-0 space-y-3'>
                       <p>
                         Assignee
                       </p>
@@ -206,7 +208,7 @@ export default function Page () {
                               mutate({ ...data, report: { ...data.report, assignee, updated } }, false)
                             }}
                           />)
-                        : (<p className="text-sm text-gray-400">{report?.assignee?.name || 'No one'}</p>)}
+                        : (<p className='text-sm text-gray-400'>{report?.assignee?.name || 'No one'}</p>)}
                     </div>
                   </div>
                 </li>
@@ -214,7 +216,7 @@ export default function Page () {
             </div>
             <div>
               <PageHeader title='Locations' />
-              <ul role="list" className="divide-y divide-gray-700">
+              <ul role='list' className='divide-y divide-gray-700'>
                 {report.playerLocation && <PlayerReportLocation location={report.playerLocation} player={report.player} />}
                 {report.actorLocation && <PlayerReportLocation location={report.actorLocation} player={report.actor} />}
               </ul>
@@ -222,12 +224,13 @@ export default function Page () {
             <div>
               {report?.commands?.length || (!!user && report.state.id < 3) ? <PageHeader title='Actions' /> : <></>}
               {!!user && report.state.id < 3 && !report?.commands?.length &&
-                <PlayerReportActions report={report} server={data.server} onAction={({ state, updated, commands }) => {
-                  mutate({ ...data, report: { ...data.report, state, updated, commands } }, false)
-                }} />
-              }
+                <PlayerReportActions
+                  report={report} server={data.server} onAction={({ state, updated, commands }) => {
+                    mutate({ ...data, report: { ...data.report, state, updated, commands } }, false)
+                  }}
+                />}
               {!!report?.commands?.length &&
-                <ul role="list" className="divide-y divide-gray-700">
+                <ul role='list' className='divide-y divide-gray-700'>
                   {report.commands.map(cmd => (
                     <PlayerReportCommand key={cmd.id} command={cmd} />
                   ))}
@@ -236,10 +239,10 @@ export default function Page () {
           </div>
         </div>
         <div className='md:hidden col-span-12 space-y-6'>
-          <ul role="list" className="divide-y divide-gray-700">
-            <li className="py-3">
-              <div className="flex items-center">
-                <div className="flex-1 min-w-0 space-y-3">
+          <ul role='list' className='divide-y divide-gray-700'>
+            <li className='py-3'>
+              <div className='flex items-center'>
+                <div className='flex-1 min-w-0 space-y-3'>
                   <p>
                     State
                   </p>
@@ -254,13 +257,13 @@ export default function Page () {
                           mutate({ ...data, report: { ...data.report, state, updated } }, false)
                         }}
                       />)
-                    : (<p className="text-sm text-gray-400">{report?.state?.name}</p>)}
+                    : (<p className='text-sm text-gray-400'>{report?.state?.name}</p>)}
                 </div>
               </div>
             </li>
-            <li className="py-3 sm:py-4">
-              <div className="flex items-center space-x-4">
-                <div className="flex-1 min-w-0 space-y-3">
+            <li className='py-3 sm:py-4'>
+              <div className='flex items-center space-x-4'>
+                <div className='flex-1 min-w-0 space-y-3'>
                   <p>
                     Assignee
                   </p>
@@ -274,32 +277,33 @@ export default function Page () {
                           mutate({ ...data, report: { ...data.report, assignee, updated } }, false)
                         }}
                       />)
-                    : (<p className="text-sm text-gray-400">{report?.assignee?.name || 'No one'}</p>)}
+                    : (<p className='text-sm text-gray-400'>{report?.assignee?.name || 'No one'}</p>)}
                 </div>
               </div>
             </li>
           </ul>
           <div>
             <PageHeader title='Locations' />
-            <ul role="list" className="divide-y divide-gray-700">
+            <ul role='list' className='divide-y divide-gray-700'>
               {report.playerLocation && <PlayerReportLocation location={report.playerLocation} player={report.player} />}
               {report.actorLocation && <PlayerReportLocation location={report.actorLocation} player={report.actor} />}
             </ul>
           </div>
           <div>
-              {report?.commands?.length || (!!user && report.state.id < 3) ? <PageHeader title='Actions' /> : <></>}
-              {!!user && report.state.id < 3 && !report?.commands?.length &&
-                <PlayerReportActions report={report} server={data.server} onAction={({ state, updated, commands }) => {
+            {report?.commands?.length || (!!user && report.state.id < 3) ? <PageHeader title='Actions' /> : <></>}
+            {!!user && report.state.id < 3 && !report?.commands?.length &&
+              <PlayerReportActions
+                report={report} server={data.server} onAction={({ state, updated, commands }) => {
                   mutate({ ...data, report: { ...data.report, state, updated, commands } }, false)
-                }} />
-              }
-              {!!report?.commands?.length &&
-                <ul role="list" className="divide-y divide-gray-700">
-                  {report.commands.map(cmd => (
-                    <PlayerReportCommand key={cmd.id} command={cmd} />
-                  ))}
-                </ul>}
-            </div>
+                }}
+              />}
+            {!!report?.commands?.length &&
+              <ul role='list' className='divide-y divide-gray-700'>
+                {report.commands.map(cmd => (
+                  <PlayerReportCommand key={cmd.id} command={cmd} />
+                ))}
+              </ul>}
+          </div>
         </div>
       </PageContainer>
     </DefaultLayout>

@@ -12,26 +12,17 @@ scalar Timestamp
 scalar UUID
 scalar JSONObject
 
-directive @allowIf(resource: String!, permission: String!, serverVar: String, serverSrc: String) on FIELD_DEFINITION
-directive @allowIfLoggedIn on FIELD_DEFINITION
-directive @sqlRelation(field: String!, table: String!, joinType: String, joinOn: String, whereKey: String) on FIELD_DEFINITION
-directive @sqlTable(name: String!) on OBJECT
-directive @sqlColumn(name: String!) on FIELD_DEFINITION
-directive @constraint(
-  minLength: Int
-  maxLength: Int
-  startsWith: String
-  endsWith: String
-  notContains: String
-  pattern: String
-  format: String
+enum CacheControlScope {
+  PUBLIC
+  PRIVATE
+}
 
-  min: Int
-  max: Int
-  exclusiveMin: Int
-  exclusiveMax: Int
-  multipleOf: Int
-) on INPUT_FIELD_DEFINITION
+directive @cacheControl(
+  maxAge: Int
+  scope: CacheControlScope
+  inheritMaxAge: Boolean
+) on FIELD_DEFINITION | OBJECT | INTERFACE | UNION
+directive @sqlColumn(name: String!) on FIELD_DEFINITION
 
 type Server @sqlTable(name: "servers") @cacheControl(scope: PUBLIC, maxAge: 3600) {
   id: ID! @cacheControl(scope: PUBLIC, maxAge: 3600)

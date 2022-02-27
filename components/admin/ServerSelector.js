@@ -2,6 +2,7 @@ import { forwardRef, useEffect, useState } from 'react'
 import Select from '../Select'
 import { useApi } from '../../utils'
 
+// eslint-disable-next-line react/display-name
 const ServerSelector = forwardRef(({ onChange, filter = () => true, value, ...rest }, ref) => {
   const [loading, setLoading] = useState(false)
   const [selected, setSelected] = useState(value || null)

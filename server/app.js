@@ -76,6 +76,8 @@ module.exports = async function ({ dbPool, logger, serversPool, disableUI = fals
   routes(router)
   server.use(router.routes())
 
+  await apolloServer.start()
+
   router.use(apolloServer.getMiddleware())
 
   if (handle) {

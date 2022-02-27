@@ -19,11 +19,13 @@ export default function PlayerAppealCommentAssigned ({ id, actor, created, assig
           <a className=''>
             {actor.name}
           </a>
-        </Link> assigned <Link href={`/player/${assignee.id}`}>
+        </Link> assigned&nbsp;
+        <Link href={`/player/${assignee.id}`}>
           <a className=''>
             {assignee.name}
           </a>
-        </Link> {fromNow(created)}
+        </Link>
+        &nbsp;{fromNow(created)}
       </span>
     </div>
   )

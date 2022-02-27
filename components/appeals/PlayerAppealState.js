@@ -63,7 +63,7 @@ export default function PlayerAppealState ({ id, currentState, states, onChange 
         defaultValue={currentState ? ({ value: currentState.id, label: currentState.name }) : null}
         options={states}
         onChange={handleChange}
-        />
+      />
     </>
   )
 }

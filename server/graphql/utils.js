@@ -45,9 +45,9 @@ function getSql (schema, server, fields, tableKey, returnType, nested) {
 
     const fieldInfo = schema.getType(nodeType)
 
-    if (!fieldInfo.sqlMeta) continue
+    if (!fieldInfo.extensions.sqlMeta) continue
 
-    const sql = fieldInfo.sqlMeta
+    const sql = fieldInfo.extensions.sqlMeta
     const tableName = tables[sql.tableKey]
 
     for (const [fieldName, field] of Object.entries(nodeField)) {
@@ -81,9 +81,9 @@ function getSql (schema, server, fields, tableKey, returnType, nested) {
         } else if (join.fieldType instanceof GraphQLList && join.type === 'query') {
           const listField = stripNonNullType(join.fieldType.ofType)
 
-          if (!listField.sqlMeta) continue
+          if (!listField.extensions.sqlMeta) continue
 
-          const query = getSql(schema, server, field, listField.sqlMeta.tableKey, returnType, true)
+          const query = getSql(schema, server, field, listField.extensions.sqlMeta.tableKey, returnType, true)
 
           if (join.whereKey) {
             queries.core.select(`${tableName}.${join.field}`)
@@ -96,7 +96,7 @@ function getSql (schema, server, fields, tableKey, returnType, nested) {
             })
           }
 
-          queries.additional.push({ fieldName, query, join, sqlMeta: listField.sqlMeta })
+          queries.additional.push({ fieldName, query, join, sqlMeta: listField.extensions.sqlMeta })
         }
       }
     }

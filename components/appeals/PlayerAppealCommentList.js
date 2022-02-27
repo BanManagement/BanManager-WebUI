@@ -69,15 +69,17 @@ export default function PlayerAppealCommentList ({ appeal, showReply }) {
     ? data.listPlayerAppealComments.records.map(comment => {
         switch (comment.type) {
           case 'comment':
-            return <PlayerAppealComment
-              key={comment.id}
-              {...comment}
-              onDelete={({ deleteAppealComment: { id } }) => {
-                const records = data.listPlayerAppealComments.records.filter(c => c.id !== id)
+            return (
+              <PlayerAppealComment
+                key={comment.id}
+                {...comment}
+                onDelete={({ deleteAppealComment: { id } }) => {
+                  const records = data.listPlayerAppealComments.records.filter(c => c.id !== id)
 
-                mutate({ ...data, listPlayerAppealComments: { total: data.listPlayerAppealComments.total - 1, records } }, false)
-              }}
-            />
+                  mutate({ ...data, listPlayerAppealComments: { total: data.listPlayerAppealComments.total - 1, records } }, false)
+                }}
+              />
+            )
           case 'state':
             return <PlayerAppealCommentState key={comment.id} {...comment} />
           case 'assigned':

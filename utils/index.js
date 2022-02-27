@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { GraphQLClient } from 'graphql-request'
 import { useRouter } from 'next/router'
 import { formatDistanceStrict, fromUnixTime } from 'date-fns'
-import useSWR, { useSWRConfig, unstable_serialize } from 'swr'
+import useSWR, { useSWRConfig, unstable_serialize as unstableSerialize } from 'swr'
 import { toPairs } from 'lodash-es'
 
 export const absoluteUrl = (req, localhostAddress = 'localhost:3000') => {
@@ -88,7 +88,7 @@ export const useMatchMutate = () => {
     }
 
     const flatVars = toPairs(args).flat()
-    const argKey = unstable_serialize(flatVars).slice(1)
+    const argKey = unstableSerialize(flatVars).slice(1)
 
     let matchingKey
 

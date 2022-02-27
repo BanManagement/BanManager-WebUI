@@ -57,16 +57,14 @@ export default function TutorialLogin ({ currentState, handleNext }) {
           <div className='flex flex-col relative w-full max-w-md px-4 sm:px-6 md:px-8 lg:px-10'>
             <Button onClick={() => handleNext('Back')} className='bg-red-600 hover:bg-red-700'>Back</Button>
           </div>
-        </div>
-      }
+        </div>}
       {loginType === 'I already have an account' &&
         <div className='space-y-6'>
-        <PlayerLoginPasswordForm onSuccess={() => mutate('/api/user')} />
-        <div className='flex flex-col relative w-full max-w-md px-4 sm:px-6 md:px-8 lg:px-10'>
-          <Button onClick={() => handleNext('Back')} className='bg-red-600 hover:bg-red-700'>Back</Button>
-        </div>
-      </div>
-      }
+          <PlayerLoginPasswordForm onSuccess={() => mutate('/api/user')} />
+          <div className='flex flex-col relative w-full max-w-md px-4 sm:px-6 md:px-8 lg:px-10'>
+            <Button onClick={() => handleNext('Back')} className='bg-red-600 hover:bg-red-700'>Back</Button>
+          </div>
+        </div>}
     </>
   )
 }

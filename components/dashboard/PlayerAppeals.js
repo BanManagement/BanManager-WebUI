@@ -61,8 +61,7 @@ const AppealRow = ({ row, dateFormat }) => {
                 </div>
               </div>
             </a>
-          </Link>
-        }
+          </Link>}
       </Table.Cell>
       <Table.Cell>{fromNow(row.updated)}</Table.Cell>
     </Table.Row>
@@ -91,8 +90,7 @@ export default function PlayerAppeals ({ id, title }) {
           {(hasPermission('player.appeals', 'view.any') || hasPermission('player.appeals', 'view.assigned')) &&
             <div className='ml-3 text-sm'>
               <Link href='/dashboard/appeals'>View All</Link>
-            </div>
-          }
+            </div>}
         </div>
       </h1>
       <Table>

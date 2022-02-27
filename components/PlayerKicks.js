@@ -137,8 +137,8 @@ export default function PlayerKicks ({ id, color, limit = 10 }) {
           </div>
         </div>
       </h1>
-      {data?.listPlayerPunishmentRecords?.total > 0
-        ? <Table>
+      {data?.listPlayerPunishmentRecords?.total > 0 && (
+        <Table>
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell>Reason</Table.HeaderCell>
@@ -163,12 +163,15 @@ export default function PlayerKicks ({ id, color, limit = 10 }) {
               </Table.HeaderCell>
             </Table.Row>
           </Table.Footer>
-          </Table>
-        : <div className='flex items-center'>
+        </Table>
+      )}
+      {!data?.listPlayerPunishmentRecords?.total && (
+        <div className='flex items-center'>
           <div className='bg-black w-full rounded-lg flex flex-col justify-center sm:justify-start items-center sm:items-start sm:flex-row space-x-5 p-8'>
             None
           </div>
-        </div>}
+        </div>
+      )}
     </div>
   )
 }

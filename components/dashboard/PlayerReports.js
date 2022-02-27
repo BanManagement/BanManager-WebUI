@@ -76,8 +76,7 @@ const ReportRow = ({ serverId, row, dateFormat }) => {
                 </div>
               </div>
             </a>
-          </Link>
-        }
+          </Link>}
       </Table.Cell>
       <Table.Cell>{fromNow(row.updated)}</Table.Cell>
     </Table.Row>
@@ -111,8 +110,7 @@ export default function PlayerReports ({ id, title }) {
           {(hasPermission('player.reports', 'view.any') || hasPermission('player.reports', 'view.assigned')) &&
             <div className='ml-3 text-sm'>
               <Link href='/dashboard/reports'>View All</Link>
-            </div>
-          }
+            </div>}
         </div>
       </h1>
       <Table>

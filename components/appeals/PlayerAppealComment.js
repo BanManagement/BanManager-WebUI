@@ -62,7 +62,8 @@ export default function PlayerAppealComment ({ id, actor, created, content, acl,
             <span>
               <Link href={`/player/${actor.id}`}>
                 <a className='font-semibold'>{actor.name}</a>
-              </Link> commented <Link href={`#comment-${id}`}>
+              </Link> commented&nbsp;
+              <Link href={`#comment-${id}`}>
                 <a>
                   <span>{fromNow(created)}</span>
                 </a>

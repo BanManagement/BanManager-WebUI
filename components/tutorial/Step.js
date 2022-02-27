@@ -6,8 +6,9 @@ export const Step = ({ isActiveStep, label, icon }) => {
       {
         'bg-black border-accent-500 rounded-t': isActiveStep,
         'border-gray-800 hover:bg-gray-800 hover:border-accent-500 cursor-pointer': !isActiveStep
-      })}>
-        {icon}{label}
-      </a>
+      })}
+    >
+      {icon}{label}
+    </a>
   )
 }

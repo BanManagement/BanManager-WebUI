@@ -45,7 +45,7 @@ export default function PlayerReportAssign ({ id, player, server, onChange }) {
         onChange={handleChange}
         placeholder='Search by player name'
         defaultValue={player ? ({ value: player.id, label: <PlayerSelector.Label player={player} /> }) : null}
-        />
+      />
     </>
   )
 }

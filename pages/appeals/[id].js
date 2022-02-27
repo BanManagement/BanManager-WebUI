@@ -101,11 +101,13 @@ export default function Page () {
               <a>
                 {appeal.actor.name}
               </a>
-            </Link> is appealing a{appeal.punishmentExpires === 0 ? ' permanent' : ' temporary'} <PlayerAppealBadge appeal={appeal} /> issued on {format(fromUnixTime(appeal.punishmentCreated), 'dd MMM yyyy')} by <Link href={`/player/${appeal.punishmentActor.id}`}>
+            </Link> is appealing a{appeal.punishmentExpires === 0 ? ' permanent' : ' temporary'} <PlayerAppealBadge appeal={appeal} /> issued on {format(fromUnixTime(appeal.punishmentCreated), 'dd MMM yyyy')} by&nbsp;
+            <Link href={`/player/${appeal.punishmentActor.id}`}>
               <a>
                 {appeal.punishmentActor.name}
               </a>
-                                                                                                                                                                                                     </Link>{appeal.punishmentExpires !== 0 && ` which expires ${fromNow(appeal.punishmentExpires)}`}
+            </Link>
+            {appeal.punishmentExpires !== 0 && ` which expires ${fromNow(appeal.punishmentExpires)}`}
           </p>
         </div>
         <div className='grid grid-flow-row md:grid-flow-col grid-cols-12'>

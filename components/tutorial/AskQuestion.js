@@ -21,7 +21,7 @@ export const AskQuestion = (question) => {
 
     return (
       <>
-        <h2 className="text-xl leading-7 sm:text-xl">{question}</h2>
+        <h2 className='text-xl leading-7 sm:text-xl'>{question}</h2>
         <ul>{options}</ul>
       </>
     )

@@ -12,8 +12,8 @@ export const Wizard = () => {
   })
 
   return (
-    <div className="container px-5 mx-auto flex flex-wrap flex-col">
-      <div className="flex mx-auto flex-wrap justify-center">
+    <div className='container px-5 mx-auto flex flex-wrap flex-col'>
+      <div className='flex mx-auto flex-wrap justify-center'>
         <Steps activeStep={activeStep}>
           {stages.map(stage => {
             return (
@@ -22,15 +22,15 @@ export const Wizard = () => {
           })}
         </Steps>
       </div>
-      <div className="flex mx-auto flex-wrap flex-col mt-6">
+      <div className='flex mx-auto flex-wrap flex-col mt-6'>
         {stages.map(stage => (
-            <Stage
-              key={stage.id}
-              handleNext={(type, response) => send({ type, response })}
-              isActive={current.matches(stage.id)}
-              currentState={current}
-              component={stage.component}
-            />
+          <Stage
+            key={stage.id}
+            handleNext={(type, response) => send({ type, response })}
+            isActive={current.matches(stage.id)}
+            currentState={current}
+            component={stage.component}
+          />
         ))}
       </div>
     </div>

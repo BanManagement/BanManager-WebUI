@@ -145,38 +145,41 @@ export default function PlayerNotes ({ id, color, limit = 10 }) {
           </div>
         </div>
       </h1>
-      {data?.listPlayerPunishmentRecords?.total > 0
-        ? <Table>
-            <Table.Header>
-              <Table.Row>
-                <Table.HeaderCell>Message</Table.HeaderCell>
-                <Table.HeaderCell>By</Table.HeaderCell>
-                <Table.HeaderCell>At</Table.HeaderCell>
-                <Table.HeaderCell />
-              </Table.Row>
-            </Table.Header>
-            <Table.Body>
-              {loading
-                ? <Table.Row><Table.Cell colSpan='4'><Loader /></Table.Cell></Table.Row>
-                : rows.map((row, i) => (<PlayerNoteRow row={row} dateFormat={dateFormat} key={i} serverId={tableState.serverId} onDeleted={onDeleted} />))}
-            </Table.Body>
-            <Table.Footer>
-              <Table.Row>
-                <Table.HeaderCell colSpan='5' border={false}>
-                  <Pagination
-                    totalPages={totalPages}
-                    activePage={tableState.activePage}
-                    onPageChange={handlePageChange}
-                  />
-                </Table.HeaderCell>
-              </Table.Row>
-            </Table.Footer>
-          </Table>
-        : <div className='flex items-center'>
+      {data?.listPlayerPunishmentRecords?.total > 0 && (
+        <Table>
+          <Table.Header>
+            <Table.Row>
+              <Table.HeaderCell>Message</Table.HeaderCell>
+              <Table.HeaderCell>By</Table.HeaderCell>
+              <Table.HeaderCell>At</Table.HeaderCell>
+              <Table.HeaderCell />
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>
+            {loading
+              ? <Table.Row><Table.Cell colSpan='4'><Loader /></Table.Cell></Table.Row>
+              : rows.map((row, i) => (<PlayerNoteRow row={row} dateFormat={dateFormat} key={i} serverId={tableState.serverId} onDeleted={onDeleted} />))}
+          </Table.Body>
+          <Table.Footer>
+            <Table.Row>
+              <Table.HeaderCell colSpan='5' border={false}>
+                <Pagination
+                  totalPages={totalPages}
+                  activePage={tableState.activePage}
+                  onPageChange={handlePageChange}
+                />
+              </Table.HeaderCell>
+            </Table.Row>
+          </Table.Footer>
+        </Table>
+      )}
+      {!data?.listPlayerPunishmentRecords?.total && (
+        <div className='flex items-center'>
           <div className='bg-black w-full rounded-lg flex flex-col justify-center sm:justify-start items-center sm:items-start sm:flex-row space-x-5 p-8'>
             None
           </div>
-        </div>}
+        </div>
+      )}
     </div>
   )
 }

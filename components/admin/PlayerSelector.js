@@ -3,6 +3,7 @@ import Select from '../Select'
 import { useMutateApi } from '../../utils'
 import Avatar from '../Avatar'
 
+// eslint-disable-next-line react/display-name
 const PlayerSelector = forwardRef(({ clearable = false, onChange, multiple = true, value, options: defaultOptions = [], placeholder = 'Select players', limit = 5, ...rest }, ref) => {
   const [name, setName] = useState('')
   const [options, setOptions] = useState(defaultOptions)

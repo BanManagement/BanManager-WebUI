@@ -1,15 +1,15 @@
 const depthLimit = require('graphql-depth-limit')
-const responseCachePlugin = require('apollo-server-plugin-response-cache')
+const responseCachePlugin = require('apollo-server-plugin-response-cache').default
 const { unparse } = require('uuid-parse')
+const { makeExecutableSchema } = require('@graphql-tools/schema')
 const typeDefs = require('./types')
 const resolvers = require('./resolvers')
-const schemaDirectives = {
-  constraint: require('graphql-constraint-directive'),
-  allowIf: require('./directives/allow-if'),
-  allowIfLoggedIn: require('./directives/allow-if-logged-in'),
-  sqlRelation: require('./directives/sql-relation'),
-  sqlTable: require('./directives/sql-table')
-}
+const { constraintDirectiveTypeDefs, constraintDirective } = require('graphql-constraint-directive')
+const { allowIfDirectiveTypeDefs, allowIfDirective } = require('./directives/allow-if')
+const { allowIfLoggedInDirectiveTypeDefs, allowIfLoggedInDirective } = require('./directives/allow-if-logged-in')
+const { sqlRelationDirectiveTypeDefs, sqlRelationDirective } = require('./directives/sql-relation')
+const { sqlTableDirectiveTypeDefs, sqlTableDirective } = require('./directives/sql-table')
+
 const findOriginalError = (error) => {
   if (error.originalError) return findOriginalError(error.originalError)
 
@@ -17,14 +17,28 @@ const findOriginalError = (error) => {
 }
 
 module.exports = ({ logger }) => {
+  let schema = makeExecutableSchema({
+    typeDefs: [
+      constraintDirectiveTypeDefs,
+      allowIfDirectiveTypeDefs,
+      allowIfLoggedInDirectiveTypeDefs,
+      sqlRelationDirectiveTypeDefs,
+      sqlTableDirectiveTypeDefs,
+      typeDefs
+    ],
+    resolvers
+  })
+
+  schema = constraintDirective()(schema)
+  schema = allowIfDirective()(schema)
+  schema = allowIfLoggedInDirective()(schema)
+  schema = sqlRelationDirective()(schema)
+  schema = sqlTableDirective()(schema)
+
   return {
     debug: false,
-    typeDefs,
-    resolvers,
-    schemaDirectives,
+    schema,
     validationRules: [depthLimit(10)],
-    tracing: process.env.NODE_ENV !== 'production',
-    cacheControl: process.env.NODE_ENV !== 'test',
     context: ({ ctx: { log, session, state } }) => ({
       log,
       session,

@@ -66,27 +66,27 @@ export default function PlayerReportCommentList ({ serverId, report, showReply }
       {items}
       <div>
         {showReply &&
-        <div className='ml-4 pt-3 pb-3 relative'>
-          <Link href={`/player/${user.id}`}>
-            <a className='absolute -left-20'>
-              <Avatar uuid={user.id} width={40} height={40} className='mx-1 inline-block relative' />
-            </a>
-          </Link>
-          <div className='-ml-7 md:-ml-4'>
-            <div className='relative bg-primary-500 top-0 bottom-0'>
-              <PlayerCommentForm
-                parseVariables={(input) => ({ report, serverId, input: { comment: input.comment } })}
-                onFinish={({ createReportComment }) => {
-                  const records = data.listPlayerReportComments.records.slice()
+          <div className='ml-4 pt-3 pb-3 relative'>
+            <Link href={`/player/${user.id}`}>
+              <a className='absolute -left-20'>
+                <Avatar uuid={user.id} width={40} height={40} className='mx-1 inline-block relative' />
+              </a>
+            </Link>
+            <div className='-ml-7 md:-ml-4'>
+              <div className='relative bg-primary-500 top-0 bottom-0'>
+                <PlayerCommentForm
+                  parseVariables={(input) => ({ report, serverId, input: { comment: input.comment } })}
+                  onFinish={({ createReportComment }) => {
+                    const records = data.listPlayerReportComments.records.slice()
 
-                  records.push(createReportComment)
-                  mutate({ listPlayerReportComments: { total: data.listPlayerReportComments.total + 1, records } }, true)
-                }}
-                query={createCommentQuery}
-              />
+                    records.push(createReportComment)
+                    mutate({ listPlayerReportComments: { total: data.listPlayerReportComments.total + 1, records } }, true)
+                  }}
+                  query={createCommentQuery}
+                />
+              </div>
             </div>
-          </div>
-        </div>}
+          </div>}
       </div>
     </div>
   )

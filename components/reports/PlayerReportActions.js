@@ -55,67 +55,67 @@ const PunishmentAction = ({ children, type, report, server, onAction }) => {
         {
           {
             Ban:
-              <PlayerBanForm
-                serverFilter={s => s.id === server.id}
-                query={createQuery('resolveReportBan', 'CreatePlayerBanInput')}
-                submitRef={submitRef}
-                parseVariables={(input) => ({
-                  report: report.id,
-                  serverId: server.id,
-                  input: {
-                    player: report.player.id,
-                    server: input.server,
-                    reason: input.reason,
-                    expires: Math.floor(input.expires / 1000)
-                  }
-                })}
-                onFinished={({ resolveReportBan }) => {
-                  setOpen(false)
-                  onAction(resolveReportBan)
-                }}
-              />,
+  <PlayerBanForm
+    serverFilter={s => s.id === server.id}
+    query={createQuery('resolveReportBan', 'CreatePlayerBanInput')}
+    submitRef={submitRef}
+    parseVariables={(input) => ({
+      report: report.id,
+      serverId: server.id,
+      input: {
+        player: report.player.id,
+        server: input.server,
+        reason: input.reason,
+        expires: Math.floor(input.expires / 1000)
+      }
+    })}
+    onFinished={({ resolveReportBan }) => {
+      setOpen(false)
+      onAction(resolveReportBan)
+    }}
+  />,
             Mute:
-              <PlayerMuteForm
-                serverFilter={s => s.id === server.id}
-                query={createQuery('resolveReportMute', 'CreatePlayerMuteInput')}
-                submitRef={submitRef}
-                parseVariables={(input) => ({
-                  report: report.id,
-                  serverId: server.id,
-                  input: {
-                    player: report.player.id,
-                    server: input.server,
-                    reason: input.reason,
-                    expires: Math.floor(input.expires / 1000),
-                    soft: input.soft
-                  }
-                })}
-                onFinished={({ resolveReportMute }) => {
-                  setOpen(false)
-                  onAction(resolveReportMute)
-                }}
-              />,
+  <PlayerMuteForm
+    serverFilter={s => s.id === server.id}
+    query={createQuery('resolveReportMute', 'CreatePlayerMuteInput')}
+    submitRef={submitRef}
+    parseVariables={(input) => ({
+      report: report.id,
+      serverId: server.id,
+      input: {
+        player: report.player.id,
+        server: input.server,
+        reason: input.reason,
+        expires: Math.floor(input.expires / 1000),
+        soft: input.soft
+      }
+    })}
+    onFinished={({ resolveReportMute }) => {
+      setOpen(false)
+      onAction(resolveReportMute)
+    }}
+  />,
             Warn:
-              <PlayerWarnForm
-                serverFilter={s => s.id === server.id}
-                query={createQuery('resolveReportWarning', 'CreatePlayerWarningInput')}
-                submitRef={submitRef}
-                parseVariables={(input) => ({
-                  report: report.id,
-                  serverId: server.id,
-                  input: {
-                    player: report.player.id,
-                    server: input.server,
-                    reason: input.reason,
-                    expires: Math.floor(input.expires / 1000),
-                    points: input.points
-                  }
-                })}
-                onFinished={({ resolveReportWarning }) => {
-                  setOpen(false)
-                  onAction(resolveReportWarning)
-                }}
-              />
+  <PlayerWarnForm
+    serverFilter={s => s.id === server.id}
+    query={createQuery('resolveReportWarning', 'CreatePlayerWarningInput')}
+    submitRef={submitRef}
+    parseVariables={(input) => ({
+      report: report.id,
+      serverId: server.id,
+      input: {
+        player: report.player.id,
+        server: input.server,
+        reason: input.reason,
+        expires: Math.floor(input.expires / 1000),
+        points: input.points
+      }
+    })}
+    onFinished={({ resolveReportWarning }) => {
+      setOpen(false)
+      onAction(resolveReportWarning)
+    }}
+  />
           }[type]
         }
       </Modal>
@@ -142,8 +142,7 @@ export default function PlayerReportActions ({ report, server, onAction }) {
           onAction={onAction}
         >
           <Button><FaBan className='text-xl mr-2' /> Ban</Button>
-        </PunishmentAction>
-      }
+        </PunishmentAction>}
       {canCreateMute &&
         <PunishmentAction
           type='Mute'
@@ -152,8 +151,7 @@ export default function PlayerReportActions ({ report, server, onAction }) {
           onAction={onAction}
         >
           <Button><BsMicMute className='text-xl mr-2' /> Mute</Button>
-        </PunishmentAction>
-      }
+        </PunishmentAction>}
       {canCreateWarning &&
         <PunishmentAction
           type='Warn'
@@ -162,8 +160,7 @@ export default function PlayerReportActions ({ report, server, onAction }) {
           onAction={onAction}
         >
           <Button><AiOutlineWarning className='text-xl mr-2' /> Warn</Button>
-        </PunishmentAction>
-      }
+        </PunishmentAction>}
     </div>
   )
 }
