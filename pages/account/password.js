@@ -15,7 +15,7 @@ export default function Page () {
   if (!user) return <DefaultLayout><Loader /></DefaultLayout>
 
   return (
-    <DefaultLayout title='Change Email'>
+    <DefaultLayout title='Change Password'>
       <PageContainer>
         <div className='mx-auto flex flex-col w-full max-w-md px-4 py-8 sm:px-6 md:px-8 lg:px-10 text-center md:border-2 md:rounded-lg md:border-black'>
           <PageHeader title='Change Password' subTitle='Settings' />

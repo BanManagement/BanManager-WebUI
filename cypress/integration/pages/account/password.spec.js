@@ -47,7 +47,7 @@ describe('Account/Password', () => {
 
     cy.get('[data-cy=submit-password-change]').click()
 
-    cy.get('[data-cy=success]').contains('Password successfully updated')
+    cy.get('[data-cy=success]').contains('Password updated')
 
     // Reset it
     cy.get('form').then($element => $element[0].reset())
@@ -57,6 +57,6 @@ describe('Account/Password', () => {
 
     cy.get('[data-cy=submit-password-change]').click()
 
-    cy.get('[data-cy=success]').contains('Password successfully updated')
+    cy.get('[data-cy=success]').contains('Password updated')
   })
 })

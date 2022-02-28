@@ -4,7 +4,7 @@ import clsx from 'clsx'
 const MessageContext = createContext()
 
 // eslint-disable-next-line react/display-name
-const Message = forwardRef(({ error, info, success, warning, children, className }, ref) => {
+const Message = forwardRef(({ error, info, success, warning, children, className, ...rest }, ref) => {
   const classes = clsx('bg-black border-l-4 p-4 mb-4 shadow-lg', {
     'border-red-600': !!error,
     'border-blue-600': !!info,
@@ -14,7 +14,7 @@ const Message = forwardRef(({ error, info, success, warning, children, className
   })
 
   return (
-    <div ref={ref} className={classes} role='alert'>
+    <div ref={ref} className={classes} role='alert' {...rest}>
       <MessageContext.Provider value={{ error, info, success, warning }}>
         {children}
       </MessageContext.Provider>
@@ -22,7 +22,7 @@ const Message = forwardRef(({ error, info, success, warning, children, className
   )
 })
 
-const Header = ({ children }) => {
+const Header = ({ children, ...rest }) => {
   return (
     <MessageContext.Consumer>
       {({ error, info, success, warning }) => {
@@ -34,7 +34,7 @@ const Header = ({ children }) => {
         })
 
         return (
-          <p className={className}>
+          <p className={className} {...rest}>
             {children}
           </p>
         )
@@ -43,17 +43,17 @@ const Header = ({ children }) => {
   )
 }
 
-const List = ({ children }) => {
+const List = ({ children, ...rest }) => {
   return (
-    <ul className='list-none'>
+    <ul className='list-none' {...rest}>
       {children}
     </ul>
   )
 }
 
-const Item = ({ children }) => {
+const Item = ({ children, ...rest }) => {
   return (
-    <li className='ml-3 py-2 text-sm font-medium'>
+    <li className='ml-3 py-2 text-sm font-medium' {...rest}>
       {children}
     </li>
   )

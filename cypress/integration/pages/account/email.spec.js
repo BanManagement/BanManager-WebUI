@@ -42,7 +42,7 @@ describe('Account/Email', () => {
 
     cy.get('[data-cy=submit-email-change]').click()
 
-    cy.get('[data-cy=success]').contains('Email successfully updated')
+    cy.get('[data-cy=success]').contains('Email updated')
 
     // Reset it
     cy.get('form').then($element => $element[0].reset())
@@ -51,6 +51,6 @@ describe('Account/Email', () => {
 
     cy.get('[data-cy=submit-email-change]').click()
 
-    cy.get('[data-cy=success]').contains('Email successfully updated')
+    cy.get('[data-cy=success]').contains('Email updated')
   })
 })
