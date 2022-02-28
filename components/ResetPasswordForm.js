@@ -60,8 +60,7 @@ export default function ResetPasswordForm () {
               iconPosition='left'
               data-cy='currentPassword'
               {...register('currentPassword')}
-            />
-          }
+            />}
           <Input
             required
             placeholder='New password'
