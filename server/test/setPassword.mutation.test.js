@@ -10,6 +10,8 @@ describe('Mutation set password', () => {
   let request
 
   beforeAll(async () => {
+    nock.cleanAll()
+
     setup = await createSetup()
     const app = await createApp({ ...setup, disableUI: true })
 
@@ -17,6 +19,8 @@ describe('Mutation set password', () => {
   }, 20000)
 
   afterAll(async () => {
+    nock.cleanAll()
+    nock.restore()
     MockDate.reset()
 
     await setup.teardown()

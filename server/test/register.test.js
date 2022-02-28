@@ -10,6 +10,8 @@ describe('/api/register', () => {
   let request
 
   beforeAll(async () => {
+    nock.cleanAll()
+
     setup = await createSetup()
     const app = await createApp({ ...setup, disableUI: true })
 
@@ -17,6 +19,9 @@ describe('/api/register', () => {
   }, 20000)
 
   afterAll(async () => {
+    nock.cleanAll()
+    nock.restore()
+
     await setup.teardown()
   }, 20000)
 
