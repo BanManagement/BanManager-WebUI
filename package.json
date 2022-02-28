@@ -112,7 +112,7 @@
     "heroku-postbuild": "npm run build && node bin/run update",
     "lint": "standardx",
     "start": "node server.js",
-    "test": "npm run lint && jest --coverage --runInBand --logHeapUsage",
+    "test": "npm run lint && jest --coverage --runInBand --logHeapUsage --forceExit",
     "setup": "node bin/run setup --writeFile .env",
     "cypress": "cypress open",
     "e2e:build": "node cypress/setup.js && npm run build"
