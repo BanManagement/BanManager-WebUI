@@ -3,7 +3,7 @@ const inquirer = require('inquirer')
 const editDotenv = require('edit-dotenv')
 const DBMigrate = require('db-migrate')
 const { Command, flags } = require('@oclif/command')
-const { isEmail } = require('validator')
+const { isAlphanumeric, isEmail, isLength } = require('validator')
 const { generateVAPIDKeys } = require('web-push')
 const { merge } = require('lodash')
 const { parse } = require('uuid-parse')
@@ -39,6 +39,7 @@ class SetupCommand extends Command {
       return contents
     }
     // Env variables
+    let SERVER_FOOTER_NAME = process.env.SERVER_FOOTER_NAME
     let CONTACT_EMAIL = process.env.CONTACT_EMAIL
     let ENCRYPTION_KEY = process.env.ENCRYPTION_KEY
     let SESSION_KEY = process.env.SESSION_KEY
@@ -49,6 +50,24 @@ class SetupCommand extends Command {
     let DB_USER = process.env.DB_USER
     let DB_PASSWORD = process.env.DB_PASSWORD
     let DB_NAME = process.env.DB_NAME
+
+    if (SERVER_FOOTER_NAME) {
+      this.log('SERVER_FOOTER_NAME detected, skipping')
+    } else {
+      const { value } = await inquirer.prompt([{
+        type: 'input',
+        name: 'value',
+        message: 'Server name (displayed in footer of website)',
+        validate: function (input) {
+          if (isAlphanumeric(input) && isLength(input, { min: 0, max: 32 })) return true
+
+          return 'Invalid name, only letters, numbers and a maximum of 32 characters allowed'
+        }
+      }])
+
+      SERVER_FOOTER_NAME = value
+      await save({ SERVER_FOOTER_NAME, NODE_ENV: 'production' })
+    }
 
     if (CONTACT_EMAIL) {
       this.log('CONTACT_EMAIL detected, skipping')
@@ -65,7 +84,7 @@ class SetupCommand extends Command {
       }])
 
       CONTACT_EMAIL = value
-      await save({ CONTACT_EMAIL, NODE_ENV: 'production' })
+      await save({ CONTACT_EMAIL })
     }
 
     if (ENCRYPTION_KEY) {
