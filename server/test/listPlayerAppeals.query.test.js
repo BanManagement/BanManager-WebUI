@@ -302,7 +302,7 @@ describe('Query listPlayerAppeals', () => {
     const [firstId] = await pool('bm_player_bans').insert(punishment, ['id'])
     const [secondId] = await pool('bm_player_bans').insert(secondPunishment, ['id'])
     const appeal = createAppeal({ ...punishment, id: firstId }, 'PlayerBan', server, player, actor)
-    const [first] = await pool('bm_web_appeals').insert({ ...appeal, created: appeal.created + 10000 }, ['id'])
+    const [first] = await pool('bm_web_appeals').insert({ ...appeal, created: appeal.created + 100000 }, ['id'])
     const [second] = await pool('bm_web_appeals').insert(createAppeal({ ...secondPunishment, id: secondId }, 'PlayerBan', server, actor, actor), ['id'])
 
     const { body, statusCode } = await request
@@ -436,6 +436,9 @@ describe('Query listPlayerAppeals', () => {
             total
             records {
               id
+              assignee {
+                id
+              }
             }
           }
         }`
@@ -447,9 +450,10 @@ describe('Query listPlayerAppeals', () => {
 
     assert(body)
     assert(body.data)
+
     assert.deepStrictEqual(body.data.listPlayerAppeals, {
       total: 1,
-      records: [{ id: inserted.toString() }]
+      records: [{ id: inserted.toString(), assignee: { id: unparse(account.id) } }]
     })
   })
 

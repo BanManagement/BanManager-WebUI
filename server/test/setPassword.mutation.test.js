@@ -178,8 +178,7 @@ describe('Mutation set password', () => {
 
     assert(body2)
 
-    assert.strictEqual(body2.errors[0].message,
-      'Invalid session')
+    assert.strictEqual(body2.data.me.id, null)
 
     // Confirm current session still valid
     const { body: body3, statusCode: statusCode3 } = await request

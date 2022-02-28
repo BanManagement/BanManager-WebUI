@@ -26,12 +26,14 @@ describe('Query statistics', () => {
     const actor = createPlayer()
     const ban = createBan(player, actor)
     const mute = createMute(player, actor)
-    const appeal = createAppeal(1, 'PlayerBan', server, actor, player)
+    const appeal = createAppeal(ban, 'PlayerBan', server, actor, player)
 
     await pool('bm_players').insert([player, actor])
-    await pool('bm_player_bans').insert(ban)
+
+    const [inserted] = await pool('bm_player_bans').insert(ban, ['id'])
+
     await pool('bm_player_mutes').insert(mute)
-    await pool('bm_web_appeals').insert(appeal)
+    await pool('bm_web_appeals').insert({ ...appeal, punishment_id: inserted })
 
     const { body, statusCode } = await request
       .post('/graphql')

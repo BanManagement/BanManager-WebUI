@@ -42,7 +42,7 @@ describe('Query adminNavigation', () => {
     assert(body)
 
     assert.deepStrictEqual(body.data.adminNavigation.left, [
-      { id: '1', name: 'Page Layouts', label: 2, href: '/admin/page-layouts' },
+      { id: '1', name: 'Page Layouts', label: 1, href: '/admin/page-layouts' },
       { id: '2', name: 'Roles', label: 3, href: '/admin/roles' },
       { id: '3', name: 'Servers', label: 1, href: '/admin/servers' }
     ])

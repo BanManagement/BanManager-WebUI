@@ -89,5 +89,5 @@ describe('setup', () => {
       .stdout(/Written env to disk/)
       .unlink('env')
       .end(done)
-  })
+  }, 30000)
 })
