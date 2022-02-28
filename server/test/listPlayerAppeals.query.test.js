@@ -302,8 +302,8 @@ describe('Query listPlayerAppeals', () => {
     const [firstId] = await pool('bm_player_bans').insert(punishment, ['id'])
     const [secondId] = await pool('bm_player_bans').insert(secondPunishment, ['id'])
     const appeal = createAppeal({ ...punishment, id: firstId }, 'PlayerBan', server, player, actor)
-    const [first] = await pool('bm_web_appeals').insert({ ...appeal, created: appeal.created + 100000 }, ['id'])
-    const [second] = await pool('bm_web_appeals').insert(createAppeal({ ...secondPunishment, id: secondId }, 'PlayerBan', server, actor, actor), ['id'])
+    const [first] = await pool('bm_web_appeals').insert({ ...appeal, created: appeal.created + 1000 }, ['id'])
+    const [second] = await pool('bm_web_appeals').insert({ ...createAppeal({ ...secondPunishment, id: secondId }, 'PlayerBan', server, actor, actor), created: appeal.created }, ['id'])
 
     const { body, statusCode } = await request
       .post('/graphql')
