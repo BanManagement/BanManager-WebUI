@@ -28,6 +28,7 @@ describe('setup', () => {
 
   test('should disallow invalid email address', done => {
     nixt()
+      .env('SERVER_FOOTER_NAME', 'test')
       .env('CONTACT_EMAIL', '')
       .run('./bin/run setup')
       .on(/Email address for push notification/).respond('test\n')
