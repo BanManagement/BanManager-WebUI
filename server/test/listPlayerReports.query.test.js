@@ -569,7 +569,7 @@ describe('Query listPlayerReports', () => {
 
     await pool('bm_players').insert(actor)
 
-    console.log(await pool('bm_player_reports').insert(report, ['id']))
+    await pool('bm_player_reports').insert(report)
 
     const { body, statusCode } = await request
       .post('/graphql')

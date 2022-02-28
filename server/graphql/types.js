@@ -523,7 +523,7 @@ type Query {
 
   reportStates(serverId: ID!): [PlayerReportState!]
   report(id: ID!, serverId: ID!): PlayerReport
-  listPlayerReports(serverId: ID!, actor: UUID, assigned: UUID, player: UUID, state: ID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerReportList! @cacheControl(scope: PRIVATE, maxAge: 300)
+  listPlayerReports(serverId: ID!, actor: UUID, assigned: UUID, player: UUID, state: ID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerReportList!
 
   listPlayerReportComments(serverId: ID!, report: ID!, actor: UUID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerReportCommentList! @allowIf(resource: "player.reports", permission: "view.comments", serverVar: "serverId")
   reportComment(id: ID!, serverId: ID!): PlayerReportComment! @allowIf(resource: "player.reports", permission: "view.comments", serverVar: "serverId")
@@ -532,7 +532,7 @@ type Query {
 
   appealStates: [PlayerAppealState!]
   appeal(id: ID!): PlayerAppeal!
-  listPlayerAppeals(serverId: ID, actor: UUID, assigned: UUID, player: UUID, state: ID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerAppealList! @cacheControl(scope: PRIVATE, maxAge: 300)
+  listPlayerAppeals(serverId: ID, actor: UUID, assigned: UUID, player: UUID, state: ID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerAppealList!
 
   listPlayerAppealComments(id: ID!, actor: UUID, order: OrderByInput): PlayerAppealCommentList! @allowIf(resource: "player.appeals", permission: "view.comments")
   appealComment(id: ID!): PlayerAppealComment! @allowIf(resource: "player.appeals", permission: "view.comments")
