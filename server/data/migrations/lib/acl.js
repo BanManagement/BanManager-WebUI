@@ -31,6 +31,9 @@ module.exports = (db) => {
       const { insertId: resourceId } = await db.insert('bm_web_resources', ['name'], [name], noop)
 
       return db.runSql('INSERT INTO bm_web_role_resources (`role_id`, `resource_id`, `value`) SELECT `role_id`, ?, 0 FROM bm_web_roles', [resourceId], noop)
+    },
+    async removeResource (name) {
+      return db.runSql('DELETE FROM bm_web_resources WHERE name = ?', [name], noop)
     }
   }
 }

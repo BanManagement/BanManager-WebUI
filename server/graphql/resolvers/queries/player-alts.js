@@ -10,7 +10,8 @@ module.exports = async function playerAlts (obj, { player: id }, { state }, info
   if (!player) return []
 
   const results = await Promise.all(Array.from(state.serversPool.values()).map(async (server) => {
-    // @TODO PERMS CHEcK
+    if (!state.acl.hasServerPermission(server.id, 'player.alts', 'view')) return []
+
     const query = getSql(info.schema, server, fields, 'players')
       .where('ip', player.ip)
       .whereNot('id', player.id)

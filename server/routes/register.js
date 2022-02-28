@@ -3,7 +3,7 @@ const { isEmail, isLength } = require('validator')
 const { pwnedPassword } = require('hibp')
 
 // eslint-disable-next-line complexity
-module.exports = async function ({ log, request: { body }, throw: throwError, response, session, state }) {
+module.exports = async function ({ request: { body }, throw: throwError, response, session, state }) {
   if (!session || !session.playerId) return throwError(400, 'You are not logged in')
 
   if (typeof body.email !== 'string') return throwError(400, 'Invalid email type')

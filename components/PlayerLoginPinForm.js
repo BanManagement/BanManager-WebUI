@@ -1,48 +1,27 @@
-import { useEffect, useState } from 'react'
-import { Form, Select } from 'semantic-ui-react'
+import { useState } from 'react'
+import { useForm, Controller } from 'react-hook-form'
+import { AiOutlineUser } from 'react-icons/ai'
+import ReactCodeInput from '@acusti/react-code-input'
 import ErrorMessages from './ErrorMessages'
-import { useApi } from '../utils'
+import Message from './Message'
+import Input from './Input'
+import Button from './Button'
+import ServerSelector from './admin/ServerSelector'
 
-export default function PlayerLoginPinForm () {
-  const [loading, setLoading] = useState(false)
+export default function PlayerLoginPinForm ({ onSuccess }) {
   const [error, setError] = useState(null)
-  const [inputState, setInputState] = useState({
-    serverId: '',
-    name: '',
-    pin: ''
-  })
+  const { handleSubmit, formState, register, control } = useForm()
+  const { isSubmitting } = formState
 
-  useEffect(() => setLoading(false), [error])
-
-  const { data, errors } = useApi({
-    query: `query servers {
-    servers {
-      id
-      name
-    }
-  }`
-  })
-
-  if (errors || !data) return <ErrorMessages errors={errors} />
-
-  const servers = data.servers.map(server => ({ key: server.id, value: server.id, text: server.name }))
-  const onSubmit = async (e) => {
-    e.preventDefault()
-
-    if (!inputState.serverId) inputState.serverId = servers[0].value
-
-    setLoading(true)
-
+  const onSubmit = async (data) => {
     try {
       const response = await fetch('/api/session',
         {
           method: 'POST',
-          body: JSON.stringify(inputState),
+          body: JSON.stringify(data),
           headers: new Headers({ 'Content-Type': 'application/json' }),
           credentials: 'include'
         })
-
-      setLoading(true)
 
       if (response.status !== 200) {
         const responseData = await response.json()
@@ -51,48 +30,55 @@ export default function PlayerLoginPinForm () {
       } else {
         const responseData = await response.json()
 
-        if (responseData.hasAccount) return window.location.replace('/')
-
-        window.location.replace('/register')
+        onSuccess({ responseData })
       }
     } catch (e) {
       setError(e)
     }
   }
-  const handleChange = async (e, { name, value }) => {
-    setInputState({ ...inputState, [name]: value })
-  }
 
   return (
-    <Form size='large' onSubmit={onSubmit} error loading={loading}>
-      <ErrorMessages error={error} />
-      <Form.Field
-        required
-        name='serverId'
-        control={Select}
-        options={servers}
-        placeholder='Server'
-        onChange={handleChange}
-        defaultValue={servers.length ? servers[0].value : null}
-      />
-      <Form.Input
-        required
-        name='name'
-        placeholder='Player name'
-        icon='user'
-        iconPosition='left'
-        onChange={handleChange}
-      />
-      <Form.Input
-        required
-        name='pin'
-        placeholder='Pin'
-        type='password'
-        icon='lock'
-        iconPosition='left'
-        onChange={handleChange}
-      />
-      <Form.Button fluid primary size='large' content='Join' />
-    </Form>
+    <form onSubmit={handleSubmit(onSubmit)} className='mx-auto'>
+      <div className='flex flex-col relative w-full max-w-md md:px-8 lg:px-10'>
+        <ErrorMessages error={error} />
+        <Controller
+          name='serverId'
+          control={control}
+          defaultValue={false}
+          rules={{ required: true }}
+          render={({ field }) => <ServerSelector className='mb-6' {...field} />}
+        />
+        <Input
+          required
+          placeholder='Minecraft Username'
+          icon={<AiOutlineUser />}
+          iconPosition='left'
+          {...register('name')}
+        />
+        <Message info>
+          <Message.Header>Your 6 digit pin</Message.Header>
+          <Message.List>
+            <Message.Item>Join the chosen Minecraft server &amp; type /bmpin or use the pin from the banned screen</Message.Item>
+          </Message.List>
+        </Message>
+        <Controller
+          name='pin'
+          control={control}
+          rules={{ required: true }}
+          render={({ field }) => <ReactCodeInput
+            fields={6}
+            className='!flex relative mb-6'
+            inputMode='numeric'
+            filterChars={[...Array(10).keys()].map(i => i.toString())}
+            filterCharsIsWhitelist
+            {...field}
+            autoFocus={false}
+                                 />}
+        />
+        <Button data-cy='submit-login-pin' disabled={isSubmitting} loading={isSubmitting}>
+          Login
+        </Button>
+      </div>
+    </form>
   )
 }

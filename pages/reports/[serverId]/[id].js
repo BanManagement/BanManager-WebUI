@@ -1,15 +1,24 @@
 import { useRouter } from 'next/router'
-import { Comment, Grid, Header, Image, Loader, Segment } from 'semantic-ui-react'
+import Link from 'next/link'
 import { format, fromUnixTime } from 'date-fns'
-import { fromNow, useApi } from '../../../utils'
+import { Disclosure } from '@headlessui/react'
+import { BsChevronUp, BsChevronDown } from 'react-icons/bs'
+import { useApi, useUser } from '../../../utils'
+import Loader from '../../../components/Loader'
+import Table from '../../../components/Table'
 import DefaultLayout from '../../../components/DefaultLayout'
 import ErrorLayout from '../../../components/ErrorLayout'
 import PageContainer from '../../../components/PageContainer'
-import PlayerReportCommentList from '../../../components/PlayerReportCommentList'
-import PlayerReportAssign from '../../../components/PlayerReportAssign'
-import PlayerReportState from '../../../components/PlayerReportState'
+import PageHeader from '../../../components/PageHeader'
+import PlayerReportCommentList from '../../../components/reports/PlayerReportCommentList'
+import PlayerReportAssign from '../../../components/reports/PlayerReportAssign'
+import PlayerReportState from '../../../components/reports/PlayerReportState'
+import PlayerReportLocation from '../../../components/reports/PlayerReportLocation'
+import PlayerReportActions from '../../../components/reports/PlayerReportActions'
+import PlayerReportCommand from '../../../components/reports/PlayerReportCommand'
 
 export default function Page () {
+  const { user } = useUser()
   const router = useRouter()
   const { id, serverId } = router.query
   const { loading, data, errors, mutate } = useApi({
@@ -91,18 +100,10 @@ export default function Page () {
 
   const report = data?.report
 
-  if (loading) return <Loader active />
+  if (loading) return <Loader />
   if (errors || !data) return <ErrorLayout errors={errors} />
 
-  const renderLocation = (location, player) => (
-    <>
-      <p>
-        <Image floated='left' src={`https://crafatar.com/avatars/${player.id}?size=28&overlay=true`} /> {player.name}
-      </p>
-      <pre style={{ overflowY: 'auto' }}>/tppos {location.x} {location.y} {location.z} {location.pitch} {location.yaw} {location.world}</pre>
-    </>
-  )
-  const stateOptions = data.reportStates.map(state => ({ key: state.id, value: state.id, text: state.name }))
+  const stateOptions = data.reportStates.map(state => ({ value: state.id, label: state.name }))
   const canComment = report.acl.comment
   const canUpdateState = report.acl.state
   const canAssign = report.acl.assign
@@ -110,98 +111,200 @@ export default function Page () {
   return (
     <DefaultLayout title={`#${id} Report`}>
       <PageContainer>
-        <Grid>
-          <Grid.Row>
-            <Grid.Column width={12}>
-              <Comment.Group>
-                <Header dividing>Report #{report.id} - {report.player.name}</Header>
-                <Comment>
-                  <Comment.Avatar src={`https://crafatar.com/avatars/${report.actor.id}?size=128&overlay=true`} />
-                  <Comment.Content>
-                    <Comment.Author as='a' href={`/player/${report.actor.id}`}>{report.actor.name}</Comment.Author>
-                    <Comment.Metadata>{fromNow(report.created)}</Comment.Metadata>
-                    <Comment.Text>{report.reason}</Comment.Text>
-                  </Comment.Content>
-                </Comment>
-              </Comment.Group>
+        <div className='pb-6'>
+          <h1
+            className='text-2xl font-bold break-words pb-2'
+          >
+            <span className='mr-3'>{report.reason}</span>
+            <span className='block md:inline text-gray-400'>#{report.id}</span>
+          </h1>
+          <p className='pb-4 border-b border-accent-200 text-gray-400'>
+            <Link href={`/player/${report.actor.id}`}>
+              <a>
+                {report.actor.name}
+              </a>
+            </Link> reported&nbsp;
+            <Link href={`/player/${report.player.id}`}>
+              <a>
+                {report.player.name}
+              </a>
+            </Link>
+            &nbsp;on {format(fromUnixTime(report.created), 'dd MMM yyyy')}
+          </p>
+        </div>
+        <div className='grid grid-flow-row md:grid-flow-col grid-cols-12'>
+          <div className='col-span-12 md:col-span-9 space-y-6'>
+            <div>
+              <PlayerReportCommentList report={id} serverId={serverId} showReply={canComment} />
+            </div>
+            <div>
               {!!report.serverLogs && !!report.serverLogs.length &&
-                <>
-                  <Header>Server Logs</Header>
-                  <Segment.Group color='black'>
-                    {report.serverLogs.map(({ id, log }) => (
-                      <Segment key={id}>
-                        [{format(fromUnixTime(log.created), 'yyyy-MM-dd HH:mm:ss')}] {log.message}
-                      </Segment>
-                    ))}
-                  </Segment.Group>
-                </>}
-              {!!report.commands && !!report.commands.length &&
-                <>
-                  <Header>Commands</Header>
-                  <Segment.Group color='black'>
-                    {report.commands.map(cmd => (
-                      <Segment key={cmd.id}>
-                        [{format(fromUnixTime(cmd.created), 'yyyy-MM-dd HH:mm:ss')}] <Image floated='left' src={`https://crafatar.com/avatars/${cmd.actor.id}?size=28&overlay=true`} /> {cmd.actor.name} <pre style={{ display: 'inline' }}>/{cmd.command} {cmd.args}</pre>
-                      </Segment>
-                    ))}
-                  </Segment.Group>
-                </>}
-            </Grid.Column>
-            <Grid.Column computer={4} mobile={16}>
-              <Grid.Row>
-                <Grid.Column width={16}>
-                  <Header dividing>Details</Header>
-                  <Grid.Row>
-                    <Grid.Column>
-                      State: {canUpdateState
-                      ? (
-                        <PlayerReportState
-                          id={report.id}
-                          server={data.server.id}
-                          currentState={report?.state}
-                          states={stateOptions}
-                          onChange={({ reportState: { state, updated } }) => {
-                            mutate({ ...data, report: { ...data.report, state, updated } }, false)
-                          }}
-                        />)
-                      : (
-                        <span>{report.state.name}</span>
-                        )}
-                    </Grid.Column>
-                  </Grid.Row>
-                  <Grid.Row>
-                    <Grid.Column>
-                      Assigned: {canAssign
-                      ? (
-                        <PlayerReportAssign
-                          id={report.id}
-                          player={report.assignee}
-                          server={data.server.id}
-                          onChange={({ assignReport: { assignee, updated } }) => {
-                            mutate({ ...data, report: { ...data.report, assignee, updated } }, false)
-                          }}
-                        />)
-                      : (<span>{report?.assignee?.name}</span>)}
-                    </Grid.Column>
-                  </Grid.Row>
-                  <Grid.Row>
-                    <Grid.Column>
-                      <p>Updated: {fromNow(report?.updated)}</p>
-                    </Grid.Column>
-                  </Grid.Row>
-                </Grid.Column>
-              </Grid.Row>
-              <Grid.Row style={{ marginTop: '1em' }}>
-                <Grid.Column width={16}>
-                  <Header dividing>Locations</Header>
-                  {report.playerLocation && renderLocation(report.playerLocation, report.player)}
-                  {report.actorLocation && renderLocation(report.actorLocation, report.actor)}
-                </Grid.Column>
-              </Grid.Row>
-            </Grid.Column>
-          </Grid.Row>
-          <PlayerReportCommentList report={id} serverId={serverId} showReply={canComment} />
-        </Grid>
+                <Disclosure>
+                  {({ open }) => (
+                    <>
+                      <Disclosure.Button className='flex justify-between w-full text-left'>
+                        <PageHeader title='Server Logs' className='w-full' />
+                        {open ? <BsChevronDown /> : <BsChevronUp />}
+                      </Disclosure.Button>
+                      <Disclosure.Panel>
+                        <Table>
+                          <Table.Body>
+                            {report.serverLogs.map(({ id, log }) => (
+                              <Table.Row key={id} className='text-xs'>
+                                <Table.Cell className='hidden md:table-cell pl-5 pr-3 whitespace-no-wrap'>
+                                  <div>{format(fromUnixTime(log.created), 'dd MMM yyyy HH:mm:ss')}</div>
+                                </Table.Cell>
+                                <Table.Cell className='px-2 py-2 whitespace-no-wrap'>
+                                  <div className='md:hidden'>{format(fromUnixTime(log.created), 'dd MMM yyyy HH:mm:ss')}</div>
+                                  <div>{log.message}</div>
+                                </Table.Cell>
+                              </Table.Row>
+                            ))}
+                          </Table.Body>
+                        </Table>
+                      </Disclosure.Panel>
+                    </>
+                  )}
+                </Disclosure>}
+            </div>
+          </div>
+          <div className='hidden md:block col-span-3 space-y-6 mx-6'>
+            <div className='sticky top-6'>
+              <ul role='list' className='divide-y divide-gray-700'>
+                <li className='pb-3'>
+                  <div className='flex items-center'>
+                    <div className='flex-1 min-w-0 space-y-3'>
+                      <p>
+                        State
+                      </p>
+                      {canUpdateState
+                        ? (
+                          <PlayerReportState
+                            id={report.id}
+                            server={data.server.id}
+                            currentState={report?.state}
+                            states={stateOptions}
+                            onChange={({ reportState: { state, updated } }) => {
+                              mutate({ ...data, report: { ...data.report, state, updated } }, false)
+                            }}
+                          />)
+                        : (<p className='text-sm text-gray-400'>{report?.state?.name}</p>)}
+                    </div>
+                  </div>
+                </li>
+                <li className='py-3 sm:py-4'>
+                  <div className='flex items-center space-x-4'>
+                    <div className='flex-1 min-w-0 space-y-3'>
+                      <p>
+                        Assignee
+                      </p>
+                      {canAssign
+                        ? (
+                          <PlayerReportAssign
+                            id={report.id}
+                            player={report.assignee}
+                            server={data.server.id}
+                            onChange={({ assignReport: { assignee, updated } }) => {
+                              mutate({ ...data, report: { ...data.report, assignee, updated } }, false)
+                            }}
+                          />)
+                        : (<p className='text-sm text-gray-400'>{report?.assignee?.name || 'No one'}</p>)}
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <PageHeader title='Locations' />
+              <ul role='list' className='divide-y divide-gray-700'>
+                {report.playerLocation && <PlayerReportLocation location={report.playerLocation} player={report.player} />}
+                {report.actorLocation && <PlayerReportLocation location={report.actorLocation} player={report.actor} />}
+              </ul>
+            </div>
+            <div>
+              {report?.commands?.length || (!!user && report.state.id < 3) ? <PageHeader title='Actions' /> : <></>}
+              {!!user && report.state.id < 3 && !report?.commands?.length &&
+                <PlayerReportActions
+                  report={report} server={data.server} onAction={({ state, updated, commands }) => {
+                    mutate({ ...data, report: { ...data.report, state, updated, commands } }, false)
+                  }}
+                />}
+              {!!report?.commands?.length &&
+                <ul role='list' className='divide-y divide-gray-700'>
+                  {report.commands.map(cmd => (
+                    <PlayerReportCommand key={cmd.id} command={cmd} />
+                  ))}
+                </ul>}
+            </div>
+          </div>
+        </div>
+        <div className='md:hidden col-span-12 space-y-6'>
+          <ul role='list' className='divide-y divide-gray-700'>
+            <li className='py-3'>
+              <div className='flex items-center'>
+                <div className='flex-1 min-w-0 space-y-3'>
+                  <p>
+                    State
+                  </p>
+                  {canUpdateState
+                    ? (
+                      <PlayerReportState
+                        id={report.id}
+                        server={data.server.id}
+                        currentState={report?.state}
+                        states={stateOptions}
+                        onChange={({ reportState: { state, updated } }) => {
+                          mutate({ ...data, report: { ...data.report, state, updated } }, false)
+                        }}
+                      />)
+                    : (<p className='text-sm text-gray-400'>{report?.state?.name}</p>)}
+                </div>
+              </div>
+            </li>
+            <li className='py-3 sm:py-4'>
+              <div className='flex items-center space-x-4'>
+                <div className='flex-1 min-w-0 space-y-3'>
+                  <p>
+                    Assignee
+                  </p>
+                  {canAssign
+                    ? (
+                      <PlayerReportAssign
+                        id={report.id}
+                        player={report.assignee}
+                        server={data.server.id}
+                        onChange={({ assignReport: { assignee, updated } }) => {
+                          mutate({ ...data, report: { ...data.report, assignee, updated } }, false)
+                        }}
+                      />)
+                    : (<p className='text-sm text-gray-400'>{report?.assignee?.name || 'No one'}</p>)}
+                </div>
+              </div>
+            </li>
+          </ul>
+          <div>
+            <PageHeader title='Locations' />
+            <ul role='list' className='divide-y divide-gray-700'>
+              {report.playerLocation && <PlayerReportLocation location={report.playerLocation} player={report.player} />}
+              {report.actorLocation && <PlayerReportLocation location={report.actorLocation} player={report.actor} />}
+            </ul>
+          </div>
+          <div>
+            {report?.commands?.length || (!!user && report.state.id < 3) ? <PageHeader title='Actions' /> : <></>}
+            {!!user && report.state.id < 3 && !report?.commands?.length &&
+              <PlayerReportActions
+                report={report} server={data.server} onAction={({ state, updated, commands }) => {
+                  mutate({ ...data, report: { ...data.report, state, updated, commands } }, false)
+                }}
+              />}
+            {!!report?.commands?.length &&
+              <ul role='list' className='divide-y divide-gray-700'>
+                {report.commands.map(cmd => (
+                  <PlayerReportCommand key={cmd.id} command={cmd} />
+                ))}
+              </ul>}
+          </div>
+        </div>
       </PageContainer>
     </DefaultLayout>
   )

@@ -1,4 +1,4 @@
-module.exports = function servers (obj, args, { state }) {
+module.exports = function servers (obj, args, { state }, info) {
   return Promise.all(Array.from(state.serversPool.values()).map(async ({ config, pool }) => {
     const server = Object.assign({ console: { id: config.console } }, config)
 

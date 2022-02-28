@@ -1,8 +1,15 @@
 import { useEffect, useState } from 'react'
-import { Button, Card, Confirm, Label } from 'semantic-ui-react'
+import Link from 'next/link'
 import { format, fromUnixTime } from 'date-fns'
-import { fromNow, useMutateApi } from '../utils'
+import { FaPencilAlt } from 'react-icons/fa'
+import { BsTrash } from 'react-icons/bs'
+import { AiOutlineWarning } from 'react-icons/ai'
+import Badge from './Badge'
 import ErrorMessages from './ErrorMessages'
+import Avatar from './Avatar'
+import Modal from './Modal'
+import Button from './Button'
+import { fromNow, useMutateApi } from '../utils'
 
 const metaMap = {
   ban: {
@@ -46,86 +53,99 @@ const metaMap = {
     }`
   }
 }
-const buttonWords = { 1: 'one', 2: 'two', 3: 'three' }
 
 export default function PlayerPunishment ({ punishment, server, type, onDeleted }) {
   const meta = metaMap[type]
-  const [state, setState] = useState({ deleteConfirmShow: false, deleting: false })
+  const [open, setOpen] = useState(false)
 
   const { load, data, loading, errors } = useMutateApi({ query: meta.deleteMutation })
 
-  const showConfirmDelete = () => setState({ ...state, deleteConfirmShow: true })
-  const handleConfirmDelete = async () => {
-    if (state.deleting) return
+  const showConfirmDelete = (e) => {
+    e.preventDefault()
 
-    setState({ deleteConfirmShow: false, deleting: true })
-
-    load({ id: punishment.id, serverId: server.id })
-
-    if (!loading) setState({ ...state, deleting: false })
+    setOpen(true)
   }
-  const handleDeleteCancel = () => setState({ ...state, deleteConfirmShow: false })
+  const handleConfirmDelete = async () => {
+    await load({ id: punishment.id, serverId: server.id })
+  }
+  const handleDeleteCancel = () => setOpen(false)
 
   useEffect(() => {
     if (!data) return
     if (Object.keys(data).some(key => !!data[key].id)) {
+      setOpen(false)
       onDeleted(data)
     }
   }, [data])
 
   let label = ''
 
-  if (punishment.expires === 0) label = <Label style={{ float: 'right' }} color='red' horizontal>Permanent</Label>
-  if (punishment.expires) label = <Label style={{ float: 'right' }} color='yellow' horizontal>{fromNow(punishment.expires)}</Label>
+  if (punishment.expires === 0) label = <Badge className='bg-red-500 sm:mx-auto'>Permanent</Badge>
+  if (punishment.expires) label = <Badge className='bg-yellow-500 sm:mx-auto'>{fromNow(punishment.expires)}</Badge>
 
-  const extraButtonsAmount = [punishment.acl.yours, punishment.acl.update, punishment.acl.delete].filter(x => x).length
-  const extraButtonAmountWord = buttonWords[extraButtonsAmount]
   const dateFormat = 'yyyy-MM-dd HH:mm:ss'
 
   return (
-    <Card fluid>
-      <Card.Content>
-        <Card.Header>{punishment.actor.name} {label}</Card.Header>
-        <Card.Meta>{server.name} {format(fromUnixTime(punishment.created), dateFormat)}</Card.Meta>
-        <Card.Description>{punishment.reason || punishment.message}</Card.Description>
-      </Card.Content>
-      {!!extraButtonsAmount &&
-        <Card.Content extra>
-          <div className={`ui ${extraButtonAmountWord} buttons`}>
-            {punishment.acl.yours &&
-              <Button
-                basic
-                color='blue'
-                href={`/appeal/${server.id}/${punishment.id}/${meta.editPath.replace('edit-', '')}`}
-              >
-                Appeal
-              </Button>}
-            {punishment.acl.update &&
-              <Button
-                basic
-                color='green'
-                href={`/player/${meta.editPath}/${server.id}-${punishment.id}`}
-              >Edit
-              </Button>}
-            {punishment.acl.delete &&
-              <Button
-                basic
-                color='red'
-                loading={state.deleting}
-                disabled={state.deleting}
-                onClick={showConfirmDelete}
-              >
-                Delete
-              </Button>}
-            <Confirm
-              open={state.deleteConfirmShow}
-              onConfirm={handleConfirmDelete}
-              onCancel={handleDeleteCancel}
-              header={`Delete ${type}?`}
-              content={errors ? <ErrorMessages errors={errors} /> : 'Are you sure?'}
-            />
+    <div className='flex items-center'>
+      <div className='bg-black w-full rounded-lg flex flex-col justify-center sm:justify-start items-center sm:items-start sm:flex-row space-x-5 p-8'>
+        <div className=''>
+          <Avatar uuid={punishment.actor.id} height='40' width='40' />
+        </div>
+        <div className=''>
+          <div className='flex flex-col sm:flex-row md:space-x-5 text-center'>
+            <h1 className='font-bold'>{punishment.actor.name}</h1>
+            {label}
           </div>
-        </Card.Content>}
-    </Card>
+          <div className='text-gray-300'>
+            <p>{server.name}</p>
+            <p>{format(fromUnixTime(punishment.created), dateFormat)}</p>
+          </div>
+          <div className='text-justify sm:text-left py-6'>
+            <p>{punishment.reason || punishment.message}</p>
+          </div>
+          <div>
+            <ul className='flex justify-between mr-5 mt-2'>
+              {punishment.acl.update &&
+                <li className='hover:text-accent-700'>
+                  <Link href={`/player/${meta.editPath}/${server.id}-${punishment.id}`} passHref>
+                    <a>
+                      <FaPencilAlt className='w-6 h-6' />
+                    </a>
+                  </Link>
+                </li>}
+              {punishment.acl.delete &&
+                <>
+                  <Modal
+                    icon={<AiOutlineWarning className='h-6 w-6 text-red-600' aria-hidden='true' />}
+                    title={`Delete ${type}`}
+                    confirmButton='Delete'
+                    open={open}
+                    onConfirm={handleConfirmDelete}
+                    onCancel={handleDeleteCancel}
+                    loading={loading}
+                  >
+                    <ErrorMessages errors={errors} />
+                    <p className='pb-1'>Are you sure you want to delete this {type}?</p>
+                    <p className='pb-1'>This action cannot be undone</p>
+                  </Modal>
+                  <li className='hover:text-accent-700'>
+                    <a href='#' onClick={showConfirmDelete}>
+                      <BsTrash className='w-6 h-6' />
+                    </a>
+                  </li>
+                </>}
+            </ul>
+          </div>
+          {punishment.acl.yours &&
+            <Link href={`/player/appeal/${server.id}/${punishment.id}/${meta.editPath.replace('edit-', '')}`} passHref>
+              <a>
+                <Button className='bg-blue-600 hover:bg-blue-900 mt-4'>
+                  Appeal
+                </Button>
+              </a>
+            </Link>}
+        </div>
+      </div>
+    </div>
   )
 }

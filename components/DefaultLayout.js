@@ -1,14 +1,14 @@
 import Head from 'next/head'
 import { withRouter } from 'next/router'
 import { NextSeo } from 'next-seo'
-import { Loader } from 'semantic-ui-react'
+import Loader from './Loader'
 import Footer from './Footer'
-import ResponsiveContainer from './ResponsiveContainer'
+import Nav from './Nav'
 import ErrorMessages from './ErrorMessages'
 import SessionNavProfile from './SessionNavProfile'
 import { useApi, useUser } from '../utils'
 
-function DefaultLayout ({ title = 'Default Title', children, heading, description }) {
+function DefaultLayout ({ title = 'Default Title', children, description }) {
   const { user } = useUser()
   const { loading, data, errors } = useApi({
     query: `{
@@ -22,10 +22,10 @@ function DefaultLayout ({ title = 'Default Title', children, heading, descriptio
     }`
   })
 
-  if (loading && !data) return <Loader active />
+  if (loading && !data) return <Loader />
   if (errors || !data) return <ErrorMessages errors={errors} />
 
-  let right = [{ icon: 'user', href: '/login' }]
+  let right = []
 
   if (user?.id) {
     right = [<SessionNavProfile key='session-nav-profile' user={user} />]
@@ -39,14 +39,13 @@ function DefaultLayout ({ title = 'Default Title', children, heading, descriptio
         <title>{title}</title>
       </Head>
       <NextSeo description={description} title={title} />
-      <ResponsiveContainer heading={heading} leftItems={left} rightItems={right}>
-        <div style={{ display: 'flex', minHeight: '100vh', flexDirection: 'column' }}>
-          <div style={{ flex: 1, marginBottom: '1em' }}>
-            {children}
-          </div>
-          <Footer />
+      <div className='flex flex-col h-screen font-primary bg-primary-500'>
+        <Nav leftItems={left} mobileItems={left} rightItems={right} />
+        <div className='flex-grow text-white bg-primary-500 pb-12'>
+          {children}
         </div>
-      </ResponsiveContainer>
+        <Footer />
+      </div>
     </>
   )
 }

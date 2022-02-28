@@ -10,6 +10,8 @@ describe('Mutation set password', () => {
   let request
 
   beforeAll(async () => {
+    nock.cleanAll()
+
     setup = await createSetup()
     const app = await createApp({ ...setup, disableUI: true })
 
@@ -17,6 +19,8 @@ describe('Mutation set password', () => {
   }, 20000)
 
   afterAll(async () => {
+    nock.cleanAll()
+    nock.restore()
     MockDate.reset()
 
     await setup.teardown()
@@ -178,8 +182,7 @@ describe('Mutation set password', () => {
 
     assert(body2)
 
-    assert.strictEqual(body2.errors[0].message,
-      'Invalid session')
+    assert.strictEqual(body2.data.me.id, null)
 
     // Confirm current session still valid
     const { body: body3, statusCode: statusCode3 } = await request

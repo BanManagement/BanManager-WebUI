@@ -28,6 +28,7 @@ describe('setup', () => {
 
   test('should disallow invalid email address', done => {
     nixt()
+      .env('SERVER_FOOTER_NAME', 'test')
       .env('CONTACT_EMAIL', '')
       .run('./bin/run setup')
       .on(/Email address for push notification/).respond('test\n')
@@ -35,9 +36,19 @@ describe('setup', () => {
       .end(done)
   })
 
+  test('should disallow invalid server footer name', done => {
+    nixt()
+      .env('SERVER_FOOTER_NAME', '')
+      .run('./bin/run setup')
+      .on(/Server name \(displayed in footer of website\)/).respond('#123456789_+aaaaaaaaaaaaaaaaaaaaa\n')
+      .stdout(/Invalid name, only letters, numbers and a maximum of 32 characters allowed/)
+      .end(done)
+  })
+
   test('should output env', done => {
     const dbPool = setup.dbPool.client.config.connection
     const cmd = nixt()
+      .env('SERVER_FOOTER_NAME', '')
       .env('CONTACT_EMAIL', '')
       .env('ENCRYPTION_KEY', '')
       .env('SESSION_KEY', '')
@@ -49,9 +60,10 @@ describe('setup', () => {
       .env('DB_PASSWORD', '')
       .env('DB_NAME', '')
       .run('./bin/run setup --writeFile env')
+      .on(/Server name \(displayed in footer of website\)/).respond('BanManagement\n')
       .on(/Email address for push notification/).respond('test@banmanagement.com\n')
       .on(/Database Host/).respond(`${dbPool.host}\n`)
-      .on(/Database Port/).respond('3306\n')
+      .on(/Database Port/).respond(`${dbPool.port}\n`)
       .on(/Database User/).respond(`${dbPool.user}\n`)
       .on(/Database Password/).respond(`${dbPool.password || ''}\n`)
       .on(/Database Name/).respond(`${dbPool.database}\n`)
@@ -62,7 +74,7 @@ describe('setup', () => {
       .stdout(/Done/)
       .stdout(/Add a BanManager Server/)
       .on(/Server Database Host/).respond(`${dbPool.host}\n`)
-      .on(/Server Database Port/).respond('3306\n')
+      .on(/Server Database Port/).respond(`${dbPool.port}\n`)
       .on(/Server Database User/).respond(`${dbPool.user}\n`)
       .on(/Server Database Password/).respond(`${dbPool.password || ''}\n`)
       .on(/Server Database Name/).respond(`${dbPool.database}\n`)
@@ -89,5 +101,5 @@ describe('setup', () => {
       .stdout(/Written env to disk/)
       .unlink('env')
       .end(done)
-  })
+  }, 30000)
 })

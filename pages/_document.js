@@ -1,5 +1,6 @@
 import Document, { Html, Head, Main, NextScript } from 'next/document'
 import { mediaStyles } from '../components/Media'
+
 export default class MyDocument extends Document {
   render () {
     return (
@@ -15,6 +16,11 @@ export default class MyDocument extends Document {
           <link rel='mask-icon' href='/images/safari-pinned-tab.svg' color='#5bbad5' />
           <meta name='msapplication-TileColor' content='#da532c' />
           <meta name='theme-color' content='#ffffff' />
+
+          <link
+            href='https://fonts.googleapis.com/css2?family=Inter&display=optional'
+            rel='stylesheet'
+          />
 
           <style
             type='text/css'

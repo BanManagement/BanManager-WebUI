@@ -1,39 +1,26 @@
-import { useEffect, useState } from 'react'
-import { Button, Form, Grid, Label, Header, Modal, Segment, Responsive as ResponsiveUtil } from 'semantic-ui-react'
-import { COLORS as COLOURS, TEXT_ALIGNMENTS } from 'semantic-ui-react/dist/commonjs/lib/SUI'
+import { useEffect, useMemo, useState } from 'react'
 import GridLayout from 'react-grid-layout'
-import { capitalize, find, maxBy, pick } from 'lodash-es'
+import { find, maxBy, pick } from 'lodash-es'
 import ErrorMessages from '../ErrorMessages'
+import PageHeader from '../PageHeader'
+import Button from '../Button'
+import { breakpoints } from '../Media'
 import { useMutateApi } from '../../utils'
 import { componentsMeta } from './layout'
 
-const colourOptions = COLOURS.map(colour => {
-  const text = capitalize(colour)
-
-  return { key: colour, text, value: colour, content: <Label color={colour}>{text}</Label> }
-})
-colourOptions.unshift({ key: 'none', text: 'None', value: 'none' })
-
-const textAlignmentOptions = TEXT_ALIGNMENTS.map(alignment => {
-  const text = capitalize(alignment)
-
-  return { key: alignment, text, value: alignment }
-})
-textAlignmentOptions.unshift({ key: 'none', text: 'None', value: 'none' })
-
 const cleanUpComponent = (component) => {
-  if (component.generated) return pick(component, ['x', 'y', 'w', 'meta', 'component', 'colour', 'textAlign'])
+  if (component.generated) return pick(component, ['x', 'y', 'w', 'h', 'meta', 'component'])
 
-  return pick(component, ['x', 'y', 'w', 'meta', 'component', 'colour', 'textAlign', 'id'])
+  return pick(component, ['x', 'y', 'w', 'h', 'meta', 'component', 'id'])
 }
 
 export default function PageLayoutForm ({ pathname, pageLayout, onFinished, query }) {
   const [variables, setVariables] = useState({})
-  const [currentDevice, setCurrentDevice] = useState({ name: 'desktop', width: ResponsiveUtil.onlyComputer.minWidth })
+  const [currentDevice, setCurrentDevice] = useState({ name: 'desktop', width: breakpoints.computer })
   const [currentLayout, setCurrentLayout] = useState(pageLayout.devices.desktop)
   const [currentPageLayout, setCurrentPageLayout] = useState(pageLayout)
   const [selectedComponent, setSelectedComponent] = useState(null)
-  const [openComponentForm, setOpenComponentForm] = useState(null)
+  const [meta, setMeta] = useState({})
 
   useEffect(() => {
     const newLayout = { devices: {} }
@@ -52,20 +39,38 @@ export default function PageLayoutForm ({ pathname, pageLayout, onFinished, quer
 
     setVariables({ pathname, input: newLayout.devices })
   }, [currentPageLayout])
+  useEffect(() => {
+    if (selectedComponent) {
+      handleComponentChange({ name: 'meta', value: meta }, selectedComponent)
+    }
+  }, [meta])
+  useEffect(() => {
+    if (selectedComponent) {
+      const component = find(currentLayout.components, { id: selectedComponent })
+
+      if (component?.meta) {
+        setMeta({ ...component.meta })
+      } else {
+        setMeta({})
+      }
+    }
+  }, [selectedComponent])
 
   const { load, loading, data, errors } = useMutateApi({ query })
 
   useEffect(() => {
     if (!data) return
-    if (Object.keys(data).some(key => !!data[key].pathname)) onFinished()
+    if (Object.keys(data).some(key => !!data[key].pathname)) onFinished(data)
   }, [data])
 
   const changeDevice = (name, widthName) => {
     setSelectedComponent(null)
-    setCurrentDevice({ name, width: ResponsiveUtil[widthName].minWidth })
+    setCurrentDevice({ name, width: breakpoints[widthName] })
     setCurrentLayout(currentPageLayout.devices[name])
   }
-  const onSelectComponent = (id) => setSelectedComponent(id)
+  const onSelectComponent = (id) => {
+    setSelectedComponent(id)
+  }
   const addComponent = (component) => {
     const updatedComponent = { ...component, y: currentLayout.components.length }
 
@@ -89,6 +94,7 @@ export default function PageLayoutForm ({ pathname, pageLayout, onFinished, quer
         }
       }
     })
+    setSelectedComponent(updatedComponent.id)
   }
   const removeComponent = (id, e) => {
     e.stopPropagation()
@@ -116,22 +122,7 @@ export default function PageLayoutForm ({ pathname, pageLayout, onFinished, quer
 
     if (selectedComponent === currentComponent.id) setSelectedComponent(null)
   }
-  const editComponent = (id, e) => {
-    e.stopPropagation()
-
-    const component = find(currentLayout.components, { id })
-    const FormComponent = componentsMeta[component.component].edit
-    const setMeta = (meta) => {
-      handleComponentChange(null, { name: 'meta', value: meta }, id)
-      handleCloseComponentForm()
-    }
-
-    setOpenComponentForm(<FormComponent meta={{ ...component.meta }} setMeta={setMeta} />)
-  }
-  const handleCloseComponentForm = () => {
-    setOpenComponentForm(null)
-  }
-  const handleComponentChange = (e, { name, value }, id) => {
+  const handleComponentChange = ({ name, value }, id) => {
     const components = currentLayout.components.map((component) => {
       if ((id && component.id === id) || (selectedComponent !== null && selectedComponent === component.id)) {
         return { ...component, [name]: value === 'none' ? null : value }
@@ -153,9 +144,9 @@ export default function PageLayoutForm ({ pathname, pageLayout, onFinished, quer
     })
   }
   const onLayoutChange = (layout) => {
-    const components = layout.map(({ i, w, x, y }) => {
+    const components = layout.map(({ i, w, h, x, y }) => {
       const currentComponent = find(currentLayout.components, { id: i })
-      const newComponent = { ...currentComponent, w, x, y }
+      const newComponent = { ...currentComponent, w, h, x, y }
 
       return newComponent
     })
@@ -171,8 +162,6 @@ export default function PageLayoutForm ({ pathname, pageLayout, onFinished, quer
         }
       }
     })
-
-    // if (newSelectedComponent) setSelectedComponent(newSelectedComponent)
   }
   const onSubmit = (e) => {
     e.preventDefault()
@@ -186,122 +175,106 @@ export default function PageLayoutForm ({ pathname, pageLayout, onFinished, quer
   }
 
   const selected = find(currentLayout.components, { id: selectedComponent })
-  const currentLayoutData = currentLayout.components.map((layout) => ({ ...layout, h: 1, i: layout.id }))
-  const layoutComponents = currentLayoutData.map(component => {
-    const colour = component.colour && component.colour !== 'none' ? { inverted: true, color: component.colour } : {}
-    const editForm = componentsMeta[component.component] ? componentsMeta[component.component].edit : null
-
+  const FormComponent = componentsMeta[selected?.component]?.edit
+  const currentLayoutData = currentLayout.components.map((layout) => ({ ...layout, i: layout.id }))
+  const layoutComponents = useMemo(() => currentLayoutData.map(component => {
     return (
-      <div key={component.i} onClick={onSelectComponent.bind(this, component.id)}>
-        <Segment {...colour}>
-          <Grid columns={2} stackable>
-            <Grid.Row verticalAlign='middle'>
-              <Grid.Column>{component.component}</Grid.Column>
-              <Grid.Column textAlign='right'>
-                <Button icon='trash' size='mini' onClick={removeComponent.bind(this, component.id)} />
-                {!!editForm &&
-                  <Button icon='pencil' size='mini' onClick={editComponent.bind(this, component.id)} />}
-              </Grid.Column>
-            </Grid.Row>
-          </Grid>
-        </Segment>
+      <div key={component.i} className='bg-gray-800' onClick={onSelectComponent.bind(this, component.id)}>
+        <div className='flex p-5'>
+          <span className='mx-4 text-base m-auto'>{component.component}</span>
+        </div>
       </div>
     )
-  })
+  }), [currentLayoutData])
   const unusedComponents = currentLayout.unusedComponents.concat(pageLayout.devices[currentDevice.name].reusableComponents).map(component => {
     return (
-      <Segment key={component.id ? component.id : component.component}>
-        {component.component}
-        <Button
-          floated='right'
-          color='green'
-          icon='plus'
-          size='mini'
-          onClick={addComponent.bind(this, component)}
-        />
-      </Segment>
+      <div key={component.id ? component.id : component.component} className='bg-gray-800 p-5 m-2 flex'>
+        <span>{component.component}</span>
+        <span className='flex-grow text-right'>
+          <Button
+            className='bg-green-600 hover:bg-green-700 !w-5 h-5'
+            onClick={addComponent.bind(this, component)}
+          >
+            +
+          </Button>
+        </span>
+      </div>
     )
   })
 
   return (
     <>
-      <Button.Group size='large' color='green' basic>
-        <Button
-          icon='mobile alternate'
-          onClick={changeDevice.bind(this, 'mobile', 'onlyMobile')}
-          active={currentDevice.name === 'mobile'}
-        />
-        <Button
-          icon='tablet alternate'
-          onClick={changeDevice.bind(this, 'tablet', 'onlyTablet')}
-          active={currentDevice.name === 'tablet'}
-        />
-        <Button
-          icon='desktop'
-          onClick={changeDevice.bind(this, 'desktop', 'onlyComputer')}
-          active={currentDevice.name === 'desktop'}
-        />
-      </Button.Group>
-      <Button color='green' onClick={handleReset}>Reset</Button>
-      <Button primary onClick={onSubmit} loading={loading}>Save</Button>
-      <Modal
-        open={!!openComponentForm}
-        onClose={handleCloseComponentForm}
-      >
-        <Header>
-          Edit
-        </Header>
-        <Modal.Content>
-          {openComponentForm}
-        </Modal.Content>
-      </Modal>
-      <Segment>
-        <ErrorMessages errors={errors} />
-        <Form>
-          <Form.Group inline>
-            <Form.Field>
-              <label>Name:</label> {selected ? selected.component : ''}
-            </Form.Field>
-            <Form.Field>
-              <Form.Select
-                options={colourOptions}
-                name='colour'
-                label='Colour:'
-                value={selected && selected.colour ? selected.colour : 'none'}
-                onChange={handleComponentChange}
-              />
-            </Form.Field>
-            <Form.Field>
-              <Form.Select
-                options={textAlignmentOptions}
-                label='Text Align:'
-                name='textAlign'
-                value={selected && selected.textAlign ? selected.textAlign : 'none'}
-                onChange={handleComponentChange}
-              />
-            </Form.Field>
-            <Form.Field>
-              <label>Width:</label> {selected ? selected.w : ''}
-            </Form.Field>
-          </Form.Group>
-        </Form>
-      </Segment>
-      <Segment>
-        <Header>Available Components</Header>
-        {unusedComponents}
-      </Segment>
-      <Segment.Group style={{ width: currentDevice.width }}>
-        <GridLayout
-          className='layout'
-          cols={16}
-          width={currentDevice.width}
-          rowHeight={47}
-          layout={currentLayoutData}
-          onLayoutChange={onLayoutChange}
-        >
-          {layoutComponents}
-        </GridLayout>
-      </Segment.Group>
+      <PageHeader title='Edit Page Layout' />
+      <div className='grid grid-flow-col gap-6 justify-start'>
+        <Button className='w-28 bg-gray-700 hover:bg-gray-800' onClick={handleReset}>Reset</Button>
+        <Button className='w-28' onClick={onSubmit} loading={loading}>Save</Button>
+      </div>
+      <div className='grid grid-flow-col mt-6 gap-6 justify-between'>
+        <div>
+          <div style={{ width: currentDevice.width }}>
+            <GridLayout
+              className='layout bg-black'
+              cols={12}
+              width={currentDevice.width}
+              rowHeight={66}
+              layout={currentLayoutData}
+              onLayoutChange={onLayoutChange}
+            >
+              {layoutComponents}
+            </GridLayout>
+          </div>
+        </div>
+        <div className='w-96 items-end'>
+          <div className='grid grid-flow-row'>
+            <div className='bg-black p-5'>
+              <div className='grid grid-flow-row gap-6'>
+                <Button
+                  onClick={changeDevice.bind(this, 'mobile', 'mobile')}
+                  disabled={currentDevice.name === 'mobile'}
+                >
+                  Mobile
+                </Button>
+                <Button
+                  onClick={changeDevice.bind(this, 'tablet', 'tablet')}
+                  disabled={currentDevice.name === 'tablet'}
+                >
+                  Tablet
+                </Button>
+                <Button
+                  onClick={changeDevice.bind(this, 'desktop', 'computer')}
+                  disabled={currentDevice.name === 'desktop'}
+                >
+                  Desktop
+                </Button>
+              </div>
+            </div>
+            <div className='bg-black p-5'>
+              <PageHeader title='Available Components' />
+              {unusedComponents}
+            </div>
+            {selected &&
+              <div className='bg-gray-800 p-5'>
+                <ErrorMessages errors={errors} />
+                <form className='m-2'>
+                  <div className='flex'>
+                    <h6 className='text-lg'>Selected</h6>
+                    <span className='flex-grow text-right'>
+                      <span className='px-4 py-2 text-base rounded-full text-white bg-accent-500'>
+                        {selected.component}
+                      </span>
+                    </span>
+                  </div>
+                  <div className='mt-6'>
+                    {FormComponent && <FormComponent meta={meta} setMeta={setMeta} />}
+                    <Button className='mt-6 bg-red-600 hover:bg-red-700' onClick={removeComponent.bind(this, selected.id)}>
+                      Delete
+                    </Button>
+                  </div>
+                </form>
+              </div>}
+          </div>
+        </div>
+      </div>
     </>
   )
 }

@@ -11,10 +11,10 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    name: Node.js ${{ matrix.java }} - ${{ matrix.storageType }}
+    name: Node.js ${{ matrix.node-version }}
     strategy:
       matrix:
-        node-version: [12.x, 14.x, 16.x]
+        node-version: [14.x]
 
     env:
       DB_HOST: localhost

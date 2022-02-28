@@ -1,4 +1,5 @@
-import { Header, Loader, Card } from 'semantic-ui-react'
+import Loader from './Loader'
+import PageHeader from './PageHeader'
 import PlayerPunishment from './PlayerPunishment'
 import { useApi } from '../utils'
 
@@ -17,6 +18,7 @@ query playerBans($id: UUID!) {
     acl {
       update
       delete
+      yours
     }
     server {
       id
@@ -25,10 +27,10 @@ query playerBans($id: UUID!) {
   }
 }`
 
-export default function ActivePlayerBans ({ id }) {
+export default function ActivePlayerBans ({ id, color }) {
   const { loading, data, mutate, errors } = useApi({ query, variables: { id } })
 
-  if (loading) return <Loader active inline='centered' />
+  if (loading) return <Loader />
   if (errors || !data || !data.playerBans || !data.playerBans.length) return null
 
   const rows = data.playerBans.map((row, i) => (
@@ -46,11 +48,11 @@ export default function ActivePlayerBans ({ id }) {
   ))
 
   return (
-    <>
-      <Header>Active Bans</Header>
-      <Card.Group itemsPerRow={3} stackable>
+    <div>
+      <PageHeader title='Active Bans' style={{ borderColor: `${color}` }} />
+      <div className='grid grid-cols-1 lg:grid-cols-3 gap-4'>
         {rows}
-      </Card.Group>
-    </>
+      </div>
+    </div>
   )
 }

@@ -1,0 +1,48 @@
+.react_select .react_select__control {
+  @apply relative w-full bg-black text-lg text-white shadow-lg pl-3 pr-3 py-3 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-accent-500 focus:border-accent-500 sm:text-sm border-0
+}
+
+/* .react_select .react_select__control--is-focused {
+} */
+
+.react_select .react_select__value-container {
+  @apply p-0
+}
+
+.react_select .react_select__input-container {
+  @apply p-0 m-0 text-white;
+}
+
+.react_select .react_select__option {
+  @apply text-white cursor-default hover:bg-gray-500 select-none relative py-2 pl-3 pr-9
+}
+
+.react_select .react_select__option--is-focused {
+  @apply bg-accent-500
+}
+
+.react_select .react_select__option--is-selected {
+  @apply bg-accent-500
+}
+
+.react_select .react_select__dropdown-indicator {
+  @apply text-gray-400
+}
+
+.react_select .react_select__placeholder {
+  @apply text-white;
+  opacity: 1;
+}
+
+.react_select .react_select__single-value {
+  @apply text-white;
+  opacity: 1;
+}
+
+.react_select .react_select__menu {
+  @apply absolute mt-1 w-full z-50 rounded-md bg-black shadow-lg
+}
+
+.react_select .react_select__menu-list {
+  @apply max-h-56 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm
+}

@@ -1,4 +1,4 @@
-const generateUUID = require('uuid/v4')
+const { v4: generateUUID } = require('uuid')
 const { date, name, internet } = require('faker')
 const { parse } = require('uuid-parse')
 const { inetPton } = require('../../data/ip')

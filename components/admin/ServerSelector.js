@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react'
-import { Dropdown } from 'semantic-ui-react'
+import { forwardRef, useEffect, useState } from 'react'
+import Select from '../Select'
 import { useApi } from '../../utils'
 
-export default function ServerSelector ({ handleChange, value, fluid = true, selectOnBlur = false }) {
+// eslint-disable-next-line react/display-name
+const ServerSelector = forwardRef(({ onChange, filter = () => true, value, ...rest }, ref) => {
   const [loading, setLoading] = useState(false)
   const [selected, setSelected] = useState(value || null)
   const query = `query servers {
@@ -11,32 +12,35 @@ export default function ServerSelector ({ handleChange, value, fluid = true, sel
       name
     }
   }`
-  const { data, errors } = useApi({ query })
+  const { loading: queryLoading, data, errors } = useApi({ query })
 
   useEffect(() => {
     setLoading(false)
 
     if (data && !selected) setSelected(data.servers[0].id)
   }, [data, errors])
-  useEffect(() => handleChange(selected), [selected])
+  useEffect(() => onChange(selected), [selected])
 
-  const handleServerChange = (e, { value }) => setSelected(value)
+  if (queryLoading) return null
+
+  const handleOnChange = ({ value }) => onChange(value)
 
   const options = data
-    ? data.servers.map(result => ({
-        key: result.id, text: result.name, value: result.id
+    ? data.servers.filter(filter).map(result => ({
+        label: result.name, value: result.id
       }))
     : []
 
   return (
-    <Dropdown
-      fluid={fluid}
+    <Select
       options={options}
-      onChange={handleServerChange}
-      disabled={loading}
-      loading={loading}
-      selectOnBlur={selectOnBlur}
-      defaultValue={options.length ? options[0].value : null}
+      onChange={handleOnChange}
+      isLoading={loading}
+      defaultValue={options.length ? options[0] : null}
+      ref={ref}
+      {...rest}
     />
   )
-}
+})
+
+export default ServerSelector

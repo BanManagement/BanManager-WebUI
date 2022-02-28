@@ -1,16 +1,18 @@
 import { useEffect, useState } from 'react'
-import { Form, Message } from 'semantic-ui-react'
+import { useForm } from 'react-hook-form'
+import { MdLock, MdOutlineEmail } from 'react-icons/md'
 import ErrorMessages from './ErrorMessages'
+import Message from './Message'
+import Input from './Input'
+import Button from './Button'
 import { useMutateApi } from '../utils'
 
 export default function ResetEmailForm () {
   const [success, setSuccess] = useState(false)
-  const [inputState, setInputState] = useState({
-    email: '',
-    currentPassword: ''
-  })
+  const { handleSubmit, formState, register } = useForm()
+  const { isSubmitting } = formState
 
-  const { load, loading, data, errors } = useMutateApi({
+  const { load, data, errors } = useMutateApi({
     query: `mutation setEmail($currentPassword: String!, $email: String!) {
     setEmail(currentPassword: $currentPassword, email: $email) {
       id
@@ -26,43 +28,40 @@ export default function ResetEmailForm () {
     if (Object.keys(data).some(key => !!data[key].id)) setSuccess(true)
   }, [data])
 
-  const onSubmit = (e) => {
-    e.preventDefault()
-
-    load(inputState)
-  }
-  const handleChange = async (e, { name, value }) => {
-    setInputState({ ...inputState, [name]: value })
-  }
+  const onSubmit = async (data) => load(data)
 
   return (
     <>
       {success &&
-        <Message success header='Email successfully updated' data-cy='success' />}
-      <Form size='large' onSubmit={onSubmit} error loading={loading}>
-        <ErrorMessages errors={errors} />
-        <Form.Input
-          required
-          name='email'
-          placeholder='New Email Address'
-          type='text'
-          icon='mail'
-          iconPosition='left'
-          onChange={handleChange}
-          data-cy='email'
-        />
-        <Form.Input
-          required
-          name='currentPassword'
-          placeholder='Current Password'
-          type='password'
-          icon='lock'
-          iconPosition='left'
-          onChange={handleChange}
-          data-cy='currentPassword'
-        />
-        <Form.Button fluid primary size='large' content='Save' data-cy='submit-email-change' />
-      </Form>
+        <Message success data-cy='success'>
+          <Message.Header>Email updated</Message.Header>
+        </Message>}
+      <form onSubmit={handleSubmit(onSubmit)} className='mx-auto'>
+        <div className='flex flex-col relative w-full max-w-md px-4 sm:px-6 md:px-8 lg:px-10'>
+          <ErrorMessages errors={errors} />
+          <Input
+            required
+            placeholder='New email address'
+            type='email'
+            icon={<MdOutlineEmail />}
+            iconPosition='left'
+            data-cy='email'
+            {...register('email')}
+          />
+          <Input
+            required
+            placeholder='Current password'
+            type='password'
+            icon={<MdLock />}
+            iconPosition='left'
+            data-cy='currentPassword'
+            {...register('currentPassword')}
+          />
+          <Button data-cy='submit-email-change' disabled={isSubmitting} loading={isSubmitting}>
+            Save
+          </Button>
+        </div>
+      </form>
     </>
   )
 }

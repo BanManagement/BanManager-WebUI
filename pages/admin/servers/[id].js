@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router'
-import { Loader } from 'semantic-ui-react'
 import AdminLayout from '../../../components/AdminLayout'
 import ErrorLayout from '../../../components/ErrorLayout'
+import Loader from '../../../components/Loader'
 import { useApi } from '../../../utils'
 import ServerForm from '../../../components/admin/ServerForm'
 
@@ -53,7 +53,7 @@ export default function Page () {
     }`
   })
 
-  if (loading) return <Loader active />
+  if (loading) return <Loader />
   if (errors || !data) return <ErrorLayout errors={errors} />
 
   const query = `mutation updateServer($id: ID!, $input: UpdateServerInput!) {

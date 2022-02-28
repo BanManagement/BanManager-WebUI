@@ -1,35 +1,15 @@
 import DefaultLayout from '../components/DefaultLayout'
-import { Container, Header } from 'semantic-ui-react'
+import PageHeader from '../components/PageHeader'
 
-const heading = ({ mobile }) => {
-  return (
-    <Container text>
-      <Header
-        as='h1'
-        content='An error occurred'
-        inverted
-        style={{
-          fontSize: mobile ? '2em' : '4em',
-          fontWeight: 'normal',
-          marginBottom: 0,
-          marginTop: '1.5em'
-        }}
-      />
-      <Header
-        as='h2'
-        content='Please try again later or go back'
-        inverted
-        style={{
-          fontSize: mobile ? '1.5em' : '1.7em',
-          fontWeight: 'normal',
-          marginTop: mobile ? '0.5em' : '1.5em'
-        }}
-      />
-    </Container>
-  )
-}
 function Error () {
-  return <DefaultLayout title='Error' heading={heading} />
+  return (
+    <DefaultLayout title='Error'>
+      <div className='mx-auto flex flex-col w-full max-w-md px-4 py-8 sm:px-6 md:px-8 lg:px-10 text-center'>
+        <PageHeader subTitle='An error occurred' title='Oops' />
+        <p>Something went wrong, please try again later</p>
+      </div>
+    </DefaultLayout>
+  )
 }
 
 export default Error

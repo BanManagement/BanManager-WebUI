@@ -1,8 +1,10 @@
-import { Container, Grid, Loader } from 'semantic-ui-react'
+import { useRef } from 'react'
+import Loader from '../components/Loader'
 import ErrorMessages from './ErrorMessages'
 import PageContainer from './PageContainer'
 import { useApi } from '../utils'
 import { Media, MediaContextProvider } from '../components/Media'
+import ResponsiveGridLayout from './ResponsiveGridLayout'
 
 const query = `query pageLayout($pathname: String!) {
   pageLayout(pathname: $pathname) {
@@ -26,86 +28,35 @@ const query = `query pageLayout($pathname: String!) {
   }
 }
 fragment Component on DeviceComponent {
+  id
   component
   x
   y
   w
-  colour
-  textAlign
+  h
   meta
 }`
 
-// @TODO Component needs optimising, try and avoid numerous loops
-function calculateRowCount (components) {
-  const counted = {}
+function createComponents (layout, availableComponents, props) {
+  return layout.map((deviceComponent) => {
+    const Component = availableComponents[deviceComponent.component]
 
-  return components.filter(c => {
-    if (c.y >= 0 && !counted[c.y]) {
-      counted[c.y] = true
-      return true
-    }
+    if (!Component) return null
 
-    return false
-  }).length - 1
-}
+    props.meta = deviceComponent.meta || {}
 
-function createRows (rowCount, components) {
-  const rows = []
-
-  for (let i = 0; i <= rowCount; i++) {
-    rows[i] = []
-  }
-
-  components.forEach(deviceComponent => {
-    rows[deviceComponent.y].push(deviceComponent)
-  })
-
-  return rows
-}
-
-function createComponents (rows, availableComponents, props) {
-  return rows.map((row, i) => {
-    const components = row.sort((a, b) => a.x - b.x).map((deviceComponent, index) => {
-      const Component = availableComponents[deviceComponent.component]
-
-      if (!Component) return null
-
-      props.colour = deviceComponent.colour
-      props.meta = deviceComponent.meta || {}
-
-      const rendered = (
-        <Grid.Column
-          width={deviceComponent.w}
-          color={deviceComponent.colour}
-          key={index}
-          textAlign={deviceComponent.textAlign}
-        >
-          <Container><Component {...props} /></Container>
-        </Grid.Column>
-      )
-
-      return rendered
-    })
-
-    if (components.length > 1) {
-      return (
-        <Grid.Row key={i}>
-          <Grid container>
-            {components}
-          </Grid>
-        </Grid.Row>
-      )
-    }
-
-    return (
-      <Grid.Row key={i}>
-        {components}
-      </Grid.Row>
+    const rendered = (
+      <div i={deviceComponent.id} className='grid-item-wrapper' key={deviceComponent.id}>
+        <Component id={'c-' + deviceComponent.id} {...props} />
+      </div>
     )
+
+    return rendered
   })
 }
 
 export default function PageLayout ({ availableComponents, pathname, props = {} }) {
+  const nodeRef = useRef()
   const { loading, data, errors } = useApi({ query, variables: { pathname } })
 
   if (loading) return <Loader active />
@@ -113,27 +64,62 @@ export default function PageLayout ({ availableComponents, pathname, props = {} 
 
   const { pageLayout } = data
   const devices = Object.keys(pageLayout.devices).filter(name => name !== '__typename')
-  const rowCounts = Object.assign({}, ...devices.map(device => {
-    return { [device]: calculateRowCount(pageLayout.devices[device].components) }
+  const layouts = Object.assign({}, ...devices.map(device => {
+    return { [device]: pageLayout.devices[device].components.map((layout) => ({ ...layout, i: layout.id })) }
   }))
-  const rows = Object.assign({}, ...devices.map(device => {
-    return { [device]: createRows(rowCounts[device], pageLayout.devices[device].components) }
+  const cols = Object.assign({}, ...devices.map(device => {
+    return { [device]: 12 }
   }))
   const deviceComponents = Object.assign({}, ...devices.map(device => {
-    return { [device]: createComponents(rows[device], availableComponents, props) }
+    return { [device]: createComponents(pageLayout.devices[device].components, availableComponents, props) }
   }))
 
   return (
     <MediaContextProvider>
-      <Media at='mobile'>
-        <Grid>{deviceComponents.mobile}</Grid>
-      </Media>
-      <Media at='tablet'>
-        <Grid>{deviceComponents.tablet}</Grid>
-      </Media>
-      <Media greaterThanOrEqual='computer'>
-        <Grid>{deviceComponents.desktop}</Grid>
-      </Media>
+      <div className='container mx-auto mb-8' ref={nodeRef}>
+        <Media at='mobile'>
+          <ResponsiveGridLayout
+            autoSize={false}
+            className='layout'
+            layouts={layouts}
+            cols={cols}
+            breakpoints={{ mobile: 320, tablet: 768, desktop: 992 }}
+            isResizable={false}
+            isDraggable={false}
+            rowHeight={1}
+          >
+            {/* {deviceComponents.mobile} */}
+          </ResponsiveGridLayout>
+        </Media>
+        <Media at='tablet'>
+          <ResponsiveGridLayout
+            className='layout'
+            layouts={layouts}
+            cols={cols}
+            breakpoints={{ mobile: 320, tablet: 768, desktop: 992 }}
+            isResizable={false}
+            isDraggable={false}
+            rowHeight={1}
+          >
+            {deviceComponents.tablet}
+          </ResponsiveGridLayout>
+        </Media>
+        <Media greaterThanOrEqual='computer'>
+          <ResponsiveGridLayout
+            autoSize={false}
+            autoHeight
+            className='layout'
+            layouts={layouts}
+            cols={cols}
+            breakpoints={{ mobile: 320, tablet: 768, desktop: 992 }}
+            isResizable={false}
+            isDraggable={false}
+            rowHeight={1}
+          >
+            {deviceComponents.desktop}
+          </ResponsiveGridLayout>
+        </Media>
+      </div>
     </MediaContextProvider>
   )
 }

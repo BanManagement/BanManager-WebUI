@@ -7,7 +7,7 @@ module.exports = async function playerMute (obj, { id, serverId }, { state }, in
 
   const server = state.serversPool.get(serverId)
   const fields = parseResolveInfo(info)
-  const query = getSql(info.schema, server, fields, 'playerMutes')
+  const query = getSql(info.schema, server, fields, 'playerMutes', 'PlayerMute')
     .where(`${server.config.tables.playerMutes}.id`, id)
 
   let calculateAcl = false

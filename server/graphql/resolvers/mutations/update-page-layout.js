@@ -3,7 +3,7 @@ const ExposedError = require('../../../data/exposed-error')
 const reusableComponents = require('../../../data/default-components')
 const pageLayout = require('../queries/page-layout')
 
-module.exports = async function updatePageLayout (obj, { pathname, input }, { log, state }) {
+module.exports = async function updatePageLayout (obj, { pathname, input }, { state }) {
   // Find all component ids
   const results = await state.dbPool('bm_web_page_layouts')
     .select('id')
@@ -18,7 +18,7 @@ module.exports = async function updatePageLayout (obj, { pathname, input }, { lo
 
     devices.forEach(device => {
       // @TODO Validate component is allowed in this pathname
-      input[device].components.forEach(({ id, component, x, y, w, textAlign, colour, meta }) => {
+      input[device].components.forEach(({ id, component, x, y, w, h, meta }) => {
         const data = {
           pathname,
           device,
@@ -26,8 +26,7 @@ module.exports = async function updatePageLayout (obj, { pathname, input }, { lo
           x,
           y,
           w,
-          textAlign: textAlign || null,
-          colour: colour || null,
+          h,
           meta: meta ? JSON.stringify(meta) : null
         }
 
@@ -36,7 +35,7 @@ module.exports = async function updatePageLayout (obj, { pathname, input }, { lo
         components.push(data)
       })
 
-      input[device].unusedComponents.forEach(({ id, component, x, w, textAlign, colour, meta }) => {
+      input[device].unusedComponents.forEach(({ id, component, x, w, h, meta }) => {
         const data = {
           pathname,
           device,
@@ -44,8 +43,7 @@ module.exports = async function updatePageLayout (obj, { pathname, input }, { lo
           x,
           y: -1,
           w,
-          textAlign: textAlign || null,
-          colour: colour || null,
+          h,
           meta: meta ? JSON.stringify(meta) : null
         }
 

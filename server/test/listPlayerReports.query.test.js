@@ -498,6 +498,9 @@ describe('Query listPlayerReports', () => {
             total
             records {
               id
+              assignee {
+                id
+              }
             }
           }
         }`
@@ -511,7 +514,7 @@ describe('Query listPlayerReports', () => {
     assert(body.data)
     assert.deepStrictEqual(body.data.listPlayerReports, {
       total: 1,
-      records: [{ id: inserted.toString() }]
+      records: [{ id: inserted.toString(), assignee: { id: unparse(account.id) } }]
     })
   })
 
@@ -537,6 +540,9 @@ describe('Query listPlayerReports', () => {
             total
             records {
               id
+              player {
+                id
+              }
             }
           }
         }`
@@ -550,7 +556,7 @@ describe('Query listPlayerReports', () => {
     assert(body.data)
     assert.deepStrictEqual(body.data.listPlayerReports, {
       total: 1,
-      records: [{ id: inserted.toString() }]
+      records: [{ id: inserted.toString(), player: { id: unparse(account.id) } }]
     })
   })
 
@@ -563,7 +569,7 @@ describe('Query listPlayerReports', () => {
 
     await pool('bm_players').insert(actor)
 
-    await pool('bm_player_reports').insert(report, ['id'])
+    await pool('bm_player_reports').insert(report)
 
     const { body, statusCode } = await request
       .post('/graphql')

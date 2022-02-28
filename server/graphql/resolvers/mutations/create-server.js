@@ -3,9 +3,10 @@ const { encrypt } = require('../../../data/crypto')
 const { generateServerId } = require('../../../data/generator')
 const { createConnection } = require('mysql2/promise')
 const { tables } = require('../../../data/tables')
+const { setupPool } = require('../../../connections')
 const ExposedError = require('../../../data/exposed-error')
 
-module.exports = async function createServer (obj, { input }, { state }) {
+module.exports = async function createServer (obj, { input }, { log, state }) {
   const serverExists = await state.dbPool('bm_web_servers')
     .select('id')
     .where('name', input.name)
@@ -16,7 +17,15 @@ module.exports = async function createServer (obj, { input }, { state }) {
   }
 
   const id = await generateServerId()
-  const conn = await createConnection(pick(input, ['host', 'port', 'database', 'user', 'password']))
+  let conn
+
+  try {
+    conn = await createConnection(pick(input, ['host', 'port', 'database', 'user', 'password']))
+  } catch (e) {
+    e.exposed = true
+
+    throw e
+  }
 
   const tablesMissing = []
   const tableNames = Object.keys(tables)
@@ -44,16 +53,43 @@ module.exports = async function createServer (obj, { input }, { state }) {
     throw new ExposedError(`Console UUID not found in ${input.tables.players} table`)
   }
 
-  if (input.password) {
+  const password = input.password
+
+  if (password) {
     input.password = await encrypt(process.env.ENCRYPTION_KEY, input.password)
   } else {
     input.password = ''
   }
 
   // Clean up
+  const parsedTables = input.tables
   input.tables = JSON.stringify(input.tables)
 
   await state.dbPool('bm_web_servers').insert({ ...input, id })
+
+  const poolConfig = {
+    host: input.host,
+    port: input.port,
+    user: input.user,
+    password: password,
+    database: input.database
+  }
+  const pool = setupPool(poolConfig, log)
+  const serverDetails = {
+    config: {
+      id,
+      name: input.name,
+      host: input.host,
+      port: input.port,
+      user: input.user,
+      database: input.database,
+      tables: parsedTables,
+      console: input.console
+    },
+    pool
+  }
+
+  state.serversPool.set(id, serverDetails)
 
   return { id }
 }

@@ -92,9 +92,9 @@ describe('Mutation updatePageLayout', () => {
   })
 
   test('should update page layout', async () => {
-    const components = [{ component: 'PlayerHeader', id: '19', w: 16, x: 0, y: 0 }, { component: 'ActivePlayerBans', id: '22', w: 16, x: 0, y: 1 }, { component: 'ActivePlayerMutes', id: '25', w: 16, x: 0, y: 2 }, { component: 'PlayerPunishmentRecords', id: '28', w: 16, x: 0, y: 3 }, { component: 'PlayerIpList', id: '31', w: 16, x: 0, y: 4 }, { component: 'PlayerHistoryList', id: '34', w: 16, x: 0, y: 5 }, { component: 'PlayerAlts', id: '37', w: 16, x: 0, y: 6 }]
+    const components = [{ component: 'AppealPanel', h: 1, id: '48', w: 12, x: 0, y: 0 }, { component: 'SearchPanel', h: 1, id: '49', w: 12, x: 0, y: 1 }, { component: 'AccountPanel', h: 1, id: '50', w: 12, x: 0, y: 2 }, { component: 'StatisticsPanel', h: 1, id: '51', w: 12, x: 0, y: 3 }]
     const unusedComponents = [
-      { component: 'HTML', y: 5, x: 0, w: 5 }
+      { component: 'HTML', y: 5, x: 0, w: 5, h: 1 }
     ]
     const query = jsonToGraphQLQuery({
       mutation: {
@@ -102,7 +102,7 @@ describe('Mutation updatePageLayout', () => {
           {
             __args:
             {
-              pathname: 'player',
+              pathname: 'home',
               input:
               {
                 mobile: { components, unusedComponents },
@@ -121,7 +121,8 @@ describe('Mutation updatePageLayout', () => {
                   component: true,
                   x: true,
                   y: true,
-                  w: true
+                  w: true,
+                  h: true
                 },
                 unusedComponents:
                 {
@@ -129,7 +130,8 @@ describe('Mutation updatePageLayout', () => {
                   component: true,
                   x: true,
                   y: true,
-                  w: true
+                  w: true,
+                  h: true
                 }
               }
             }
@@ -146,22 +148,24 @@ describe('Mutation updatePageLayout', () => {
     assert.strictEqual(statusCode, 200)
 
     assert(body)
-    assert.strictEqual(body.data.updatePageLayout.pathname, 'player')
+    assert(body.data)
+
+    assert.strictEqual(body.data.updatePageLayout.pathname, 'home')
     assert.deepStrictEqual(body.data.updatePageLayout.devices.mobile.components, components)
     assert.deepStrictEqual(body.data.updatePageLayout.devices.mobile.unusedComponents, [])
   })
 
   test('should insert & delete components', async () => {
-    const [inserted] = await setup.dbPool('bm_web_page_layouts').insert({ pathname: 'player', device: 'mobile', component: 'HTML', x: 0, y: 0, w: 16 }, ['id'])
-    const components = [{ id: '1', component: 'PlayerHeader', y: 0, x: 0, w: 5 },
-      { id: '4', component: 'PlayerPunishmentList', y: 2, x: 0, w: 5 },
-      { id: '7', component: 'PlayerIpList', y: 1, x: 0, w: 5 },
-      { id: '10', component: 'PlayerHistoryList', y: 3, x: 0, w: 5 },
-      { component: 'HTML', y: 5, x: 0, w: 5 }
+    const [inserted] = await setup.dbPool('bm_web_page_layouts').insert({ pathname: 'home', device: 'mobile', component: 'HTML', x: 0, y: 0, w: 16, h: 1 }, ['id'])
+    const components = [{ id: '1', component: 'PlayerHeader', y: 0, x: 0, w: 5, h: 1 },
+      { id: '4', component: 'PlayerPunishmentList', y: 2, x: 0, w: 5, h: 1 },
+      { id: '7', component: 'PlayerIpList', y: 1, x: 0, w: 5, h: 1 },
+      { id: '10', component: 'PlayerHistoryList', y: 3, x: 0, w: 5, h: 1 },
+      { component: 'HTML', y: 5, x: 0, w: 5, h: 1 }
     ]
     const unusedComponents = [
-      { id: '37', component: 'PlayerAlts', y: 4, x: 0, w: 5 },
-      { id: inserted, component: 'HTML', y: 15, x: 0, w: 5 }
+      { id: '37', component: 'PlayerAlts', y: 4, x: 0, w: 5, h: 1 },
+      { id: inserted, component: 'HTML', y: 15, x: 0, w: 5, h: 1 }
     ]
     const query = jsonToGraphQLQuery({
       mutation: {
@@ -169,7 +173,7 @@ describe('Mutation updatePageLayout', () => {
           {
             __args:
             {
-              pathname: 'player',
+              pathname: 'home',
               input:
               {
                 mobile: { components, unusedComponents },
@@ -188,7 +192,8 @@ describe('Mutation updatePageLayout', () => {
                   component: true,
                   x: true,
                   y: true,
-                  w: true
+                  w: true,
+                  h: true
                 },
                 unusedComponents:
                 {
@@ -196,7 +201,8 @@ describe('Mutation updatePageLayout', () => {
                   component: true,
                   x: true,
                   y: true,
-                  w: true
+                  w: true,
+                  h: true
                 }
               }
             }
@@ -213,10 +219,10 @@ describe('Mutation updatePageLayout', () => {
     assert.strictEqual(statusCode, 200)
 
     assert(body)
-    assert.strictEqual(body.data.updatePageLayout.pathname, 'player')
-    assert.strictEqual(body.data.updatePageLayout.devices.mobile.components.length, 7)
+    assert(body.data)
+
+    assert.strictEqual(body.data.updatePageLayout.pathname, 'home')
+    assert.strictEqual(body.data.updatePageLayout.devices.mobile.components.length, 5)
     assert.strictEqual(body.data.updatePageLayout.devices.mobile.components.pop().component, 'HTML')
-    assert.deepStrictEqual(body.data.updatePageLayout.devices.mobile.unusedComponents,
-      [{ id: '37', component: 'PlayerAlts', y: -1, x: 0, w: 5 }])
   })
 })

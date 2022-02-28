@@ -12,26 +12,17 @@ scalar Timestamp
 scalar UUID
 scalar JSONObject
 
-directive @allowIf(resource: String!, permission: String!, serverVar: String, serverSrc: String) on FIELD_DEFINITION
-directive @allowIfLoggedIn on FIELD_DEFINITION
-directive @sqlRelation(field: String!, table: String!, joinType: String, joinOn: String, whereKey: String) on FIELD_DEFINITION
-directive @sqlTable(name: String!) on OBJECT
-directive @sqlColumn(name: String!) on FIELD_DEFINITION
-directive @constraint(
-  minLength: Int
-  maxLength: Int
-  startsWith: String
-  endsWith: String
-  notContains: String
-  pattern: String
-  format: String
+enum CacheControlScope {
+  PUBLIC
+  PRIVATE
+}
 
-  min: Int
-  max: Int
-  exclusiveMin: Int
-  exclusiveMax: Int
-  multipleOf: Int
-) on INPUT_FIELD_DEFINITION
+directive @cacheControl(
+  maxAge: Int
+  scope: CacheControlScope
+  inheritMaxAge: Boolean
+) on FIELD_DEFINITION | OBJECT | INTERFACE | UNION
+directive @sqlColumn(name: String!) on FIELD_DEFINITION
 
 type Server @sqlTable(name: "servers") @cacheControl(scope: PUBLIC, maxAge: 3600) {
   id: ID! @cacheControl(scope: PUBLIC, maxAge: 3600)
@@ -167,6 +158,7 @@ type PlayerNote @sqlTable(name: "playerNotes") {
   message: String!
   created: Timestamp!
   acl: EntityACL!
+  server: Server!
 }
 
 type PlayerReportList {
@@ -178,6 +170,17 @@ type PlayerReportList {
 type PlayerReportCommentList {
   total: Int!
   records: [PlayerReportComment!]!
+}
+
+type PlayerAppealList {
+  total: Int! @cacheControl(scope: PUBLIC, maxAge: 300)
+  records: [PlayerAppeal!]! @cacheControl(scope: PUBLIC, maxAge: 300)
+  server: Server!
+}
+
+type PlayerAppealCommentList {
+  total: Int!
+  records: [PlayerAppealComment!]!
 }
 
 type PlayerBanList {
@@ -266,6 +269,62 @@ type PlayerReportState @sqlTable(name: "playerReportStates") {
   name: String!
 }
 
+type PlayerAppeal @sqlTable(name: "appeals") {
+  id: ID!
+  server: Server! @sqlRelation(joinOn: "id", field: "server_id", table: "servers")
+  actor: Player! @cacheControl(scope: PUBLIC, maxAge: 3600) @sqlRelation(joinOn: "id", field: "actor_id", table: "players", joinType: "leftJoin")
+  assignee: Player @sqlRelation(joinOn: "id", field: "assignee_id", table: "players", joinType: "leftJoin")
+  punishmentActor: Player! @cacheControl(scope: PUBLIC, maxAge: 3600) @sqlRelation(joinOn: "id", field: "punishment_actor_id", table: "players", joinType: "leftJoin")
+  punishmentType: RecordType! @sqlColumn(name: "punishment_type")
+  punishmentCreated: Timestamp! @sqlColumn(name: "punishment_created")
+  punishmentExpires: Timestamp! @sqlColumn(name: "punishment_expires")
+  punishmentReason: String! @sqlColumn(name: "punishment_reason")
+  punishmentSoft: Boolean @sqlColumn(name: "punishment_soft")
+  punishmentPoints: Float @sqlColumn(name: "punishment_points")
+  reason: String!
+  created: Timestamp!
+  updated: Timestamp!
+  state: PlayerAppealState! @sqlRelation(joinOn: "id", field: "state_id", table: "appealStates")
+  acl: PlayerAppealACL!
+}
+
+type PlayerAppealACL {
+  state: Boolean!
+  comment: Boolean!
+  assign: Boolean!
+  delete: Boolean!
+}
+
+type PlayerAppealUpdated {
+  appeal: PlayerAppeal!
+  comment: PlayerAppealComment!
+}
+
+type PlayerAppealState @sqlTable(name: "appealStates") {
+  id: ID!
+  name: String!
+}
+
+type PlayerAppealComment @sqlTable(name: "appealComments") {
+  id: ID!
+  type: String!
+  content: String
+  assignee: Player @cacheControl(scope: PUBLIC, maxAge: 3600) @sqlRelation(joinOn: "id", field: "assignee_id", table: "players")
+  state: PlayerAppealState @sqlRelation(joinOn: "id", field: "state_id", table: "appealStates")
+  actor: Player! @cacheControl(scope: PUBLIC, maxAge: 3600) @sqlRelation(joinOn: "id", field: "actor_id", table: "players")
+  oldReason: String @sqlColumn(name: "old_reason")
+  newReason: String @sqlColumn(name: "new_reason")
+  oldExpires: Timestamp @sqlColumn(name: "old_expires")
+  newExpires: Timestamp @sqlColumn(name: "new_expires")
+  oldPoints: Float @sqlColumn(name: "old_points")
+  newPoints: Float @sqlColumn(name: "new_points")
+  oldSoft: Boolean @sqlColumn(name: "old_soft")
+  newSoft: Boolean @sqlColumn(name: "new_soft")
+  created: Timestamp!
+  updated: Timestamp!
+  acl: EntityACL!
+}
+
 type EntityTypeACL {
   create: Boolean!
   update: Boolean!
@@ -283,6 +342,7 @@ type PlayerWarning @sqlTable(name: "playerWarnings") {
   read: Boolean!
   points: Float!
   acl: EntityACL!
+  server: Server!
 }
 
 union PlayerPunishmentRecord = PlayerBanRecord | PlayerKick | PlayerMuteRecord | PlayerNote | PlayerWarning
@@ -294,11 +354,11 @@ type PlayerPunishmentRecords {
 }
 
 type Me {
-  id: UUID!
-  name: String!
-  email: String!
-  hasAccount: Boolean!
-  session: PlayerSession!
+  id: UUID
+  name: String
+  email: String
+  hasAccount: Boolean
+  session: PlayerSession
   resources: [Resources!]
 }
 
@@ -375,8 +435,7 @@ type DeviceComponent {
   x: Int!
   y: Int!
   w: Int!
-  colour: String
-  textAlign: String
+  h: Int!
   meta: JSONObject
 }
 
@@ -385,8 +444,7 @@ type ReusableDeviceComponent {
   x: Int
   y: Int
   w: Int
-  colour: String
-  textAlign: String
+  h: Int
   meta: JSONObject
 }
 
@@ -405,6 +463,22 @@ type PageDevices {
 type PageLayout @cacheControl(scope: PUBLIC, maxAge: 300) {
   pathname: ID! @cacheControl(scope: PUBLIC, maxAge: 300)
   devices: PageDevices! @cacheControl(scope: PUBLIC, maxAge: 300)
+}
+
+type Statistics {
+  totalActiveBans: Int!
+  totalActiveMutes: Int!
+  totalPlayers: Int!
+  totalAppeals: Int!
+}
+
+type PlayerStatistics {
+  totalActiveBans: Int!
+  totalActiveMutes: Int!
+  totalBans: Int!
+  totalMutes: Int!
+  totalReports: Int!
+  totalWarnings: Int!
 }
 
 type Query {
@@ -449,13 +523,22 @@ type Query {
 
   reportStates(serverId: ID!): [PlayerReportState!]
   report(id: ID!, serverId: ID!): PlayerReport
-  listPlayerReports(serverId: ID!, actor: UUID, assigned: UUID, player: UUID, state: ID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerReportList! @cacheControl(scope: PRIVATE, maxAge: 300)
+  listPlayerReports(serverId: ID!, actor: UUID, assigned: UUID, player: UUID, state: ID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerReportList!
 
   listPlayerReportComments(serverId: ID!, report: ID!, actor: UUID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerReportCommentList! @allowIf(resource: "player.reports", permission: "view.comments", serverVar: "serverId")
   reportComment(id: ID!, serverId: ID!): PlayerReportComment! @allowIf(resource: "player.reports", permission: "view.comments", serverVar: "serverId")
 
   listPlayerSessionHistory(serverId: ID!, player: UUID, limit: Int = 10, offset: Int = 0, order: OrderBySessionHistoryInput): PlayerSessionHistoryList! @cacheControl(scope: PRIVATE, maxAge: 300) @allowIf(resource: "player.history", permission: "view")
 
+  appealStates: [PlayerAppealState!]
+  appeal(id: ID!): PlayerAppeal!
+  listPlayerAppeals(serverId: ID, actor: UUID, assigned: UUID, player: UUID, state: ID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerAppealList!
+
+  listPlayerAppealComments(id: ID!, actor: UUID, order: OrderByInput): PlayerAppealCommentList! @allowIf(resource: "player.appeals", permission: "view.comments")
+  appealComment(id: ID!): PlayerAppealComment! @allowIf(resource: "player.appeals", permission: "view.comments")
+
+  statistics: Statistics! @cacheControl(scope: PUBLIC, maxAge: 3600)
+  playerStatistics(player: UUID!): PlayerStatistics!
 }
 
 input CreatePlayerNoteInput {
@@ -553,6 +636,19 @@ input PermissionInput {
   allowed: Boolean!
 }
 
+input CreateAppealInput {
+  serverId: ID!
+  punishmentId: ID!
+  type: RecordType!
+  reason: String! @constraint(minLength: 20, maxLength: 65535)
+  soft: Boolean
+  points: Float
+}
+
+input AppealCommentInput {
+  content: String! @constraint(minLength: 2, maxLength: 255)
+}
+
 input ReportCommentInput {
   comment: String! @constraint(minLength: 2, maxLength: 255)
 }
@@ -574,8 +670,7 @@ input PageLayoutComponentInput {
   x: Int!
   y: Int!
   w: Int!
-  colour: String
-  textAlign: String
+  h: Int!
   meta: JSONObject
 }
 
@@ -635,6 +730,21 @@ type Mutation {
   reportState(report: ID!, serverId: ID!, state: ID!): PlayerReport! @allowIfLoggedIn
   deleteReportComment(id: ID!, serverId: ID!): PlayerReportComment! @allowIfLoggedIn
   createReportComment(report: ID!, serverId: ID!, input: ReportCommentInput!): PlayerReportComment! @allowIfLoggedIn
+  resolveReportBan(report: ID!, serverId: ID!, input: CreatePlayerBanInput!): PlayerReport! @allowIf(resource: "player.bans", permission: "create", serverVar: "serverId")
+  resolveReportMute(report: ID!, serverId: ID!, input: CreatePlayerMuteInput!): PlayerReport! @allowIf(resource: "player.mutes", permission: "create", serverVar: "serverId")
+  resolveReportWarning(report: ID!, serverId: ID!, input: CreatePlayerWarningInput!): PlayerReport! @allowIf(resource: "player.warnings", permission: "create", serverVar: "serverId")
+
+  createAppeal(input: CreateAppealInput!): PlayerAppeal! @allowIfLoggedIn
+  assignAppeal(id: ID!, player: UUID!): PlayerAppealUpdated! @allowIfLoggedIn
+  appealState(id: ID!, state: ID!): PlayerAppealUpdated! @allowIfLoggedIn
+  deleteAppealComment(id: ID!): PlayerAppealComment! @allowIfLoggedIn
+  createAppealComment(id: ID!, input: AppealCommentInput!): PlayerAppealComment! @allowIfLoggedIn
+  resolveAppealUpdateBan(id: ID!, input: UpdatePlayerBanInput!): PlayerAppealUpdated! @allowIfLoggedIn
+  resolveAppealDeleteBan(id: ID!): PlayerAppealUpdated! @allowIfLoggedIn
+  resolveAppealUpdateMute(id: ID!, input: UpdatePlayerMuteInput!): PlayerAppealUpdated! @allowIfLoggedIn
+  resolveAppealDeleteMute(id: ID!): PlayerAppealUpdated! @allowIfLoggedIn
+  resolveAppealUpdateWarning(id: ID!, input: UpdatePlayerWarningInput!): PlayerAppealUpdated! @allowIfLoggedIn
+  resolveAppealDeleteWarning(id: ID!): PlayerAppealUpdated! @allowIfLoggedIn
 
   setPassword(currentPassword: String, newPassword: String!): Me! @allowIfLoggedIn
   setEmail(currentPassword: String!, email: String!): Me! @allowIfLoggedIn

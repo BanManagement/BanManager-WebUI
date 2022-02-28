@@ -1,29 +1,33 @@
 import { useState } from 'react'
-import { Header, Loader, Pagination, Table } from 'semantic-ui-react'
+import Loader from './Loader'
+import Pagination from './Pagination'
+import Table from './Table'
 import { format, fromUnixTime } from 'date-fns'
-import { useApi } from '../utils'
+import { useApi, useUser } from '../utils'
 import ServerSelector from './admin/ServerSelector'
 
-const query = `
-query listPlayerSessionHistory($serverId: ID!, $player: UUID, $limit: Int, $offset: Int) {
-  listPlayerSessionHistory(serverId: $serverId, player: $player, limit: $limit, offset: $offset) {
-    total
-    records {
-      id
-      join
-      leave
-      ip
-    }
-  }
-}`
-
-export default function PlayerHistoryList ({ id }) {
+export default function PlayerHistoryList ({ id, color }) {
+  const { hasServerPermission } = useUser()
   const limit = 10
   const [tableState, setTableState] = useState({ activePage: 1, limit, offset: 0, serverId: null, player: id })
-  const { loading, data, errors } = useApi({ query: !tableState.serverId ? null : query, variables: tableState })
+  const { loading, data, errors } = useApi({
+    query: !tableState.serverId
+      ? null
+      : `query listPlayerSessionHistory($serverId: ID!, $player: UUID, $limit: Int, $offset: Int) {
+      listPlayerSessionHistory(serverId: $serverId, player: $player, limit: $limit, offset: $offset) {
+        total
+        records {
+          id
+          join
+          leave
+          ${hasServerPermission('player.ips', 'view', null, true) ? 'ip' : ''}
+        }
+      }
+    }`,
+    variables: tableState
+  })
 
   const handlePageChange = (e, { activePage }) => setTableState({ ...tableState, activePage, offset: (activePage - 1) * limit })
-  const handleFieldChange = (field) => (id) => setTableState({ ...tableState, [field]: id || null })
   const total = data?.listPlayerSessionHistory.total || 0
   const rows = data?.listPlayerSessionHistory?.records || []
   const totalPages = Math.ceil(total / limit)
@@ -32,17 +36,26 @@ export default function PlayerHistoryList ({ id }) {
   if (errors) return null
 
   return (
-    <>
-      <Header>Player Session History</Header>
-      <Table selectable structured striped>
+    <div>
+      <h1
+        style={{ borderColor: `${color}` }}
+        className='text-2xl font-bold pb-4 mb-4 border-b border-accent-200 leading-none'
+      >
+        <div className='flex items-center'>
+          <p className='mr-6'>History</p>
+          <div className='w-40 inline-block'>
+            <ServerSelector
+              onChange={serverId => setTableState({ ...tableState, serverId })}
+            />
+          </div>
+        </div>
+      </h1>
+      <Table>
         <Table.Header>
-          <Table.Row>
-            <Table.HeaderCell colSpan='3'><ServerSelector handleChange={handleFieldChange('serverId')} /></Table.HeaderCell>
-          </Table.Row>
           <Table.Row>
             <Table.HeaderCell>Joined</Table.HeaderCell>
             <Table.HeaderCell>Left</Table.HeaderCell>
-            <Table.HeaderCell>IP Address</Table.HeaderCell>
+            {hasServerPermission('player.ips', 'view', null, true) && <Table.HeaderCell>IP</Table.HeaderCell>}
           </Table.Row>
         </Table.Header>
         <Table.Body>
@@ -52,15 +65,14 @@ export default function PlayerHistoryList ({ id }) {
               <Table.Row key={i}>
                 <Table.Cell>{format(fromUnixTime(row.join), dateFormat)}</Table.Cell>
                 <Table.Cell>{format(fromUnixTime(row.leave), dateFormat)}</Table.Cell>
-                <Table.Cell>{row.ip}</Table.Cell>
+                {hasServerPermission('player.ips', 'view', null, true) && <Table.Cell>{row.ip}</Table.Cell>}
               </Table.Row>
             ))}
         </Table.Body>
         <Table.Footer>
           <Table.Row>
-            <Table.HeaderCell colSpan='6'>
+            <Table.HeaderCell colSpan='5' border={false}>
               <Pagination
-                fluid
                 totalPages={totalPages}
                 activePage={tableState.activePage}
                 onPageChange={handlePageChange}
@@ -69,6 +81,6 @@ export default function PlayerHistoryList ({ id }) {
           </Table.Row>
         </Table.Footer>
       </Table>
-    </>
+    </div>
   )
 }

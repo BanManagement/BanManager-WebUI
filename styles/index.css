@@ -1,0 +1,38 @@
+@tailwind base;
+
+/* Start purging... */
+@tailwind components;
+/* Stop purging. */
+
+/* Start purging... */
+@tailwind utilities;
+/* Stop purging. */
+
+/* Your own custom utilities */
+@layer components {
+  @import './react-select.css';
+  @import './react-code-input.css';
+  @import './react-grid-layout.css';
+
+  .react-grid-item > .react-resizable-handle::after {
+    border-right: 2px white !important;
+  }
+
+  .loader {
+    border-top-color: theme('colors.accent.400') !important;
+    -webkit-animation: spinner 1.5s linear infinite;
+    animation: spinner 1.5s linear infinite;
+
+    @apply ease-linear rounded-full border-2 border-t-2 border-gray-200;
+  }
+
+  @-webkit-keyframes spinner {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+  }
+
+  @keyframes spinner {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+}

@@ -1,9 +1,7 @@
-import { Container } from 'semantic-ui-react'
-
 export default function PageContainer ({ children }) {
   return (
-    <Container style={{ padding: '2em 0em', clear: 'both' }}>
+    <div className='container mx-auto px-4 sm:px-6'>
       {children}
-    </Container>
+    </div>
   )
 }

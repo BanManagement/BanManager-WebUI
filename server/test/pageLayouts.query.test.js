@@ -76,8 +76,6 @@ describe('Query pageLayouts', () => {
                 x
                 y
                 w
-                colour
-                textAlign
                 meta
               }
             }
@@ -88,8 +86,6 @@ describe('Query pageLayouts', () => {
                 x
                 y
                 w
-                colour
-                textAlign
                 meta
               }
             }
@@ -100,8 +96,6 @@ describe('Query pageLayouts', () => {
                 x
                 y
                 w
-                colour
-                textAlign
                 meta
               }
             }
@@ -114,37 +108,8 @@ describe('Query pageLayouts', () => {
 
     assert(body)
 
-    const pageLayout = body.data.pageLayouts.find(({ pathname }) => pathname === 'player')
+    const pageLayout = body.data.pageLayouts.find(({ pathname }) => pathname === 'home')
 
-    assert.deepStrictEqual(pageLayout.devices, {
-      desktop: {
-        components: [{ colour: 'blue', component: 'PlayerHeader', id: '21', meta: null, textAlign: 'center', w: 16, x: 0, y: 0 }, { colour: null, component: 'ActivePlayerBans', id: '24', meta: null, textAlign: null, w: 16, x: 0, y: 1 }, {
-          colour: null,
-          component:
-            'ActivePlayerMutes',
-          id: '27',
-          meta: null,
-          textAlign: null,
-          w: 16,
-          x: 0,
-          y: 2
-        }, { colour: null, component: 'PlayerPunishmentRecords', id: '30', meta: null, textAlign: null, w: 16, x: 0, y: 3 }, { colour: null, component: 'PlayerIpList', id: '33', meta: null, textAlign: null, w: 16, x: 0, y: 4 }, { colour: null, component: 'PlayerHistoryList', id: '36', meta: null, textAlign: null, w: 16, x: 0, y: 5 }, { colour: null, component: 'PlayerAlts', id: '39', meta: null, textAlign: null, w: 16, x: 0, y: 6 }]
-      },
-      mobile: { components: [{ colour: 'blue', component: 'PlayerHeader', id: '19', meta: null, textAlign: 'center', w: 16, x: 0, y: 0 }, { colour: null, component: 'ActivePlayerBans', id: '22', meta: null, textAlign: null, w: 16, x: 0, y: 1 }, { colour: null, component: 'ActivePlayerMutes', id: '25', meta: null, textAlign: null, w: 16, x: 0, y: 2 }, { colour: null, component: 'PlayerPunishmentRecords', id: '28', meta: null, textAlign: null, w: 16, x: 0, y: 3 }, { colour: null, component: 'PlayerIpList', id: '31', meta: null, textAlign: null, w: 16, x: 0, y: 4 }, { colour: null, component: 'PlayerHistoryList', id: '34', meta: null, textAlign: null, w: 16, x: 0, y: 5 }, { colour: null, component: 'PlayerAlts', id: '37', meta: null, textAlign: null, w: 16, x: 0, y: 6 }] },
-      tablet: {
-        components: [{ colour: 'blue', component: 'PlayerHeader', id: '20', meta: null, textAlign: 'center', w: 16, x: 0, y: 0 }, { colour: null, component: 'ActivePlayerBans', id: '23', meta: null, textAlign: null, w: 16, x: 0, y: 1 }, { colour: null, component: 'ActivePlayerMutes', id: '26', meta: null, textAlign: null, w: 16, x: 0, y: 2 }, { colour: null, component: 'PlayerPunishmentRecords', id: '29', meta: null, textAlign: null, w: 16, x: 0, y: 3 }, {
-          colour: null,
-          component:
-            'PlayerIpList',
-          id: '32',
-          meta: null,
-          textAlign: null,
-          w: 16,
-          x: 0,
-          y: 4
-        }, { colour: null, component: 'PlayerHistoryList', id: '35', meta: null, textAlign: null, w: 16, x: 0, y: 5 }, { colour: null, component: 'PlayerAlts', id: '38', meta: null, textAlign: null, w: 16, x: 0, y: 6 }]
-      }
-    }
-    )
+    assert.deepStrictEqual(pageLayout.devices, { desktop: { components: [{ component: 'AppealPanel', id: '40', meta: {}, w: 4, x: 0, y: 0 }, { component: 'SearchPanel', id: '41', meta: {}, w: 4, x: 4, y: 0 }, { component: 'AccountPanel', id: '42', meta: {}, w: 4, x: 8, y: 0 }, { component: 'StatisticsPanel', id: '43', meta: {}, w: 12, x: 0, y: 1 }] }, mobile: { components: [{ component: 'AppealPanel', id: '48', meta: {}, w: 12, x: 0, y: 0 }, { component: 'SearchPanel', id: '49', meta: {}, w: 12, x: 0, y: 1 }, { component: 'AccountPanel', id: '50', meta: {}, w: 12, x: 0, y: 2 }, { component: 'StatisticsPanel', id: '51', meta: {}, w: 12, x: 0, y: 3 }] }, tablet: { components: [{ component: 'AppealPanel', id: '44', meta: {}, w: 12, x: 0, y: 0 }, { component: 'SearchPanel', id: '45', meta: {}, w: 12, x: 0, y: 1 }, { component: 'AccountPanel', id: '46', meta: {}, w: 12, x: 0, y: 2 }, { component: 'StatisticsPanel', id: '47', meta: {}, w: 12, x: 0, y: 3 }] } })
   })
 })

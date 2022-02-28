@@ -59,8 +59,8 @@ describe('Query me', () => {
     assert.strictEqual(statusCode, 200)
 
     assert(body)
+    assert(body.data)
 
-    assert.strictEqual(body.data.me, null)
-    assert.strictEqual(body.errors[0].message, 'Invalid session')
+    assert.strictEqual(body.data.me.id, null)
   })
 })

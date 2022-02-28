@@ -1,22 +1,18 @@
-import { useEffect, useState } from 'react'
-import { Form, Header, TextArea } from 'semantic-ui-react'
+import { useEffect, useRef, useState } from 'react'
 import { safeLoad } from 'js-yaml'
-import { pick } from 'lodash-es'
+import { useForm } from 'react-hook-form'
+import Input from '../Input'
+import TextArea from '../TextArea'
+import Button from '../Button'
 import ErrorMessages from '../ErrorMessages'
+import PageHeader from '../PageHeader'
 import { useMutateApi } from '../../utils'
 
 export default function ServerForm ({ onFinished, query, parseVariables, serverTables, defaults = {} }) {
+  const errorRef = useRef(null)
   const [yamlState, setYamlState] = useState('')
-  const [inputState, setInputState] = useState({
-    name: defaults.name || '',
-    host: defaults.host || '',
-    port: defaults.port || 3306,
-    database: defaults.database || '',
-    user: defaults.user || '',
-    password: '',
-    console: defaults?.console?.id || '',
-    tables: defaults.tables
-  })
+  const { handleSubmit, formState, register, setValue } = useForm({ defaultValues: { ...defaults, console: defaults?.console?.id } })
+  const { isSubmitting } = formState
 
   const { load, loading, data, errors } = useMutateApi({ query })
 
@@ -24,17 +20,14 @@ export default function ServerForm ({ onFinished, query, parseVariables, serverT
     if (!data) return
     if (Object.keys(data).some(key => data[key] && data[key].id)) onFinished()
   }, [data])
+  useEffect(() => {
+    if (errors) errorRef.current.scrollIntoView()
+  }, [errors])
 
-  const onSubmit = (e) => {
-    e.preventDefault()
+  const onSubmit = (data) => {
+    const { id, ...input } = data
 
-    load(parseVariables(inputState))
-  }
-  const handleChange = async (e, { name, value }) => {
-    setInputState({ ...inputState, [name]: value })
-  }
-  const handleTableChange = (e, { name, value }) => {
-    setInputState({ ...inputState, tables: { ...inputState.tables, [name]: value } })
+    load(parseVariables(input))
   }
   const handleYamlConfig = async (e, { value }) => {
     if (!value) return
@@ -48,100 +41,81 @@ export default function ServerForm ({ onFinished, query, parseVariables, serverT
     }
 
     // Pick only web used tables
-    const tables = pick(config.databases.local.tables, serverTables)
+    // const tables = pick(config.databases.local.tables, serverTables)
 
-    setInputState({
-      ...inputState,
-      tables,
-      host: config.databases.local.host,
-      port: config.databases.local.port,
-      database: config.databases.local.name,
-      user: config.databases.local.user,
-      password: config.databases.local.password
-    })
+    setValue('host', config.databases.local.host)
+    setValue('port', config.databases.local.port)
+    setValue('database', config.databases.local.name)
+    setValue('user', config.databases.local.user)
+    setValue('password', config.databases.local.password)
+
+    serverTables.forEach(table => setValue(`tables.${table}`, config.databases.local.tables[table]))
   }
   const tableInputs = serverTables.map(name => (
-    <Form.Input
-      fluid
+    <Input
       key={'server-table-' + name}
       required
       placeholder={name}
-      value={inputState.tables ? inputState.tables[name] : ''}
-      name={name}
-      onChange={handleTableChange}
+      {...register(`tables.${name}`)}
     />
   ))
 
   return (
-    <Form size='large' onSubmit={onSubmit} error loading={loading}>
-      <ErrorMessages errors={errors} />
-      <Form.Input
-        fluid
-        required
-        placeholder='Name'
-        value={inputState.name}
-        name='name'
-        onChange={handleChange}
-      />
-      <Form.Input
-        fluid
-        required
-        placeholder='Console UUID (BanManager/console.yml)'
-        value={inputState.console}
-        name='console'
-        minLength={16}
-        onChange={handleChange}
-      />
-      <TextArea
-        placeholder='Paste YAML BanManager/config.yml (Optional)'
-        value={yamlState}
-        name='yaml'
-        onChange={handleYamlConfig}
-      />
-      <Header>Database</Header>
-      <Form.Input
-        fluid
-        required
-        placeholder='Host'
-        value={inputState.host}
-        name='host'
-        onChange={handleChange}
-      />
-      <Form.Input
-        fluid
-        required
-        placeholder='Port'
-        value={inputState.port}
-        name='port'
-        onChange={handleChange}
-      />
-      <Form.Input
-        fluid
-        required
-        placeholder='Database Name'
-        value={inputState.database}
-        name='database'
-        onChange={handleChange}
-      />
-      <Form.Input
-        fluid
-        required
-        placeholder='User'
-        value={inputState.user}
-        name='user'
-        onChange={handleChange}
-      />
-      <Form.Input
-        fluid
-        placeholder='Password'
-        type='password'
-        value={inputState.password}
-        name='password'
-        onChange={handleChange}
-      />
-      <Header>Database Table Names</Header>
+    <form onSubmit={handleSubmit(onSubmit)} className='mx-auto'>
+      <ErrorMessages ref={errorRef} errors={errors} />
+      <div className='grid grid-flow-row md:grid-flow-col gap-6'>
+        <div className='grid-flow-col'>
+          <PageHeader title='Info' />
+          <Input
+            required
+            placeholder='Name'
+            {...register('name')}
+          />
+          <Input
+            required
+            placeholder='Console UUID (BanManager/console.yml)'
+            minLength={16}
+            {...register('console')}
+          />
+          <TextArea
+            placeholder='Paste YAML BanManager/config.yml (Optional)'
+            value={yamlState}
+            name='yaml'
+            onChange={handleYamlConfig}
+          />
+        </div>
+        <div className='grid-flow-col'>
+          <PageHeader title='Database' />
+          <Input
+            required
+            placeholder='Host'
+            {...register('host')}
+          />
+          <Input
+            required
+            placeholder='Port'
+            {...register('port', { valueAsNumber: true })}
+          />
+          <Input
+            required
+            placeholder='Database Name'
+            {...register('database')}
+          />
+          <Input
+            required
+            placeholder='User'
+            {...register('user')}
+          />
+          <Input
+            placeholder='Password'
+            type='password'
+            {...register('password')}
+          />
+        </div>
+      </div>
+      <PageHeader title='Database Tables' />
       {tableInputs}
-      <Form.Button fluid primary size='large' content='Save' />
-    </Form>
+      <Button data-cy='submit-server-form' disabled={isSubmitting} loading={loading}>Save</Button>
+    </form>
   )
 }

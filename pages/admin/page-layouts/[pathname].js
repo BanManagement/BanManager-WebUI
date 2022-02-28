@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router'
-import { Loader } from 'semantic-ui-react'
+import Loader from '../../../components/Loader'
 import AdminLayout from '../../../components/AdminLayout'
 import ErrorLayout from '../../../components/ErrorLayout'
 import { useApi } from '../../../utils'
@@ -14,8 +14,7 @@ export default function Page () {
     x
     y
     w
-    colour
-    textAlign
+    h
     meta
   }
   fragment ReusableComponent on ReusableDeviceComponent {
@@ -23,8 +22,7 @@ export default function Page () {
     x
     y
     w
-    colour
-    textAlign
+    h
     meta
   }`
   const query = !pathname
@@ -70,16 +68,52 @@ export default function Page () {
   }
   ${fragment}`
 
-  const { loading, data, errors } = useApi({ variables: { pathname }, query })
+  const { loading, data, errors, mutate } = useApi({ variables: { pathname }, query })
 
-  if (loading) return <Loader active />
+  if (loading) return <Loader />
   if (errors || !data) return <ErrorLayout errors={errors} />
 
   const mutationQuery = `mutation updatePageLayout($pathname: ID!, $input: UpdatePageLayoutInput!) {
     updatePageLayout(pathname: $pathname, input: $input) {
       pathname
+      devices {
+        mobile {
+          components {
+            ...Component
+          }
+          unusedComponents {
+            ...Component
+          }
+          reusableComponents {
+            ...ReusableComponent
+          }
+        }
+        tablet {
+          components {
+            ...Component
+          }
+          unusedComponents {
+            ...Component
+          }
+          reusableComponents {
+            ...ReusableComponent
+          }
+        }
+        desktop {
+          components {
+            ...Component
+          }
+          unusedComponents {
+            ...Component
+          }
+          reusableComponents {
+            ...ReusableComponent
+          }
+        }
+      }
     }
-  }`
+  }
+  ${fragment}`
 
   return (
     <AdminLayout title={`Edit ${pathname} Layout`}>
@@ -87,7 +121,10 @@ export default function Page () {
         query={mutationQuery}
         pathname={pathname}
         pageLayout={data.pageLayout}
-        onFinished={() => router.push('/admin/page-layouts')}
+        onFinished={({ updatePageLayout }) => {
+          mutate({ pageLayout: { ...updatePageLayout } }, false)
+          router.push('/admin/page-layouts')
+        }}
       />
     </AdminLayout>
   )

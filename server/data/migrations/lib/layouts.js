@@ -10,18 +10,22 @@ module.exports = (db) => {
       ])
     }
 
-    return db.insert('bm_web_page_layouts', ['pathname', 'device', 'component', 'x', 'y', 'w', 'colour', 'textAlign', 'meta']
-      , [pathname,
-        component.device,
-        component.component,
-        component.x,
-        component.y,
-        component.w,
-        component.colour || null,
-        component.textAlign || null,
-        component.meta ? JSON.stringify(component.meta) : null
-      ]
-      , noop)
+    const cols = ['pathname', 'device', 'component', 'x', 'y', 'w', 'meta']
+    const fields = [pathname,
+      component.device,
+      component.component,
+      component.x,
+      component.y,
+      component.w,
+      component.meta ? JSON.stringify(component.meta) : null
+    ]
+
+    if (component.h) {
+      cols.push('h')
+      fields.push(component.h)
+    }
+
+    return db.insert('bm_web_page_layouts', cols, fields, noop)
   }
 
   async function addComponents (pathname, components) {

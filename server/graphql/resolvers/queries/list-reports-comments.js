@@ -62,7 +62,7 @@ module.exports = async function listPlayerReportComments (obj, { serverId, repor
       for (const result of results) {
         const acl = {
           delete: state.acl.hasServerPermission(serverId, 'player.reports', 'comment.delete.any') ||
-            (state.acl.hasServerPermission(serverId, 'player.reports', 'comment.delete.own') && state.acl.owns(data.actor_id))
+            (state.acl.hasServerPermission(serverId, 'player.reports', 'comment.delete.own') && state.acl.owns(result.actor_id))
         }
 
         result.acl = acl

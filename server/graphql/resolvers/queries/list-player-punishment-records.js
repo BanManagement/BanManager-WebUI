@@ -64,6 +64,7 @@ module.exports = async function listPlayerPunishmentRecords (obj, { serverId, ac
     const query = getSql(info.schema, server, fields.records, typeInfo.table)
       .where(filter)
       .limit(limit)
+      .offset(offset)
 
     if (order) {
       query.orderByRaw(order.replace('_', ' '))
