@@ -27,7 +27,7 @@ export default function PlayerHistoryList ({ id, color }) {
     variables: tableState
   })
 
-  const handlePageChange = (e, { activePage }) => setTableState({ ...tableState, activePage, offset: (activePage - 1) * limit })
+  const handlePageChange = ({ activePage }) => setTableState({ ...tableState, activePage, offset: (activePage - 1) * limit })
   const total = data?.listPlayerSessionHistory.total || 0
   const rows = data?.listPlayerSessionHistory?.records || []
   const totalPages = Math.ceil(total / limit)
