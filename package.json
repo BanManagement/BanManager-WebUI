@@ -20,7 +20,7 @@
     "@next/bundle-analyzer": "12.1.0",
     "@oclif/command": "1.8.16",
     "@oclif/config": "1.18.2",
-    "@oclif/plugin-help": "3.2.14",
+    "@oclif/plugin-help": "5.1.11",
     "@xstate/react": "^2.0.0",
     "apollo-server-koa": "3.6.3",
     "apollo-server-plugin-response-cache": "3.5.1",
