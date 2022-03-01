@@ -129,7 +129,6 @@
   },
   "files": [],
   "standardx": {
-    "parser": "@babel/eslint-parser",
     "env": {
       "browser": true
     }
