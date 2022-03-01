@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router'
-import { usePalette } from 'react-palette'
+import { usePalette } from '@universemc/react-palette'
 import DefaultLayout from '../../../components/DefaultLayout'
 import { useApi, useUser } from '../../../utils'
 
