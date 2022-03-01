@@ -87,7 +87,7 @@ const PlayerWarningRow = ({ row, dateFormat, serverId, onDeleted }) => {
           {row.acl.update &&
             <Link href={`/player/warning/${serverId}-${row.id}`} passHref>
               <a>
-                <FaPencilAlt className='w-5 h-5' />
+                <FaPencilAlt className='w-6 h-6' />
               </a>
             </Link>}
           {row.acl.delete &&
