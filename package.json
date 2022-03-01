@@ -71,7 +71,6 @@
     "react-remove-scroll": "2.4.4",
     "react-select": "5.2.2",
     "require-environment-variables": "1.2.0",
-    "sass": "1.42.1",
     "semver": "7.3.5",
     "swr": "1.2.2",
     "tailwindcss": "2.2.19",
