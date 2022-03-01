@@ -36,7 +36,6 @@
     "dotenv": "10.0.0",
     "edit-dotenv": "1.0.4",
     "es6-dynamic-template": "2.0.0",
-    "file-loader": "6.2.0",
     "git-revision-webpack-plugin": "5.0.0",
     "graphql": "16.3.0",
     "graphql-constraint-directive": "3.0.0",
