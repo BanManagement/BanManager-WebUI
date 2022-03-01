@@ -29,7 +29,7 @@ const SearchPanel = () => {
             ? <Loader />
             : data?.searchPlayers?.map(player => (
               <Link key={player.id} href={`/player/${player.id}`} passHref>
-                <a><Avatar uuid={player.id} width='48' height='48' /></a>
+                <a title={player.name}><Avatar uuid={player.id} width='48' height='48' /></a>
               </Link>
             ))}
         </div>
