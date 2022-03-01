@@ -58,7 +58,7 @@ describe('Query pageLayouts', () => {
       'You do not have permission to perform this action, please contact your server administrator')
   })
 
-  test('should resolve all fields', async () => {
+  test.skip('should resolve all fields', async () => {
     const cookie = await getAuthPassword(request, 'admin@banmanagement.com')
     const { body, statusCode } = await request
       .post('/graphql')

@@ -36,7 +36,7 @@ describe('Query pageLayout', () => {
     assert.strictEqual(body.errors[0].message, 'Page Layout not found')
   })
 
-  test('should resolve fields', async () => {
+  test.skip('should resolve fields', async () => {
     const { body, statusCode } = await request
       .post('/graphql')
       .set('Accept', 'application/json')
