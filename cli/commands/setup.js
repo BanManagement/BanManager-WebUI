@@ -324,6 +324,11 @@ class SetupCommand extends Command {
             { type: 'password', name: 'vPass', message: 'Confirm Password' }
           ])
 
+        if (!isLength(password, { min: 6, max: 255 })) {
+          this.log('Invalid password, minimum length 6 characters')
+          return askPassword()
+        }
+
         if (!(password && vPass) || password !== vPass) {
           this.log('Passwords do not match')
           return askPassword()
