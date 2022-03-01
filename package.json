@@ -16,6 +16,7 @@
     "@graphql-tools/utils": "^8.6.2",
     "@headlessui/react": "^1.4.1",
     "@koa/router": "10.1.1",
+    "@leichtgewicht/ip-codec": "^2.0.3",
     "@nateradebaugh/react-datetime": "4.4.10",
     "@next/bundle-analyzer": "12.1.0",
     "@oclif/command": "1.8.16",
