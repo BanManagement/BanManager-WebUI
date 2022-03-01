@@ -148,7 +148,7 @@ export default function PlayerWarnings ({ id, color, limit = 10 }) {
           </div>
         </div>
       </h1>
-      {data?.listPlayerPunishmentRecords?.total > 0 && (
+      {data?.listPlayerWarnings?.total > 0 && (
         <Table>
           <Table.Header>
             <Table.Row>
@@ -178,7 +178,7 @@ export default function PlayerWarnings ({ id, color, limit = 10 }) {
           </Table.Footer>
         </Table>
       )}
-      {!data?.listPlayerPunishmentRecords?.total && (
+      {!data?.listPlayerWarnings?.total && (
         <div className='flex items-center'>
           <div className='bg-black w-full rounded-lg flex flex-col justify-center sm:justify-start items-center sm:items-start sm:flex-row space-x-5 p-8'>
             None
