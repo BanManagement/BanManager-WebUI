@@ -26,7 +26,7 @@ export default function Page () {
   }
   const onSuccess = () => router.push('/dashboard')
 
-  if (user) return <DefaultLayout><Loader /></DefaultLayout>
+  if (!user) return <DefaultLayout><Loader /></DefaultLayout>
 
   return (
     <DefaultLayout title='Register'>
