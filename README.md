@@ -1,35 +1,96 @@
-# BanManager-WebUI
+<p align="center">
+  <a href="https://banmanagement.com">
+    <img src="https://banmanagement.com/images/banmanager-icon.png" height="128">
+    <h1 align="center">BanManager WebUI</h1>
+  </a>
+</p>
 
-[![Node.js CI](https://github.com/BanManagement/BanManager-WebUI/actions/workflows/build.yaml/badge.svg)](https://github.com/BanManagement/BanManager-WebUI/actions/workflows/build.yaml)
-[![Coverage Status](https://coveralls.io/repos/github/BanManagement/BanManager-WebUI/badge.svg)](https://coveralls.io/github/BanManagement/BanManager-WebUI)
-[![Known Vulnerabilities](https://snyk.io/test/github/banmanagement/banmanager-webui/badge.svg?targetFile=package.json)](https://snyk.io/test/github/banmanagement/banmanager-webui?targetFile=package.json)
+<h3 align="center">
+	Modern web client designed for self-hosting
+</h3>
 
-![](https://user-images.githubusercontent.com/1658997/37547562-5312183c-296a-11e8-91c7-8d1b9d17f4d3.png)
+<p align="center">
+	<strong>
+		<a href="https://banmanagement.com">Website</a>
+		|
+		<a href="https://banmanagement.com/docs/webui/install">Docs</a>
+		|
+		<a href="https://demo.banmanagement.com">Demo</a>
+	</strong>
+</p>
+<p align="center">
+  <a aria-label="Tests status" href="https://github.com/BanManagement/BanManager-WebUI/actions/workflows/build.yaml">
+    <img alt="" src="https://img.shields.io/github/workflow/status/BanManagement/BanManager-WebUI/Node.js%20CI?label=Tests&style=for-the-badge&labelColor=000000">
+  </a>
+  <a aria-label="License" href="https://github.com/BanManagement/BanManager-WebUI/blob/master/LICENSE">
+    <img alt="" src="https://img.shields.io/github/license/BanManagement/BanManager-WebUI?labelColor=000&style=for-the-badge">
+  </a>
+  <a aria-label="Join the community on Discord" href="https://discord.gg/59bsgZB">
+    <img alt="" src="https://img.shields.io/discord/664808009393766401?label=Support&style=for-the-badge&labelColor=000000&color=7289da">
+  </a>
+</p>
 
-**Caution** this project is in early alpha. It is not recommended you run this in production currently. There are bugs. Please report those via [GitHub issues](https://github.com/BanManagement/BanManager-WebUI/issues).
+<p align="center">
+  <a aria-label="Demo" href="https://demo.banmanagement.com">
+	  <img src="https://github.com/BanManagement/BanManager-WebUI/blob/assets/welcome.png?raw=true" width="550">
+  </a>
+</p>
 
-Feel free to contribute if you have any suggestions or ideas.
+## Overview
+- **Always connected.** Manage punishments from anywhere with seamless logins
+- **Cross platform.** It doesn't matter what OS you use, it just works wherever Node.js runs
+- **Responsive interface.** Manage your community from any device at any time
 
-# Features
-- Search players
-- View player alts, history, reports and punishments
-- Manage punishments
-- Manage reports
-- Manage player access via custom roles and permissions
-- More coming soon...
+To learn more about configuration, usage and features of BanManager, take a look at [the website](https://banmanagement.com/) or view [the demo](https://demo.banmanagement.com).
 
-##### Installation
-See [setup instructions](https://banmanagement.com/setup)
+## Features
+- Appeal punishments
+- Ban, unban, mute, and warn players
+- Review and manage reports on the go
+- Custom roles and flexible permissions
+- A single interface for multiple Minecraft servers
 
-#### Development
+## Requirements
+- The latest [Node.js](https://nodejs.org/) LTS version (even numbered)
+- MySQL v5+ or MariaDB v10+
+- Minecraft server with [BanManager](https://github.com/BanManagement/BanManager) & [BanManager-WebEnhancer](https://ci.frostcast.net/job/BanManager-WebEnhancer/) plugins configured to [use MySQL or MariaDB](https://banmanagement.com/docs/banmanager/install#setup-shared-database-optional)
+
+## Installation
+See [setup instructions](https://banmanagement.com/docs/webui/install)
+
+## Development
 ```
+git git@github.com:BanManagement/BanManager-WebUI.git
 npm install
 npm run setup
-node server.js | npx pino-pretty
+npm run dev
 ```
 
-### [Demo](https://demo.banmanagement.com)
+## Contributing
+If you'd like to contribute, please fork the repository and use a feature branch. Pull requests are warmly welcome.
 
-### License
+## Help / Bug / Feature Request
+If you have found a bug please [open an issue](https://github.com/BanManagement/BanManager-WebUI/issues/new) with as much detail as possible, including relevant logs and screenshots where applicable
 
-[MIT](LICENSE)
+Have an idea for a new feature? Feel free to [open an issue](https://github.com/BanManagement/BanManager-WebUI/issues/new) or [join us on Discord](https://discord.gg/59bsgZB) to chat
+
+## License
+Free to use under the [MIT](LICENSE)
+
+## Screenshots
+Click to view
+
+### Home
+[![Home](https://github.com/BanManagement/BanManager-WebUI/blob/assets/welcome.png?raw=true)](welcome.png)
+
+### Player
+[![Player](https://github.com/BanManagement/BanManager-WebUI/blob/assets/player.png?raw=true)](player.png)
+
+### Dashboard
+[![Dashboard](https://github.com/BanManagement/BanManager-WebUI/blob/assets/dashboard.png?raw=true)](dashboard.png)
+
+### Appeal
+[![Appeal](https://github.com/BanManagement/BanManager-WebUI/blob/assets/appeal.png?raw=true)](appeal.png)
+
+### Report
+[![Report](https://github.com/BanManagement/BanManager-WebUI/blob/assets/report.png?raw=true)](report.png)
