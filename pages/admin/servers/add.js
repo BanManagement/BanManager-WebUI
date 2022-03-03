@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router'
 import Loader from '../../../components/Loader'
 import AdminLayout from '../../../components/AdminLayout'
-import ErrorMessages from '../../../components/ErrorMessages'
+import ErrorLayout from '../../../components/ErrorLayout'
 import PageHeader from '../../../components/PageHeader'
 import { useApi } from '../../../utils'
 import ServerForm from '../../../components/admin/ServerForm'
@@ -14,8 +14,8 @@ export default function Page () {
     }`
   })
 
-  if (loading) return <Loader />
-  if (errors || !data) return <ErrorMessages errors={errors} />
+  if (loading) return <AdminLayout title='Loading...'><Loader /></AdminLayout>
+  if (errors || !data) return <ErrorLayout errors={errors} />
 
   const query = ` mutation createServer($input: CreateServerInput!) {
     createServer(input: $input) {

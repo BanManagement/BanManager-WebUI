@@ -22,8 +22,8 @@ function DefaultLayout ({ title = 'Default Title', children, description }) {
     }`
   })
 
-  if (loading && !data) return <Loader />
-  if (errors || !data) return <ErrorMessages errors={errors} />
+  if (loading && !data) return <BodyWrapper><Loader /></BodyWrapper>
+  if (errors || !data) return <BodyWrapper><ErrorMessages errors={errors} /></BodyWrapper>
 
   let right = []
 
@@ -39,15 +39,17 @@ function DefaultLayout ({ title = 'Default Title', children, description }) {
         <title>{title}</title>
       </Head>
       <NextSeo description={description} title={title} />
-      <div className='flex flex-col h-screen font-primary bg-primary-500'>
+      <BodyWrapper>
         <Nav leftItems={left} mobileItems={left} rightItems={right} />
         <div className='flex-grow text-white bg-primary-500 pb-12'>
           {children}
         </div>
         <Footer />
-      </div>
+      </BodyWrapper>
     </>
   )
 }
+
+const BodyWrapper = ({ children }) => <div className='flex flex-col h-screen font-primary bg-primary-500'>{children}</div>
 
 export default withRouter(DefaultLayout)

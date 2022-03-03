@@ -100,7 +100,7 @@ export default function Page () {
 
   const report = data?.report
 
-  if (loading) return <Loader />
+  if (loading) return <DefaultLayout title='Loading...'><Loader /></DefaultLayout>
   if (errors || !data) return <ErrorLayout errors={errors} />
 
   const stateOptions = data.reportStates.map(state => ({ value: state.id, label: state.name }))

@@ -1,7 +1,7 @@
 import { AiOutlinePlus } from 'react-icons/ai'
 import Link from 'next/link'
 import Loader from '../../../components/Loader'
-import ErrorMessages from '../../../components/ErrorMessages'
+import ErrorLayout from '../../../components/ErrorLayout'
 import AdminLayout from '../../../components/AdminLayout'
 import RoleItem from '../../../components/admin/RoleItem'
 import Button from '../../../components/Button'
@@ -29,8 +29,8 @@ export default function Page () {
     mutate({ ...data, roles }, false)
   }
 
-  if (loading) return <Loader />
-  if (errors || !data) return <ErrorMessages errors={errors} />
+  if (loading) return <AdminLayout title='Loading...'><Loader /></AdminLayout>
+  if (errors || !data) return <ErrorLayout errors={errors} />
 
   const items = data.roles.map(role => <RoleItem key={role.id} role={role} onDeleted={onDeleted} />)
   const globalRoleMutation = `mutation assignRole($players: [UUID!]!, $role: Int!) {

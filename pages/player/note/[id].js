@@ -31,7 +31,7 @@ export default function Page () {
     variables: { id, serverId }
   })
 
-  if (loading) return <Loader />
+  if (loading) return <DefaultLayout title='Loading...'><Loader /></DefaultLayout>
   if (errors || !data) return <ErrorLayout errors={errors} />
 
   const query = `mutation updatePlayerNote($id: ID!, $serverId: ID!, $input: UpdatePlayerNoteInput!) {

@@ -42,7 +42,7 @@ export default function Page () {
   })
   const { data: colourData } = usePalette(!data?.player?.id ? null : `https://crafatar.com/renders/body/${data.player.id}?scale=10&overlay=true`)
 
-  if (loading) return <Loader />
+  if (loading) return <DefaultLayout title='Loading...'><Loader /></DefaultLayout>
   if (errors || !data) return <ErrorLayout errors={errors} />
   if (!data.player) return <ErrorLayout errors={{ error: new Error('Player not found') }} />
 

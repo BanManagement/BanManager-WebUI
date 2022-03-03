@@ -46,7 +46,7 @@ export default function Page () {
     }
   }, [data])
 
-  if (loading) return <Loader />
+  if (loading) return <DefaultLayout title='Appeal Mute'><Loader /></DefaultLayout>
   if (errors || !data) return <ErrorLayout errors={errors} />
 
   return (

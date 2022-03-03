@@ -70,7 +70,7 @@ export default function Page () {
 
   const { loading, data, errors, mutate } = useApi({ variables: { pathname }, query })
 
-  if (loading) return <Loader />
+  if (loading) return <AdminLayout title='Loading...'><Loader /></AdminLayout>
   if (errors || !data) return <ErrorLayout errors={errors} />
 
   const mutationQuery = `mutation updatePageLayout($pathname: ID!, $input: UpdatePageLayoutInput!) {

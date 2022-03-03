@@ -1,7 +1,7 @@
 import { AiOutlinePlus } from 'react-icons/ai'
 import Link from 'next/link'
 import Loader from '../../../components/Loader'
-import ErrorMessages from '../../../components/ErrorMessages'
+import ErrorLayout from '../../../components/ErrorLayout'
 import AdminLayout from '../../../components/AdminLayout'
 import Button from '../../../components/Button'
 import ServerItem from '../../../components/admin/ServerItem'
@@ -23,8 +23,8 @@ export default function Page () {
     mutate({ ...data, servers }, false)
   }
 
-  if (loading) return <Loader />
-  if (errors || !data) return <ErrorMessages errors={errors} />
+  if (loading) return <AdminLayout title='Loading...'><Loader /></AdminLayout>
+  if (errors || !data) return <ErrorLayout errors={errors} />
 
   const canDelete = data.servers.length !== 1
   const items = data.servers.map(server => <ServerItem key={server.id} server={server} canDelete={canDelete} onDeleted={onDeleted} />)

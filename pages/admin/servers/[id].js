@@ -53,7 +53,7 @@ export default function Page () {
     }`
   })
 
-  if (loading) return <Loader />
+  if (loading) return <AdminLayout title='Loading...'><Loader /></AdminLayout>
   if (errors || !data) return <ErrorLayout errors={errors} />
 
   const query = `mutation updateServer($id: ID!, $input: UpdateServerInput!) {

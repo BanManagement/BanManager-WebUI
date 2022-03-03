@@ -23,7 +23,7 @@ export default function Page () {
   })
   const { hasServerPermission } = useUser({ redirectIfFound: false, redirectTo: '/' })
 
-  if (loading) return <Loader />
+  if (loading) return <DefaultLayout title='Loading...'><Loader /></DefaultLayout>
   if (errors || !data) return <ErrorLayout errors={errors} />
 
   const query = `mutation createPlayerBan($input: CreatePlayerBanInput!) {
