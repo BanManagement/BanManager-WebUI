@@ -65,7 +65,7 @@ export default function PlayerHistoryList ({ id, color }) {
               <Table.Row key={i}>
                 <Table.Cell>{format(fromUnixTime(row.join), dateFormat)}</Table.Cell>
                 <Table.Cell>{format(fromUnixTime(row.leave), dateFormat)}</Table.Cell>
-                {hasServerPermission('player.ips', 'view', null, true) && <Table.Cell>{row.ip}</Table.Cell>}
+                {hasServerPermission('player.ips', 'view', null, true) && <Table.Cell className={row.ip.length > 10 ? 'md:break-all' : ''}>{row.ip}</Table.Cell>}
               </Table.Row>
             ))}
         </Table.Body>
