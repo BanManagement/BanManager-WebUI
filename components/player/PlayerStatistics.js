@@ -24,7 +24,7 @@ const PlayerStatistics = ({ id, color }) => {
 
   return (
     <div className='grid grid-flow-col grid-cols-2 grid-rows-2 xl:grid-cols-4 xl:grid-rows-1 gap-6 mt-10 mb-10'>
-      <div className='grid grid-flow-col'>
+      <div className='grid grid-flow-col space-x-2 md:space-x-0'>
         <div className='col-span-1'>
           <FaBan className='w-8 h-8 inline-block' style={{ color }} />
         </div>
@@ -33,7 +33,7 @@ const PlayerStatistics = ({ id, color }) => {
           <p className='text-xs uppercase font-medium text-gray-400'>Bans</p>
         </div>
       </div>
-      <div className='grid grid-flow-col'>
+      <div className='grid grid-flow-col space-x-2 md:space-x-0'>
         <div>
           <BsMicMute className='w-8 h-8 inline-block' style={{ color }} />
         </div>
@@ -42,7 +42,7 @@ const PlayerStatistics = ({ id, color }) => {
           <p className='text-xs uppercase font-medium text-gray-400'>Mutes</p>
         </div>
       </div>
-      <div className='grid grid-flow-col'>
+      <div className='grid grid-flow-col space-x-2 md:space-x-0'>
         <div>
           <GoReport className='w-8 h-8 inline-block' style={{ color }} />
         </div>
@@ -51,7 +51,7 @@ const PlayerStatistics = ({ id, color }) => {
           <p className='text-xs uppercase font-medium text-gray-400'>Reports</p>
         </div>
       </div>
-      <div className='grid grid-flow-col'>
+      <div className='grid grid-flow-col space-x-2 md:space-x-0'>
         <div>
           <AiOutlineWarning className='w-8 h-8 inline-block' style={{ color }} />
         </div>
