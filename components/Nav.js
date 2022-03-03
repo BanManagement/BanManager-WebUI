@@ -7,6 +7,7 @@ import { Transition } from '@headlessui/react'
 import { RemoveScroll } from 'react-remove-scroll'
 import { FaBars } from 'react-icons/fa'
 import PageContainer from './PageContainer'
+import PlayerSelector from './admin/PlayerSelector'
 
 export default function Nav ({ leftItems, mobileItems, rightItems }) {
   const router = useRouter()
@@ -51,6 +52,13 @@ export default function Nav ({ leftItems, mobileItems, rightItems }) {
                 <Image src='/images/banmanager-icon.png' alt='Logo' width='40' height='40' />
               </a>
             </Link>
+            <div className='mx-8 w-48'>
+              <PlayerSelector
+                multiple={false}
+                onChange={(id) => id ? router.push(`/player/${id}`) : undefined}
+                placeholder='Search player'
+              />
+            </div>
           </div>
           <div className='-mr-2 -my-2 md:hidden'>
             <button type='button' className='rounded-md p-2 inline-flex items-center justify-center text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500 text-2xl' onClick={() => setDrawerOpen(true)}>
