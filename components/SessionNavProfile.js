@@ -48,7 +48,7 @@ export default function SessionNavProfile ({ user }) {
           )}
         >
           <Dropdown.Item name='Profile' href={'/player/' + user.id} icon={<CgProfile />} />
-          {!user.hasAccount && <Dropdown.Item name='Register' href={'/register'} icon={<FaPencilAlt />} />}
+          {!user.hasAccount && <Dropdown.Item name='Register' href='/register' icon={<FaPencilAlt />} />}
           <Dropdown.Item name='Settings' href='/account' icon={<MdSettings />} />
           <Dropdown.Item name='Logout' onClick={handleLogout} disabled={loggingOut} icon={<MdLogout />} />
         </Dropdown>
