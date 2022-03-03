@@ -4,6 +4,7 @@ import { mutate } from 'swr'
 import Dropdown from './Dropdown'
 import Avatar from './Avatar'
 import { CgProfile } from 'react-icons/cg'
+import { FaPencilAlt } from 'react-icons/fa'
 import { MdLogout, MdSettings } from 'react-icons/md'
 
 export default function SessionNavProfile ({ user }) {
@@ -47,6 +48,7 @@ export default function SessionNavProfile ({ user }) {
           )}
         >
           <Dropdown.Item name='Profile' href={'/player/' + user.id} icon={<CgProfile />} />
+          {!user.hasAccount && <Dropdown.Item name='Register' href={'/register'} icon={<FaPencilAlt />} />}
           <Dropdown.Item name='Settings' href='/account' icon={<MdSettings />} />
           <Dropdown.Item name='Logout' onClick={handleLogout} disabled={loggingOut} icon={<MdLogout />} />
         </Dropdown>
