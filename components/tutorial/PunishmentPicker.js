@@ -45,7 +45,7 @@ export default function PunishmentPicker () {
   const { loading, data, errors } = useApi({ query, variables: { id: user?.id } })
 
   if (loading) return <Loader />
-  if (errors || !data || (!data.playerBans && !data.playerMutes)) {
+  if (errors || !data || (!data?.playerBans?.length && !data?.playerMutes?.length)) {
     return <p>No punishments found</p>
   }
 
