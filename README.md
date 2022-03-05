@@ -60,7 +60,7 @@ See [setup instructions](https://banmanagement.com/docs/webui/install)
 
 ## Development
 ```
-git git@github.com:BanManagement/BanManager-WebUI.git
+git clone git@github.com:BanManagement/BanManager-WebUI.git
 npm install
 npm run setup
 npm run dev
