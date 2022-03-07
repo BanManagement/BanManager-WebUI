@@ -20,7 +20,7 @@
     "@nateradebaugh/react-datetime": "4.4.11",
     "@next/bundle-analyzer": "12.1.0",
     "@oclif/command": "1.8.16",
-    "@oclif/config": "1.18.2",
+    "@oclif/config": "1.18.3",
     "@oclif/plugin-help": "5.1.11",
     "@universemc/react-palette": "1.0.3",
     "@xstate/react": "2.0.0",
