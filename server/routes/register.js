@@ -18,11 +18,12 @@ module.exports = async function ({ request: { body }, throw: throwError, respons
     return throwError(400, 'Commonly used password, please choose another')
   }
 
-  const [checkResult] = await state.dbPool('bm_web_users')
-    .select('player_id')
+  const checkResult = await state.dbPool('bm_web_users')
+    .select('email')
     .where('player_id', session.playerId)
+    .first()
 
-  if (checkResult) return throwError(400, 'You already have an account')
+  if (checkResult && checkResult.email) return throwError(400, 'You already have an account')
 
   const [emailResult] = await state.dbPool('bm_web_users')
     .select('email')
@@ -33,12 +34,14 @@ module.exports = async function ({ request: { body }, throw: throwError, respons
   const encodedHash = await hash(body.password)
 
   await state.dbPool.transaction(async trx => {
-    await trx('bm_web_users').insert({
-      player_id: session.playerId,
-      email: body.email,
-      password: encodedHash,
-      updated: trx.raw('UNIX_TIMESTAMP()')
-    })
+    await trx('bm_web_users')
+      .insert({
+        player_id: session.playerId,
+        email: body.email,
+        password: encodedHash,
+        updated: trx.raw('UNIX_TIMESTAMP()')
+      })
+      .onDuplicateUpdate('email', 'password', 'updated')
 
     await trx('bm_web_player_roles').insert({
       player_id: session.playerId,

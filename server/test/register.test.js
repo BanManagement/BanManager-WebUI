@@ -1,6 +1,7 @@
 const assert = require('assert')
 const supertest = require('supertest')
 const nock = require('nock')
+const { unparse } = require('uuid-parse')
 const createApp = require('../app')
 const { createSetup, getAuthPassword, getAuthPin } = require('./lib')
 const { createPlayer } = require('./fixtures')
@@ -207,6 +208,51 @@ describe('/api/register', () => {
       .set('Cookie', cookie)
       .set('Accept', 'application/json')
       .send({ email: 'asd@asda123.com', password: 'testing' })
+
+    assert(nock.isDone())
+    assert.strictEqual(statusCode, 204)
+  })
+
+  test('should register an account when a player already has a custom role', async () => {
+    const server = setup.serversPool.values().next().value
+    const player = createPlayer()
+
+    await server.pool('bm_players').insert(player)
+
+    const adminCookie = await getAuthPassword(request, 'admin@banmanagement.com')
+    const { body: setRolesBody, statusCode: setRolesStatusCode } = await request
+      .post('/graphql')
+      .set('Cookie', adminCookie)
+      .set('Accept', 'application/json')
+      .send({
+        query: `mutation assignRole {
+        setRoles(player:"${unparse(player.id)}", input: { roles: [ { id: 3 } ], serverRoles: [] }) {
+          roles {
+            role {
+              id
+            }
+          }
+        }
+      }`
+      })
+
+    assert.strictEqual(setRolesStatusCode, 200)
+
+    assert(setRolesBody)
+    assert(setRolesBody.data)
+
+    assert.deepStrictEqual(setRolesBody.data.setRoles.roles, [{ role: { id: '3' } }])
+
+    nock('https://api.pwnedpasswords.com')
+      .get('/range/DC724')
+      .reply(200, '')
+
+    const cookie = await getAuthPin(request, server, player)
+    const { statusCode } = await request
+      .post('/api/register')
+      .set('Cookie', cookie)
+      .set('Accept', 'application/json')
+      .send({ email: 'asd1@asda123.com', password: 'testing' })
 
     assert(nock.isDone())
     assert.strictEqual(statusCode, 204)
