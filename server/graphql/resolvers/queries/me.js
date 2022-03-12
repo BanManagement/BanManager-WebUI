@@ -21,7 +21,7 @@ module.exports = async function me (obj, info, { session, state }) {
 
   const me = {
     ...await state.loaders.player.load({ id: session.playerId, fields: ['id', 'name'] }),
-    hasAccount: !!checkResult,
+    hasAccount: Boolean(checkResult?.email),
     email: checkResult ? checkResult.email : null,
     session: {
       type: session.type
