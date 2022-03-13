@@ -81,6 +81,18 @@ export default function RoleItem ({ role, onDeleted }) {
                 Delete
               </button>
             </div>}
+          {role.id === '1' &&
+            <div className='py-3 px-5 bg-gray-900'>
+              Assigned by default to all non-logged in visitors
+            </div>}
+          {role.id === '2' &&
+            <div className='py-3 px-5 bg-gray-900'>
+              Assigned by default for all logged in players
+            </div>}
+          {role.id === '3' &&
+            <div className='py-3 px-5 bg-gray-900'>
+              Super admin role with all permissions
+            </div>}
         </a>
       </Link>
     </div>

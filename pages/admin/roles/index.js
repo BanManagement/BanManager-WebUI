@@ -9,6 +9,7 @@ import PageHeader from '../../../components/PageHeader'
 import PlayersTable from '../../../components/admin/PlayersTable'
 import AssignPlayersRoleForm from '../../../components/admin/AssignPlayersRoleForm'
 import { useApi } from '../../../utils'
+import Message from '../../../components/Message'
 
 export default function Page () {
   const { loading, data, errors, mutate } = useApi({
@@ -58,6 +59,17 @@ export default function Page () {
         {items}
       </div>
       <div className='grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 justify-items-center'>
+        <div>
+          <Message info>
+            <Message.Header>Tips</Message.Header>
+            <Message.List>
+              <Message.Item>There are 3 default roles which are automatically assigned, these permissions can be modified</Message.Item>
+              <Message.Item>Create and assign new roles to grant your moderators permissions to manage appeals, reports etc.</Message.Item>
+              <Message.Item>A player can have multiple roles and these are additive, i.e. a permission granted is always given, roles cannot remove a permission granted by another role</Message.Item>
+              <Message.Item>Custom roles must define a parent role; when new resources and/or permissions are added to the default roles in an update, they are automatically granted to children roles</Message.Item>
+            </Message.List>
+          </Message>
+        </div>
         <div>
           <PageHeader title='Assign Global Player Roles' />
           <p className='mb-6'>Takes priority over server roles, and applies globally</p>
