@@ -52,8 +52,8 @@ export default function Page () {
     <>
       <DefaultLayout title={data.player.name}>
         <PageContainer>
-          <div className='grid grid-flow-row md:grid-flow-col grid-cols-12'>
-            <div className='col-span-12 md:col-span-9 space-y-10'>
+          <div className='grid grid-flow-row xl:grid-flow-col grid-cols-12'>
+            <div className='col-span-12 xl:col-span-9 space-y-10'>
               <PlayerHeader id={id} color={color} colourData={colourData} />
               <PlayerStatistics id={id} color={color} colourData={colourData} />
               {hasServerPermission('player.alts', 'view', null, true) && <PlayerAlts id={data.player.id} color={color} />}
@@ -65,12 +65,12 @@ export default function Page () {
               {hasServerPermission('player.notes', 'view', null, true) && <PlayerNotes id={data.player.id} color={color} />}
               {hasServerPermission('player.warnings', 'view', null, true) && <PlayerWarnings id={data.player.id} color={color} />}
             </div>
-            <div className='hidden md:block col-span-3 space-y-10'>
+            <div className='hidden xl:block col-span-3 space-y-10'>
               <PlayerAvatar id={id} color={color} colourData={colourData} />
               {hasServerPermission('player.history', 'view', null, true) && <div className='mx-6'><PlayerHistoryList id={id} color={color} /></div>}
             </div>
           </div>
-          <div className='md:hidden col-span-12 space-y-10'>
+          <div className='xl:hidden col-span-12 space-y-10'>
             {hasServerPermission('player.history', 'view', null, true) && <PlayerHistoryList id={id} color={color} />}
           </div>
         </PageContainer>

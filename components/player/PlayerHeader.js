@@ -36,7 +36,7 @@ export default function PlayerHeader ({ id, color }) {
           <h1 className='text-4xl font-bold pb-2 leading-none'>{data.player.name}</h1>
           <h2 className='text-xs tracking-widest title-font font-medium text-gray-400 uppercase'>{fromNow(data.player.lastSeen)}</h2>
         </div>
-        <div className='hidden md:flex gap-12'>
+        <div className='hidden xl:flex gap-12'>
           {canCreateBan &&
             <Link href={`/player/${id}/ban`} passHref>
               <a>
@@ -63,7 +63,7 @@ export default function PlayerHeader ({ id, color }) {
             </Link>}
         </div>
       </div>
-      <div className='md:hidden grid grid-cols-2 mt-6 gap-6'>
+      <div className='xl:hidden grid grid-cols-2 mt-6 gap-6'>
         {canCreateBan &&
           <Link href={`/player/${id}/ban`} passHref>
             <a>
