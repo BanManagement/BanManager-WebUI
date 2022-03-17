@@ -23,7 +23,7 @@
     "@oclif/config": "1.18.3",
     "@oclif/plugin-help": "5.1.12",
     "@universemc/react-palette": "1.0.3",
-    "@xstate/react": "2.0.0",
+    "@xstate/react": "2.0.1",
     "apollo-server-koa": "3.6.4",
     "apollo-server-plugin-response-cache": "3.5.1",
     "argon2": "0.28.5",
