@@ -77,7 +77,7 @@
     "uuid-parse": "1.1.0",
     "validator": "13.7.0",
     "web-push": "3.4.5",
-    "xstate": "4.30.2"
+    "xstate": "4.30.6"
   },
   "devDependencies": {
     "@babel/eslint-parser": "7.17.0",
