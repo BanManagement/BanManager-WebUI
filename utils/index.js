@@ -48,9 +48,9 @@ const graphqlFetcher = (query, ...args) => {
   return graphQLClient.request(query, variables)
 }
 
-export const useApi = (operation) => {
+export const useApi = (operation, options) => {
   const variables = toPairs(operation.variables).flat()
-  const { data, error, mutate } = useSWR([operation.query, ...variables], graphqlFetcher)
+  const { data, error, mutate } = useSWR([operation.query, ...variables], graphqlFetcher, options)
   const loading = !data && !error
   const errors = error?.response?.errors
 

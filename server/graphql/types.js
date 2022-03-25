@@ -481,6 +481,10 @@ type PlayerStatistics {
   totalWarnings: Int!
 }
 
+type Settings {
+  serverFooterName: String!
+}
+
 type Query {
   searchPlayers(name: String!, limit: Int = 10): [Player!]
   player(player: UUID!): Player
@@ -539,6 +543,8 @@ type Query {
 
   statistics: Statistics! @cacheControl(scope: PUBLIC, maxAge: 3600)
   playerStatistics(player: UUID!): PlayerStatistics!
+
+  settings: Settings!
 }
 
 input CreatePlayerNoteInput {
