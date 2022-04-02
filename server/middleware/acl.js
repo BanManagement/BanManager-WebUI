@@ -50,7 +50,7 @@ module.exports = async (ctx, next) => {
           const x = resourceValues[row.name]
           const y = row.value
 
-          if (!(x & y)) resourceValues[row.name] = x + y
+          resourceValues[row.name] = x | y
         }
       })
     }
@@ -74,7 +74,7 @@ module.exports = async (ctx, next) => {
           const x = server[row.name]
           const y = row.value
 
-          if (!(x & y)) server[row.name] = x + y
+          server[row.name] = x | y
         }
       })
 
