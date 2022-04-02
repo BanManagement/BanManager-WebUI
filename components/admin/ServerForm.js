@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { safeLoad } from 'js-yaml'
+import { load as safeLoad } from 'js-yaml'
 import { useForm } from 'react-hook-form'
 import Input from '../Input'
 import TextArea from '../TextArea'
