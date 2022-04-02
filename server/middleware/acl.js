@@ -39,8 +39,8 @@ module.exports = async (ctx, next) => {
       .where('bm_web_player_roles.player_id', ctx.session.playerId)
 
     if (!playerRoleResults.length) {
-      // They're a guest, load Guest role permissions
-      resourceValues = await loadRoleResourceValues(dbPool, 1)
+      // They're a guest, load Logged In role permissions
+      resourceValues = await loadRoleResourceValues(dbPool, 2)
     } else {
       playerRoleResults.forEach((row) => {
         if (!resourceValues[row.name]) {
