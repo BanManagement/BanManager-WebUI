@@ -14,6 +14,7 @@ module.exports = async function assignAppeal (obj, { player, id }, { session, st
       (state.acl.hasServerPermission(data.server_id, 'player.appeals', 'update.assign.assigned') && state.acl.owns(data.assignee_id))
 
   if (!hasPermission) throw new ExposedError('You do not have permission to perform this action, please contact your server administrator')
+  if (data.actor_id.equals(player)) throw new ExposedError('You cannot assign an appeal to the player which created it')
 
   const server = state.serversPool.get(data.server_id)
 

@@ -138,7 +138,7 @@ describe('Mutation assignAppeal', () => {
     await pool('bm_players').insert([player, actor])
 
     const [id] = await pool('bm_player_bans').insert(punishment, ['id'])
-    const data = createAppeal({ ...punishment, id }, 'PlayerBan', server, actor, account)
+    const data = createAppeal({ ...punishment, id }, 'PlayerBan', server, player, account)
     const [inserted] = await pool('bm_web_appeals').insert(data, ['id'])
     const role = await setTempRole(setup.dbPool, account, 'player.appeals', 'update.assign.assigned', 'view.any')
 
@@ -214,6 +214,39 @@ describe('Mutation assignAppeal', () => {
 
     assert(body)
     assert.strictEqual(body.errors[0].message, `Player ${unparse(player.id)} does not exist`)
+  })
+
+  test('should error if player is the actor', async () => {
+    const cookie = await getAuthPassword(request, 'admin@banmanagement.com')
+    const account = await getAccount(request, cookie)
+    const { config: server, pool } = setup.serversPool.values().next().value
+    const actor = createPlayer()
+    const punishment = createBan(account, actor)
+
+    await pool('bm_players').insert(actor)
+
+    const [id] = await pool('bm_player_bans').insert(punishment, ['id'])
+    const data = createAppeal({ ...punishment, id }, 'PlayerBan', server, account)
+    const [inserted] = await pool('bm_web_appeals').insert(data, ['id'])
+
+    const { body, statusCode } = await request
+      .post('/graphql')
+      .set('Cookie', cookie)
+      .set('Accept', 'application/json')
+      .send({
+        query: `mutation assignAppeal {
+        assignAppeal(player: "${unparse(account.id)}", id: ${inserted}) {
+          appeal {
+            id
+          }
+        }
+      }`
+      })
+
+    assert.strictEqual(statusCode, 200)
+
+    assert(body)
+    assert.strictEqual(body.errors[0].message, 'You cannot assign an appeal to the player which created it')
   })
 
   test('should assign player', async () => {

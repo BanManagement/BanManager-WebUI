@@ -19,6 +19,7 @@ module.exports = async function assignReport (obj, { serverId, player, report: i
       (state.acl.hasServerPermission(serverId, 'player.reports', 'update.assign.reported') && state.acl.owns(data.player_id))
 
   if (!hasPermission) throw new ExposedError('You do not have permission to perform this action, please contact your server administrator')
+  if (data.actor_id.equals(player)) throw new ExposedError('You cannot assign a report to the player which created it')
 
   const playerData = await server.pool(server.config.tables.players)
     .select('id')

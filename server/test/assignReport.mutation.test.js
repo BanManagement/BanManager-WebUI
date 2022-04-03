@@ -51,9 +51,10 @@ describe('Mutation assignReport', () => {
     const account = await getAccount(request, cookie)
     const { config: server, pool } = setup.serversPool.values().next().value
     const player = createPlayer()
+    const actor = createPlayer()
     const report = createReport(player, player)
 
-    await pool('bm_players').insert(player)
+    await pool('bm_players').insert([player, actor])
 
     const [inserted] = await pool('bm_player_reports').insert(report, ['id'])
     const role = await setTempRole(setup.dbPool, account, 'player.reports', 'update.assign.any', 'view.any')
@@ -64,7 +65,7 @@ describe('Mutation assignReport', () => {
       .set('Accept', 'application/json')
       .send({
         query: `mutation assignReport {
-        assignReport(player: "${unparse(player.id)}", serverId: "${server.id}", report: ${inserted}) {
+        assignReport(player: "${unparse(actor.id)}", serverId: "${server.id}", report: ${inserted}) {
           id
         }
       }`
@@ -152,12 +153,45 @@ describe('Mutation assignReport', () => {
     const account = await getAccount(request, cookie)
     const { config: server, pool } = setup.serversPool.values().next().value
     const player = createPlayer()
+    const actor = createPlayer()
+    const report = createReport(account, player)
+
+    await pool('bm_players').insert([player, actor])
+
+    const [inserted] = await pool('bm_player_reports').insert(report, ['id'])
+    const role = await setTempRole(setup.dbPool, account, 'player.reports', 'update.assign.reported')
+
+    const { body, statusCode } = await request
+      .post('/graphql')
+      .set('Cookie', cookie)
+      .set('Accept', 'application/json')
+      .send({
+        query: `mutation assignReport {
+        assignReport(player: "${unparse(actor.id)}", serverId: "${server.id}", report: ${inserted}) {
+          id
+        }
+      }`
+      })
+
+    await role.reset()
+
+    assert.strictEqual(statusCode, 200)
+
+    assert(body)
+    assert(body.data)
+    assert.strictEqual(body.data.assignReport.id, '' + inserted)
+  })
+
+  test('should error if player is the actor', async () => {
+    const cookie = await getAuthPassword(request, 'admin@banmanagement.com')
+    const account = await getAccount(request, cookie)
+    const { config: server, pool } = setup.serversPool.values().next().value
+    const player = createPlayer()
     const report = createReport(account, player)
 
     await pool('bm_players').insert(player)
 
     const [inserted] = await pool('bm_player_reports').insert(report, ['id'])
-    const role = await setTempRole(setup.dbPool, account, 'player.reports', 'update.assign.reported')
 
     const { body, statusCode } = await request
       .post('/graphql')
@@ -171,13 +205,10 @@ describe('Mutation assignReport', () => {
       }`
       })
 
-    await role.reset()
-
     assert.strictEqual(statusCode, 200)
 
     assert(body)
-    assert(body.data)
-    assert.strictEqual(body.data.assignReport.id, '' + inserted)
+    assert.strictEqual(body.errors[0].message, 'You cannot assign a report to the player which created it')
   })
 
   test('should error if report does not exist', async () => {
