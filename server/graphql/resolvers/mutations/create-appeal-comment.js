@@ -13,6 +13,7 @@ module.exports = async function createAppealComment (obj, { id: appealId, input 
     (state.acl.hasServerPermission(data.server_id, 'player.appeals', 'comment.assigned') && state.acl.owns(data.assignee_id))
 
   if (!hasPermission) throw new ExposedError('You do not have permission to perform this action, please contact your server administrator')
+  if (data.state_id > 2) throw new ExposedError('You cannot comment on a closed appeal')
 
   const [id] = await state.dbPool('bm_web_appeal_comments').insert({
     appeal_id: appealId,

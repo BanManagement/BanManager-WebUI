@@ -104,7 +104,7 @@ export default function Page () {
   if (errors || !data) return <ErrorLayout errors={errors} />
 
   const stateOptions = data.reportStates.map(state => ({ value: state.id, label: state.name }))
-  const canComment = report.acl.comment
+  const canComment = report.state.id < 3 && report.acl.comment
   const canUpdateState = report.acl.state
   const canAssign = report.acl.assign
 

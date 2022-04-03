@@ -17,6 +17,7 @@ module.exports = async function createReportComment (obj, { report: reportId, se
     (state.acl.hasServerPermission(serverId, 'player.reports', 'comment.reported') && state.acl.owns(data.player_id))
 
   if (!hasPermission) throw new ExposedError('You do not have permission to perform this action, please contact your server administrator')
+  if (data.state_id > 2) throw new ExposedError('You cannot comment on a closed report')
 
   const [id] = await server.pool(server.config.tables.playerReportComments).insert({
     report_id: reportId,

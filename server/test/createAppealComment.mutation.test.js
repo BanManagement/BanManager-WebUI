@@ -175,4 +175,36 @@ describe('Mutation createAppealComment', () => {
     assert(body)
     assert.strictEqual(body.errors[0].message, 'Appeal 123123 does not exist')
   })
+
+  test('should error if closed', async () => {
+    const cookie = await getAuthPassword(request, 'admin@banmanagement.com')
+    const account = await getAccount(request, cookie)
+    const { config: server, pool } = setup.serversPool.values().next().value
+    const player = createPlayer()
+    const actor = createPlayer()
+    const punishment = createBan(player, actor)
+
+    await pool('bm_players').insert([player, actor])
+
+    const [id] = await pool('bm_player_bans').insert(punishment, ['id'])
+    const data = createAppeal({ ...punishment, id }, 'PlayerBan', server, account, null, 3)
+    const [inserted] = await pool('bm_web_appeals').insert(data, ['id'])
+
+    const { body, statusCode } = await request
+      .post('/graphql')
+      .set('Cookie', cookie)
+      .set('Accept', 'application/json')
+      .send({
+        query: `mutation createAppealComment {
+        createAppealComment(id: ${inserted} input: { content: "test" }) {
+          content
+        }
+      }`
+      })
+
+    assert.strictEqual(statusCode, 200)
+
+    assert(body)
+    assert.strictEqual(body.errors[0].message, 'You cannot comment on a closed appeal')
+  })
 })

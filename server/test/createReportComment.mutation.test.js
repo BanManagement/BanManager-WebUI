@@ -228,4 +228,32 @@ describe('Mutation createReportComment', () => {
     assert(body)
     assert.strictEqual(body.errors[0].message, 'Server 3 does not exist')
   })
+
+  test('should error if closed', async () => {
+    const cookie = await getAuthPassword(request, 'admin@banmanagement.com')
+    const { config: server, pool } = setup.serversPool.values().next().value
+    const player = createPlayer()
+    const report = createReport(player, player, null, 3)
+
+    await pool('bm_players').insert(player)
+
+    const [inserted] = await pool('bm_player_reports').insert(report, ['id'])
+
+    const { body, statusCode } = await request
+      .post('/graphql')
+      .set('Cookie', cookie)
+      .set('Accept', 'application/json')
+      .send({
+        query: `mutation createReportComment {
+        createReportComment(serverId: "${server.id}", report: ${inserted} input: { comment: "test" }) {
+          comment
+        }
+      }`
+      })
+
+    assert.strictEqual(statusCode, 200)
+
+    assert(body)
+    assert.strictEqual(body.errors[0].message, 'You cannot comment on a closed report')
+  })
 })

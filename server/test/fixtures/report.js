@@ -1,6 +1,6 @@
 const { date, lorem } = require('faker')
 
-module.exports = function (player, actor, assignee) {
+module.exports = function (player, actor, assignee, stateId = 1) {
   const created = Math.round((new Date(date.past()).getTime() / 1000))
 
   return {
@@ -10,6 +10,6 @@ module.exports = function (player, actor, assignee) {
     reason: lorem.sentence(),
     created,
     updated: created,
-    state_id: 1
+    state_id: stateId
   }
 }

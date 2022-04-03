@@ -74,14 +74,13 @@ export default function Page () {
   if (errors || !data) return <ErrorLayout errors={errors} />
 
   const stateOptions = data.appealStates.map(state => ({ value: state.id, label: state.name }))
-  const canComment = appeal.acl.comment
+  const canComment = appeal.state.id < 3 && appeal.acl.comment
   const canUpdateState = appeal.acl.state
   const canAssign = appeal.acl.assign
   const mutateCommentInsert = (comment) => (data, mutate) => {
     const records = data.listPlayerAppealComments.records.slice()
 
     records.push(comment)
-    console.log(records)
     mutate({ listPlayerAppealComments: { total: data.listPlayerAppealComments.total + 1, records } }, false)
   }
 
