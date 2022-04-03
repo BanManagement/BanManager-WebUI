@@ -213,15 +213,11 @@ export default function Page () {
                   </div>
                 </li>
               </ul>
-            </div>
-            <div>
               <PageHeader title='Locations' />
               <ul role='list' className='divide-y divide-gray-700'>
                 {report.playerLocation && <PlayerReportLocation location={report.playerLocation} player={report.player} />}
                 {report.actorLocation && <PlayerReportLocation location={report.actorLocation} player={report.actor} />}
               </ul>
-            </div>
-            <div>
               {report?.commands?.length || (!!user && report.state.id < 3) ? <PageHeader title='Actions' /> : <></>}
               {!!user && report.state.id < 3 && !report?.commands?.length &&
                 <PlayerReportActions

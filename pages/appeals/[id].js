@@ -160,8 +160,6 @@ export default function Page () {
                   </div>
                 </li>
               </ul>
-            </div>
-            <div>
               {!!user && appeal.state.id < 3 ? <PageHeader title='Actions' /> : <></>}
               {!!user && appeal.state.id < 3 &&
                 <PlayerAppealActions
