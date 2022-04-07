@@ -70,7 +70,7 @@
     "react-remove-scroll": "2.4.4",
     "react-select": "5.2.2",
     "require-environment-variables": "1.2.0",
-    "semver": "7.3.5",
+    "semver": "7.3.6",
     "swr": "1.2.2",
     "tailwindcss": "2.2.19",
     "url-loader": "4.1.1",
