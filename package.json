@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@acusti/react-code-input": "3.11.0-beta.2",
-    "@artsy/fresnel": "3.4.0",
+    "@artsy/fresnel": "3.4.1",
     "@graphql-tools/schema": "8.3.6",
     "@graphql-tools/utils": "8.6.5",
     "@headlessui/react": "1.5.0",
