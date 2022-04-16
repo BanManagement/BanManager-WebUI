@@ -51,7 +51,7 @@ export default function Page () {
       <div className='w-24 mb-5'>
         <Link href='/admin/roles/add' passHref>
           <a>
-            <Button className='bg-green-600 hover:bg-green-700'><AiOutlinePlus className='text-xl' /> Add</Button>
+            <Button className='bg-emerald-600 hover:bg-emerald-700'><AiOutlinePlus className='text-xl' /> Add</Button>
           </a>
         </Link>
       </div>

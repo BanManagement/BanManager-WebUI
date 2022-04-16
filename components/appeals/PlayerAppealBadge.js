@@ -9,7 +9,7 @@ export default function PlayerAppealBadge ({ appeal }) {
       return <Badge className='bg-indigo-500 sm:mx-auto'>Mute</Badge>
 
     case 'PlayerWarning':
-      return <Badge className='bg-yellow-500 sm:mx-auto'>Warning</Badge>
+      return <Badge className='bg-amber-500 sm:mx-auto'>Warning</Badge>
   }
 
   return null

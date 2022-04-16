@@ -81,7 +81,7 @@ export default function PlayerPunishment ({ punishment, server, type, onDeleted 
   let label = ''
 
   if (punishment.expires === 0) label = <Badge className='bg-red-500 sm:mx-auto'>Permanent</Badge>
-  if (punishment.expires) label = <Badge className='bg-yellow-500 sm:mx-auto'>{fromNow(punishment.expires)}</Badge>
+  if (punishment.expires) label = <Badge className='bg-amber-500 sm:mx-auto'>{fromNow(punishment.expires)}</Badge>
 
   const dateFormat = 'yyyy-MM-dd HH:mm:ss'
 

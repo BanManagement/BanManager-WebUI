@@ -192,7 +192,7 @@ export default function PageLayoutForm ({ pathname, pageLayout, onFinished, quer
         <span>{component.component}</span>
         <span className='flex-grow text-right'>
           <Button
-            className='bg-green-600 hover:bg-green-700 !w-5 h-5'
+            className='bg-emerald-600 hover:bg-emerald-700 !w-5 h-5'
             onClick={addComponent.bind(this, component)}
           >
             +

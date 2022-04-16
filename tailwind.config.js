@@ -1,9 +1,8 @@
 const colors = require('tailwindcss/colors')
 
 module.exports = {
-  mode: 'jit',
   important: false,
-  purge: ['./components/**/*.{js,ts,jsx,tsx,mdx}', './pages/**/*.{js,ts,jsx,tsx,mdx}'],
+  content: ['./components/**/*.{js,ts,jsx,tsx,mdx}', './pages/**/*.{js,ts,jsx,tsx,mdx}'],
   darkMode: 'class', // 'media' or 'class'
   theme: {
     extend: {
@@ -32,14 +31,6 @@ module.exports = {
     fontFamily: {
       minecraft: ['minecraftiaregular', 'sans-serif'],
       primary: ['Inter', 'sans-serif']
-    }
-  },
-  variants: {
-    extend: {
-      backgroundColor: ['checked'],
-      borderColor: ['checked'],
-      inset: ['checked'],
-      zIndex: ['hover', 'active']
     }
   },
   plugins: []
