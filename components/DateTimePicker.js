@@ -1,7 +1,6 @@
 import { forwardRef } from 'react'
 import Datetime from '@nateradebaugh/react-datetime'
 import clsx from 'clsx'
-import '@nateradebaugh/react-datetime/dist/css/styles.css'
 
 // eslint-disable-next-line react/display-name
 const DateTimePicker = forwardRef(({ className, ...rest }, ref) => {
