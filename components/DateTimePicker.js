@@ -23,7 +23,7 @@ const DateTimePicker = forwardRef(({ className, ...rest }, ref) => {
     ${className}`
   )
 
-  return <Datetime ref={ref} className={inputClass} {...rest} />
+  return <Datetime ref={ref} dateFormat='dd/MM/yyyy' className={inputClass} {...rest} />
 })
 
 export default DateTimePicker

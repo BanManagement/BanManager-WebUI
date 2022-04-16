@@ -6,9 +6,10 @@ import ErrorMessages from './ErrorMessages'
 import DateTimePicker from './DateTimePicker'
 import { useMutateApi } from '../utils'
 import ServerSelector from './admin/ServerSelector'
+import TimeIncrement from './TimeIncrement'
 
 export default function PlayerBanForm ({ serverFilter, onFinished, query, parseVariables, disableServers = false, defaults = {}, submitRef = null }) {
-  const { handleSubmit, formState, register, control, setValue } = useForm({ defaultValues: { ...defaults, server: defaults?.server, expires: defaults?.expires * 1000 || 0 } })
+  const { handleSubmit, formState, register, control, setValue, getValues } = useForm({ defaultValues: { ...defaults, server: defaults?.server, expires: defaults?.expires * 1000 || 0 } })
   const { isSubmitting } = formState
   const [typeState, setTypeState] = useState(defaults.expires ? 'temporary' : 'permanent')
 
@@ -65,13 +66,33 @@ export default function PlayerBanForm ({ serverFilter, onFinished, query, parseV
       />
       <Button className={`mb-6 ${expiryColour}`} onClick={toggleExpiry}>{expiryLabel}</Button>
       {typeState === 'temporary' &&
-        <div className='flex relative mb-6'>
-          <Controller
-            name='expires'
-            control={control}
-            render={({ field: { onChange, value } }) => <DateTimePicker isValidDate={disablePast} onChange={onChange} value={value} />}
-          />
-        </div>}
+        <>
+          <div className='flex relative mb-6'>
+            <Controller
+              name='expires'
+              control={control}
+              render={({ field: { onChange, value } }) => <DateTimePicker isValidDate={disablePast} onChange={onChange} value={value} />}
+            />
+          </div>
+          <div className='flex relative mb-6 gap-12'>
+            <TimeIncrement
+              incrementMs={1 * 60 * 60 * 1000}
+              getValues={getValues}
+              setValue={setValue}
+              field='expires'
+            >
+              +1 hour
+            </TimeIncrement>
+            <TimeIncrement
+              incrementMs={24 * 60 * 60 * 1000}
+              getValues={getValues}
+              setValue={setValue}
+              field='expires'
+            >
+              +1 day
+            </TimeIncrement>
+          </div>
+        </>}
       <Button ref={submitRef} disabled={isSubmitting} loading={isSubmitting} className={submitRef ? 'hidden' : ''}>
         Save
       </Button>
