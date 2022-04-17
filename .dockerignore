@@ -1,2 +1,12 @@
+Dockerfile
+.dockerignore
 node_modules
 npm-debug.log
+README.md
+.next
+public/images/opengraph/cache/*.png
+.env
+coverage
+cypress
+server/test
+cli/test
