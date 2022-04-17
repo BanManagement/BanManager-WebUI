@@ -51,8 +51,8 @@ jobs:
       - run: |
           shopt -s globstar
           set -e
-          for x in server/test/*.test.js; do node --expose-gc ./node_modules/.bin/jest "$x" && sh -c 'mv coverage/coverage-final.json "coverage/$(basename "$1" .js).json"' sh "$x"; done
-          for x in cli/test/*.test.js; do node --expose-gc ./node_modules/.bin/jest "$x" && sh -c 'mv coverage/coverage-final.json "coverage/$(basename "$1" .js).json"' sh "$x"; done
+          for x in server/test/*.test.js; do (node --expose-gc ./node_modules/.bin/jest "$x" && sh -c 'mv coverage/coverage-final.json "coverage/$(basename "$1" .js).json"' sh "$x") || exit 1; done
+          for x in cli/test/*.test.js; do (node --expose-gc ./node_modules/.bin/jest "$x" && sh -c 'mv coverage/coverage-final.json "coverage/$(basename "$1" .js).json"' sh "$x") || exit 1; done
           npx nyc merge coverage coverage-final.json
           rm -rf coverage
           mkdir coverage
