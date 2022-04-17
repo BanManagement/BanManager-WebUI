@@ -39,7 +39,7 @@ module.exports = async function createServer (obj, { input }, { log, state }) {
   }
 
   if (tablesMissing.length) {
-    conn.end()
+    await conn.end()
     throw new ExposedError(`Tables do not exist in the database: ${tablesMissing.join(', ')}`)
   }
 
@@ -47,7 +47,7 @@ module.exports = async function createServer (obj, { input }, { log, state }) {
     'SELECT id FROM ?? WHERE id = ?'
     , [input.tables.players, input.console])
 
-  conn.end()
+  await conn.end()
 
   if (!exists) {
     throw new ExposedError(`Console UUID not found in ${input.tables.players} table`)
