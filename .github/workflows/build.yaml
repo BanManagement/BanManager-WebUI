@@ -53,11 +53,11 @@ jobs:
           set -e
           for x in server/test/*.test.js; do node --expose-gc ./node_modules/.bin/jest "$x" && sh -c 'mv coverage/coverage-final.json "coverage/$(basename "$1" .js).json"' sh "$x"; done
           for x in cli/test/*.test.js; do node --expose-gc ./node_modules/.bin/jest "$x" && sh -c 'mv coverage/coverage-final.json "coverage/$(basename "$1" .js).json"' sh "$x"; done
-          npx -y nyc merge coverage coverage-final.json
+          npx nyc merge coverage coverage-final.json
           rm -rf coverage
           mkdir coverage
           mv coverage-final.json coverage/coverage-final.json
-          npx -y nyc report -t coverage --reporter=lcov --report-dir=coverage
+          npx nyc report -t coverage --reporter=lcov --report-dir=coverage
         env:
           DB_PASSWORD:
           LOG_LEVEL: warn
