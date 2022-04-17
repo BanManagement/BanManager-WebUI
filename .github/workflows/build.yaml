@@ -48,7 +48,14 @@ jobs:
           sleep 5 && mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '';" -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
       - run: npm run lint
       # Temporary work around jest memory leaks https://github.com/facebook/jest/issues/11956
-      - run: find server/test/ -name '*.test.js' -exec node --expose-gc ./node_modules/.bin/jest --runInBand --logHeapUsage {} \;
+      - run: |
+          find server/test/ -name '*.test.js' -exec node --expose-gc ./node_modules/.bin/jest {} \; -exec sh -c 'mv coverage/coverage-final.json "coverage/$(basename "$1" .js).json"' sh {} \;
+          find cli/test/ -name '*.test.js' -exec node --expose-gc ./node_modules/.bin/jest {} \; -exec sh -c 'mv coverage/coverage-final.json "coverage/$(basename "$1" .js).json"' sh {} \;
+          npx -y nyc merge coverage coverage-final.json
+          rm -rf coverage
+          mkdir coverage
+          mv coverage-final.json coverage/coverage-final.json
+          npx -y nyc report -t coverage --reporter=lcov --report-dir=coverage
         env:
           DB_PASSWORD:
           LOG_LEVEL: warn
