@@ -49,8 +49,10 @@ jobs:
       - run: npm run lint
       # Temporary work around jest memory leaks https://github.com/facebook/jest/issues/11956
       - run: |
-          find server/test/ -name '*.test.js' -exec node --expose-gc ./node_modules/.bin/jest {} \; -exec sh -c 'mv coverage/coverage-final.json "coverage/$(basename "$1" .js).json"' sh {} \;
-          find cli/test/ -name '*.test.js' -exec node --expose-gc ./node_modules/.bin/jest {} \; -exec sh -c 'mv coverage/coverage-final.json "coverage/$(basename "$1" .js).json"' sh {} \;
+          shopt -s globstar
+          set -e
+          for x in server/test/*.test.js; do node --expose-gc ./node_modules/.bin/jest "$x" && sh -c 'mv coverage/coverage-final.json "coverage/$(basename "$1" .js).json"' sh "$x"; done
+          for x in cli/test/*.test.js; do node --expose-gc ./node_modules/.bin/jest "$x" && sh -c 'mv coverage/coverage-final.json "coverage/$(basename "$1" .js).json"' sh "$x"; done
           npx -y nyc merge coverage coverage-final.json
           rm -rf coverage
           mkdir coverage
