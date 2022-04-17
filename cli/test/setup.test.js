@@ -70,7 +70,6 @@ describe('setup', () => {
       .stdout(/Attempting to connect to database/)
       .stdout(/Connected to/)
       .stdout(/Setting up database/)
-      .stdout(/No migrations to run/)
       .stdout(/Done/)
       .stdout(/Add a BanManager Server/)
       .on(/Server Database Host/).respond(`${dbPool.host}\n`)

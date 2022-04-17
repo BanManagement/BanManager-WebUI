@@ -1,15 +1,14 @@
-import { useRouter } from 'next/router'
 import { usePalette } from '@universemc/react-palette'
+import { NextSeo } from 'next-seo'
+import { getApiRoot } from 'nextjs-url'
 import DefaultLayout from '../../../components/DefaultLayout'
-import { useApi, useUser } from '../../../utils'
+import { useUser } from '../../../utils'
 
-import Loader from '../../../components/Loader'
 import PlayerAlts from '../../../components/player/PlayerAlts'
 import PlayerHeader from '../../../components/player/PlayerHeader'
 import PlayerAvatar from '../../../components/player/PlayerAvatar'
 import ActivePlayerBans from '../../../components/ActivePlayerBans'
 import ActivePlayerMutes from '../../../components/ActivePlayerMutes'
-import ErrorLayout from '../../../components/ErrorLayout'
 
 import resolveConfig from 'tailwindcss/resolveConfig'
 import tailwindConfig from '../../../tailwind.config'
@@ -24,38 +23,59 @@ import PageContainer from '../../../components/PageContainer'
 
 const fullConfig = resolveConfig(tailwindConfig)
 
-export default function Page () {
-  const { hasServerPermission } = useUser()
-  const router = useRouter()
-  const { id } = router.query
-  const { loading, data, errors } = useApi({
-    query: !id
-      ? null
-      : `query player($id: UUID!) {
-    player(player: $id) {
-      id
-      name
-      lastSeen
+export async function getServerSideProps ({ req, params }) {
+  const { isUUID } = require('validator')
+
+  if (!isUUID(params.id)) return { notFound: true }
+
+  const { parse, unparse } = require('uuid-parse')
+  const id = parse(params.id, Buffer.alloc(16))
+  const data = await req.loaders.player.load({ id, fields: ['id', 'name', 'lastseen'] })
+
+  if (!data) return { notFound: true }
+
+  const player = {
+    ...data,
+    id: unparse(data.id)
+  }
+  const baseUrl = getApiRoot(req).href
+
+  return {
+    props: {
+      data: {
+        player,
+        ogImage: `${baseUrl}/opengraph/player/${player.id}`
+      }
     }
-  }`,
-    variables: { id }
-  })
+  }
+}
+
+export default function Page ({ data }) {
+  const { hasServerPermission } = useUser()
   const { data: colourData } = usePalette(!data?.player?.id ? null : `https://crafatar.com/renders/body/${data.player.id}?scale=10&overlay=true`)
-
-  if (loading) return <DefaultLayout title='Loading...'><Loader /></DefaultLayout>
-  if (errors || !data) return <ErrorLayout errors={errors} />
-  if (!data.player) return <ErrorLayout errors={{ error: new Error('Player not found') }} />
-
   const color = colourData.vibrant || fullConfig.theme.colors.accent['500']
 
   return (
     <>
+      <NextSeo
+        openGraph={{
+          title: data.player.name,
+          images: [
+            {
+              url: data.ogImage,
+              width: 1200,
+              height: 600,
+              alt: `${data.player.name} profile`
+            }
+          ]
+        }}
+      />
       <DefaultLayout title={data.player.name}>
         <PageContainer>
           <div className='grid grid-flow-row xl:grid-flow-col grid-cols-12'>
             <div className='col-span-12 xl:col-span-9 space-y-10'>
-              <PlayerHeader id={id} color={color} colourData={colourData} />
-              <PlayerStatistics id={id} color={color} colourData={colourData} />
+              <PlayerHeader id={data.player.id} color={color} colourData={colourData} />
+              <PlayerStatistics id={data.player.id} color={color} colourData={colourData} />
               {hasServerPermission('player.alts', 'view', null, true) && <PlayerAlts id={data.player.id} color={color} />}
               <ActivePlayerBans id={data.player.id} color={color} />
               {hasServerPermission('player.bans', 'view', null, true) && <PlayerBans id={data.player.id} color={color} />}
@@ -66,12 +86,12 @@ export default function Page () {
               {hasServerPermission('player.warnings', 'view', null, true) && <PlayerWarnings id={data.player.id} color={color} />}
             </div>
             <div className='hidden xl:block col-span-3 space-y-10'>
-              <PlayerAvatar id={id} color={color} colourData={colourData} />
-              {hasServerPermission('player.history', 'view', null, true) && <div className='mx-6'><PlayerHistoryList id={id} color={color} /></div>}
+              <PlayerAvatar id={data.player.id} color={color} colourData={colourData} />
+              {hasServerPermission('player.history', 'view', null, true) && <div className='mx-6'><PlayerHistoryList id={data.player.id} color={color} /></div>}
             </div>
           </div>
           <div className='xl:hidden col-span-12 space-y-10'>
-            {hasServerPermission('player.history', 'view', null, true) && <PlayerHistoryList id={id} color={color} />}
+            {hasServerPermission('player.history', 'view', null, true) && <PlayerHistoryList id={data.player.id} color={color} />}
           </div>
         </PageContainer>
       </DefaultLayout>

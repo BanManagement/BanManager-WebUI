@@ -1,7 +1,10 @@
 const bodyParser = require('koa-bodyparser')
+const conditional = require('koa-conditional-get')
+const etag = require('koa-etag')
 const logoutRoute = require('./logout')
 const sessionRoute = require('./session')
 const registerRoute = require('./register')
+const playerOpenGraphRoute = require('./opengraph/player')
 
 module.exports = (router) => {
   router.use(bodyParser())
@@ -10,4 +13,5 @@ module.exports = (router) => {
     .post('/api/session', sessionRoute)
     .post('/api/logout', logoutRoute)
     .post('/api/register', registerRoute)
+    .get('/api/opengraph/player/:id', conditional(), etag(), playerOpenGraphRoute)
 }

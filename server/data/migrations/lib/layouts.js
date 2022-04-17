@@ -1,5 +1,3 @@
-const noop = () => { }
-
 module.exports = (db) => {
   async function addComponent (pathname, component) {
     if (!component.device) {
@@ -25,7 +23,7 @@ module.exports = (db) => {
       fields.push(component.h)
     }
 
-    return db.insert('bm_web_page_layouts', cols, fields, noop)
+    return db.insert('bm_web_page_layouts', cols, fields)
   }
 
   async function addComponents (pathname, components) {

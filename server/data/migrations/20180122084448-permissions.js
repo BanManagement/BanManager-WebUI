@@ -13,13 +13,11 @@ exports.setup = function (/* options, seedLink */) {
   // seed = seedLink
 }
 
-const noop = () => {}
-
 // eslint-disable-next-line max-statements
 exports.up = async function (db) {
-  await db.insert('bm_web_roles', ['role_id', 'name'], [1, 'Guest'], noop)
-  await db.insert('bm_web_roles', ['role_id', 'name'], [2, 'Logged In'], noop)
-  await db.insert('bm_web_roles', ['role_id', 'name'], [3, 'Admin'], noop)
+  await db.insert('bm_web_roles', ['role_id', 'name'], [1, 'Guest'])
+  await db.insert('bm_web_roles', ['role_id', 'name'], [2, 'Logged In'])
+  await db.insert('bm_web_roles', ['role_id', 'name'], [3, 'Admin'])
 
   const { addResource, addPermission, attachPermission } = aclHelper(db)
 
