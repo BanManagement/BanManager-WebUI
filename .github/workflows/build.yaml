@@ -46,7 +46,9 @@ jobs:
         run: |
           sudo systemctl start mysql.service
           sleep 5 && mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '';" -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
-      - run: npm test
+      - run: npm run lint
+      # Temporary work around jest memory leaks https://github.com/facebook/jest/issues/11956
+      - run: find server/test/ -name '*.test.js' -exec node --expose-gc ./node_modules/.bin/jest --runInBand --logHeapUsage {} \;
         env:
           DB_PASSWORD:
           LOG_LEVEL: warn
