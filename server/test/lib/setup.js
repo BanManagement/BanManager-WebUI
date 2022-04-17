@@ -86,6 +86,8 @@ module.exports = async (disableTestMigrations) => { // eslint-disable-line max-s
       await server.pool.destroy()
     }
 
+    serversPool.clear()
+
     await dbPool.raw(`DROP DATABASE ${dbName}`)
     await dbPool.destroy()
   }
