@@ -49,6 +49,8 @@ module.exports = async function ({ dbPool, logger, serversPool, disableUI = fals
     ctx.state.serversPool = serversPool
     ctx.state.loaders = loaders(ctx)
 
+    ctx.req.loaders = ctx.state.loaders
+
     return next()
   })
   server.use(reqLogger({ logger }))
