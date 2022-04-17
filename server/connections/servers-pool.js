@@ -46,14 +46,14 @@ async function interval ({ servers, dbPool, logger }) {
 
   if (!newIds.length) return
 
-  const leftOvers = difference(Array.from(servers.keys), newIds)
+  const leftOvers = difference(Array.from(servers.keys()), newIds)
 
-  leftOvers.forEach((server) => {
-    servers.get(server.id).pool.end()
+  leftOvers.forEach((id) => {
+    servers.get(id).pool.destroy()
       .catch((error) => logger.error(error, 'servers-pool'))
       .finally(() => {
-        servers.delete(server.id)
-        logger.debug({ id: server.id }, 'Removed server')
+        servers.delete(id)
+        logger.debug({ id }, 'Removed server')
       })
   })
 
