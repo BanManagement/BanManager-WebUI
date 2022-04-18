@@ -69,6 +69,9 @@ export default function Page ({ data }) {
             }
           ]
         }}
+        twitter={{
+          cardType: 'summary_large_image'
+        }}
       />
       <DefaultLayout title={data.player.name}>
         <PageContainer>
