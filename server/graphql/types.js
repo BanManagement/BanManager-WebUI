@@ -24,16 +24,16 @@ directive @cacheControl(
 ) on FIELD_DEFINITION | OBJECT | INTERFACE | UNION
 directive @sqlColumn(name: String!) on FIELD_DEFINITION
 
-type Server @sqlTable(name: "servers") @cacheControl(scope: PUBLIC, maxAge: 3600) {
-  id: ID! @cacheControl(scope: PUBLIC, maxAge: 3600)
-  name: String! @cacheControl(scope: PUBLIC, maxAge: 3600)
+type Server @sqlTable(name: "servers") {
+  id: ID!
+  name: String!
   host: String! @allowIf(resource: "servers", permission: "manage")
   port: Int! @allowIf(resource: "servers", permission: "manage")
   database: String! @allowIf(resource: "servers", permission: "manage")
   user: String! @allowIf(resource: "servers", permission: "manage")
   console: Player! @allowIf(resource: "servers", permission: "manage")
   tables: ServerTables! @allowIf(resource: "servers", permission: "manage")
-  timeOffset: Timestamp! @cacheControl(scope: PUBLIC, maxAge: 3600)
+  timeOffset: Timestamp!
 }
 
 type ServerTables {
