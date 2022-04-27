@@ -97,7 +97,7 @@
     "eslint-plugin-react": "7.29.4",
     "faker": "5.5.3",
     "jest": "27.5.1",
-    "json-to-graphql-query": "2.2.3",
+    "json-to-graphql-query": "2.2.4",
     "mockdate": "3.0.5",
     "nixt": "0.5.1",
     "nock": "13.2.4",
