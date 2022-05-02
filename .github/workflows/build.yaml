@@ -14,10 +14,10 @@ jobs:
     name: Node.js ${{ matrix.node-version }}
     strategy:
       matrix:
-        node-version: [14.x]
+        node-version: [14.x, 16.x, 18.x]
 
     env:
-      DB_HOST: localhost
+      DB_HOST: 127.0.0.1
       DB_PORT: 3306
       DB_USER: root
       DB_PASSWORD: root
@@ -80,7 +80,7 @@ jobs:
           install: false
           build: npm run e2e:build
           start: npm start
-          wait-on: 'http://localhost:3000'
+          wait-on: 'http://127.0.0.1:3000'
           record: true
 
       - name: Coveralls Parallel
