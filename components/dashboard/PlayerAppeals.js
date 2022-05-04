@@ -6,6 +6,8 @@ import Loader from '../Loader'
 import Avatar from '../Avatar'
 import Table from '../Table'
 import Pagination from '../Pagination'
+import PlayerSelector from '../admin/PlayerSelector'
+import Select from '../Select'
 import PlayerAppealBadge from '../appeals/PlayerAppealBadge'
 import { fromNow, useApi, useUser } from '../../utils'
 
@@ -28,6 +30,10 @@ const query = `
           name
         }
       }
+    }
+    appealStates {
+      id
+      name
     }
   }`
 
@@ -99,8 +105,22 @@ export default function PlayerAppeals ({ id, title }) {
             <Table.HeaderCell>ID</Table.HeaderCell>
             <Table.HeaderCell>Type</Table.HeaderCell>
             <Table.HeaderCell>At</Table.HeaderCell>
-            <Table.HeaderCell>State</Table.HeaderCell>
-            <Table.HeaderCell>Assigned</Table.HeaderCell>
+            <Table.HeaderCell>
+            <Select
+              options={data?.appealStates?.map(state => ({ value: state.id, label: state.name }))}
+              onChange={(value) => setTableState({ ...tableState, state: value?.value })}
+              placeholder='State'
+              isClearable
+            />
+            </Table.HeaderCell>
+            <Table.HeaderCell>
+              <PlayerSelector
+                multiple={false}
+                onChange={(id) => setTableState({ ...tableState, assigned: id })}
+                placeholder='Assigned'
+                clearable
+              />
+            </Table.HeaderCell>
             <Table.HeaderCell>Last Updated</Table.HeaderCell>
           </Table.Row>
         </Table.Header>

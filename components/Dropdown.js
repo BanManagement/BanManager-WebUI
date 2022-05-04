@@ -48,7 +48,7 @@ const Item = ({ href = '', children, name, onClick, icon, className = '' }) => {
 }
 
 // eslint-disable-next-line react/display-name
-const ItemLink = forwardRef(({ name, onClick, href, className, icon }, ref) => {
+const ItemLink = forwardRef(({ name, onClick, href, className, icon, children }, ref) => {
   return (
     <a href={href} onClick={onClick} ref={ref} className={`flex items-center z-10 px-4 bg-gray-800 py-2 text-md text-gray-100 hover:text-accent-200 hover:bg-gray-600 ${className}`} role='menuitem'>
       {icon && cloneElement(icon, {
@@ -57,6 +57,7 @@ const ItemLink = forwardRef(({ name, onClick, href, className, icon }, ref) => {
       <span className='flex flex-col'>
         {name}
       </span>
+      {children}
     </a>
   )
 })

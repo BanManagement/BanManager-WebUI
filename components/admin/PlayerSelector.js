@@ -49,9 +49,9 @@ const PlayerSelector = forwardRef(({ clearable = false, onChange, multiple = tru
   const filterOption = useCallback(() => true, [])
   const noOptionsMessage = useMemo(() => (loading ? () => 'Loading…' : () => 'No players found'), [loading])
   const handlePlayerChange = (selectedOptions) => {
-    if (selectedOptions.value) return setSelected(selectedOptions.value)
+    if (selectedOptions?.value) return setSelected(selectedOptions.value)
 
-    setSelected(selectedOptions.map(selected => selected.value))
+    setSelected(selectedOptions?.map(selected => selected.value))
   }
   const handleSearchChange = (value) => {
     if (value) {
