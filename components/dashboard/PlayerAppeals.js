@@ -106,12 +106,12 @@ export default function PlayerAppeals ({ id, title }) {
             <Table.HeaderCell>Type</Table.HeaderCell>
             <Table.HeaderCell>At</Table.HeaderCell>
             <Table.HeaderCell>
-            <Select
-              options={data?.appealStates?.map(state => ({ value: state.id, label: state.name }))}
-              onChange={(value) => setTableState({ ...tableState, state: value?.value })}
-              placeholder='State'
-              isClearable
-            />
+              <Select
+                options={data?.appealStates?.map(state => ({ value: state.id, label: state.name }))}
+                onChange={(value) => setTableState({ ...tableState, state: value?.value })}
+                placeholder='State'
+                isClearable
+              />
             </Table.HeaderCell>
             <Table.HeaderCell>
               <PlayerSelector
