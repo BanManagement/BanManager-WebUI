@@ -43,7 +43,7 @@
     "graphql-parse-resolve-info": "4.12.0",
     "graphql-request": "4.2.0",
     "graphql-type-json": "0.3.2",
-    "hibp": "11.0.0",
+    "hibp": "11.1.0",
     "inquirer": "8.2.4",
     "js-yaml": "4.1.0",
     "knex": "1.0.7",
