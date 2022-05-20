@@ -24,6 +24,8 @@ module.exports = async function me (obj, info, { session, state, log }) {
     playerData = await state.loaders.player.load({ id: session.playerId, fields: ['id', 'name'] })
   } catch (e) {
     log.error(e, 'failed to load player')
+
+    playerData = { id: session.playerId }
   }
 
   const me = {
