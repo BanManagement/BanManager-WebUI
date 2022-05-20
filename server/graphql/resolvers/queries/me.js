@@ -1,6 +1,6 @@
 const resources = require('./resources')
 
-module.exports = async function me (obj, info, { session, state }) {
+module.exports = async function me (obj, info, { session, state, log }) {
   const allResources = await resources(obj, info, { state })
   const servers = Array.from(state.serversPool.values()).map(server => server.config.id)
 
@@ -18,9 +18,16 @@ module.exports = async function me (obj, info, { session, state }) {
   }
 
   const [checkResult] = await state.dbPool('bm_web_users').select('email').where('player_id', session.playerId)
+  let playerData = {}
+
+  try {
+    playerData = await state.loaders.player.load({ id: session.playerId, fields: ['id', 'name'] })
+  } catch (e) {
+    log.error(e, 'failed to load player')
+  }
 
   const me = {
-    ...await state.loaders.player.load({ id: session.playerId, fields: ['id', 'name'] }),
+    ...playerData,
     hasAccount: Boolean(checkResult?.email),
     email: checkResult ? checkResult.email : null,
     session: {
