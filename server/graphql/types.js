@@ -529,7 +529,7 @@ type Query {
   report(id: ID!, serverId: ID!): PlayerReport
   listPlayerReports(serverId: ID!, actor: UUID, assigned: UUID, player: UUID, state: ID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerReportList!
 
-  listPlayerReportComments(serverId: ID!, report: ID!, actor: UUID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerReportCommentList! @allowIf(resource: "player.reports", permission: "view.comments", serverVar: "serverId")
+  listPlayerReportComments(serverId: ID!, report: ID!, actor: UUID, order: OrderByInput): PlayerReportCommentList! @allowIf(resource: "player.reports", permission: "view.comments", serverVar: "serverId")
   reportComment(id: ID!, serverId: ID!): PlayerReportComment! @allowIf(resource: "player.reports", permission: "view.comments", serverVar: "serverId")
 
   listPlayerSessionHistory(serverId: ID!, player: UUID, limit: Int = 10, offset: Int = 0, order: OrderBySessionHistoryInput): PlayerSessionHistoryList! @cacheControl(scope: PRIVATE, maxAge: 300) @allowIf(resource: "player.history", permission: "view")

@@ -7,10 +7,8 @@ const viewPerms = [
   ['view.reported', 'player_id']
 ]
 
-module.exports = async function listPlayerReportComments (obj, { serverId, report, actor, limit, offset, order }, { session, state }, info) {
+module.exports = async function listPlayerReportComments (obj, { serverId, report, actor, order }, { session, state }, info) {
   if (!state.serversPool.has(serverId)) throw new ExposedError('Server does not exist')
-  if (limit > 50) throw new ExposedError('Limit too large')
-
   if (!state.acl.hasServerPermission(serverId, 'player.reports', 'view.any')) {
     if (!session || !session.playerId) return { total: 0, records: [] }
 
@@ -40,8 +38,6 @@ module.exports = async function listPlayerReportComments (obj, { serverId, repor
   if (fields.records) {
     const query = getSql(info.schema, server, fields.records, 'playerReportComments')
       .where(filter)
-      .limit(limit)
-      .offset(offset)
 
     if (order) {
       query.orderByRaw(order.replace('_', ' '))
