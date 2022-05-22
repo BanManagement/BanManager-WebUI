@@ -14,7 +14,7 @@
     "@artsy/fresnel": "3.5.0",
     "@graphql-tools/schema": "8.3.11",
     "@graphql-tools/utils": "8.6.10",
-    "@headlessui/react": "1.6.1",
+    "@headlessui/react": "1.6.2",
     "@koa/router": "10.1.1",
     "@leichtgewicht/ip-codec": "2.0.4",
     "@nateradebaugh/react-datetime": "4.4.11",
