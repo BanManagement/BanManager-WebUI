@@ -3,7 +3,7 @@ const inquirer = require('inquirer')
 const editDotenv = require('edit-dotenv')
 const DBMigrate = require('db-migrate')
 const { Command, flags } = require('@oclif/command')
-const { isAlphanumeric, isEmail, isLength } = require('validator')
+const { isAlphanumeric, isEmail, isLength, isUUID } = require('validator')
 const { generateVAPIDKeys } = require('web-push')
 const { merge } = require('lodash')
 const { parse } = require('uuid-parse')
@@ -273,6 +273,12 @@ class SetupCommand extends Command {
     const askPlayer = async (question, conn, table) => {
       const questions = [{ name: 'id', message: question }]
       const { id } = await inquirer.prompt(questions)
+
+      if (!isUUID(id, 4)) {
+        this.log(`Invalid UUID format ${id}`)
+        return askPlayer(question, conn, table)
+      }
+
       const parsedId = parse(id, Buffer.alloc(16))
       const player = await playerExists(conn, table, parsedId)
 
