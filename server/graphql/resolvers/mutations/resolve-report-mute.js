@@ -2,6 +2,7 @@ const ExposedError = require('../../../data/exposed-error')
 const report = require('../queries/report')
 const { fromUnixTime } = require('date-fns')
 const { formatDistanceAbbr } = require('../../utils')
+const { subscribeReport, notifyReport, getNotificationType } = require('../../../data/notification')
 
 module.exports = async function resolveReportMute (obj, { report: reportId, serverId, input }, { session, state }, info) {
   const server = state.serversPool.get(serverId)
@@ -55,6 +56,9 @@ module.exports = async function resolveReportMute (obj, { report: reportId, serv
       created: trx.raw('UNIX_TIMESTAMP()'),
       updated: trx.raw('UNIX_TIMESTAMP()')
     })
+
+    await subscribeReport(trx, reportId, serverId, session.playerId)
+    await notifyReport(trx, getNotificationType('reportState'), reportId, server, null, session.playerId)
 
     return trx(table).update({ updated: trx.raw('UNIX_TIMESTAMP()'), state_id: 3 }).where({ id: reportId })
   })

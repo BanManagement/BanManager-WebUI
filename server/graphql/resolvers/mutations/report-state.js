@@ -1,7 +1,8 @@
 const report = require('../queries/report')
 const ExposedError = require('../../../data/exposed-error')
+const { subscribeReport, notifyReport, getNotificationType } = require('../../../data/notification')
 
-module.exports = async function reportState (obj, { serverId, state: stateId, report: id }, { state }, info) {
+module.exports = async function reportState (obj, { serverId, state: stateId, report: id }, { session, state }, info) {
   const server = state.serversPool.get(serverId)
 
   if (!server) throw new ExposedError('Server does not exist')
@@ -23,6 +24,9 @@ module.exports = async function reportState (obj, { serverId, state: stateId, re
   const row = await server.pool(server.config.tables.playerReportStates).where('id', stateId).first()
 
   if (!row) throw new ExposedError(`Report State ${stateId} does not exist`)
+
+  await subscribeReport(state.dbPool, id, serverId, session.playerId)
+  await notifyReport(state.dbPool, getNotificationType('reportState'), id, server, null, session.playerId)
 
   await server.pool(table).update({ updated: server.pool.raw('UNIX_TIMESTAMP()'), state_id: stateId }).where({ id })
 

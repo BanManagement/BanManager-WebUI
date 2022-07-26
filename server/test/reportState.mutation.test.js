@@ -3,6 +3,7 @@ const supertest = require('supertest')
 const createApp = require('../app')
 const { createSetup, getAuthPassword, getAccount, setTempRole } = require('./lib')
 const { createPlayer, createReport } = require('./fixtures')
+const { getUnreadNotificationsCount, getReportWatchers, subscribeReport } = require('../data/notification')
 
 describe('Mutation reportState', () => {
   let setup
@@ -186,6 +187,51 @@ describe('Mutation reportState', () => {
     assert(body)
     assert(body.data)
     assert.strictEqual(body.data.reportState.state.id, '2')
+  })
+
+  test('should subscribe player and notify of state change', async () => {
+    const cookie = await getAuthPassword(request, 'admin@banmanagement.com')
+    const account = await getAccount(request, cookie)
+    const { config: server, pool } = setup.serversPool.values().next().value
+    const player = createPlayer()
+    const report = createReport(account, player)
+
+    await pool('bm_players').insert(player)
+
+    const [inserted] = await pool('bm_player_reports').insert(report, ['id'])
+
+    await subscribeReport(setup.dbPool, inserted, server.id, player.id)
+
+    const role = await setTempRole(setup.dbPool, player, 'player.reports', 'view.any')
+
+    const { body, statusCode } = await request
+      .post('/graphql')
+      .set('Cookie', cookie)
+      .set('Accept', 'application/json')
+      .send({
+        query: `mutation reportState {
+        reportState(state: 2, serverId: "${server.id}", report: ${inserted}) {
+          id
+          state {
+            id
+          }
+        }
+      }`
+      })
+
+    await role.reset()
+
+    assert.strictEqual(statusCode, 200)
+
+    assert(body)
+    assert(body.data)
+    assert.strictEqual(body.data.reportState.state.id, '2')
+
+    const watchers = await getReportWatchers(setup.dbPool, inserted, server.id)
+    const notificationCount = await getUnreadNotificationsCount(setup.dbPool, player.id)
+
+    assert.strictEqual(watchers.filter(playerId => playerId.equals(account.id)).length, 1)
+    assert.strictEqual(notificationCount, 1)
   })
 
   test('should error if report does not exist', async () => {
