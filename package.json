@@ -30,7 +30,7 @@
     "autoprefixer": "10.4.7",
     "clsx": "1.2.1",
     "dataloader": "2.1.0",
-    "date-fns": "2.28.0",
+    "date-fns": "2.29.1",
     "db-migrate": "1.0.0-beta.18",
     "db-migrate-mysql": "2.2.0",
     "dotenv": "16.0.1",
