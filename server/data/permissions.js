@@ -38,7 +38,7 @@ async function loadRoleResourceValues (dbPool, roleId) {
   return resourceValues
 }
 
-async function loadPlayerResourceValues (dbPool, resourceName, serverId, ...playerIds) {
+async function loadPlayerResourceValues (dbPool, resourceName, serverId, playerIds) {
   const playerResourceValue = {}
 
   const roleResults = await dbPool('bm_web_role_resources AS rr')

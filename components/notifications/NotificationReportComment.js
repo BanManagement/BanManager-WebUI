@@ -6,7 +6,7 @@ import { fromNow } from '../../utils'
 
 export default function NotificationReportComment ({ id, actor, created, state, report }) {
   return (
-    <Link href={`/api/notifications/${id}`}>
+    <Link href={`/api/notifications/${id}`} prefetch={false}>
       <a>
         <div className={clsx('bg-black border-black border-l-2 border-r-2 hover:bg-gray-900', { 'border-accent-600': state === 'unread', 'hover:border-gray-900': state === 'read' })}>
           <div className='flex pl-2 py-2 border-b border-accent-200'>

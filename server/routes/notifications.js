@@ -3,7 +3,7 @@ const { getNotificationState, getNotificationType } = require('../data/notificat
 module.exports = async function (ctx) {
   const { request: { params }, session, state, throw: throwError } = ctx
 
-  if (typeof params.id !== 'string' || params.id.length < 22) {
+  if (typeof params.id !== 'string' || params.id.length > 22) {
     return throwError(400, 'Invalid notification ID')
   }
 

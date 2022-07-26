@@ -4,6 +4,7 @@ const supertest = require('supertest')
 const createApp = require('../app')
 const { createSetup, getAuthPassword, getAccount, setTempRole } = require('./lib')
 const { createPlayer, createReport } = require('./fixtures')
+const { getUnreadNotificationsCount, getReportWatchers } = require('../data/notification')
 
 describe('Mutation assignReport', () => {
   let setup
@@ -180,6 +181,46 @@ describe('Mutation assignReport', () => {
     assert(body)
     assert(body.data)
     assert.strictEqual(body.data.assignReport.id, '' + inserted)
+  })
+
+  test('should subscribe player and notify report assigned', async () => {
+    const cookie = await getAuthPassword(request, 'admin@banmanagement.com')
+    const account = await getAccount(request, cookie)
+    const { config: server, pool } = setup.serversPool.values().next().value
+    const player = createPlayer()
+    const actor = createPlayer()
+    const report = createReport(account, player)
+
+    await pool('bm_players').insert([player, actor])
+
+    const [inserted] = await pool('bm_player_reports').insert(report, ['id'])
+    const role = await setTempRole(setup.dbPool, actor, 'player.reports', 'view.assigned')
+
+    const { body, statusCode } = await request
+      .post('/graphql')
+      .set('Cookie', cookie)
+      .set('Accept', 'application/json')
+      .send({
+        query: `mutation assignReport {
+        assignReport(player: "${unparse(actor.id)}", serverId: "${server.id}", report: ${inserted}) {
+          id
+        }
+      }`
+      })
+
+    await role.reset()
+
+    assert.strictEqual(statusCode, 200)
+
+    assert(body)
+    assert(body.data)
+    assert.strictEqual(body.data.assignReport.id, '' + inserted)
+
+    const watchers = await getReportWatchers(setup.dbPool, inserted, server.id)
+    const notificationCount = await getUnreadNotificationsCount(setup.dbPool, actor.id)
+
+    assert.strictEqual(watchers.filter(playerId => playerId.equals(actor.id)).length, 1)
+    assert.strictEqual(notificationCount, 1)
   })
 
   test('should error if player is the actor', async () => {
