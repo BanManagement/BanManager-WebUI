@@ -34,8 +34,15 @@ module.exports = async function (ctx) {
   }
 
   if (notification.state_id === getNotificationState('unread')) {
-    await state.dbPool('bm_web_notifications')
-      .where({ id: params.id, player_id: session.playerId })
-      .update({ state_id: getNotificationState('read') })
+    if (notification.report_id) {
+      // Mark all notifications for this report as read
+      await state.dbPool('bm_web_notifications')
+        .where({ report_id: notification.report_id, server_id: notification.server_id, player_id: session.playerId })
+        .update({ state_id: getNotificationState('read') })
+    } else {
+      await state.dbPool('bm_web_notifications')
+        .where({ id: params.id, player_id: session.playerId })
+        .update({ state_id: getNotificationState('read') })
+    }
   }
 }
