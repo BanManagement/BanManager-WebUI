@@ -3,6 +3,7 @@ import { useApi } from '../../utils'
 import NotificationReportComment from './NotificationReportComment'
 import Loader from '../Loader'
 import NotificationReportAssigned from './NotificationReportAssigned'
+import NotificationReportState from './NotificationReportState'
 
 const NotificationList = () => {
   const [tableState, setTableState] = useState({ activePage: 1, limit: 25, offset: 0 })
@@ -49,6 +50,8 @@ const NotificationList = () => {
               return <NotificationReportComment key={record.id} {...record} />
             case 'reportAssigned':
               return <NotificationReportAssigned key={record.id} {...record} />
+            case 'reportState':
+              return <NotificationReportState key={record.id} {...record} />
           }
 
           return null

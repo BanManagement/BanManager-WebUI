@@ -22,7 +22,7 @@ export default function NotificationReportState ({ id, actor, created, state, re
                   <Avatar uuid={actor.id} width={20} height={20} />
                 </span>
                 <span className='pl-1 text-sm text-gray-400'>
-                  {actor.name} marked this report as {state.name.toLowerCase()}
+                  {actor.name} marked this report as {report.state.name.toLowerCase()}
                 </span>
               </div>
             </div>
