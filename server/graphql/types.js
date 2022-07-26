@@ -485,6 +485,33 @@ type Settings {
   serverFooterName: String!
 }
 
+type NotificationList {
+  total: Int!
+  records: [Notification!]!
+}
+
+type NotificationComment {
+  id: ID!
+  comment: String!
+  actor: Player! @cacheControl(scope: PUBLIC, maxAge: 3600)
+  created: Timestamp!
+  updated: Timestamp!
+  acl: EntityACL!
+}
+
+type Notification @sqlTable(name: "notifications") {
+  id: ID!
+  type: String!
+  state: String!
+  actor: Player
+  report: PlayerReport
+  appeal: PlayerAppeal
+  comment: NotificationComment
+  created: Timestamp!
+  updated: Timestamp!
+  server: Server
+}
+
 type Query {
   searchPlayers(name: String!, limit: Int = 10): [Player!]
   player(player: UUID!): Player
@@ -545,6 +572,9 @@ type Query {
   playerStatistics(player: UUID!): PlayerStatistics!
 
   settings: Settings!
+
+  unreadNotificationCount: Int! @allowIfLoggedIn
+  listNotifications(limit: Int = 25, offset: Int = 0): NotificationList! @allowIfLoggedIn
 }
 
 input CreatePlayerNoteInput {

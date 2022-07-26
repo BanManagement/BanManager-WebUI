@@ -1,4 +1,5 @@
 const ExposedError = require('../../../data/exposed-error')
+const { subscribeReport, notifyReport, getNotificationType } = require('../../../data/notification')
 const reportComment = require('../queries/report-comment')
 
 module.exports = async function createReportComment (obj, { report: reportId, serverId, input }, { session, state }, info) {
@@ -26,6 +27,9 @@ module.exports = async function createReportComment (obj, { report: reportId, se
     created: server.pool.raw('UNIX_TIMESTAMP()'),
     updated: server.pool.raw('UNIX_TIMESTAMP()')
   }, ['id'])
+
+  await subscribeReport(state.dbPool, reportId, serverId, session.playerId)
+  await notifyReport(state.dbPool, getNotificationType('reportComment'), reportId, server, id, session.playerId)
 
   return reportComment(obj, { id, serverId }, { state }, info)
 }
