@@ -62,7 +62,8 @@ const notifyReport = async (dbPool, type, reportId, server, commentId, actorId) 
 
     if (!resourceValue) return false
 
-    const canView = (hasPermission(permissionValues, resourceValue, 'player.reports', 'view.own') && player.equals(data.actor_id)) ||
+    const canView = hasPermission(permissionValues, resourceValue, 'player.reports', 'view.any') ||
+      (hasPermission(permissionValues, resourceValue, 'player.reports', 'view.own') && player.equals(data.actor_id)) ||
       (hasPermission(permissionValues, resourceValue, 'player.reports', 'view.assigned') && player.equals(data.assignee_id)) ||
       (hasPermission(permissionValues, resourceValue, 'player.reports', 'view.reported') && player.equals(data.player_id))
 
