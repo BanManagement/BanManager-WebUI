@@ -24,6 +24,7 @@ module.exports = async function listNotifications (obj, { limit, offset }, { ses
   if (fields.records) {
     const results = await state.dbPool('bm_web_notifications')
       .where(filter)
+      .orderBy('updated', 'DESC')
       .limit(limit)
       .offset(offset)
 
