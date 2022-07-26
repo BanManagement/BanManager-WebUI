@@ -32,7 +32,8 @@ const getReportWatchers = async (dbPool, reportId, serverId) => {
     .select('player_id')
     .where({
       report_id: reportId,
-      server_id: serverId
+      server_id: serverId,
+      is_watching: 1
     })
 
   // eslint-disable-next-line camelcase
