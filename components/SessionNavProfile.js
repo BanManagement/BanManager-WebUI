@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { mutate } from 'swr'
+import Favicon from 'react-favicon'
 import Dropdown from './Dropdown'
 import Avatar from './Avatar'
 import NotificationBadge from './NotificationBadge'
@@ -16,7 +17,29 @@ const query = `query unreadNotificationCount {
 export default function SessionNavProfile ({ user }) {
   const router = useRouter()
   const [loggingOut, setLoggingOut] = useState(false)
-  const { data } = useApi({ query }, { refreshInterval: 10000 })
+  const { data } = useApi({ query }, { refreshInterval: 10000, refreshWhenHidden: true })
+
+  useEffect(() => {
+    if (data) {
+      const title = document.title
+
+      if (/\([\d]+\)/.test(title)) {
+        const titleStart = title.indexOf(')') + 1
+
+        if (data.unreadNotificationCount === 0) {
+          document.title = title.substring(titleStart)
+        } else {
+          const currentCount = parseInt(title.substring(1, title.indexOf(')')), 10)
+
+          if (data.unreadNotificationCount !== currentCount) {
+            document.title = `(${data.unreadNotificationCount}) ${title.substring(titleStart)}`
+          }
+        }
+      } else if (data.unreadNotificationCount !== 0) {
+        document.title = `(${data.unreadNotificationCount}) ${title}`
+      }
+    }
+  }, [data])
 
   const handleLogout = async () => {
     setLoggingOut(true)
@@ -44,6 +67,12 @@ export default function SessionNavProfile ({ user }) {
 
   return (
     <>
+      <Favicon
+        url='/images/favicon-32x32.png'
+        faviconSize={32}
+        alertCount={data?.unreadNotificationCount || null}
+        animated={false}
+      />
       <div className='hidden md:block'>
         <Dropdown
           trigger={(
