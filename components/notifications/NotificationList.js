@@ -61,11 +61,11 @@ const NotificationList = () => {
 
           return null
         })}
-        <Pagination
-          totalPages={totalPages}
-          activePage={tableState.activePage}
-          onPageChange={handlePageChange}
-        />
+      <Pagination
+        totalPages={totalPages}
+        activePage={tableState.activePage}
+        onPageChange={handlePageChange}
+      />
     </div>
   )
 }
