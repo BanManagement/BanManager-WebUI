@@ -55,8 +55,7 @@ const NotificationList = () => {
           }
 
           return null
-        })
-      }
+        })}
     </div>
   )
 }

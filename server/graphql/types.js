@@ -217,6 +217,7 @@ type PlayerReport @sqlTable(name: "playerReports") {
   acl: PlayerReportACL!
   serverLogs: [PlayerReportServerLog!] @sqlRelation(field: "id", table: "playerReportLogs", whereKey: "report_id") @allowIf(resource: "player.reports", permission: "view.serverlogs", serverSrc: "id")
   commands: [PlayerReportCommand!]  @sqlRelation(field: "id", table: "playerReportCommands", whereKey: "report_id") @allowIf(resource: "player.reports", permission: "view.commands", serverSrc: "id")
+  viewerSubscription: Subscription @allowIfLoggedIn
 }
 
 type PlayerReportACL {
@@ -512,6 +513,15 @@ type Notification @sqlTable(name: "notifications") {
   server: Server
 }
 
+enum SubscriptionState {
+  IGNORED
+  SUBSCRIBED
+}
+
+type Subscription {
+  state: SubscriptionState!
+}
+
 type Query {
   searchPlayers(name: String!, limit: Int = 10): [Player!]
   player(player: UUID!): Player
@@ -769,6 +779,7 @@ type Mutation {
   resolveReportBan(report: ID!, serverId: ID!, input: CreatePlayerBanInput!): PlayerReport! @allowIf(resource: "player.bans", permission: "create", serverVar: "serverId")
   resolveReportMute(report: ID!, serverId: ID!, input: CreatePlayerMuteInput!): PlayerReport! @allowIf(resource: "player.mutes", permission: "create", serverVar: "serverId")
   resolveReportWarning(report: ID!, serverId: ID!, input: CreatePlayerWarningInput!): PlayerReport! @allowIf(resource: "player.warnings", permission: "create", serverVar: "serverId")
+  reportSubscriptionState(report: ID!, serverId: ID!, subscriptionState: SubscriptionState!): Subscription! @allowIfLoggedIn
 
   createAppeal(input: CreateAppealInput!): PlayerAppeal! @allowIfLoggedIn
   assignAppeal(id: ID!, player: UUID!): PlayerAppealUpdated! @allowIfLoggedIn

@@ -6,25 +6,59 @@ const types = ['reportComment', 'reportAssigned', 'reportState']
 const states = ['unread', 'read']
 
 const subscribeReport = async (dbPool, reportId, serverId, playerId) => {
-  const hasSubscribed = await dbPool('bm_web_report_watchers')
-    .select('id')
-    .where({
+  const subscription = await getReportSubscription(dbPool, reportId, serverId, playerId)
+
+  if (subscription && subscription.state === 'SUBSCRIPTION') return subscription
+
+  if (!subscription) {
+    await dbPool('bm_web_report_watchers').insert({
+      report_id: reportId,
+      server_id: serverId,
+      player_id: playerId,
+      is_watching: 1,
+      created: dbPool.raw('UNIX_TIMESTAMP()'),
+      updated: dbPool.raw('UNIX_TIMESTAMP()')
+    })
+  } else {
+    await dbPool('bm_web_report_watchers').update({
+      is_watching: 1,
+      updated: dbPool.raw('UNIX_TIMESTAMP()')
+    }).where({
       report_id: reportId,
       server_id: serverId,
       player_id: playerId
     })
-    .first()
+  }
 
-  if (hasSubscribed?.id) return
+  return await getReportSubscription(dbPool, reportId, serverId, playerId)
+}
 
-  return dbPool('bm_web_report_watchers').insert({
-    report_id: reportId,
-    server_id: serverId,
-    player_id: playerId,
-    is_watching: 1,
-    created: dbPool.raw('UNIX_TIMESTAMP()'),
-    updated: dbPool.raw('UNIX_TIMESTAMP()')
-  })
+const unsubscribeReport = async (dbPool, reportId, serverId, playerId) => {
+  const subscription = await getReportSubscription(dbPool, reportId, serverId, playerId)
+
+  if (subscription && subscription.state === 'IGNORED') return subscription
+
+  if (!subscription) {
+    await dbPool('bm_web_report_watchers').insert({
+      report_id: reportId,
+      server_id: serverId,
+      player_id: playerId,
+      is_watching: 0,
+      created: dbPool.raw('UNIX_TIMESTAMP()'),
+      updated: dbPool.raw('UNIX_TIMESTAMP()')
+    })
+  } else {
+    await dbPool('bm_web_report_watchers').update({
+      is_watching: 0,
+      updated: dbPool.raw('UNIX_TIMESTAMP()')
+    }).where({
+      report_id: reportId,
+      server_id: serverId,
+      player_id: playerId
+    })
+  }
+
+  return await getReportSubscription(dbPool, reportId, serverId, playerId)
 }
 
 const getReportWatchers = async (dbPool, reportId, serverId) => {
@@ -38,6 +72,22 @@ const getReportWatchers = async (dbPool, reportId, serverId) => {
 
   // eslint-disable-next-line camelcase
   return data.map(({ player_id }) => player_id)
+}
+
+const getReportSubscription = async (dbPool, reportId, serverId, playerId) => {
+  const data = await dbPool('bm_web_report_watchers')
+    .where({
+      report_id: reportId,
+      server_id: serverId,
+      player_id: playerId
+    })
+    .first()
+
+  if (data) {
+    data.state = data.is_watching === 1 ? 'SUBSCRIBED' : 'IGNORED'
+  }
+
+  return data
 }
 
 const notifyReport = async (dbPool, type, reportId, server, commentId, actorId) => {
@@ -116,5 +166,12 @@ const getNotificationState = (type) => {
 const generateNotificationId = async () => nanoid()
 
 module.exports = {
-  subscribeReport, getReportWatchers, notifyReport, getNotificationType, getNotificationState, getUnreadNotificationsCount
+  getReportWatchers,
+  getNotificationType,
+  getNotificationState,
+  getReportSubscription,
+  getUnreadNotificationsCount,
+  notifyReport,
+  subscribeReport,
+  unsubscribeReport
 }
