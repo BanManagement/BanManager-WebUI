@@ -4,7 +4,8 @@ const supertest = require('supertest')
 const createApp = require('../app')
 const { createSetup, getAuthPassword, getAccount, setTempRole } = require('./lib')
 const { createPlayer, createReport } = require('./fixtures')
-const { getUnreadNotificationsCount, getReportWatchers } = require('../data/notification')
+const { getUnreadNotificationsCount } = require('../data/notification')
+const { getReportWatchers } = require('../data/notification/report')
 
 describe('Mutation assignReport', () => {
   let setup

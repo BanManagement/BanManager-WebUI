@@ -287,6 +287,7 @@ type PlayerAppeal @sqlTable(name: "appeals") {
   updated: Timestamp!
   state: PlayerAppealState! @sqlRelation(joinOn: "id", field: "state_id", table: "appealStates")
   acl: PlayerAppealACL!
+  viewerSubscription: Subscription @allowIfLoggedIn
 }
 
 type PlayerAppealACL {
@@ -792,6 +793,7 @@ type Mutation {
   resolveAppealDeleteMute(id: ID!): PlayerAppealUpdated! @allowIfLoggedIn
   resolveAppealUpdateWarning(id: ID!, input: UpdatePlayerWarningInput!): PlayerAppealUpdated! @allowIfLoggedIn
   resolveAppealDeleteWarning(id: ID!): PlayerAppealUpdated! @allowIfLoggedIn
+  appealSubscriptionState(id: ID!, subscriptionState: SubscriptionState!): Subscription! @allowIfLoggedIn
 
   setPassword(currentPassword: String, newPassword: String!): Me! @allowIfLoggedIn
   setEmail(currentPassword: String!, email: String!): Me! @allowIfLoggedIn

@@ -1,7 +1,7 @@
 const { parseResolveInfo } = require('graphql-parse-resolve-info')
 const { getSql } = require('../../utils')
 const ExposedError = require('../../../data/exposed-error')
-const { getReportSubscription } = require('../../../data/notification')
+const { getReportSubscription } = require('../../../data/notification/report')
 
 // eslint-disable-next-line complexity
 module.exports = async function report (obj, { id, serverId }, { session, state }, info) {

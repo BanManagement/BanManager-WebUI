@@ -1,5 +1,7 @@
 const ExposedError = require('../../../data/exposed-error')
 const { getAppealCommentType } = require('../../utils')
+const { getNotificationType } = require('../../../data/notification')
+const { subscribeAppeal, notifyAppeal } = require('../../../data/notification/appeal')
 
 module.exports = async function appealState (obj, { state: stateId, id }, { session, state }, info) {
   const [data] = await state.dbPool('bm_web_appeals').where({ id })
@@ -38,6 +40,9 @@ module.exports = async function appealState (obj, { state: stateId, id }, { sess
     }, ['id'])
 
     commentId = insertId
+
+    await subscribeAppeal(trx, id, session.playerId)
+    await notifyAppeal(trx, getNotificationType('appealState'), id, data.server_id, commentId, session.playerId)
   })
 
   return { appealId: id, commentId }

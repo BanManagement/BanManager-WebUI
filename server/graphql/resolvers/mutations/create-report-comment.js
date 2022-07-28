@@ -1,5 +1,6 @@
 const ExposedError = require('../../../data/exposed-error')
-const { subscribeReport, notifyReport, getNotificationType } = require('../../../data/notification')
+const { getNotificationType } = require('../../../data/notification')
+const { subscribeReport, notifyReport } = require('../../../data/notification/report')
 const reportComment = require('../queries/report-comment')
 
 module.exports = async function createReportComment (obj, { report: reportId, serverId, input }, { session, state }, info) {

@@ -29,6 +29,17 @@ module.exports = async function (ctx) {
       ctx.redirect(`/reports/${notification.server_id}/${notification.report_id}`)
       break
 
+    case getNotificationType('appealComment'):
+      ctx.redirect(`/appeals/${notification.appeal_id}#comment-${notification.comment_id}`)
+      break
+
+    case getNotificationType('appealState'):
+    case getNotificationType('appealAssigned'):
+    case getNotificationType('appealEditPunishment'):
+    case getNotificationType('appealDeletePunishment'):
+      ctx.redirect(`/appeals/${notification.appeal_id}`)
+      break
+
     default:
       throw new Error(`Unknown notification type ${notification.type} for ${notification.id}`)
   }
@@ -38,6 +49,10 @@ module.exports = async function (ctx) {
       // Mark all notifications for this report as read
       await state.dbPool('bm_web_notifications')
         .where({ report_id: notification.report_id, server_id: notification.server_id, player_id: session.playerId })
+        .update({ state_id: getNotificationState('read') })
+    } else if (notification.appeal_id) {
+      await state.dbPool('bm_web_notifications')
+        .where({ appeal_id: notification.appeal_id, server_id: notification.server_id, player_id: session.playerId })
         .update({ state_id: getNotificationState('read') })
     } else {
       await state.dbPool('bm_web_notifications')

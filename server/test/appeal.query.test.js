@@ -83,6 +83,9 @@ describe('Query appeal', () => {
               state
               delete
             }
+            viewerSubscription {
+              state
+            }
           }
         }`
       })
@@ -103,7 +106,8 @@ describe('Query appeal', () => {
         name: 'Open'
       },
       actor: { id: unparse(account.id), name: account.name },
-      acl: { comment: true, assign: false, state: false, delete: false }
+      acl: { comment: true, assign: false, state: false, delete: false },
+      viewerSubscription: null
     })
   })
 

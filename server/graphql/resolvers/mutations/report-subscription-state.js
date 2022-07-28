@@ -1,5 +1,5 @@
 const ExposedError = require('../../../data/exposed-error')
-const { subscribeReport, unsubscribeReport, getReportSubscription } = require('../../../data/notification')
+const { subscribeReport, unsubscribeReport, getReportSubscription } = require('../../../data/notification/report')
 
 module.exports = async function reportSubscriptionState (obj, { serverId, report: id, subscriptionState }, { session, state }, info) {
   const server = state.serversPool.get(serverId)

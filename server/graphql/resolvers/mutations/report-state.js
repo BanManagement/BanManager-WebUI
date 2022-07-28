@@ -1,6 +1,7 @@
 const report = require('../queries/report')
 const ExposedError = require('../../../data/exposed-error')
-const { subscribeReport, notifyReport, getNotificationType } = require('../../../data/notification')
+const { getNotificationType } = require('../../../data/notification')
+const { subscribeReport, notifyReport } = require('../../../data/notification/report')
 
 module.exports = async function reportState (obj, { serverId, state: stateId, report: id }, { session, state }, info) {
   const server = state.serversPool.get(serverId)

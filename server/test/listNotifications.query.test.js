@@ -3,7 +3,8 @@ const supertest = require('supertest')
 const { unparse } = require('uuid-parse')
 const createApp = require('../app')
 const { createSetup, getAuthPassword, getAccount } = require('./lib')
-const { notifyReport, getNotificationType, subscribeReport } = require('../data/notification')
+const { getNotificationType } = require('../data/notification')
+const { notifyReport, subscribeReport } = require('../data/notification/report')
 const { createPlayer, createReport, createReportComment } = require('./fixtures')
 
 describe('Query listNotifications', () => {

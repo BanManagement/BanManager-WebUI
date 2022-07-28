@@ -1,8 +1,9 @@
 const { parseResolveInfo, simplifyParsedResolveInfoFragmentWithType } = require('graphql-parse-resolve-info')
 const ExposedError = require('../../../data/exposed-error')
+const { getAppealSubscription } = require('../../../data/notification/appeal')
 
 // eslint-disable-next-line complexity
-module.exports = async function appeal (obj, { id }, { state }, info) {
+module.exports = async function appeal (obj, { id }, { session, state }, info) {
   const table = 'bm_web_appeals'
   const data = await state.dbPool(table)
     .select([
@@ -54,6 +55,10 @@ module.exports = async function appeal (obj, { id }, { state }, info) {
   if (fields.punishmentType) data.punishmentType = data.punishment_type
   if (fields.punishmentSoft) data.punishmentSoft = data.punishment_soft
   if (fields.punishmentPoints) data.punishmentPoints = data.punishment_points
+
+  if (fields.viewerSubscription && session?.playerId) {
+    data.viewerSubscription = await getAppealSubscription(state.dbPool, id, session.playerId)
+  }
 
   if (fields.acl) {
     data.acl = {

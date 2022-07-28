@@ -1,9 +1,6 @@
 const { unparse } = require('uuid-parse')
-const { nanoid } = require('nanoid/async')
-const { hasPermission, loadPermissionValues, loadPlayerResourceValues } = require('../data/permissions')
-
-const types = ['reportComment', 'reportAssigned', 'reportState']
-const states = ['unread', 'read']
+const { getNotificationState, generateNotificationId } = require('./')
+const { hasPermission, loadPermissionValues, loadPlayerResourceValues } = require('../permissions')
 
 const subscribeReport = async (dbPool, reportId, serverId, playerId) => {
   const subscription = await getReportSubscription(dbPool, reportId, serverId, playerId)
@@ -139,38 +136,9 @@ const notifyReport = async (dbPool, type, reportId, server, commentId, actorId) 
   })
 }
 
-const getUnreadNotificationsCount = async (dbPool, playerId) => {
-  const data = await dbPool('bm_web_notifications')
-    .count({ count: '*' })
-    .where({
-      player_id: playerId,
-      state_id: getNotificationState('unread')
-    })
-    .first()
-
-  return data?.count || 0
-}
-
-const getNotificationType = (type) => {
-  if (typeof type === 'string') return types.findIndex(t => t === type)
-
-  return types[type]
-}
-
-const getNotificationState = (type) => {
-  if (typeof type === 'string') return states.findIndex(t => t === type)
-
-  return states[type]
-}
-
-const generateNotificationId = async () => nanoid()
-
 module.exports = {
   getReportWatchers,
-  getNotificationType,
-  getNotificationState,
   getReportSubscription,
-  getUnreadNotificationsCount,
   notifyReport,
   subscribeReport,
   unsubscribeReport

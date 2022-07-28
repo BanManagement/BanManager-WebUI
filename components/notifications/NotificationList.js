@@ -1,9 +1,12 @@
 import { useState } from 'react'
 import { useApi } from '../../utils'
-import NotificationReportComment from './NotificationReportComment'
 import Loader from '../Loader'
+import NotificationReportComment from './NotificationReportComment'
 import NotificationReportAssigned from './NotificationReportAssigned'
 import NotificationReportState from './NotificationReportState'
+import NotificationAppealComment from './NotificationAppealComment'
+import NotificationAppealAssigned from './NotificationAppealAssigned'
+import NotificationAppealState from './NotificationAppealState'
 import Pagination from '../Pagination'
 
 const NotificationList = () => {
@@ -18,6 +21,18 @@ const NotificationList = () => {
           state
           created
           report {
+            id
+            reason
+            assignee {
+              id
+              name
+            }
+            state {
+              id
+              name
+            }
+          }
+          appeal {
             id
             reason
             assignee {
@@ -57,6 +72,14 @@ const NotificationList = () => {
               return <NotificationReportAssigned key={record.id} {...record} />
             case 'reportState':
               return <NotificationReportState key={record.id} {...record} />
+            case 'appealComment':
+              return <NotificationAppealComment key={record.id} {...record} />
+            case 'appealAssigned':
+              return <NotificationAppealAssigned key={record.id} {...record} />
+            case 'appealState':
+            case 'appealEditPunishment':
+            case 'appealDeletePunishment':
+              return <NotificationAppealState key={record.id} {...record} />
           }
 
           return null

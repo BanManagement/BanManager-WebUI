@@ -3,6 +3,8 @@ const supertest = require('supertest')
 const createApp = require('../app')
 const { createSetup, getAuthPassword, getAccount, setTempRole } = require('./lib')
 const { createPlayer, createWarning, createAppeal } = require('./fixtures')
+const { getUnreadNotificationsCount } = require('../data/notification')
+const { getAppealWatchers, subscribeAppeal } = require('../data/notification/appeal')
 
 describe('Mutation resolveAppealUpdateWarning', () => {
   let setup
@@ -241,6 +243,80 @@ describe('Mutation resolveAppealUpdateWarning', () => {
     assert.strictEqual(body.data.resolveAppealUpdateWarning.comment.newReason, 'test')
     assert.strictEqual(body.data.resolveAppealUpdateWarning.comment.oldExpires, punishment.expires)
     assert.strictEqual(body.data.resolveAppealUpdateWarning.comment.newExpires, 1000000000)
+  })
+
+  test('should subscribe player and notify of state change', async () => {
+    const cookie = await getAuthPassword(request, 'admin@banmanagement.com')
+    const account = await getAccount(request, cookie)
+    const { config: server, pool } = setup.serversPool.values().next().value
+    const player = createPlayer()
+    const punishment = createWarning(player, account)
+
+    await pool('bm_players').insert(player)
+
+    const [id] = await pool('bm_player_warnings').insert(punishment, ['id'])
+    const data = createAppeal({ ...punishment, id }, 'PlayerWarning', server, player, account)
+
+    const [inserted] = await pool('bm_web_appeals').insert(data, ['id'])
+
+    await subscribeAppeal(setup.dbPool, inserted, player.id)
+
+    const role = await setTempRole(setup.dbPool, player, 'player.appeals', 'view.any')
+
+    const { body, statusCode } = await request
+      .post('/graphql')
+      .set('Cookie', cookie)
+      .set('Accept', 'application/json')
+      .send({
+        query: `mutation resolveAppealUpdateWarning {
+          resolveAppealUpdateWarning(id: ${inserted}, input: {
+            reason: "test", expires: 1000000000, points: 1
+          }) {
+            appeal {
+              state {
+                id
+              }
+            }
+            comment {
+              type
+              created
+              oldReason
+              newReason
+              oldExpires
+              newExpires
+              state {
+                id
+                name
+              }
+              actor {
+                id
+                name
+              }
+            }
+          }
+        }`
+      })
+
+    await role.reset()
+
+    assert.strictEqual(statusCode, 200)
+
+    assert(body)
+    assert(body.data)
+    assert.strictEqual(body.data.resolveAppealUpdateWarning.appeal.state.id, '3')
+    assert.strictEqual(body.data.resolveAppealUpdateWarning.comment.type, 'editpunishment')
+    assert.strictEqual(body.data.resolveAppealUpdateWarning.comment.state.id, '3')
+    assert.strictEqual(body.data.resolveAppealUpdateWarning.comment.actor.name, account.name)
+    assert.strictEqual(body.data.resolveAppealUpdateWarning.comment.oldReason, punishment.reason)
+    assert.strictEqual(body.data.resolveAppealUpdateWarning.comment.newReason, 'test')
+    assert.strictEqual(body.data.resolveAppealUpdateWarning.comment.oldExpires, punishment.expires)
+    assert.strictEqual(body.data.resolveAppealUpdateWarning.comment.newExpires, 1000000000)
+
+    const watchers = await getAppealWatchers(setup.dbPool, inserted)
+    const notificationCount = await getUnreadNotificationsCount(setup.dbPool, player.id)
+
+    assert.strictEqual(watchers.filter(playerId => playerId.equals(player.id)).length, 1)
+    assert.strictEqual(notificationCount, 1)
   })
 
   test('should error if appeal does not exist', async () => {

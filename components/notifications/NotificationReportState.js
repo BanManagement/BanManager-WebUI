@@ -1,4 +1,4 @@
-import { GoReport } from 'react-icons/go'
+import { GoInfo } from 'react-icons/go'
 import clsx from 'clsx'
 import Link from 'next/link'
 import Avatar from '../Avatar'
@@ -12,7 +12,7 @@ export default function NotificationReportState ({ id, actor, created, state, re
           <div className='flex pl-2 py-2 border-b border-accent-200'>
             <div className='flex-col mt-1 mr-2'>
               <div className='flex-shrink-0 text-center items-start'>
-                <GoReport className='w-4 h-4 text-accent-500' />
+                <GoInfo className='w-4 h-4 text-accent-500' />
               </div>
             </div>
             <div className='flex-auto space-y-1'>

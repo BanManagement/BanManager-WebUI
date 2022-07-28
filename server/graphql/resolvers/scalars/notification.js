@@ -8,6 +8,7 @@ module.exports = {
         try {
           if (obj.appeal_id) return await appeal(obj, { id: obj.appeal_id }, context, info)
         } catch (e) {
+          console.log(e)
         }
       }
     },

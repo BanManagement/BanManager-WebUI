@@ -2,7 +2,8 @@ const assert = require('assert')
 const supertest = require('supertest')
 const createApp = require('../app')
 const { createSetup, getAuthPassword, getAccount } = require('./lib')
-const { notifyReport, getNotificationType, subscribeReport } = require('../data/notification')
+const { getNotificationType } = require('../data/notification')
+const { notifyReport, subscribeReport } = require('../data/notification/report')
 const { createPlayer, createReport, createReportComment } = require('./fixtures')
 
 describe('Query unreadNotificationCount', () => {

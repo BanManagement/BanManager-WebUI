@@ -1,7 +1,8 @@
 const { unparse } = require('uuid-parse')
 const report = require('../queries/report')
 const ExposedError = require('../../../data/exposed-error')
-const { subscribeReport, notifyReport, getNotificationType } = require('../../../data/notification')
+const { getNotificationType } = require('../../../data/notification')
+const { subscribeReport, notifyReport } = require('../../../data/notification/appeal')
 
 module.exports = async function assignReport (obj, { serverId, player, report: id }, { session, state }, info) {
   const server = state.serversPool.get(serverId)
