@@ -4,6 +4,7 @@ import NotificationReportComment from './NotificationReportComment'
 import Loader from '../Loader'
 import NotificationReportAssigned from './NotificationReportAssigned'
 import NotificationReportState from './NotificationReportState'
+import Pagination from '../Pagination'
 
 const NotificationList = () => {
   const [tableState, setTableState] = useState({ activePage: 1, limit: 25, offset: 0 })
@@ -40,6 +41,10 @@ const NotificationList = () => {
 
   if (loading) return <Loader />
 
+  const handlePageChange = ({ activePage }) => setTableState({ ...tableState, activePage, offset: (activePage - 1) * tableState.limit })
+  const total = data?.listNotifications?.total || 0
+  const totalPages = Math.ceil(total / tableState.limit)
+
   return (
     <div className='grid grid-cols-1 bg-black'>
       {!data?.listNotifications?.total
@@ -56,6 +61,11 @@ const NotificationList = () => {
 
           return null
         })}
+        <Pagination
+          totalPages={totalPages}
+          activePage={tableState.activePage}
+          onPageChange={handlePageChange}
+        />
     </div>
   )
 }
