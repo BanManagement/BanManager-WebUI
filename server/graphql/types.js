@@ -217,6 +217,7 @@ type PlayerReport @sqlTable(name: "playerReports") {
   acl: PlayerReportACL!
   serverLogs: [PlayerReportServerLog!] @sqlRelation(field: "id", table: "playerReportLogs", whereKey: "report_id") @allowIf(resource: "player.reports", permission: "view.serverlogs", serverSrc: "id")
   commands: [PlayerReportCommand!]  @sqlRelation(field: "id", table: "playerReportCommands", whereKey: "report_id") @allowIf(resource: "player.reports", permission: "view.commands", serverSrc: "id")
+  viewerSubscription: Subscription @allowIfLoggedIn
 }
 
 type PlayerReportACL {
@@ -286,6 +287,7 @@ type PlayerAppeal @sqlTable(name: "appeals") {
   updated: Timestamp!
   state: PlayerAppealState! @sqlRelation(joinOn: "id", field: "state_id", table: "appealStates")
   acl: PlayerAppealACL!
+  viewerSubscription: Subscription @allowIfLoggedIn
 }
 
 type PlayerAppealACL {
@@ -485,6 +487,42 @@ type Settings {
   serverFooterName: String!
 }
 
+type NotificationList {
+  total: Int!
+  records: [Notification!]!
+}
+
+type NotificationComment {
+  id: ID!
+  comment: String!
+  actor: Player! @cacheControl(scope: PUBLIC, maxAge: 3600)
+  created: Timestamp!
+  updated: Timestamp!
+  acl: EntityACL!
+}
+
+type Notification @sqlTable(name: "notifications") {
+  id: ID!
+  type: String!
+  state: String!
+  actor: Player
+  report: PlayerReport
+  appeal: PlayerAppeal
+  comment: NotificationComment
+  created: Timestamp!
+  updated: Timestamp!
+  server: Server
+}
+
+enum SubscriptionState {
+  IGNORED
+  SUBSCRIBED
+}
+
+type Subscription {
+  state: SubscriptionState!
+}
+
 type Query {
   searchPlayers(name: String!, limit: Int = 10): [Player!]
   player(player: UUID!): Player
@@ -545,6 +583,9 @@ type Query {
   playerStatistics(player: UUID!): PlayerStatistics!
 
   settings: Settings!
+
+  unreadNotificationCount: Int! @allowIfLoggedIn
+  listNotifications(limit: Int = 25, offset: Int = 0): NotificationList! @allowIfLoggedIn
 }
 
 input CreatePlayerNoteInput {
@@ -739,6 +780,7 @@ type Mutation {
   resolveReportBan(report: ID!, serverId: ID!, input: CreatePlayerBanInput!): PlayerReport! @allowIf(resource: "player.bans", permission: "create", serverVar: "serverId")
   resolveReportMute(report: ID!, serverId: ID!, input: CreatePlayerMuteInput!): PlayerReport! @allowIf(resource: "player.mutes", permission: "create", serverVar: "serverId")
   resolveReportWarning(report: ID!, serverId: ID!, input: CreatePlayerWarningInput!): PlayerReport! @allowIf(resource: "player.warnings", permission: "create", serverVar: "serverId")
+  reportSubscriptionState(report: ID!, serverId: ID!, subscriptionState: SubscriptionState!): Subscription! @allowIfLoggedIn
 
   createAppeal(input: CreateAppealInput!): PlayerAppeal! @allowIfLoggedIn
   assignAppeal(id: ID!, player: UUID!): PlayerAppealUpdated! @allowIfLoggedIn
@@ -751,6 +793,7 @@ type Mutation {
   resolveAppealDeleteMute(id: ID!): PlayerAppealUpdated! @allowIfLoggedIn
   resolveAppealUpdateWarning(id: ID!, input: UpdatePlayerWarningInput!): PlayerAppealUpdated! @allowIfLoggedIn
   resolveAppealDeleteWarning(id: ID!): PlayerAppealUpdated! @allowIfLoggedIn
+  appealSubscriptionState(id: ID!, subscriptionState: SubscriptionState!): Subscription! @allowIfLoggedIn
 
   setPassword(currentPassword: String, newPassword: String!): Me! @allowIfLoggedIn
   setEmail(currentPassword: String!, email: String!): Me! @allowIfLoggedIn

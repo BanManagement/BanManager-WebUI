@@ -1,5 +1,6 @@
 const ExposedError = require('../../../data/exposed-error')
 const appealResolver = require('../queries/appeal')
+const { subscribeAppeal } = require('../../../data/notification/appeal')
 
 module.exports = async function createAppeal (obj, { input: { serverId, punishmentId, type, reason } }, { state, session }, info) {
   if (!state.serversPool.has(serverId)) throw new ExposedError('Server does not exist')
@@ -85,6 +86,8 @@ module.exports = async function createAppeal (obj, { input: { serverId, punishme
   }
 
   const [id] = await state.dbPool('bm_web_appeals').insert(appeal, ['id'])
+
+  await subscribeAppeal(state.dbPool, id, session.playerId)
 
   return appealResolver(obj, { id }, { state }, info)
 }

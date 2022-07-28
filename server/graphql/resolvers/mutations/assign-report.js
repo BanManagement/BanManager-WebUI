@@ -1,8 +1,10 @@
 const { unparse } = require('uuid-parse')
 const report = require('../queries/report')
 const ExposedError = require('../../../data/exposed-error')
+const { getNotificationType } = require('../../../data/notification')
+const { subscribeReport, notifyReport } = require('../../../data/notification/report')
 
-module.exports = async function assignReport (obj, { serverId, player, report: id }, { state }, info) {
+module.exports = async function assignReport (obj, { serverId, player, report: id }, { session, state }, info) {
   const server = state.serversPool.get(serverId)
 
   if (!server) throw new ExposedError(`Server ${serverId} does not exist`)
@@ -35,6 +37,10 @@ module.exports = async function assignReport (obj, { serverId, player, report: i
       assignee_id: player
     })
     .where({ id })
+
+  await subscribeReport(state.dbPool, id, serverId, session.playerId)
+  await subscribeReport(state.dbPool, id, serverId, player)
+  await notifyReport(state.dbPool, getNotificationType('reportAssigned'), id, server, null, session.playerId)
 
   return report(obj, { id, serverId }, { state }, info)
 }

@@ -3,6 +3,8 @@ const supertest = require('supertest')
 const createApp = require('../app')
 const { createSetup, getAuthPassword, getAccount, setTempRole } = require('./lib')
 const { createPlayer, createAppeal, createBan } = require('./fixtures')
+const { getUnreadNotificationsCount } = require('../data/notification')
+const { getAppealWatchers, subscribeAppeal } = require('../data/notification/appeal')
 
 describe('Mutation createAppealComment', () => {
   let setup
@@ -153,6 +155,50 @@ describe('Mutation createAppealComment', () => {
     assert(body)
     assert(body.data)
     assert.strictEqual(body.data.createAppealComment.content, 'test')
+  })
+
+  test('should subscribe player and notify of a new comment', async () => {
+    const cookie = await getAuthPassword(request, 'admin@banmanagement.com')
+    const { config: server, pool } = setup.serversPool.values().next().value
+    const player = createPlayer()
+    const actor = createPlayer()
+    const punishment = createBan(player, actor)
+
+    await pool('bm_players').insert([player, actor])
+
+    const [id] = await pool('bm_player_bans').insert(punishment, ['id'])
+    const data = createAppeal({ ...punishment, id }, 'PlayerBan', server, player)
+    const [inserted] = await pool('bm_web_appeals').insert(data, ['id'])
+
+    await subscribeAppeal(setup.dbPool, inserted, player.id)
+
+    const role = await setTempRole(setup.dbPool, player, 'player.appeals', 'view.any')
+
+    const { body, statusCode } = await request
+      .post('/graphql')
+      .set('Cookie', cookie)
+      .set('Accept', 'application/json')
+      .send({
+        query: `mutation createAppealComment {
+        createAppealComment(id: ${inserted} input: { content: "test" }) {
+          content
+        }
+      }`
+      })
+
+    await role.reset()
+
+    assert.strictEqual(statusCode, 200)
+
+    assert(body)
+    assert(body.data)
+    assert.strictEqual(body.data.createAppealComment.content, 'test')
+
+    const watchers = await getAppealWatchers(setup.dbPool, inserted)
+    const notificationCount = await getUnreadNotificationsCount(setup.dbPool, player.id)
+
+    assert.strictEqual(watchers.filter(playerId => playerId.equals(player.id)).length, 1)
+    assert.strictEqual(notificationCount, 1)
   })
 
   test('should error if appeal does not exist', async () => {

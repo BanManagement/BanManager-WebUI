@@ -1,9 +1,10 @@
 const { parseResolveInfo } = require('graphql-parse-resolve-info')
 const { getSql } = require('../../utils')
 const ExposedError = require('../../../data/exposed-error')
+const { getReportSubscription } = require('../../../data/notification/report')
 
 // eslint-disable-next-line complexity
-module.exports = async function report (obj, { id, serverId }, { state }, info) {
+module.exports = async function report (obj, { id, serverId }, { session, state }, info) {
   if (!state.serversPool.has(serverId)) throw new ExposedError('Server not found')
 
   const server = state.serversPool.get(serverId)
@@ -42,7 +43,11 @@ module.exports = async function report (obj, { id, serverId }, { state }, info) 
 
   if (!data) throw new ExposedError('Report not found')
 
-  if (data && calculateAcl) {
+  if (fields.fieldsByTypeName.PlayerReport.viewerSubscription && session?.playerId) {
+    data.viewerSubscription = await getReportSubscription(state.dbPool, id, serverId, session.playerId)
+  }
+
+  if (calculateAcl) {
     data.acl = {
       comment: state.acl.hasServerPermission(serverId, 'player.reports', 'comment.any') ||
         (state.acl.hasServerPermission(serverId, 'player.reports', 'comment.own') && state.acl.owns(data.actor_id)) ||

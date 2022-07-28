@@ -16,6 +16,7 @@ import PlayerReportState from '../../../components/reports/PlayerReportState'
 import PlayerReportLocation from '../../../components/reports/PlayerReportLocation'
 import PlayerReportActions from '../../../components/reports/PlayerReportActions'
 import PlayerReportCommand from '../../../components/reports/PlayerReportCommand'
+import PlayerReportNotifications from '../../../components/reports/PlayerReportNotifications'
 
 export default function Page () {
   const { user } = useUser()
@@ -93,6 +94,9 @@ export default function Page () {
             id
             name
           }
+        }
+        viewerSubscription {
+          state
         }
       }
     }`
@@ -212,6 +216,23 @@ export default function Page () {
                     </div>
                   </div>
                 </li>
+                {!!user &&
+                  <li className='py-3 sm:py-4'>
+                    <div className='flex items-center space-x-4'>
+                      <div className='flex-1 min-w-0 space-y-3'>
+                        <p>
+                          Notifications
+                        </p>
+                        <PlayerReportNotifications
+                          report={report}
+                          server={data.server}
+                          onChange={({ reportSubscriptionState }) => {
+                            mutate({ ...data, report: { ...data.report, viewerSubscription: reportSubscriptionState } }, false)
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </li>}
               </ul>
               <PageHeader title='Locations' />
               <ul role='list' className='divide-y divide-gray-700'>
@@ -277,6 +298,23 @@ export default function Page () {
                 </div>
               </div>
             </li>
+            {!!user &&
+              <li className='py-3 sm:py-4'>
+                <div className='flex items-center space-x-4'>
+                  <div className='flex-1 min-w-0 space-y-3'>
+                    <p>
+                      Notifications
+                    </p>
+                    <PlayerReportNotifications
+                      report={report}
+                      server={data.server}
+                      onChange={({ reportSubscriptionState }) => {
+                        mutate({ ...data, report: { ...data.report, viewerSubscription: reportSubscriptionState } }, false)
+                      }}
+                    />
+                  </div>
+                </div>
+              </li>}
           </ul>
           <div>
             <PageHeader title='Locations' />

@@ -4,6 +4,8 @@ const { unparse } = require('uuid-parse')
 const createApp = require('../app')
 const { createSetup, getAuthPassword, getAccount, setTempRole } = require('./lib')
 const { createPlayer, createBan, createReport } = require('./fixtures')
+const { getUnreadNotificationsCount } = require('../data/notification')
+const { getReportWatchers, subscribeReport } = require('../data/notification/report')
 
 describe('Mutation resolveReportBan', () => {
   let setup
@@ -257,6 +259,66 @@ describe('Mutation resolveReportBan', () => {
     assert.strictEqual(body.data.resolveReportBan.commands[0].command, 'ban')
     assert.strictEqual(body.data.resolveReportBan.commands[0].args, `${player.name} ${ban.reason}`)
     assert.strictEqual(body.data.resolveReportBan.commands[0].actor.name, account.name)
+  })
+
+  test('should subscribe player and notify of state change', async () => {
+    const cookie = await getAuthPassword(request, 'admin@banmanagement.com')
+    const account = await getAccount(request, cookie)
+    const { config: server, pool } = setup.serversPool.values().next().value
+    const player = createPlayer()
+    const report = createReport(account, player)
+    const ban = createBan(player, account)
+
+    await pool('bm_players').insert(player)
+
+    const [inserted] = await pool('bm_player_reports').insert(report, ['id'])
+
+    await subscribeReport(setup.dbPool, inserted, server.id, player.id)
+
+    const role = await setTempRole(setup.dbPool, player, 'player.reports', 'view.any')
+
+    const { body, statusCode } = await request
+      .post('/graphql')
+      .set('Cookie', cookie)
+      .set('Accept', 'application/json')
+      .send({
+        query: `mutation reportState {
+        resolveReportBan(serverId: "${server.id}", report: ${inserted}, input: {
+          player: "${unparse(player.id)}", reason: "${ban.reason}", expires: 0, server: "${server.id}"
+        }) {
+          state {
+            id
+          }
+          commands {
+            command
+            args
+            created
+            actor {
+              id
+              name
+            }
+          }
+        }
+      }`
+      })
+
+    await role.reset()
+
+    assert.strictEqual(statusCode, 200)
+
+    assert(body)
+    assert(body.data)
+    assert.strictEqual(body.data.resolveReportBan.state.id, '3')
+    assert.strictEqual(body.data.resolveReportBan.commands.length, 1)
+    assert.strictEqual(body.data.resolveReportBan.commands[0].command, 'ban')
+    assert.strictEqual(body.data.resolveReportBan.commands[0].args, `${player.name} ${ban.reason}`)
+    assert.strictEqual(body.data.resolveReportBan.commands[0].actor.name, account.name)
+
+    const watchers = await getReportWatchers(setup.dbPool, inserted, server.id)
+    const notificationCount = await getUnreadNotificationsCount(setup.dbPool, player.id)
+
+    assert.strictEqual(watchers.filter(playerId => playerId.equals(account.id)).length, 1)
+    assert.strictEqual(notificationCount, 1)
   })
 
   test('should error if report does not exist', async () => {

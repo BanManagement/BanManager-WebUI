@@ -3,6 +3,7 @@ const supertest = require('supertest')
 const createApp = require('../app')
 const { createSetup, getAuthPassword, getAccount } = require('./lib')
 const { createPlayer, createBan } = require('./fixtures')
+const { getAppealWatchers } = require('../data/notification/appeal')
 
 describe('Mutation create appeal', () => {
   let setup
@@ -135,6 +136,10 @@ describe('Mutation create appeal', () => {
 
     assert.strictEqual(body.data.createAppeal.id, '1')
     assert.strictEqual(body.data.createAppeal.reason, 'testtesttesttesttest')
+
+    const watchers = await getAppealWatchers(setup.dbPool, body.data.createAppeal.id)
+
+    assert.strictEqual(watchers.filter(playerId => playerId.equals(account.id)).length, 1)
   })
 
   test('should error if an appeal already exists', async () => {

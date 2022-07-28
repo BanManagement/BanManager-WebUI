@@ -38,7 +38,12 @@ function DefaultLayout ({ title = 'Default Title', children, description }) {
       <Head>
         <title>{title}</title>
       </Head>
-      <NextSeo description={description} title={title} />
+      <NextSeo
+        description={description} title={title} openGraph={{
+          title,
+          description
+        }}
+      />
       <BodyWrapper>
         <Nav leftItems={left} mobileItems={left} rightItems={right} />
         <div className='flex-grow text-white bg-primary-500 pb-12'>

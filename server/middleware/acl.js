@@ -1,4 +1,4 @@
-const memoize = require('memoizee')
+const { hasPermission, loadPermissionValues, loadRoleResourceValues } = require('../data/permissions')
 const { get } = require('lodash')
 const { parse } = require('uuid-parse')
 const { valid } = require('../data/session')
@@ -82,13 +82,7 @@ module.exports = async (ctx, next) => {
         // Check if they have global permission
         if (state.acl.hasPermission(resource, permission)) return true
 
-        let value = get(state.permissionValues, [resource, permission], 0)
-
-        if (permission === '*') { // Support wildcards @TODO Test
-          value = Number.MAX_SAFE_INTEGER
-        }
-
-        return !!(get(serverResourceValues, [serverId, resource], null) & value)
+        return hasPermission(state.permissionValues, get(serverResourceValues, [serverId, resource], null), resource, permission)
       }
     }
   }
@@ -97,13 +91,7 @@ module.exports = async (ctx, next) => {
     {
       hasServerPermission,
       hasPermission (resource, permission) {
-        let value = get(state.permissionValues, [resource, permission], 0)
-
-        if (permission === '*') { // Support wildcards @TODO Test
-          value = Number.MAX_SAFE_INTEGER
-        }
-
-        return !!(resourceValues[resource] & value)
+        return hasPermission(state.permissionValues, resourceValues[resource], resource, permission)
       },
       owns (actorId) {
         if (!actorId) return false
@@ -119,40 +107,4 @@ module.exports = async (ctx, next) => {
     }
 
   return next()
-}
-
-async function loadRoleResourceValues (dbPool, roleId) {
-  const results = await dbPool('bm_web_role_resources AS rr')
-    .select('r.name AS name', 'rr.value AS value')
-    .innerJoin('bm_web_resources AS r', 'rr.resource_id', 'r.resource_id')
-    .leftJoin('bm_web_player_server_roles', 'bm_web_player_server_roles.role_id', 'rr.role_id')
-    .where('rr.role_id', roleId)
-  const resourceValues = {}
-
-  results.forEach((row) => {
-    resourceValues[row.name] = row.value
-  })
-
-  return resourceValues
-}
-
-async function loadPermissionValues (dbPool) {
-  const load = async () => {
-    const results = await dbPool('bm_web_resource_permissions AS rp')
-      .column({ resource_id: 'rp.resource_id', resource_name: 'r.name', name: 'rp.name', value: 'rp.value' })
-      .select()
-      .innerJoin('bm_web_resources AS r', 'r.resource_id', 'rp.resource_id')
-    const permissionValues = {}
-
-    results.forEach((row) => {
-      if (!permissionValues[row.resource_name]) permissionValues[row.resource_name] = {}
-
-      permissionValues[row.resource_name][row.name] = row.value
-    })
-
-    return permissionValues
-  }
-
-  // Cache for 5 minutes
-  return memoize(load, { async: true, prefetch: true, maxAge: 300 * 1000 })()
 }

@@ -3,6 +3,8 @@ const supertest = require('supertest')
 const createApp = require('../app')
 const { createSetup, getAuthPassword, getAccount, setTempRole } = require('./lib')
 const { createPlayer, createAppeal, createBan } = require('./fixtures')
+const { getUnreadNotificationsCount } = require('../data/notification')
+const { getAppealWatchers, subscribeAppeal } = require('../data/notification/appeal')
 
 describe('Mutation appealState', () => {
   let setup
@@ -187,6 +189,64 @@ describe('Mutation appealState', () => {
     assert.strictEqual(body.data.appealState.appeal.state.id, '2')
     assert.strictEqual(body.data.appealState.comment.type, 'state')
     assert.strictEqual(body.data.appealState.comment.state.id, '2')
+  })
+
+  test('should subscribe player and notify of state change', async () => {
+    const cookie = await getAuthPassword(request, 'admin@banmanagement.com')
+    const account = await getAccount(request, cookie)
+    const { config: server, pool } = setup.serversPool.values().next().value
+    const player = createPlayer()
+    const actor = createPlayer()
+    const punishment = createBan(player, actor)
+
+    await pool('bm_players').insert([player, actor])
+
+    const [id] = await pool('bm_player_bans').insert(punishment, ['id'])
+    const data = createAppeal({ ...punishment, id }, 'PlayerBan', server, account)
+    const [inserted] = await pool('bm_web_appeals').insert(data, ['id'])
+
+    await subscribeAppeal(setup.dbPool, inserted, player.id)
+
+    const role = await setTempRole(setup.dbPool, player, 'player.appeals', 'view.any')
+
+    const { body, statusCode } = await request
+      .post('/graphql')
+      .set('Cookie', cookie)
+      .set('Accept', 'application/json')
+      .send({
+        query: `mutation appealState {
+        appealState(state: 2, id: ${inserted}) {
+          appeal {
+            id
+            state {
+              id
+            }
+          }
+          comment {
+            type
+            state {
+              id
+            }
+          }
+        }
+      }`
+      })
+
+    await role.reset()
+
+    assert.strictEqual(statusCode, 200)
+
+    assert(body)
+    assert(body.data)
+    assert.strictEqual(body.data.appealState.appeal.state.id, '2')
+    assert.strictEqual(body.data.appealState.comment.type, 'state')
+    assert.strictEqual(body.data.appealState.comment.state.id, '2')
+
+    const watchers = await getAppealWatchers(setup.dbPool, inserted)
+    const notificationCount = await getUnreadNotificationsCount(setup.dbPool, player.id)
+
+    assert.strictEqual(watchers.filter(playerId => playerId.equals(player.id)).length, 1)
+    assert.strictEqual(notificationCount, 1)
   })
 
   test('should error if report does not exist', async () => {

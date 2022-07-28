@@ -1,6 +1,8 @@
 const { unparse } = require('uuid-parse')
 const ExposedError = require('../../../data/exposed-error')
 const { getAppealCommentType } = require('../../utils')
+const { getNotificationType } = require('../../../data/notification')
+const { subscribeAppeal, notifyAppeal } = require('../../../data/notification/appeal')
 
 module.exports = async function resolveAppealDeleteMute (obj, { id }, { session, state }, info) {
   const data = await state.dbPool('bm_web_appeals')
@@ -76,6 +78,9 @@ module.exports = async function resolveAppealDeleteMute (obj, { id }, { session,
       }, ['id'])
 
       commentId = insertId
+
+      await subscribeAppeal(trx, id, session.playerId)
+      await notifyAppeal(trx, getNotificationType('appealDeletePunishment'), id, data.server_id, commentId, session.playerId)
 
       return trx('bm_web_appeals').update({ updated: trx.raw('UNIX_TIMESTAMP()'), state_id: 3 }).where({ id })
     })

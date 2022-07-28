@@ -1,6 +1,8 @@
 const { unparse } = require('uuid-parse')
 const ExposedError = require('../../../data/exposed-error')
 const { getAppealCommentType } = require('../../utils')
+const { getNotificationType } = require('../../../data/notification')
+const { subscribeAppeal, notifyAppeal } = require('../../../data/notification/appeal')
 
 module.exports = async function assignAppeal (obj, { player, id }, { session, state }, info) {
   const data = await state.dbPool('bm_web_appeals')
@@ -49,6 +51,10 @@ module.exports = async function assignAppeal (obj, { player, id }, { session, st
     }, ['id'])
 
     commentId = insertId
+
+    await subscribeAppeal(trx, id, session.playerId)
+    await subscribeAppeal(trx, id, player)
+    await notifyAppeal(trx, getNotificationType('appealAssigned'), id, server.config.id, commentId, session.playerId)
   })
 
   return { appealId: id, commentId }
