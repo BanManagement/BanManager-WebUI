@@ -2,7 +2,8 @@ const ExposedError = require('../../../data/exposed-error')
 const report = require('../queries/report')
 const { fromUnixTime } = require('date-fns')
 const { formatDistanceAbbr } = require('../../utils')
-const { subscribeReport, notifyReport, getNotificationType } = require('../../../data/notification')
+const { getNotificationType } = require('../../../data/notification')
+const { subscribeReport, notifyReport } = require('../../../data/notification/report')
 
 module.exports = async function resolveReportMute (obj, { report: reportId, serverId, input }, { session, state }, info) {
   const server = state.serversPool.get(serverId)
