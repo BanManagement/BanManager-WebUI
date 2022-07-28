@@ -4,7 +4,8 @@ const { unparse } = require('uuid-parse')
 const createApp = require('../app')
 const { createSetup, getAuthPassword, getAccount, setTempRole } = require('./lib')
 const { createPlayer, createMute, createReport } = require('./fixtures')
-const { getUnreadNotificationsCount, getReportWatchers, subscribeReport } = require('../data/notification')
+const { getUnreadNotificationsCount } = require('../data/notification')
+const { getReportWatchers, subscribeReport } = require('../data/notification/report')
 
 describe('Mutation resolveReportMute', () => {
   let setup
