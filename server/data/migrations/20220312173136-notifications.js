@@ -36,7 +36,8 @@ exports.up = async function (db) {
       actor_id: { type: 'binary', length: 16, notNull: false },
       created: { type: 'int', length: 10, notNull: true },
       updated: { type: 'int', length: 10, notNull: true }
-    }
+    },
+    charset: 'utf8'
   })
 
   await db.addIndex('bm_web_notifications', 'bm_web_notifications_player_idx', ['player_id'])
@@ -62,7 +63,8 @@ exports.up = async function (db) {
       is_watching: { type: 'tinyint', length: 1, notNull: true },
       created: { type: 'int', length: 10, notNull: true },
       updated: { type: 'int', length: 10, notNull: true }
-    }
+    },
+    charset: 'utf8'
   })
 
   await db.addIndex('bm_web_report_watchers', 'bm_web_report_watchers_report_server_player_idx', ['report_id', 'server_id', 'player_id'], true)
@@ -87,7 +89,8 @@ exports.up = async function (db) {
       is_watching: { type: 'tinyint', length: 1, notNull: true },
       created: { type: 'int', length: 10, notNull: true },
       updated: { type: 'int', length: 10, notNull: true }
-    }
+    },
+    charset: 'utf8'
   })
 
   await db.addIndex('bm_web_appeal_watchers', 'bm_web_appeal_watchers_appeal_player_idx', ['appeal_id', 'player_id'], true)
