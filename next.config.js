@@ -1,7 +1,6 @@
 const {
   PHASE_DEVELOPMENT_SERVER
 } = require('next/constants')
-const withPlugins = require('next-compose-plugins')
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.BUNDLE_ANALYZE === 'true'
 })
@@ -47,9 +46,11 @@ const nextConfig = (phase) => {
   }
 }
 
-module.exports = (phase, ...rest) => {
-  return withPlugins([
-    [withBundleAnalyzer],
-    [withTM]
-  ], nextConfig(phase))(phase, ...rest)
+module.exports = (phase, { defaultConfig }) => {
+  const plugins = [
+    withBundleAnalyzer,
+    withTM
+  ]
+
+  return plugins.reduce((acc, plugin) => plugin(acc), { ...nextConfig(phase) })
 }
