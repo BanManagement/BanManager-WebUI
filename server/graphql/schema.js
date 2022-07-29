@@ -36,6 +36,7 @@ module.exports = ({ logger }) => {
   schema = sqlTableDirective()(schema)
 
   return {
+    cache: 'bounded',
     debug: false,
     schema,
     validationRules: [depthLimit(10)],
