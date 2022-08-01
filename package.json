@@ -12,8 +12,8 @@
   "dependencies": {
     "@acusti/react-code-input": "3.11.0",
     "@artsy/fresnel": "3.5.0",
-    "@graphql-tools/schema": "8.5.0",
-    "@graphql-tools/utils": "8.8.0",
+    "@graphql-tools/schema": "8.5.1",
+    "@graphql-tools/utils": "8.9.0",
     "@headlessui/react": "1.6.6",
     "@koa/router": "12.0.0",
     "@leichtgewicht/ip-codec": "2.0.4",
