@@ -274,7 +274,7 @@ class SetupCommand extends Command {
       const questions = [{ name: 'id', message: question }]
       const { id } = await inquirer.prompt(questions)
 
-      if (!isUUID(id, 4)) {
+      if (!isUUID(id)) {
         this.log(`Invalid UUID format ${id}`)
         return askPlayer(question, conn, table)
       }
