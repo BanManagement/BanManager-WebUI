@@ -34,6 +34,7 @@ type Server @sqlTable(name: "servers") {
   console: Player! @allowIf(resource: "servers", permission: "manage")
   tables: ServerTables! @allowIf(resource: "servers", permission: "manage")
   timeOffset: Timestamp!
+  stats: ServerStatistics! @allowIf(resource: "servers", permission: "manage")
 }
 
 type ServerTables {
@@ -472,6 +473,13 @@ type Statistics {
   totalActiveMutes: Int!
   totalPlayers: Int!
   totalAppeals: Int!
+}
+
+type ServerStatistics {
+  totalActiveBans: Int!
+  totalActiveMutes: Int!
+  totalReports: Int!
+  totalWarnings: Int!
 }
 
 type PlayerStatistics {

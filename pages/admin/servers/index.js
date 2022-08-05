@@ -14,6 +14,12 @@ export default function Page () {
       servers {
         id
         name
+        stats {
+          totalActiveBans
+          totalActiveMutes
+          totalReports
+          totalWarnings
+        }
       }
     }`
   })
@@ -39,7 +45,7 @@ export default function Page () {
           </a>
         </Link>
       </div>
-      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6'>
+      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6 justify-items-center xl:justify-items-stretch'>
         {items}
       </div>
     </AdminLayout>
