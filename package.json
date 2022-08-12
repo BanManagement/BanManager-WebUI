@@ -24,7 +24,7 @@
     "@oclif/plugin-help": "5.1.12",
     "@universemc/react-palette": "1.0.3",
     "@xstate/react": "3.0.1",
-    "apollo-server-koa": "3.10.0",
+    "apollo-server-koa": "3.10.1",
     "apollo-server-plugin-response-cache": "3.7.0",
     "argon2": "0.28.7",
     "autoprefixer": "10.4.8",
