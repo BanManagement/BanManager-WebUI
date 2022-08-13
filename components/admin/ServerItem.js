@@ -15,10 +15,8 @@ import ErrorMessages from '../ErrorMessages'
 const fullConfig = resolveConfig(tailwindConfig)
 
 const StatItem = ({ onClick, icon, value, selected }) => {
-  console.log(selected)
-
   return (
-    <div onClick={onClick} className={clsx('p-4 mx-2 rounded-md', { 'bg-gray-900': !selected, 'bg-gray-700': selected })}>
+    <div onMouseEnter={onClick} onClick={onClick} className={clsx('p-4 mx-2 rounded-md', { 'bg-gray-900': !selected, 'bg-gray-700': selected })}>
       {icon}
       {value}
     </div>
@@ -94,8 +92,8 @@ export default function ServerItem ({ canDelete, server, onDeleted }) {
         <p className='pb-1'>Related <strong>appeals and roles</strong> will be removed</p>
         <p className='pb-1'>This action cannot be undone</p>
       </Modal>
-      <div className='pt-5 px-5 flex justify-between items-center bg-gray-90'>
-        <h5 className='text-xl font-semibold mb-2'>
+      <div className='pt-5 px-5 flex justify-between items-center'>
+        <h5 className='text-xl font-semibold mb-2 underline'>
           <Link href={`/admin/servers/${server.id}`}>
             {server.name}
           </Link>

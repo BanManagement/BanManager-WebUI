@@ -4,6 +4,7 @@ import { mutate } from 'swr'
 import Favicon from 'react-favicon'
 import Dropdown from './Dropdown'
 import Avatar from './Avatar'
+import Button from './Button'
 import NotificationBadge from './NotificationBadge'
 import { CgProfile } from 'react-icons/cg'
 import { FaPencilAlt } from 'react-icons/fa'
@@ -75,14 +76,16 @@ export default function SessionNavProfile ({ user }) {
       />
       <div className='hidden md:block'>
         <Dropdown
-          trigger={(
-            <>
+          trigger={({ onClickToggle }) => (
+            <Button
+              onClick={onClickToggle}
+            >
               <Avatar width='36' height='36' uuid={user.id} />
               <span className='hidden md:inline-block ml-4'>
                 {user.name}
               </span>
               {data?.unreadNotificationCount > 0 && <NotificationBadge>{data.unreadNotificationCount}</NotificationBadge>}
-            </>
+            </Button>
           )}
         >
           <Dropdown.Item name='Notifications' href='/notifications' icon={<MdOutlineNotifications />}>

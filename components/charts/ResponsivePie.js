@@ -18,18 +18,18 @@ const CenteredMetric = (props) => {
 
         return (
           <text
-              x={centerX}
-              y={centerY}
-              textAnchor='middle'
-              dominantBaseline='central'
-              className='text-white fill-current w-1'
+            x={centerX}
+            y={centerY}
+            textAnchor='middle'
+            dominantBaseline='central'
+            className='text-white fill-current w-1'
           >
             <tspan x={centerX} y={centerY} dy='-0.5em' className='text-2xl font-bold'>{datum.value}</tspan>
             <tspan x={centerX} y={centerY} dy='0.5em' className='text-sm'>{datum.label}</tspan>
           </text>
         )
       }}
-      </PieContext.Consumer>
+    </PieContext.Consumer>
   )
 }
 

@@ -482,6 +482,17 @@ type ServerStatistics {
   totalWarnings: Int!
 }
 
+type ServerPunishmentStats {
+  total: Int!
+  averageLength: Int
+  totalHistory: [ServerPunishmentStatsHistory!]!
+}
+
+type ServerPunishmentStatsHistory {
+  date: Timestamp!
+  value: Int!
+}
+
 type PlayerStatistics {
   totalActiveBans: Int!
   totalActiveMutes: Int!
@@ -541,6 +552,10 @@ type Query {
   servers: [Server!]
   serverTables: [String!]
   server(id: ID!): Server
+  serverBanStats(id: ID!, intervalDays: Int!): ServerPunishmentStats! @allowIf(resource: "servers", permission: "manage")
+  serverMuteStats(id: ID!, intervalDays: Int!): ServerPunishmentStats! @allowIf(resource: "servers", permission: "manage")
+  serverReportStats(id: ID!, intervalDays: Int!): ServerPunishmentStats! @allowIf(resource: "servers", permission: "manage")
+  serverWarningStats(id: ID!, intervalDays: Int!): ServerPunishmentStats! @allowIf(resource: "servers", permission: "manage")
 
   playerBan(id: ID!, serverId: ID!): PlayerBan @allowIf(resource: "player.bans", permission: "view", serverVar: "serverId")
   playerBans(player: UUID!): [PlayerBan!] @allowIf(resource: "player.bans", permission: "view")
