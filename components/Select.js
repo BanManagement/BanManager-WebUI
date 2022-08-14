@@ -20,7 +20,7 @@ const Select = forwardRef(({ options, isLoading, onInputChange, onChange, value,
       onInputChange={onInputChange}
       onChange={onChange}
       defaultValue={defaultValue || setDefaultValue}
-      // value={options.find((option) => (getOptionValue ? getOptionValue(option) : option.value) === value)}
+      value={options.find((option) => (getOptionValue ? getOptionValue(option) : option.value) === value)}
       filterOption={filterOption}
       noOptionsMessage={noOptionsMessage}
       isClearable={isClearable}

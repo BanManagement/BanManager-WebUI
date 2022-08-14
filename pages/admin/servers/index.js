@@ -6,7 +6,7 @@ import AdminLayout from '../../../components/AdminLayout'
 import Button from '../../../components/Button'
 import ServerItem from '../../../components/admin/ServerItem'
 import { useApi } from '../../../utils'
-import PageHeader from '../../../components/PageHeader'
+import AdminHeader from '../../../components/admin/AdminHeader'
 
 export default function Page () {
   const { loading, data, errors, mutate } = useApi({
@@ -14,6 +14,12 @@ export default function Page () {
       servers {
         id
         name
+        stats {
+          totalActiveBans
+          totalActiveMutes
+          totalReports
+          totalWarnings
+        }
       }
     }`
   })
@@ -31,15 +37,16 @@ export default function Page () {
 
   return (
     <AdminLayout title='Servers'>
-      <PageHeader title='Servers' />
-      <div className='w-24 mb-5'>
-        <Link href='/admin/servers/add' passHref>
-          <a>
-            <Button className='bg-emerald-600 hover:bg-emerald-700'><AiOutlinePlus className='text-xl' /> Add</Button>
-          </a>
-        </Link>
-      </div>
-      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6'>
+      <AdminHeader title='Servers'>
+        <div>
+          <Link href='/admin/servers/add' passHref>
+            <a>
+              <Button className='bg-emerald-600 hover:bg-emerald-700 text-sm px-4 py-2'><AiOutlinePlus className='text-xl -ml-1 mr-2' /> Add Server</Button>
+            </a>
+          </Link>
+        </div>
+      </AdminHeader>
+      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6 justify-items-center xl:justify-items-stretch'>
         {items}
       </div>
     </AdminLayout>

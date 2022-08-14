@@ -1,23 +1,19 @@
-import { cloneElement, forwardRef, useRef } from 'react'
+import { cloneElement, createContext, forwardRef, useRef } from 'react'
 import clsx from 'clsx'
 import Link from 'next/link'
 import { useDetectOutsideClick } from '../utils'
-import Button from './Button'
 
-const Dropdown = ({ trigger = '', children }) => {
+const DropdownContext = createContext({ isActive: false, setIsActive: () => {} })
+
+const Dropdown = ({ trigger = () => {}, children }) => {
   const dropdownRef = useRef(null)
   const [isActive, setIsActive] = useDetectOutsideClick(dropdownRef, false)
-  const onClick = () => setIsActive(!isActive)
+  const onClickToggle = () => setIsActive(!isActive)
 
   return (
     <div className='relative inline-block text-left'>
       <div>
-        <Button
-          type='button'
-          onClick={onClick}
-        >
-          {trigger}
-        </Button>
+        {trigger({ onClickToggle })}
       </div>
       <div
         ref={dropdownRef}
@@ -32,7 +28,9 @@ const Dropdown = ({ trigger = '', children }) => {
           aria-orientation='vertical'
           aria-labelledby='options-menu'
         >
-          {children}
+          <DropdownContext.Provider value={{ isActive, setIsActive }}>
+            {children}
+          </DropdownContext.Provider>
         </div>
       </div>
     </div>
@@ -40,25 +38,43 @@ const Dropdown = ({ trigger = '', children }) => {
 }
 
 const Item = ({ href = '', children, name, onClick, icon, className = '' }) => {
-  return (
-    <Link href={href} passHref>
-      <ItemLink name={name} href={href} onClick={onClick} className={className} icon={icon}>{children}</ItemLink>
-    </Link>
-  )
+  if (href) {
+    return (
+      <Link href={href} passHref>
+        <ItemLink name={name} href={href} onClick={onClick} className={className} icon={icon}>{children}</ItemLink>
+      </Link>
+    )
+  } else {
+    return <ItemLink name={name} onClick={onClick} className={className} icon={icon}>{children}</ItemLink>
+  }
 }
 
 // eslint-disable-next-line react/display-name
 const ItemLink = forwardRef(({ name, onClick, href, className, icon, children }, ref) => {
   return (
-    <a href={href} onClick={onClick} ref={ref} className={`flex items-center z-10 px-4 bg-gray-800 py-2 text-md text-gray-100 hover:text-accent-200 hover:bg-gray-600 ${className}`} role='menuitem'>
-      {icon && cloneElement(icon, {
-        className: 'flex-shrink-0 h-6 w-6 mr-4'
-      })}
-      <span className='flex flex-col'>
-        {name}
-      </span>
-      {children}
-    </a>
+    <DropdownContext.Consumer>
+      {({ setIsActive }) => (
+        <a
+          href={href}
+          onClick={(...args) => {
+            setIsActive(false)
+
+            onClick(...args)
+          }}
+          ref={ref}
+          className={`flex cursor-pointer items-center z-10 px-4 bg-gray-800 py-2 text-md text-gray-100 hover:text-accent-200 hover:bg-gray-600 ${className}`}
+          role='menuitem'
+        >
+          {icon && cloneElement(icon, {
+            className: 'flex-shrink-0 h-6 w-6 mr-4'
+          })}
+          <span className='flex flex-col'>
+            {name}
+          </span>
+          {children}
+        </a>
+      )}
+    </DropdownContext.Consumer>
   )
 })
 

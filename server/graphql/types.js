@@ -34,6 +34,7 @@ type Server @sqlTable(name: "servers") {
   console: Player! @allowIf(resource: "servers", permission: "manage")
   tables: ServerTables! @allowIf(resource: "servers", permission: "manage")
   timeOffset: Timestamp!
+  stats: ServerStatistics! @allowIf(resource: "servers", permission: "manage")
 }
 
 type ServerTables {
@@ -54,6 +55,35 @@ type Player @sqlTable(name: "players") {
   ip: IPAddress @allowIf(resource: "player.ips", permission: "view")
   lastSeen: Timestamp! @cacheControl(scope: PUBLIC, maxAge: 300)
   server: Server!
+}
+
+type PlayerActivityList {
+  records: [PlayerActivity!]!
+}
+
+enum PlayerActivityType {
+  BAN
+  UNBAN
+  MUTE
+  UNMUTE
+  IPMUTE
+  IPUNMUTE
+  IPBAN
+  IPUNBAN
+  IPRANGEBAN
+  IPRANGEUNBAN
+  NOTE
+  WARNING
+}
+
+type PlayerActivity {
+  actor: Player!
+  player: Player
+  fromIp: IPAddress
+  toIp: IPAddress
+  created: Timestamp!
+  type: PlayerActivityType!
+  reason: String
 }
 
 type User @sqlTable(name: "users") {
@@ -474,6 +504,24 @@ type Statistics {
   totalAppeals: Int!
 }
 
+type ServerStatistics {
+  totalActiveBans: Int!
+  totalActiveMutes: Int!
+  totalReports: Int!
+  totalWarnings: Int!
+}
+
+type ServerPunishmentStats {
+  total: Int!
+  averageLength: Int
+  totalHistory: [ServerPunishmentStatsHistory!]!
+}
+
+type ServerPunishmentStatsHistory {
+  date: Timestamp!
+  value: Int!
+}
+
 type PlayerStatistics {
   totalActiveBans: Int!
   totalActiveMutes: Int!
@@ -533,6 +581,10 @@ type Query {
   servers: [Server!]
   serverTables: [String!]
   server(id: ID!): Server
+  serverBanStats(id: ID!, intervalDays: Int!): ServerPunishmentStats! @allowIf(resource: "servers", permission: "manage")
+  serverMuteStats(id: ID!, intervalDays: Int!): ServerPunishmentStats! @allowIf(resource: "servers", permission: "manage")
+  serverReportStats(id: ID!, intervalDays: Int!): ServerPunishmentStats! @allowIf(resource: "servers", permission: "manage")
+  serverWarningStats(id: ID!, intervalDays: Int!): ServerPunishmentStats! @allowIf(resource: "servers", permission: "manage")
 
   playerBan(id: ID!, serverId: ID!): PlayerBan @allowIf(resource: "player.bans", permission: "view", serverVar: "serverId")
   playerBans(player: UUID!): [PlayerBan!] @allowIf(resource: "player.bans", permission: "view")
@@ -586,6 +638,8 @@ type Query {
 
   unreadNotificationCount: Int! @allowIfLoggedIn
   listNotifications(limit: Int = 25, offset: Int = 0): NotificationList! @allowIfLoggedIn
+
+  playerActivity(serverId: ID!, actor: UUID, createdStart: Timestamp, createdEnd: Timestamp, limit: Int = 100, types: [PlayerActivityType!]!): PlayerActivityList! @allowIf(resource: "servers", permission: "manage")
 }
 
 input CreatePlayerNoteInput {

@@ -44,6 +44,12 @@ describe('Query servers', () => {
             ${tables.join(EOL)}
           }
           timeOffset
+          stats {
+            totalActiveBans
+            totalActiveMutes
+            totalReports
+            totalWarnings
+          }
         }
       }`
       })
@@ -66,6 +72,10 @@ describe('Query servers', () => {
     assert.strictEqual(serverData.console.id, unparse(server.console))
     assert.deepStrictEqual(serverData.tables, server.tables)
     assert.strictEqual(serverData.timeOffset, 0)
+    assert.strictEqual(serverData.stats.totalActiveBans, 0)
+    assert.strictEqual(serverData.stats.totalActiveMutes, 0)
+    assert.strictEqual(serverData.stats.totalReports, 0)
+    assert.strictEqual(serverData.stats.totalWarnings, 0)
   })
 
   test('should error on protected fields', async () => {
@@ -88,6 +98,12 @@ describe('Query servers', () => {
             ${tables.join(EOL)}
           }
           timeOffset
+          stats {
+            totalActiveBans
+            totalActiveMutes
+            totalReports
+            totalWarnings
+          }
         }
       }`
       })

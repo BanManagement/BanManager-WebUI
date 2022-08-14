@@ -1,9 +1,9 @@
 import { useRouter } from 'next/router'
-import AdminLayout from '../../../components/AdminLayout'
-import ErrorLayout from '../../../components/ErrorLayout'
-import Loader from '../../../components/Loader'
-import { useApi } from '../../../utils'
-import ServerForm from '../../../components/admin/ServerForm'
+import AdminLayout from '../../../../components/AdminLayout'
+import ErrorLayout from '../../../../components/ErrorLayout'
+import Loader from '../../../../components/Loader'
+import { useApi } from '../../../../utils'
+import ServerForm from '../../../../components/admin/ServerForm'
 
 export default function Page () {
   const router = useRouter()
@@ -69,7 +69,7 @@ export default function Page () {
         query={query}
         serverTables={data.serverTables}
         parseVariables={(input) => ({ id, input })}
-        onFinished={() => router.push('/admin/servers')}
+        onFinished={() => router.push(`/admin/servers/${id}`)}
       />
     </AdminLayout>
   )

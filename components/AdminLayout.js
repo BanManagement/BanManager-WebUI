@@ -103,9 +103,9 @@ const AdminLayout = ({ children, title }) => {
                 </div>
               </div>
               <div className='flex flex-col w-full md:space-y-4'>
-                <header className='w-full h-16 z-40 hidden md:flex items-center justify-between'>
-                  <div className='relative z-20 flex flex-col justify-end h-full px-3 md:w-full'>
-                    <div className='relative p-1 flex items-center w-full space-x-4 justify-end top-4'>
+                <header className='w-full h-24 z-40 hidden md:flex items-center justify-between bg-primary-900 border-b border-gray-800'>
+                  <div className='z-20 flex flex-col justify-end h-full p-3 md:w-full'>
+                    <div className='p-1 flex items-center w-full space-x-4 justify-end top-4'>
                       <SessionNavProfile key='session-nav-profile' user={user} />
                     </div>
                   </div>

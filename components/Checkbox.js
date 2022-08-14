@@ -5,13 +5,14 @@ import clsx from 'clsx'
 const Checkbox = forwardRef((props, ref) => {
   const {
     id,
+    inputClassName = '',
     className = '',
     placeholder = '',
     label = '',
     onChange = () => {},
     ...rest
   } = props
-  const inputClass = clsx(`
+  const checkboxClass = clsx(`
     form-tick
     appearance-none
     bg-black
@@ -23,7 +24,9 @@ const Checkbox = forwardRef((props, ref) => {
     rounded-md
     checked:bg-accent-500
     checked:border-transparent
-    focus:outline-none`
+    focus:outline-none
+    ${inputClassName}
+    `
   )
 
   const handleChange = (e) => {
@@ -36,7 +39,7 @@ const Checkbox = forwardRef((props, ref) => {
         <input
           ref={ref}
           type='checkbox'
-          className={inputClass}
+          className={checkboxClass}
           id={id}
           placeholder={placeholder}
           onChange={handleChange}
