@@ -8,23 +8,30 @@ import { currentVersion } from '../../utils'
 export async function getStaticProps () {
   const version = currentVersion()
 
+  let newFeatures = []
+  let fixes = []
   let latestVersion = 'unknown'
-  let response
 
-  if (/\b([a-f0-9]{40})\b/.test(version)) {
-    response = await fetch(`https://api.github.com/repos/BanManagement/BanManager-WebUI/compare/${version}...master`)
-  } else {
-    response = await fetch('https://api.github.com/repos/BanManagement/BanManager-WebUI/commits/master')
+  try {
+    let response
+
+    if (/\b([a-f0-9]{40})\b/.test(version)) {
+      response = await fetch(`https://api.github.com/repos/BanManagement/BanManager-WebUI/compare/${version}...master`)
+    } else {
+      response = await fetch('https://api.github.com/repos/BanManagement/BanManager-WebUI/commits/master')
+    }
+
+    const data = await response.json()
+
+    if (data?.commits?.length) {
+      latestVersion = data.commits[data.commits.length - 1].sha
+    }
+
+    newFeatures = data.commits.filter(({ commit }) => commit.message.startsWith('feat:'))
+    fixes = data.commits.filter(({ commit }) => commit.message.startsWith('fix:'))
+  } catch (e) {
+    console.error(e)
   }
-
-  const data = await response.json()
-
-  if (data?.commits?.length) {
-    latestVersion = data.commits[data.commits.length - 1].sha
-  }
-
-  const newFeatures = data.commits.filter(({ commit }) => commit.message.startsWith('feat:'))
-  const fixes = data.commits.filter(({ commit }) => commit.message.startsWith('fix:'))
 
   return { props: { latestVersion, version, newFeatures, fixes }, revalidate: 3600 }
 }
