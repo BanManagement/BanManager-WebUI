@@ -11,6 +11,8 @@ import tailwindConfig from '../../tailwind.config'
 import Modal from '../Modal'
 import { useMutateApi } from '../../utils'
 import ErrorMessages from '../ErrorMessages'
+import Message from '../Message'
+import Input from '../Input'
 
 const fullConfig = resolveConfig(tailwindConfig)
 
@@ -25,6 +27,7 @@ const StatItem = ({ onClick, icon, value, selected }) => {
 
 export default function ServerItem ({ canDelete, server, onDeleted }) {
   const [open, setOpen] = useState(false)
+  const [confirmValue, setConfirmValue] = useState('')
   const { load, loading, errors, data } = useMutateApi({
     query: `mutation deleteServer($id: ID!) {
         deleteServer(id: $id)
@@ -45,9 +48,13 @@ export default function ServerItem ({ canDelete, server, onDeleted }) {
     setOpen(true)
   }
   const handleConfirmDelete = async () => {
+    setConfirmValue('')
     await load({ id: server.id })
   }
-  const handleDeleteCancel = () => setOpen(false)
+  const handleDeleteCancel = () => {
+    setConfirmValue('')
+    setOpen(false)
+  }
 
   const chartData = [
     {
@@ -82,15 +89,28 @@ export default function ServerItem ({ canDelete, server, onDeleted }) {
         icon={<AiOutlineWarning className='h-6 w-6 text-red-600' aria-hidden='true' />}
         title='Delete server'
         confirmButton='Delete'
+        confirmDisabled={confirmValue !== server.name}
         open={open}
         onConfirm={handleConfirmDelete}
         onCancel={handleDeleteCancel}
         loading={loading}
       >
         <ErrorMessages errors={errors} />
-        <p className='pb-1'>Are you sure you want to delete this server?</p>
-        <p className='pb-1'>Related <strong>appeals and roles</strong> will be removed</p>
-        <p className='pb-1'>This action cannot be undone</p>
+        <Message warning>
+          <Message.Header>Warning</Message.Header>
+          <Message.List>
+            <Message.Item>Related <strong>appeals and roles</strong> will be removed</Message.Item>
+            <Message.Item>This action cannot be undone</Message.Item>
+          </Message.List>
+        </Message>
+        <p className='mb-4'>Please type <strong>{server.name}</strong> to confirm</p>
+        <Input
+          onChange={(e, { value }) => setConfirmValue(value)}
+          placeholder='Type server name'
+          className='mb-0'
+          inputClassName='border border-gray-900'
+          required
+        />
       </Modal>
       <div className='pt-5 px-5 flex justify-between items-center'>
         <h5 className='text-xl font-semibold mb-2 underline'>

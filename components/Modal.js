@@ -2,7 +2,7 @@ import { Dialog, Transition } from '@headlessui/react'
 import { Fragment, useRef } from 'react'
 import clsx from 'clsx'
 
-export default function Modal ({ open = false, icon, title, children, confirmButton, onCancel, onConfirm, loading }) {
+export default function Modal ({ open = false, icon, title, children, confirmButton, confirmDisabled, onCancel, onConfirm, loading }) {
   const cancelButtonRef = useRef(null)
   const onClose = () => {
     onCancel()
@@ -57,8 +57,9 @@ export default function Modal ({ open = false, icon, title, children, confirmBut
               <div className='bg-gray-900 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse'>
                 <button
                   type='button'
-                  className='w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm'
+                  className='w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed sm:ml-3 sm:w-auto sm:text-sm'
                   onClick={onConfirm}
+                  disabled={confirmDisabled}
                 >
                   {loading && <div className='loader -ml-1 mr-3 h-5 w-5' />}
                   {confirmButton}
