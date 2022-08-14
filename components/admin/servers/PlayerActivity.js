@@ -108,16 +108,16 @@ const ActivityRow = ({ row }) => {
             </Link>
           </div>
         </div>
-        <div className='flex-auto flex-wrap space-y-1 pl-3'>
+        <div className='flex-auto flex-wrap space-y-2 pl-3 py-2'>
           <div className='flex break-words justify-between text-sm'>
-            <span>
+            <span className='self-center'>
               <Link href={`/player/${row.actor.id}`}><a className='underline'>{row.actor.name}</a></Link>
             </span>
             <span>
               <ActivityBadge type={row.type} />
             </span>
           </div>
-          <div className=''>
+          <div className='pt-2'>
             {message} {row?.player?.id && <Link href={`/player/${row?.player?.id}`}><a className='underline'>{row?.player?.name}</a></Link>} {row.reason && <code className='bg-primary-900 ml-1 p-1 text-sm text-accent-500'>{row.reason}</code>}
           </div>
           <div>
