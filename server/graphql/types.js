@@ -57,6 +57,35 @@ type Player @sqlTable(name: "players") {
   server: Server!
 }
 
+type PlayerActivityList {
+  records: [PlayerActivity!]!
+}
+
+enum PlayerActivityType {
+  BAN
+  UNBAN
+  MUTE
+  UNMUTE
+  IPMUTE
+  IPUNMUTE
+  IPBAN
+  IPUNBAN
+  IPRANGEBAN
+  IPRANGEUNBAN
+  NOTE
+  WARNING
+}
+
+type PlayerActivity {
+  actor: Player!
+  player: Player
+  fromIp: IPAddress
+  toIp: IPAddress
+  created: Timestamp!
+  type: PlayerActivityType!
+  reason: String
+}
+
 type User @sqlTable(name: "users") {
   id: UUID! @sqlColumn(name: "player_id")
   email: String @allowIf(resource: "servers", permission: "manage")
@@ -609,6 +638,8 @@ type Query {
 
   unreadNotificationCount: Int! @allowIfLoggedIn
   listNotifications(limit: Int = 25, offset: Int = 0): NotificationList! @allowIfLoggedIn
+
+  playerActivity(serverId: ID!, actor: UUID, createdStart: Timestamp, createdEnd: Timestamp, limit: Int = 100, types: [PlayerActivityType!]!): PlayerActivityList! @allowIf(resource: "servers", permission: "manage")
 }
 
 input CreatePlayerNoteInput {

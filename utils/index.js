@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { GraphQLClient } from 'graphql-request'
 import { useRouter } from 'next/router'
 import { formatDistanceStrict, fromUnixTime } from 'date-fns'
@@ -263,4 +263,13 @@ export const numberFormatter = (num, digits) => {
   })
 
   return item ? (num / item.value).toFixed(digits).replace(rx, '$1') + item.symbol : '0'
+}
+
+export const useToggle = (initialValue = false) => {
+  const [value, setValue] = useState(initialValue)
+  const toggle = useCallback(() => {
+    setValue(v => !v)
+  }, [])
+
+  return [value, toggle]
 }

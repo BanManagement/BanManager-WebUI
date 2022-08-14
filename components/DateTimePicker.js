@@ -3,7 +3,7 @@ import Datetime from '@nateradebaugh/react-datetime'
 import clsx from 'clsx'
 
 // eslint-disable-next-line react/display-name
-const DateTimePicker = forwardRef(({ className, ...rest }, ref) => {
+const DateTimePicker = forwardRef(({ className = '', ...rest }, ref) => {
   const inputClass = clsx(`
     flex-1
     appearance-none

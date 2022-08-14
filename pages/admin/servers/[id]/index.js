@@ -10,6 +10,7 @@ import ServerBanStats from '../../../../components/admin/servers/stats/ServerBan
 import ServerMuteStats from '../../../../components/admin/servers/stats/ServerMuteStats'
 import ServerReportStats from '../../../../components/admin/servers/stats/ServerReportStats'
 import ServerWarningStats from '../../../../components/admin/servers/stats/ServerWarningStats'
+import PlayerActivity from '../../../../components/admin/servers/PlayerActivity'
 
 export default function Page () {
   const router = useRouter()
@@ -45,6 +46,11 @@ export default function Page () {
         <ServerMuteStats server={data.server} />
         <ServerReportStats server={data.server} />
         <ServerWarningStats server={data.server} />
+      </div>
+      <div className='mt-8'>
+        <div>
+          <PlayerActivity server={data.server} />
+        </div>
       </div>
     </AdminLayout>
   )
