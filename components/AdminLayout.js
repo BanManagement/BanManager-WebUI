@@ -3,8 +3,9 @@ import Link from 'next/link'
 import { useRouter, withRouter } from 'next/router'
 import clsx from 'clsx'
 import { BiServer } from 'react-icons/bi'
-import { MdOutlineGroups, MdOutlineExitToApp } from 'react-icons/md'
+import { MdOutlineGroups, MdOutlineExitToApp, MdOutlineNotifications, MdLogout, MdSettings } from 'react-icons/md'
 import { AiOutlineLayout } from 'react-icons/ai'
+import Avatar from './Avatar'
 import Loader from './Loader'
 import ErrorLayout from './ErrorLayout'
 import Nav from './Nav'
@@ -62,7 +63,7 @@ const AdminLayout = ({ children, title }) => {
           <main className='h-screen overflow-hidden relative'>
             <div className='flex items-start justify-between'>
               <div className='h-screen hidden lg:block shadow-lg relative w-80'>
-                <div className='h-full bg-primary-900'>
+                <div className='h-full bg-primary-900 flex flex-col'>
                   <div className='pt-6 ml-8'>
                     <div className='font-bold text-xl flex w-full'>
                       <span className='mx-4'>
@@ -73,8 +74,8 @@ const AdminLayout = ({ children, title }) => {
                       </Link>
                     </div>
                   </div>
-                  <nav className='mt-6'>
-                    <div>
+                  <nav className='mt-6 h-screen flex flex-col justify-between'>
+                    <div className='h-full'>
                       {left.map(({ href, name, label }) => {
                         const className = clsx('hover:text-accent-200 flex transition-colors text-gray-100 text-xl p-2 my-4', {
                           'border-l-4 border-accent-500': router.asPath === href
@@ -99,18 +100,43 @@ const AdminLayout = ({ children, title }) => {
                         )
                       })}
                     </div>
+                    <div className='h-1/5 flex flex-col'>
+                      <div className='flex-grow'>
+                        <div className='flex px-4'>
+                          <Link href={`/player/${user.id}`}>
+                            <a className='flex'>
+                              <Avatar width='36' height='36' uuid={user.id} />
+                              <div className='ml-4 text-sm'>
+                                <div>{user.name}</div>
+                                <div>View Profile</div>
+                              </div>
+                            </a>
+                          </Link>
+                        </div>
+                      </div>
+                      <div className='flex justify-evenly py-3 bg-gray-800'>
+                        <Link href='/notifications'>
+                          <a title='Notifications'>
+                            <MdOutlineNotifications className='w-6 h-6' />
+                          </a>
+                        </Link>
+                        <Link href='/account'>
+                          <a title='Settings'>
+                            <MdSettings className='w-6 h-6' />
+                          </a>
+                        </Link>
+                        <Link href='/dashboard'>
+                          <a title='Return'>
+                            <MdLogout className='w-6 h-6' />
+                          </a>
+                        </Link>
+                      </div>
+                    </div>
                   </nav>
                 </div>
               </div>
               <div className='flex flex-col w-full md:space-y-4'>
-                <header className='w-full h-24 z-40 hidden md:flex items-center justify-between bg-primary-900 border-b border-gray-800'>
-                  <div className='z-20 flex flex-col justify-end h-full p-3 md:w-full'>
-                    <div className='p-1 flex items-center w-full space-x-4 justify-end top-4'>
-                      <SessionNavProfile key='session-nav-profile' user={user} />
-                    </div>
-                  </div>
-                </header>
-                <div className='overflow-auto h-screen pb-24 px-4 md:px-6'>
+                <div className='overflow-auto h-screen pb-24 pt-4 px-4 md:px-6'>
                   {children}
                 </div>
               </div>
