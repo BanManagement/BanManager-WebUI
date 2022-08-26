@@ -33,7 +33,7 @@ export const absoluteUrl = (req, localhostAddress = 'localhost:3000') => {
   }
 }
 
-const graphQLClient = new GraphQLClient('/graphql', {
+const graphQLClient = new GraphQLClient(process.env.BASE_PATH + '/graphql', {
   credentials: 'include'
 })
 
@@ -116,7 +116,7 @@ export const useMatchMutate = () => {
 }
 
 const userFetcher = () =>
-  fetch('/graphql', {
+  fetch(process.env.BASE_PATH + '/graphql', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     credentials: 'include',

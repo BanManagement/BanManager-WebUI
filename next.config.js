@@ -36,13 +36,15 @@ const nextConfig = (phase) => {
       return {
         GIT_COMMIT: version,
         IS_DEV: phase === PHASE_DEVELOPMENT_SERVER,
-        SERVER_FOOTER_NAME: process.env.SERVER_FOOTER_NAME || 'Missing SERVER_FOOTER_NAME env var'
+        SERVER_FOOTER_NAME: process.env.SERVER_FOOTER_NAME || 'Missing SERVER_FOOTER_NAME env var',
+        BASE_PATH: process.env.BASE_PATH || ''
       }
     })(),
     poweredByHeader: false,
     images: {
       domains: ['crafatar.com']
-    }
+    },
+    basePath: process.env.BASE_PATH || ''
   }
 }
 
