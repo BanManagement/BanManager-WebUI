@@ -29,7 +29,7 @@
     "@xstate/react": "3.0.1",
     "apollo-server-koa": "3.10.1",
     "apollo-server-plugin-response-cache": "3.7.0",
-    "argon2": "0.28.7",
+    "argon2": "0.29.1",
     "autoprefixer": "10.4.8",
     "clsx": "1.2.1",
     "dataloader": "2.1.0",
