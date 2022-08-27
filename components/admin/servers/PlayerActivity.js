@@ -11,7 +11,7 @@ import Checkbox from '../../Checkbox'
 import Loader from '../../Loader'
 import Avatar from '../../Avatar'
 import { useApi } from '../../../utils'
-import { Time, TimeFromNow } from '../../Time'
+import { Time, TimeDuration, TimeFromNow } from '../../Time'
 import PlayerSelector from '../PlayerSelector'
 import DateTimePicker from '../../DateTimePicker'
 import Button from '../../Button'
@@ -28,6 +28,7 @@ const query = `
         fromIp
         toIp
         reason
+        expired
         player {
           id
           name
@@ -54,46 +55,58 @@ const types = [
   'WARNING'
 ]
 
-const ActivityRow = ({ row }) => {
-  let message = ''
+const ActivityRow = ({ row, index }) => {
+  const message = []
 
   switch (row.type) {
     case 'BAN':
-      message = 'Banned'
+      message.push('Banned')
       break
     case 'IPBAN':
-      message = `Banned ${row.fromIp}`
+      message.push(`Banned ${row.fromIp}`)
       break
     case 'UNBAN':
-      message = 'Unbanned'
+      message.push('Unbanned')
       break
     case 'UNBANIP':
-      message = `Unbanned ${row.fromIp}`
+      message.push(`Unbanned ${row.fromIp}`)
       break
     case 'IPRANGEBAN':
-      message = `Banned ${row.fromIp} - ${row.toIp}`
+      message.push(`Banned ${row.fromIp} - ${row.toIp}`)
       break
     case 'IPRANGEUNBAN':
-      message = `Unbanned ${row.fromIp} - ${row.toIp}`
+      message.push(`Unbanned ${row.fromIp} - ${row.toIp}`)
       break
     case 'MUTE':
-      message = 'Muted'
+      message.push('Muted')
       break
     case 'IPMUTE':
-      message = `Muted ${row.fromIp}`
+      message.push(`Muted ${row.fromIp}`)
       break
     case 'UNMUTE':
-      message = 'Unmuted'
+      message.push('Unmuted')
       break
     case 'IPUNMUTE':
-      message = `Unmuted ${row.fromIp}`
+      message.push(`Unmuted ${row.fromIp}`)
       break
     case 'WARNING':
-      message = 'Warned'
+      message.push('Warned')
       break
     case 'NOTE':
-      message = 'Created a note for'
+      message.push('Created a note for')
       break
+  }
+
+  if (row?.player?.id) {
+    message.push(<Link key={'player' + index + row.type + row.created} href={`/player/${row?.player?.id}`}><a className='underline'>{row?.player?.name}</a></Link>)
+  }
+
+  if (row?.expired && row?.expired !== 0 && !row?.type?.startsWith('UN')) {
+    message.push(<span key={'expired' + index + row.type + row.created}>for <span className='text-gray-400'><TimeDuration startTimestamp={row.created} endTimestamp={row.expired} /></span></span>)
+  }
+
+  if (row?.reason) {
+    message.push(<code key={'reason' + index + row.type + row.created} className='bg-primary-900 ml-1 p-1 text-sm text-accent-500'>{row.reason}</code>)
   }
 
   return (
@@ -114,11 +127,11 @@ const ActivityRow = ({ row }) => {
               <Link href={`/player/${row.actor.id}`}><a className='underline'>{row.actor.name}</a></Link>
             </span>
             <span>
-              <ActivityBadge type={row.type} />
+              <ActivityBadge type={row.type} temporary={row?.expired !== 0} />
             </span>
           </div>
           <div className='pt-2'>
-            {message} {row?.player?.id && <Link href={`/player/${row?.player?.id}`}><a className='underline'>{row?.player?.name}</a></Link>} {row.reason && <code className='bg-primary-900 ml-1 p-1 text-sm text-accent-500'>{row.reason}</code>}
+            {message.reduce((prev, curr) => [prev, ' ', curr])}
           </div>
           <div>
             <TimeFromNow timestamp={row.created} />
@@ -329,7 +342,7 @@ export default function PlayerActivity ({ server }) {
           {errors && <ErrorMessages errors={errors} />}
           {loading
             ? <Loader />
-            : data?.playerActivity?.records?.map((row, i) => (<ActivityRow row={row} key={i} />))}
+            : data?.playerActivity?.records?.map((row, i) => (<ActivityRow row={row} key={i} index={i} />))}
         </div>
       </div>
     </>

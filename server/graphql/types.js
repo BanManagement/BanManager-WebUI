@@ -82,6 +82,7 @@ type PlayerActivity {
   fromIp: IPAddress
   toIp: IPAddress
   created: Timestamp!
+  expired: Timestamp
   type: PlayerActivityType!
   reason: String
 }

@@ -1,4 +1,4 @@
-import { format, fromUnixTime } from 'date-fns'
+import { format, formatDistance, formatDuration, formatISODuration, fromUnixTime, intervalToDuration } from 'date-fns'
 import { fromNow, useToggle } from '../utils'
 
 export function TimeFromNow ({ timestamp }) {
@@ -25,6 +25,24 @@ export function Time ({ timestamp }) {
     <time
       dateTime={fromUnixTime(timestamp).toISOString()}
       title={formatted}
+    >
+      {formatted}
+    </time>
+  )
+}
+
+export function TimeDuration ({ startTimestamp, endTimestamp }) {
+  const duration = intervalToDuration({
+    start: fromUnixTime(startTimestamp),
+    end: fromUnixTime(endTimestamp)
+  })
+  const exactFormatted = formatDuration(duration)
+  const formatted = formatDistance(fromUnixTime(startTimestamp), fromUnixTime(endTimestamp))
+
+  return (
+    <time
+      dateTime={formatISODuration(duration)}
+      title={exactFormatted}
     >
       {formatted}
     </time>
