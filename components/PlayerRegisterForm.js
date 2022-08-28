@@ -16,7 +16,7 @@ export default function PlayerRegisterForm ({ onSuccess, onSkip }) {
     }
 
     try {
-      const response = await fetch('/api/register',
+      const response = await fetch(process.env.BASE_PATH + '/api/register',
         {
           method: 'POST',
           body: JSON.stringify(data),

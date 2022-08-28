@@ -13,7 +13,7 @@ export default function PlayerLoginPasswordForm ({ onSuccess }) {
 
   const onSubmit = async (data) => {
     try {
-      const response = await fetch('/api/session',
+      const response = await fetch(process.env.BASE_PATH + '/api/session',
         {
           method: 'POST',
           body: JSON.stringify(data),
