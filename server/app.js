@@ -28,7 +28,7 @@ module.exports = async function ({ dbPool, logger, serversPool, disableUI = fals
   }
 
   const server = new Koa()
-  const router = new Router()
+  const router = new Router({ prefix: process.env.BASE_PATH || undefined })
   const apolloServer = new ApolloServer(schema({ dbPool, logger, serversPool }))
 
   server.keys = [process.env.SESSION_KEY]
@@ -80,7 +80,7 @@ module.exports = async function ({ dbPool, logger, serversPool, disableUI = fals
 
   await apolloServer.start()
 
-  router.use(apolloServer.getMiddleware())
+  router.use(apolloServer.getMiddleware({ path: (process.env.BASE_PATH || '') + '/graphql' }))
 
   if (handle) {
     router.all('(.*)', async ctx => {

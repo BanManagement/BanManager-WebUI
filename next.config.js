@@ -7,6 +7,8 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 const withTM = require('next-transpile-modules')(['lodash-es'])
 const { GitRevisionPlugin } = require('git-revision-webpack-plugin')
 
+const basePath = process.env.BASE_PATH || ''
+
 const nextConfig = (phase) => {
   return {
     webpack (config) {
@@ -37,14 +39,14 @@ const nextConfig = (phase) => {
         GIT_COMMIT: version,
         IS_DEV: phase === PHASE_DEVELOPMENT_SERVER,
         SERVER_FOOTER_NAME: process.env.SERVER_FOOTER_NAME || 'Missing SERVER_FOOTER_NAME env var',
-        BASE_PATH: process.env.BASE_PATH || ''
+        BASE_PATH: basePath
       }
     })(),
     poweredByHeader: false,
     images: {
       domains: ['crafatar.com']
     },
-    basePath: process.env.BASE_PATH || ''
+    basePath
   }
 }
 
