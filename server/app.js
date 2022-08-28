@@ -80,7 +80,7 @@ module.exports = async function ({ dbPool, logger, serversPool, disableUI = fals
 
   await apolloServer.start()
 
-  router.use(apolloServer.getMiddleware())
+  router.use(apolloServer.getMiddleware({ path: (process.env.BASTE_PATH || '') + '/graphql' }))
 
   if (handle) {
     router.all('(.*)', async ctx => {
