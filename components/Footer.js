@@ -5,6 +5,7 @@ const query = `
   query settings {
     settings {
       serverFooterName
+      additionalFooterText
     }
   }`
 
@@ -23,7 +24,11 @@ export default function Footer () {
           <Image src={process.env.BASE_PATH + '/images/banmanager-icon.png'} width='35' height='35' />
           <span className='ml-3 text-xl text-white'>{data?.settings?.serverFooterName || 'Powered by BanManager'}</span>
         </a>
-        <p className='text-sm text-gray-200 sm:ml-4 sm:pl-4 sm:border-l-2 sm:border-gray-200 sm:py-2 sm:mt-0 mt-4'>&copy; {currentYear}
+        <p className='text-sm text-gray-200 sm:ml-4 sm:pl-4 sm:border-l-2 sm:border-gray-200 sm:py-2 sm:mt-0 mt-4'>
+          &copy; {currentYear}
+        </p>
+        <p className='text-sm text-gray-200 sm:pl-4 sm:py-2 sm:mt-0 mt-4'>
+          {data?.settings?.additionalFooterText}
         </p>
       </div>
     </footer>

@@ -534,6 +534,7 @@ type PlayerStatistics {
 
 type Settings {
   serverFooterName: String!
+  additionalFooterText: String!
 }
 
 type NotificationList {
