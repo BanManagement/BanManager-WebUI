@@ -36,7 +36,7 @@
     "date-fns": "2.29.2",
     "db-migrate": "1.0.0-beta.18",
     "db-migrate-mysql": "2.2.0",
-    "dotenv": "16.0.1",
+    "dotenv": "16.0.2",
     "edit-dotenv": "1.0.4",
     "es6-dynamic-template": "2.0.0",
     "git-revision-webpack-plugin": "5.0.0",
