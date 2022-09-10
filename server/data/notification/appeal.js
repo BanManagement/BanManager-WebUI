@@ -1,5 +1,5 @@
 const { unparse } = require('uuid-parse')
-const { getNotificationState, generateNotificationId } = require('./')
+const { getNotificationState, generateNotificationId, getNotificationType } = require('./')
 const { hasPermission, loadPermissionValues, loadPlayerResourceValues } = require('../permissions')
 
 const subscribeAppeal = async (dbPool, appealId, playerId) => {
@@ -81,13 +81,61 @@ const getAppealSubscription = async (dbPool, appealId, playerId) => {
   return data
 }
 
+const notifyRuleGroups = async (dbPool, type, id, serverId, commentId, actorId) => {
+  const roles = await dbPool('bm_web_notification_rules')
+    .select('role_id')
+    .leftJoin('bm_web_notification_rule_roles AS r', 'bm_web_notification_rules.id', 'r.notification_rule_id')
+    .where('type', type)
+    .andWhere(builder => {
+      builder
+        .where('server_id', '=', serverId)
+        .orWhereNull('server_id')
+    })
+
+  if (!roles.length) return
+
+  const roleIds = roles.map(role => role.role_id)
+  const players = await dbPool.select('player_id')
+    .from(function () {
+      this.unionAll([
+        dbPool
+          .select('player_id')
+          .from('bm_web_player_roles')
+          .whereIn('role_id', roleIds),
+        dbPool
+          .select('player_id')
+          .from('bm_web_player_server_roles')
+          .whereIn('role_id', roleIds)
+          .andWhere('server_id', serverId)
+      ], true)
+        .as('subquery')
+    })
+    .groupBy('player_id')
+
+  if (!players.length) return
+
+  const playerIds = players.map(player => player.player_id)
+
+  switch (type) {
+    case 'APPEAL_CREATED':
+      return notifyAppealPlayers(dbPool, getNotificationType('appealCreated'), id, serverId, commentId, actorId, playerIds)
+
+    default:
+      throw Error(`Unknown notification rule type ${type}`)
+  }
+}
+
 const notifyAppeal = async (dbPool, type, appealId, serverId, commentId, actorId) => {
+  const players = await getAppealWatchers(dbPool, appealId)
+
+  notifyAppealPlayers(dbPool, type, appealId, serverId, commentId, actorId, players)
+}
+
+const notifyAppealPlayers = async (dbPool, type, appealId, serverId, commentId, actorId, players) => {
   const [data] = await dbPool('bm_web_appeals')
     .select('actor_id', 'assignee_id')
     .where({ id: appealId })
   const permissionValues = await loadPermissionValues(dbPool)
-
-  let players = await getAppealWatchers(dbPool, appealId)
 
   if (actorId) {
     players = players.filter(id => !id.equals(actorId))
@@ -133,6 +181,7 @@ module.exports = {
   getAppealWatchers,
   getAppealSubscription,
   notifyAppeal,
+  notifyRuleGroups,
   subscribeAppeal,
   unsubscribeAppeal
 }

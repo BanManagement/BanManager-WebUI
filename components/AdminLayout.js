@@ -15,7 +15,8 @@ import { useApi, useUser } from '../utils'
 const icons = {
   'Page Layouts': <AiOutlineLayout />,
   Roles: <MdOutlineGroups />,
-  Servers: <BiServer />
+  Servers: <BiServer />,
+  'Notification Rules': <MdOutlineNotifications />
 }
 
 const AdminLayout = ({ children, title }) => {
@@ -87,7 +88,7 @@ const AdminLayout = ({ children, title }) => {
                               <span className='mx-4 text-base m-auto font-normal'>
                                 {name}
                               </span>
-                              {label &&
+                              {label !== null &&
                                 <span className='flex-grow text-right mr-3'>
                                   <button type='button' className='w-6 h-6 text-xs rounded-full text-white bg-accent-500'>
                                     <span className='p-1'>

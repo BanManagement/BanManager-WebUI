@@ -23,7 +23,7 @@ const ServerSelector = forwardRef(({ onChange, filter = () => true, value, ...re
 
   if (queryLoading) return null
 
-  const handleOnChange = ({ value }) => onChange(value)
+  const handleOnChange = (e) => onChange(e?.value)
 
   const options = data
     ? data.servers.filter(filter).map(result => ({

@@ -8,6 +8,7 @@ import NotificationAppealComment from './NotificationAppealComment'
 import NotificationAppealAssigned from './NotificationAppealAssigned'
 import NotificationAppealState from './NotificationAppealState'
 import Pagination from '../Pagination'
+import NotificationAppealCreated from './NotificationAppealCreated'
 
 const NotificationList = () => {
   const [tableState, setTableState] = useState({ activePage: 1, limit: 25, offset: 0 })
@@ -80,6 +81,8 @@ const NotificationList = () => {
             case 'appealEditPunishment':
             case 'appealDeletePunishment':
               return <NotificationAppealState key={record.id} {...record} />
+            case 'appealCreated':
+              return <NotificationAppealCreated key={record.id} {...record} />
           }
 
           return null

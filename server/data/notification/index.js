@@ -1,6 +1,6 @@
 const { nanoid } = require('nanoid/async')
 
-const types = ['reportComment', 'reportAssigned', 'reportState', 'appealComment', 'appealAssigned', 'appealState', 'appealEditPunishment', 'appealDeletePunishment']
+const types = ['reportComment', 'reportAssigned', 'reportState', 'appealComment', 'appealAssigned', 'appealState', 'appealEditPunishment', 'appealDeletePunishment', 'appealCreated']
 const states = ['unread', 'read']
 
 const getUnreadNotificationsCount = async (dbPool, playerId) => {
