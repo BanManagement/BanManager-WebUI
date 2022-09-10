@@ -128,7 +128,7 @@ const notifyRuleGroups = async (dbPool, type, id, serverId, commentId, actorId) 
 const notifyAppeal = async (dbPool, type, appealId, serverId, commentId, actorId) => {
   const players = await getAppealWatchers(dbPool, appealId)
 
-  notifyAppealPlayers(dbPool, type, appealId, serverId, commentId, actorId, players)
+  return notifyAppealPlayers(dbPool, type, appealId, serverId, commentId, actorId, players)
 }
 
 const notifyAppealPlayers = async (dbPool, type, appealId, serverId, commentId, actorId, players) => {
