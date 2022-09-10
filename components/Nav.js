@@ -92,7 +92,7 @@ export default function Nav ({ leftItems, mobileItems, rightItems }) {
                     <span className='mx-4 text-lg font-normal'>
                       {name}
                     </span>
-                    {label &&
+                    {!!label &&
                       <span className='flex-grow text-right'>
                         <button type='button' className='w-6 h-6 text-xs rounded-full text-white bg-accent-500'>
                           <span className='p-1'>

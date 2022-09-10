@@ -573,6 +573,24 @@ type Subscription {
   state: SubscriptionState!
 }
 
+enum NotificationType {
+  APPEAL_CREATED
+}
+
+type NotificationRule @sqlTable(name: "notificationRules") {
+  id: ID!
+  type: NotificationType!
+  roles: [Role!]!
+  server: Server
+  created: Timestamp!
+  updated: Timestamp!
+}
+
+type NotificationRuleList {
+  total: Int!
+  records: [NotificationRule!]!
+}
+
 type Query {
   searchPlayers(name: String!, limit: Int = 10): [Player!]
   player(player: UUID!): Player
@@ -642,6 +660,9 @@ type Query {
   listNotifications(limit: Int = 25, offset: Int = 0): NotificationList! @allowIfLoggedIn
 
   playerActivity(serverId: ID!, actor: UUID, createdStart: Timestamp, createdEnd: Timestamp, limit: Int = 100, types: [PlayerActivityType!]!): PlayerActivityList! @allowIf(resource: "servers", permission: "manage")
+
+  notificationRule(id: ID!): NotificationRule! @allowIf(resource: "servers", permission: "manage")
+  listNotificationRules(limit: Int = 25, offset: Int = 0): NotificationRuleList! @allowIf(resource: "servers", permission: "manage")
 }
 
 input CreatePlayerNoteInput {
@@ -795,6 +816,12 @@ input SetRolesInput {
   serverRoles: [ServerRoleInput!]!
 }
 
+input NotificationRuleInput {
+  type: NotificationType
+  roles: [RoleInput!]!
+  serverId: ID
+}
+
 type Mutation {
   deletePunishmentRecord(id: ID!, serverId: ID!, type: RecordType!, keepHistory: Boolean!): ID!
 
@@ -855,4 +882,8 @@ type Mutation {
   setEmail(currentPassword: String!, email: String!): Me! @allowIfLoggedIn
 
   updatePageLayout(pathname: ID!, input: UpdatePageLayoutInput!): PageLayout @allowIf(resource: "servers", permission: "manage")
+
+  createNotificationRule(input: NotificationRuleInput!): NotificationRule! @allowIf(resource: "servers", permission: "manage")
+  updateNotificationRule(id: ID!, input: NotificationRuleInput!): NotificationRule! @allowIf(resource: "servers", permission: "manage")
+  deleteNotificationRule(id: ID!): NotificationRule @allowIf(resource: "servers", permission: "manage")
 }`

@@ -33,6 +33,7 @@ module.exports = async function (ctx) {
       ctx.redirect(`/appeals/${notification.appeal_id}#comment-${notification.comment_id}`)
       break
 
+    case getNotificationType('appealCreated'):
     case getNotificationType('appealState'):
     case getNotificationType('appealAssigned'):
     case getNotificationType('appealEditPunishment'):
