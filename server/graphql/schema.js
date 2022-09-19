@@ -40,6 +40,7 @@ module.exports = ({ logger }) => {
     debug: false,
     schema,
     validationRules: [depthLimit(10)],
+    introspection: true,
     context: ({ ctx: { log, session, state } }) => ({
       log,
       session,
