@@ -75,7 +75,7 @@ module.exports = async function ({ dbPool, logger, serversPool, disableUI = fals
   }, server))
   server.use(acl)
 
-  routes(router)
+  routes(router, dbPool)
   server.use(router.routes())
 
   await apolloServer.start()

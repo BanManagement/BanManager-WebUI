@@ -125,6 +125,41 @@ describe('/api/session', () => {
       assert.strictEqual(body.error, 'Incorrect login details')
     })
 
+    test('should rate limit by IP if too many attempts', async () => {
+      const { pool } = setup.serversPool.values().next().value
+
+      await pool('bm_web_rate_limits').insert({ key: 'login_fail_ip:172.0.0.3', points: '100', expire: Date.now() + 86400000 })
+
+      const { body, statusCode } = await request
+        .post('/api/session')
+        .set('Accept', 'application/json')
+        .set('X-Forwarded-For', '172.0.0.3')
+        .send({ email: 'admin@banmanagement.com', password: 'testiasd' })
+
+      assert.strictEqual(statusCode, 429)
+
+      assert(body)
+      assert.strictEqual(body.error, 'Too many requests')
+    })
+
+    test('should rate limit by email if too many attempts', async () => {
+      const email = 'admin@banmanagement.com'
+      const { pool } = setup.serversPool.values().next().value
+
+      await pool('bm_web_rate_limits').insert({ key: `login_fail_consecutive_username_and_ip:${email}_172.0.0.4`, points: '100', expire: Date.now() + 86400000 })
+
+      const { body, statusCode } = await request
+        .post('/api/session')
+        .set('Accept', 'application/json')
+        .set('X-Forwarded-For', '172.0.0.4')
+        .send({ email, password: 'testiasd' })
+
+      assert.strictEqual(statusCode, 429)
+
+      assert(body)
+      assert.strictEqual(body.error, 'Too many requests')
+    })
+
     test('should set a cookie on success', async () => {
       const { statusCode } = await request
         .post('/api/session')
@@ -250,6 +285,46 @@ describe('/api/session', () => {
 
       assert(body)
       assert.strictEqual(body.error, 'Incorrect login details')
+    })
+
+    test('should rate limit by IP if too many attempts', async () => {
+      const { config: server, pool } = setup.serversPool.values().next().value
+      const player = createPlayer()
+
+      await pool('bm_players').insert(player)
+      await pool('bm_player_pins').insert({ player_id: player.id, pin: await hash('123456'), expires: 0 })
+      await pool('bm_web_rate_limits').insert({ key: 'login_fail_ip:172.0.0.1', points: '100', expire: Date.now() + 86400000 })
+
+      const { body, statusCode } = await request
+        .post('/api/session')
+        .set('Accept', 'application/json')
+        .set('X-Forwarded-For', '172.0.0.1')
+        .send({ name: player.name, pin: '123459', serverId: server.id })
+
+      assert.strictEqual(statusCode, 429)
+
+      assert(body)
+      assert.strictEqual(body.error, 'Too many requests')
+    })
+
+    test('should rate limit by player name if too many attempts', async () => {
+      const { config: server, pool } = setup.serversPool.values().next().value
+      const player = createPlayer()
+
+      await pool('bm_players').insert(player)
+      await pool('bm_player_pins').insert({ player_id: player.id, pin: await hash('123456'), expires: 0 })
+      await pool('bm_web_rate_limits').insert({ key: `login_fail_consecutive_username_and_ip:${player.name}_172.0.0.2`, points: '100', expire: Date.now() + 86400000 })
+
+      const { body, statusCode } = await request
+        .post('/api/session')
+        .set('Accept', 'application/json')
+        .set('X-Forwarded-For', '172.0.0.2')
+        .send({ name: player.name, pin: '123459', serverId: server.id })
+
+      assert.strictEqual(statusCode, 429)
+
+      assert(body)
+      assert.strictEqual(body.error, 'Too many requests')
     })
 
     test('should set a cookie on success', async () => {

@@ -7,11 +7,11 @@ const registerRoute = require('./register')
 const playerOpenGraphRoute = require('./opengraph/player')
 const notificationsRoute = require('./notifications')
 
-module.exports = (router) => {
+module.exports = (router, dbPool) => {
   router.use(bodyParser())
 
   router
-    .post('/api/session', sessionRoute)
+    .post('/api/session', sessionRoute(dbPool))
     .post('/api/logout', logoutRoute)
     .post('/api/register', registerRoute)
     .get('/api/opengraph/player/:id', conditional(), etag(), playerOpenGraphRoute)
