@@ -181,7 +181,7 @@ class SetupCommand extends Command {
       user: DB_USER,
       password: DB_PASSWORD,
       database: DB_NAME,
-      driver: 'mysql',
+      driver: { require: '@confuser/db-migrate-mysql' },
       connectionLimit: 1,
       multipleStatements: true
     }

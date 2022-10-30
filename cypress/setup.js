@@ -31,14 +31,14 @@ const { hash } = require('../server/data/hash')
   dbPool = await setupPool(dbConfig)
 
   // Run migrations, then 'test' migrations
-  let dbmOpts = { throwUncatched: true, config: { dev: { ...dbConfig, driver: 'mysql' } }, cmdOptions: { 'migrations-dir': path.join(__dirname, '..', 'server', 'data', 'migrations') } }
+  let dbmOpts = { throwUncatched: true, config: { dev: { ...dbConfig, driver: { require: '@confuser/db-migrate-mysql' } } }, cmdOptions: { 'migrations-dir': path.join(__dirname, '..', 'server', 'data', 'migrations') } }
   let dbm = DBMigrate.getInstance(true, dbmOpts)
 
   dbm.silence(true)
 
   await dbm.up()
 
-  dbmOpts = { throwUncatched: true, config: { dev: { ...dbConfig, driver: 'mysql' } }, cmdOptions: { 'migrations-dir': path.join(__dirname, '..', 'server', 'test', 'migrations') } }
+  dbmOpts = { throwUncatched: true, config: { dev: { ...dbConfig, driver: { require: '@confuser/db-migrate-mysql' } } }, cmdOptions: { 'migrations-dir': path.join(__dirname, '..', 'server', 'test', 'migrations') } }
   dbm = DBMigrate.getInstance(true, dbmOpts)
 
   dbm.silence(true)

@@ -11,7 +11,7 @@ class UndoCommand extends Command {
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
       multipleStatements: true,
-      driver: 'mysql'
+      driver: { require: '@confuser/db-migrate-mysql' }
     }
 
     const dbm = DBMigrate.getInstance(true, {
