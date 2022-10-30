@@ -25,7 +25,7 @@ describe.skip('uninstall', () => {
     }
 
     const dbmOpts = {
-      config: { dev: { ...dbConfig, driver: 'mysql' } },
+      config: { dev: { ...dbConfig, driver: { require: '@confuser/db-migrate-mysql' } } },
       cmdOptions: { 'migrations-dir': path.join(__dirname, '..', '..', 'server', 'test', 'migrations') }
     }
     const dbm = DBMigrate.getInstance(true, dbmOpts)

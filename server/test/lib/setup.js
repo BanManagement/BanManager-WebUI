@@ -38,14 +38,14 @@ module.exports = async (disableTestMigrations) => { // eslint-disable-line max-s
   dbPool = await setupPool(dbConfig)
 
   // Run migrations, then 'test' migrations
-  let dbmOpts = { throwUncatched: true, config: { dev: { ...dbConfig, driver: 'mysql' } }, cmdOptions: { 'migrations-dir': path.join(__dirname, '..', '..', 'data', 'migrations') } }
+  let dbmOpts = { throwUncatched: true, config: { dev: { ...dbConfig, driver: { require: '@confuser/db-migrate-mysql' } } }, cmdOptions: { 'migrations-dir': path.join(__dirname, '..', '..', 'data', 'migrations') } }
   let dbm = DBMigrate.getInstance(true, dbmOpts)
 
   dbm.silence(true)
 
   await dbm.up()
 
-  dbmOpts = { throwUncatched: true, config: { dev: { ...dbConfig, driver: 'mysql' } }, cmdOptions: { 'migrations-dir': path.join(__dirname, '..', 'migrations') } }
+  dbmOpts = { throwUncatched: true, config: { dev: { ...dbConfig, driver: { require: '@confuser/db-migrate-mysql' } } }, cmdOptions: { 'migrations-dir': path.join(__dirname, '..', 'migrations') } }
   dbm = DBMigrate.getInstance(true, dbmOpts)
 
   dbm.silence(true)
