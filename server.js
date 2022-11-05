@@ -37,7 +37,11 @@ const dbConfig = {
     const serversPool = await setupServersPool({ dbPool, logger })
     const app = await createApp({ dbPool, logger, serversPool, disableUI: process.env.DISABLE_UI === 'true' })
 
-    app.listen(port, () => logger.info(`Listening on ${port}`))
+    if (process.env.HOSTNAME) {
+      app.listen(port, process.env.HOSTNAME, () => logger.info(`Listening on ${process.env.HOSTNAME}:${port}`))
+    } else {
+      app.listen(port, () => logger.info(`Listening on ${port}`))
+    }
   } catch (error) {
     logger.error(error)
     process.exit(1)
