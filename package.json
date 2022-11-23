@@ -18,7 +18,7 @@
     "@headlessui/react": "1.7.4",
     "@koa/router": "12.0.0",
     "@leichtgewicht/ip-codec": "2.0.4",
-    "@nateradebaugh/react-datetime": "4.4.11",
+    "@nateradebaugh/react-datetime": "4.5.1",
     "@next/bundle-analyzer": "12.2.5",
     "@nivo/core": "0.79.0",
     "@nivo/line": "0.79.1",
