@@ -221,7 +221,7 @@ class SetupCommand extends Command {
       const { serverName } = await inquirer.prompt([{ name: 'serverName', message: 'Server Name', default: server ? server.name : undefined }])
       const { host, port, user, password, database } = serverConn.client.config.connection
 
-      server = { host, port, user, password, database, name: serverName }
+      server = { ...server, host, port, user, password, database, name: serverName }
     }
 
     const checkTable = async (conn, table) => conn.schema.hasTable(table)
