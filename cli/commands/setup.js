@@ -199,12 +199,14 @@ class SetupCommand extends Command {
       this.log(`BanManager Server ${server.name} detected, skipping server setup, attempting to connect`)
 
       try {
+        server.password = await crypto.decrypt(ENCRYPTION_KEY, server.password)
+
         serverConn = setupPool({
           host: server.host,
           port: server.port,
           database: server.database,
           user: server.user,
-          password: await crypto.decrypt(ENCRYPTION_KEY, server.password)
+          password: server.password
         }, undefined, { min: 1, max: 5 })
 
         await serverConn.raw('SELECT 1+1 AS result')
@@ -303,16 +305,16 @@ class SetupCommand extends Command {
 
     this.log(`Saving server ${server.name}`)
 
+    if (server.password) {
+      server.password = await crypto.encrypt(ENCRYPTION_KEY, server.password)
+    } else {
+      server.password = ''
+    }
+
     if (server.id) {
       await conn('bm_web_servers').update({ ...server, tables: JSON.stringify(server.tables) }).where({ id: server.id })
     } else {
       server.id = (await generateServerId()).toString('hex')
-
-      if (server.password) {
-        server.password = await crypto.encrypt(ENCRYPTION_KEY, server.password)
-      } else {
-        server.password = ''
-      }
 
       await conn('bm_web_servers').insert({ ...server, tables: JSON.stringify(server.tables) })
     }
