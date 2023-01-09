@@ -49,7 +49,7 @@
     "hibp": "11.1.0",
     "inquirer": "8.2.5",
     "js-yaml": "4.1.0",
-    "knex": "2.3.0",
+    "knex": "2.4.0",
     "knex-on-duplicate-update": "2.3.0",
     "koa": "2.13.4",
     "koa-bodyparser": "4.3.0",
