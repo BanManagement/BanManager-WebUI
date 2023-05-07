@@ -46,7 +46,7 @@ function createComponents (layout, availableComponents, props) {
     props.meta = deviceComponent.meta || {}
 
     const rendered = (
-      <div i={deviceComponent.id} className='grid-item-wrapper' key={deviceComponent.id}>
+      <div className='grid-item-wrapper' key={deviceComponent.id}>
         <Component id={'c-' + deviceComponent.id} {...props} />
       </div>
     )
