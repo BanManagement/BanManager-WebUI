@@ -112,7 +112,7 @@
     "uuid": "8.3.2"
   },
   "engines": {
-    "node": "14 || 16 || 17 || 18"
+    "node": "16 || 18 || 20"
   },
   "license": "MIT",
   "private": true,
