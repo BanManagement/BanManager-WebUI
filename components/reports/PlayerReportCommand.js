@@ -12,9 +12,9 @@ export default function PlayerReportCommand ({ command }) {
         <div className='flex-1 min-w-0'>
           <p className='text-sm font-medium'>
             <Link href={`/player/${command.actor.id}`}>
-              <a>
-                {command.actor.name}
-              </a>
+
+              {command.actor.name}
+
             </Link>
             <span className='text-xs text-gray-400 ml-1'>{format(fromUnixTime(command.created), 'dd MMM yyyy HH:mm:ss')}</span>
           </p>

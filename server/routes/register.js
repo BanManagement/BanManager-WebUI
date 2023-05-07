@@ -14,7 +14,7 @@ module.exports = async function ({ request: { body }, throw: throwError, respons
     return throwError(400, 'Invalid password, minimum length 6 characters')
   }
 
-  if (await pwnedPassword(body.password) > 5) {
+  if ((await pwnedPassword(body.password)) > 5) {
     return throwError(400, 'Commonly used password, please choose another')
   }
 

@@ -38,10 +38,10 @@ export default function PlayerAppealComment ({ id, actor, created, content, acl,
 
   return (
     <div className='ml-4 pt-3 pb-3 relative' id={`comment-${id}`}>
-      <Link href={`/player/${actor.id}`}>
-        <a className='absolute -left-20'>
-          <Avatar uuid={actor.id} width={40} height={40} className='mx-1 inline-block relative' />
-        </a>
+      <Link href={`/player/${actor.id}`} className='absolute -left-20'>
+
+        <Avatar uuid={actor.id} width={40} height={40} className='mx-1 inline-block relative' />
+
       </Link>
       <Modal
         icon={<AiOutlineWarning className='h-6 w-6 text-red-600' aria-hidden='true' />}
@@ -60,13 +60,13 @@ export default function PlayerAppealComment ({ id, actor, created, content, acl,
         <div className='rounded-tl rounded-tr relative bg-gray-600 justify-between items-center flex border-b border-gray-600 py-2 px-4 text-sm text-gray-300'>
           <div className='items-center flex'>
             <span>
-              <Link href={`/player/${actor.id}`}>
-                <a className='font-semibold'>{actor.name}</a>
+              <Link href={`/player/${actor.id}`} className='font-semibold'>
+                {actor.name}
               </Link> commented&nbsp;
               <Link href={`#comment-${id}`}>
-                <a>
-                  <span>{fromNow(created)}</span>
-                </a>
+
+                <span>{fromNow(created)}</span>
+
               </Link>
             </span>
           </div>

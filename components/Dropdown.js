@@ -40,7 +40,7 @@ const Dropdown = ({ trigger = () => {}, children }) => {
 const Item = ({ href = '', children, name, onClick, icon, className = '' }) => {
   if (href) {
     return (
-      <Link href={href} passHref>
+      <Link href={href} passHref legacyBehavior>
         <ItemLink name={name} href={href} onClick={onClick} className={className} icon={icon}>{children}</ItemLink>
       </Link>
     )

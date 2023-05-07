@@ -55,8 +55,8 @@ export default function PlayerLoginPasswordForm ({ onSuccess }) {
           data-cy='password'
           {...register('password')}
         />
-        <Link href='/forgotten-password' passHref>
-          <a className='text-lg md:text-sm mb-3'>Forgot password?</a>
+        <Link href='/forgotten-password' passHref className='text-lg md:text-sm mb-3'>
+          Forgot password?
         </Link>
         <Button data-cy='submit-login-password' disabled={isSubmitting} loading={isSubmitting}>
           Login

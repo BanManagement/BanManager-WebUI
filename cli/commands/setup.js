@@ -295,7 +295,7 @@ class SetupCommand extends Command {
     }
 
     if (server.console) {
-      if (!await playerExists(serverConn, server.tables.players, server.console)) {
+      if (!(await playerExists(serverConn, server.tables.players, server.console))) {
         this.log('Console player not found, please update')
         server.console = await askPlayer('Console UUID (paste "uuid" value from BanManager/console.yml)', serverConn, server.tables.players)
       }

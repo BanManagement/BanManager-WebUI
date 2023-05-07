@@ -50,9 +50,9 @@ export default function Page () {
       <PageHeader title='Roles' />
       <div className='w-24 mb-5'>
         <Link href='/admin/roles/add' passHref>
-          <a>
-            <Button className='bg-emerald-600 hover:bg-emerald-700'><AiOutlinePlus className='text-xl' /> Add</Button>
-          </a>
+
+          <Button className='bg-emerald-600 hover:bg-emerald-700'><AiOutlinePlus className='text-xl' /> Add</Button>
+
         </Link>
       </div>
       <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12 justify-items-center pb-12 border-b border-accent-200'>

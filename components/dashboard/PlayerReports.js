@@ -38,25 +38,25 @@ const ReportRow = ({ serverId, row, dateFormat }) => {
     <Table.Row>
       <Table.Cell>
         <Link href={`/reports/${serverId}/${row.id}`} passHref>
-          <a>
-            <Badge className='bg-accent-500 sm:mx-auto'>#{row.id}</Badge>
-          </a>
+
+          <Badge className='bg-accent-500 sm:mx-auto'>#{row.id}</Badge>
+
         </Link>
       </Table.Cell>
       <Table.Cell>
         <Link href={`/player/${row.player.id}`} passHref>
-          <a>
-            <div className='flex items-center'>
-              <div className='flex-shrink-0'>
-                <Avatar uuid={row.player.id} height='26' width='26' />
-              </div>
-              <div className='ml-3'>
-                <p className='whitespace-no-wrap'>
-                  {row.player.name}
-                </p>
-              </div>
+
+          <div className='flex items-center'>
+            <div className='flex-shrink-0'>
+              <Avatar uuid={row.player.id} height='26' width='26' />
             </div>
-          </a>
+            <div className='ml-3'>
+              <p className='whitespace-no-wrap'>
+                {row.player.name}
+              </p>
+            </div>
+          </div>
+
         </Link>
       </Table.Cell>
       <Table.Cell>{format(fromUnixTime(row.created), dateFormat)}</Table.Cell>
@@ -64,18 +64,18 @@ const ReportRow = ({ serverId, row, dateFormat }) => {
       <Table.Cell>
         {row.assignee &&
           <Link href={`/player/${row.assignee.id}`} passHref>
-            <a>
-              <div className='flex items-center'>
-                <div className='flex-shrink-0'>
-                  <Avatar uuid={row.assignee.id} height='26' width='26' />
-                </div>
-                <div className='ml-3'>
-                  <p className='whitespace-no-wrap'>
-                    {row.assignee.name}
-                  </p>
-                </div>
+
+            <div className='flex items-center'>
+              <div className='flex-shrink-0'>
+                <Avatar uuid={row.assignee.id} height='26' width='26' />
               </div>
-            </a>
+              <div className='ml-3'>
+                <p className='whitespace-no-wrap'>
+                  {row.assignee.name}
+                </p>
+              </div>
+            </div>
+
           </Link>}
       </Table.Cell>
       <Table.Cell>{fromNow(row.updated)}</Table.Cell>

@@ -83,9 +83,9 @@ const PlayerNoteRow = ({ row, dateFormat, serverId, onDeleted }) => {
         <div className='flex items-center space-x-8'>
           {row.acl.update &&
             <Link href={`/player/note/${serverId}-${row.id}`} passHref>
-              <a>
-                <FaPencilAlt className='w-6 h-6' />
-              </a>
+
+              <FaPencilAlt className='w-6 h-6' />
+
             </Link>}
           {row.acl.delete &&
             <>

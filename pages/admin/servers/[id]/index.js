@@ -35,9 +35,9 @@ export default function Page () {
       <AdminHeader title={data.server.name}>
         <div>
           <Link href={`/admin/servers/${data.server.id}/edit`} passHref>
-            <a>
-              <Button className='bg-emerald-600 hover:bg-emerald-700 text-sm px-4 py-2'>Edit Server</Button>
-            </a>
+
+            <Button className='bg-emerald-600 hover:bg-emerald-700 text-sm px-4 py-2'>Edit Server</Button>
+
           </Link>
         </div>
       </AdminHeader>

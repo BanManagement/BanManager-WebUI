@@ -62,14 +62,14 @@ export default function NotificationRuleItem ({ row, onDeleted }) {
             <MdOutlineGroups className='self-center' />
             {row.roles.map(role =>
               <div key={`role-${role.id}`}>
-                <Link href={`/admin/roles/${role.id}`}><a className='underline'>{role.name}</a></Link>
+                <Link href={`/admin/roles/${role.id}`} className='underline'>{role.name}</Link>
               </div>
             )}
           </div>
           {!!row?.server?.id &&
             <div className='flex break-words justify-between text-sm'>
               <div className='flex justify-between gap-2'>
-                <BiServer className='self-center' /> <Link href={`/admin/server/${row?.server?.id}`}><a className='underline'>{row?.server?.name}</a></Link>
+                <BiServer className='self-center' /> <Link href={`/admin/server/${row?.server?.id}`} className='underline'>{row?.server?.name}</Link>
               </div>
             </div>}
         </div>
@@ -79,9 +79,9 @@ export default function NotificationRuleItem ({ row, onDeleted }) {
           </div>
           <div className='hidden group-hover:flex group-hover:gap-5'>
             <Link href={`/admin/notification-rules/${row.id}`} passHref>
-              <a>
-                <Button className='bg-emerald-600 hover:bg-emerald-700 text-sm px-4 py-2'><FaPencilAlt /></Button>
-              </a>
+
+              <Button className='bg-emerald-600 hover:bg-emerald-700 text-sm px-4 py-2'><FaPencilAlt /></Button>
+
             </Link>
             <Button className='bg-red-600 hover:bg-red-700 text-sm px-4 py-2' onClick={showConfirmDelete}><BsTrash /></Button>
           </div>
@@ -90,9 +90,9 @@ export default function NotificationRuleItem ({ row, onDeleted }) {
       <div className='flex flex-row gap-6 md:hidden mb-2'>
         <div>
           <Link href={`/admin/notification-rules/${row.id}`} passHref>
-            <a>
-              <Button className='bg-emerald-600 hover:bg-emerald-700 text-sm px-4 py-2'><FaPencilAlt /> Edit</Button>
-            </a>
+
+            <Button className='bg-emerald-600 hover:bg-emerald-700 text-sm px-4 py-2'><FaPencilAlt /> Edit</Button>
+
           </Link>
         </div>
         <div>

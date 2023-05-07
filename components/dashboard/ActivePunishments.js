@@ -45,29 +45,29 @@ const PunishmentRow = ({ row, dateFormat }) => {
       <Table.Cell><p>{row.reason}</p></Table.Cell>
       <Table.Cell>
         <Link href={`/player/${row.actor.id}`} passHref>
-          <a>
-            <div className='flex items-center'>
-              <div className='flex-shrink-0'>
-                <Avatar uuid={row.actor.id} height='26' width='26' />
-              </div>
-              <div className='ml-3'>
-                <p className='whitespace-no-wrap'>
-                  {row.actor.name}
-                </p>
-              </div>
+
+          <div className='flex items-center'>
+            <div className='flex-shrink-0'>
+              <Avatar uuid={row.actor.id} height='26' width='26' />
             </div>
-          </a>
+            <div className='ml-3'>
+              <p className='whitespace-no-wrap'>
+                {row.actor.name}
+              </p>
+            </div>
+          </div>
+
         </Link>
       </Table.Cell>
       <Table.Cell>{format(fromUnixTime(row.created), dateFormat)}</Table.Cell>
       <Table.Cell>{row.expires === 0 ? <Badge className='bg-red-500 sm:mx-auto'>Permanent</Badge> : fromNow(row.expires)}</Table.Cell>
       <Table.Cell>
         <Link href={`/player/appeal/${row.server.id}/${row.id}/${row.type}`} passHref>
-          <a>
-            <Badge className='bg-blue-600 hover:bg-blue-900 mt-4'>
-              Appeal
-            </Badge>
-          </a>
+
+          <Badge className='bg-blue-600 hover:bg-blue-900 mt-4'>
+            Appeal
+          </Badge>
+
         </Link>
       </Table.Cell>
     </Table.Row>

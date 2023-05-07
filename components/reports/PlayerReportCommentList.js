@@ -67,10 +67,10 @@ export default function PlayerReportCommentList ({ serverId, report, showReply }
       <div>
         {showReply &&
           <div className='ml-4 pt-3 pb-3 relative'>
-            <Link href={`/player/${user.id}`}>
-              <a className='absolute -left-20'>
-                <Avatar uuid={user.id} width={40} height={40} className='mx-1 inline-block relative' />
-              </a>
+            <Link href={`/player/${user.id}`} className='absolute -left-20'>
+
+              <Avatar uuid={user.id} width={40} height={40} className='mx-1 inline-block relative' />
+
             </Link>
             <div className='-ml-7 md:-ml-4'>
               <div className='relative bg-primary-500 top-0 bottom-0'>

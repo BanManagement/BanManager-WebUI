@@ -98,7 +98,7 @@ const ActivityRow = ({ row, index }) => {
   }
 
   if (row?.player?.id) {
-    message.push(<Link key={'player' + index + row.type + row.created} href={`/player/${row?.player?.id}`}><a className='underline'>{row?.player?.name}</a></Link>)
+    message.push(<Link key={'player' + index + row.type + row.created} href={`/player/${row?.player?.id}`} className='underline'>{row?.player?.name}</Link>)
   }
 
   if (row?.expired && row?.expired !== 0 && !row?.type?.startsWith('UN')) {
@@ -115,16 +115,14 @@ const ActivityRow = ({ row, index }) => {
         <div className='flex flex-col justify-center pl-3 mt-1 mr-2'>
           <div className='flex-shrink-0 text-center'>
             <Link href={`/player/${row.actor.id}`}>
-              <a>
-                <Avatar uuid={row.actor.id} width={38} height={38} />
-              </a>
+              <Avatar uuid={row.actor.id} width={38} height={38} />
             </Link>
           </div>
         </div>
         <div className='flex-auto flex-wrap space-y-2 pl-3 py-2'>
           <div className='flex break-words justify-between text-sm'>
             <span className='self-center'>
-              <Link href={`/player/${row.actor.id}`}><a className='underline'>{row.actor.name}</a></Link>
+              <Link href={`/player/${row.actor.id}`} className='underline'>{row.actor.name}</Link>
             </span>
             <span>
               <ActivityBadge type={row.type} temporary={row?.expired !== 0} />

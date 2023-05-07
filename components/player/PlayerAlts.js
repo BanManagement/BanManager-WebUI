@@ -28,10 +28,10 @@ const PlayerAlts = ({ id, color }) => {
         <div className='flex-col flex justify-center items-center'>
           <div className='flex-shrink-0 text-center'>
             <Link href={`/player/${alt.id}`} passHref>
-              <a>
-                <Avatar uuid={alt.id} width='50' height='50' />
-                <p className='pt-1 text-center'>{alt.name}</p>
-              </a>
+
+              <Avatar uuid={alt.id} width='50' height='50' />
+              <p className='pt-1 text-center'>{alt.name}</p>
+
             </Link>
           </div>
         </div>

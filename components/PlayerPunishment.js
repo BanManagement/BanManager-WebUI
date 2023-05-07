@@ -108,9 +108,9 @@ export default function PlayerPunishment ({ punishment, server, type, onDeleted 
               {punishment.acl.update &&
                 <li className='hover:text-accent-700'>
                   <Link href={`/player/${meta.editPath}/${server.id}-${punishment.id}`} passHref>
-                    <a>
-                      <FaPencilAlt className='w-6 h-6' />
-                    </a>
+
+                    <FaPencilAlt className='w-6 h-6' />
+
                   </Link>
                 </li>}
               {punishment.acl.delete &&
@@ -138,11 +138,11 @@ export default function PlayerPunishment ({ punishment, server, type, onDeleted 
           </div>
           {punishment.acl.yours &&
             <Link href={`/player/appeal/${server.id}/${punishment.id}/${meta.editPath.replace('edit-', '')}`} passHref>
-              <a>
-                <Button className='bg-blue-600 hover:bg-blue-900 mt-4'>
-                  Appeal
-                </Button>
-              </a>
+
+              <Button className='bg-blue-600 hover:bg-blue-900 mt-4'>
+                Appeal
+              </Button>
+
             </Link>}
         </div>
       </div>

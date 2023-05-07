@@ -124,14 +124,14 @@ export default function Page () {
           </h1>
           <p className='pb-4 border-b border-accent-200 text-gray-400'>
             <Link href={`/player/${report.actor.id}`}>
-              <a>
-                {report.actor.name}
-              </a>
+
+              {report.actor.name}
+
             </Link> reported&nbsp;
             <Link href={`/player/${report.player.id}`}>
-              <a>
-                {report.player.name}
-              </a>
+
+              {report.player.name}
+
             </Link>
             &nbsp;on {format(fromUnixTime(report.created), 'dd MMM yyyy')}
           </p>

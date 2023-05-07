@@ -39,54 +39,54 @@ export default function PlayerHeader ({ id, color }) {
         <div className='hidden xl:flex gap-12'>
           {canCreateBan &&
             <Link href={`/player/${id}/ban`} passHref>
-              <a>
-                <Button><FaBan className='text-xl mr-2' /> Ban</Button>
-              </a>
+
+              <Button><FaBan className='text-xl mr-2' /> Ban</Button>
+
             </Link>}
           {canCreateMute &&
             <Link href={`/player/${id}/mute`} passHref>
-              <a>
-                <Button><BsMicMute className='text-xl mr-2' /> Mute</Button>
-              </a>
+
+              <Button><BsMicMute className='text-xl mr-2' /> Mute</Button>
+
             </Link>}
           {canCreateNote &&
             <Link href={`/player/${id}/note`} passHref>
-              <a>
-                <Button><BiNotepad className='text-xl mr-2' /> Note</Button>
-              </a>
+
+              <Button><BiNotepad className='text-xl mr-2' /> Note</Button>
+
             </Link>}
           {canCreateWarning &&
             <Link href={`/player/${id}/warn`} passHref>
-              <a>
-                <Button><AiOutlineWarning className='text-xl mr-2' /> Warn</Button>
-              </a>
+
+              <Button><AiOutlineWarning className='text-xl mr-2' /> Warn</Button>
+
             </Link>}
         </div>
       </div>
       <div className='xl:hidden grid grid-cols-2 mt-6 gap-6'>
         {canCreateBan &&
           <Link href={`/player/${id}/ban`} passHref>
-            <a>
-              <Button><FaBan className='text-xl mr-2' /> Ban</Button>
-            </a>
+
+            <Button><FaBan className='text-xl mr-2' /> Ban</Button>
+
           </Link>}
         {canCreateMute &&
           <Link href={`/player/${id}/mute`} passHref>
-            <a>
-              <Button><BsMicMute className='text-xl mr-2' /> Mute</Button>
-            </a>
+
+            <Button><BsMicMute className='text-xl mr-2' /> Mute</Button>
+
           </Link>}
         {canCreateNote &&
           <Link href={`/player/${id}/note`} passHref>
-            <a>
-              <Button><BiNotepad className='text-xl mr-2' /> Note</Button>
-            </a>
+
+            <Button><BiNotepad className='text-xl mr-2' /> Note</Button>
+
           </Link>}
         {canCreateWarning &&
           <Link href={`/player/${id}/warn`} passHref>
-            <a>
-              <Button><AiOutlineWarning className='text-xl mr-2' /> Warn</Button>
-            </a>
+
+            <Button><AiOutlineWarning className='text-xl mr-2' /> Warn</Button>
+
           </Link>}
       </div>
     </div>
