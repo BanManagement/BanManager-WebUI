@@ -11,11 +11,11 @@ const AppealPanel = () => {
       </p>
       <p className='text-xs mb-3'>There is no guarantee your appeal will be successful</p>
       <Link href='/tutorial' passHref>
-        <a>
-          <Button className='max-w-md mx-auto'>
-            Create Appeal
-          </Button>
-        </a>
+
+        <Button className='max-w-md mx-auto'>
+          Create Appeal
+        </Button>
+
       </Link>
     </div>
   )

@@ -14,9 +14,9 @@ export default function PlayerReportLocation ({ location, player }) {
         <div className='flex-1 min-w-0'>
           <p className='text-sm font-medium'>
             <Link href={`/player/${player.id}`}>
-              <a>
-                {player.name}
-              </a>
+
+              {player.name}
+
             </Link>
           </p>
           <pre className='text-sm text-gray-400 truncate overflow-y-auto'>{command}</pre>

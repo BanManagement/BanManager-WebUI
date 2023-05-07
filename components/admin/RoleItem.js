@@ -48,52 +48,52 @@ export default function RoleItem ({ role, onDeleted }) {
         <p className='pb-1'>This action cannot be undone</p>
       </Modal>
       <Link href={`/admin/roles/${role.id}`} passHref>
-        <a>
-          <div className='p-5'>
-            <h5 className='text-xl font-semibold mb-2'>{role.name}</h5>
-          </div>
-          {role.id > 3 &&
-            <div className='py-3 px-5 bg-gray-900'>
-              <button
-                className='
-                  bg-red-500
-                  text-white
-                  active:bg-red-600
-                  font-bold
-                  uppercase
-                  text-xs
-                  px-4
-                  py-2
-                  rounded
-                  shadow
-                  hover:shadow-md
-                  outline-none
-                  focus:outline-none
-                  mr-1
-                  mb-1
-                  ease-linear
-                  transition-all
-                  duration-150
-                '
-                type='button'
-                onClick={showConfirmDelete}
-              >
-                Delete
-              </button>
-            </div>}
-          {role.id === '1' &&
-            <div className='py-3 px-5 bg-gray-900'>
-              Assigned by default to all non-logged in visitors
-            </div>}
-          {role.id === '2' &&
-            <div className='py-3 px-5 bg-gray-900'>
-              Assigned by default for all logged in players
-            </div>}
-          {role.id === '3' &&
-            <div className='py-3 px-5 bg-gray-900'>
-              Super admin role with all permissions
-            </div>}
-        </a>
+
+        <div className='p-5'>
+          <h5 className='text-xl font-semibold mb-2'>{role.name}</h5>
+        </div>
+        {role.id > 3 &&
+          <div className='py-3 px-5 bg-gray-900'>
+            <button
+              className='
+                bg-red-500
+                text-white
+                active:bg-red-600
+                font-bold
+                uppercase
+                text-xs
+                px-4
+                py-2
+                rounded
+                shadow
+                hover:shadow-md
+                outline-none
+                focus:outline-none
+                mr-1
+                mb-1
+                ease-linear
+                transition-all
+                duration-150
+              '
+              type='button'
+              onClick={showConfirmDelete}
+            >
+              Delete
+            </button>
+          </div>}
+        {role.id === '1' &&
+          <div className='py-3 px-5 bg-gray-900'>
+            Assigned by default to all non-logged in visitors
+          </div>}
+        {role.id === '2' &&
+          <div className='py-3 px-5 bg-gray-900'>
+            Assigned by default for all logged in players
+          </div>}
+        {role.id === '3' &&
+          <div className='py-3 px-5 bg-gray-900'>
+            Super admin role with all permissions
+          </div>}
+
       </Link>
     </div>
   )

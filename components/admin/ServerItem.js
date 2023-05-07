@@ -114,7 +114,7 @@ export default function ServerItem ({ canDelete, server, onDeleted }) {
       </Modal>
       <div className='pt-5 px-5 flex justify-between items-center'>
         <h5 className='text-xl font-semibold mb-2 underline'>
-          <Link href={`/admin/servers/${server.id}`}>
+          <Link href={`/admin/servers/${server.id}`} legacyBehavior>
             {server.name}
           </Link>
         </h5>

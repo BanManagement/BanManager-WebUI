@@ -37,18 +37,18 @@ export default function PlayerAppealForm ({ actor, reason, expires, created, ser
         <span>By</span>
         <span className='ml-auto'>
           <Link href={`/player/${actor.id}`} passHref>
-            <a>
-              <div className='flex items-center'>
-                <div className='flex-shrink-0'>
-                  <Avatar uuid={actor.id} height='20' width='20' />
-                </div>
-                <div className='ml-3'>
-                  <p className='whitespace-no-wrap'>
-                    {actor.name}
-                  </p>
-                </div>
+
+            <div className='flex items-center'>
+              <div className='flex-shrink-0'>
+                <Avatar uuid={actor.id} height='20' width='20' />
               </div>
-            </a>
+              <div className='ml-3'>
+                <p className='whitespace-no-wrap'>
+                  {actor.name}
+                </p>
+              </div>
+            </div>
+
           </Link>
         </span>
       </div>

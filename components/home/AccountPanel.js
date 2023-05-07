@@ -43,9 +43,9 @@ const AccountPanel = () => {
               <div className='grid-flow-col grid gap-2 grid-rows-2'>
                 <div className='grid-flow-row'>
                   <Link href='/dashboard' passHref>
-                    <a>
-                      <Button>View Dashboard</Button>
-                    </a>
+
+                    <Button>View Dashboard</Button>
+
                   </Link>
                 </div>
                 <div className='grid-flow-row'>

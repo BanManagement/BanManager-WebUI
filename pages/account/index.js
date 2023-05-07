@@ -23,31 +23,43 @@ export default function Page () {
           <h1 className='text-2xl font-bold pb-4 mb-4 border-b border-accent-200 leading-none'>{user.name}</h1>
           <div className='border-b pb-4'>
             {!user.hasAccount &&
-              <Link href='/register' passHref>
-                <a className='px-6 py-3 hover:bg-accent-500 flex items-center'>
-                  <div className='flex'>
-                    <FaPencilAlt className='mx-auto block w-5 h-5 text-lg' />
-                    <p className='ml-6'>Register</p>
-                  </div>
-                </a>
+              <Link
+                href='/register'
+                passHref
+                className='px-6 py-3 hover:bg-accent-500 flex items-center'
+              >
+
+                <div className='flex'>
+                  <FaPencilAlt className='mx-auto block w-5 h-5 text-lg' />
+                  <p className='ml-6'>Register</p>
+                </div>
+
               </Link>}
             {user.hasAccount &&
-              <Link href='/account/email' passHref>
-                <a className='px-6 py-3 hover:bg-accent-500 flex items-center'>
-                  <div className='flex'>
-                    <MdOutlineEmail className='mx-auto block w-5 h-5 text-lg' />
-                    <p className='ml-6'>Email</p>
-                  </div>
-                </a>
+              <Link
+                href='/account/email'
+                passHref
+                className='px-6 py-3 hover:bg-accent-500 flex items-center'
+              >
+
+                <div className='flex'>
+                  <MdOutlineEmail className='mx-auto block w-5 h-5 text-lg' />
+                  <p className='ml-6'>Email</p>
+                </div>
+
               </Link>}
             {user.hasAccount &&
-              <Link href='/account/password' passHref>
-                <a className='px-6 py-3 hover:bg-accent-500 flex items-center'>
-                  <div className='flex'>
-                    <MdLock className='mx-auto block w-5 h-5 text-lg' />
-                    <p className='ml-6'>Password</p>
-                  </div>
-                </a>
+              <Link
+                href='/account/password'
+                passHref
+                className='px-6 py-3 hover:bg-accent-500 flex items-center'
+              >
+
+                <div className='flex'>
+                  <MdLock className='mx-auto block w-5 h-5 text-lg' />
+                  <p className='ml-6'>Password</p>
+                </div>
+
               </Link>}
           </div>
         </div>

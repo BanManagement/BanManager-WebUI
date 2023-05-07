@@ -30,7 +30,7 @@ module.exports = async function setPassword (obj, { currentPassword, newPassword
   let commonPassword = false
 
   try {
-    commonPassword = await pwnedPassword(newPassword) > 5
+    commonPassword = (await pwnedPassword(newPassword)) > 5
   } catch (e) {
     log.error(e, 'hibp failure')
   }

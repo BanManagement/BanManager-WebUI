@@ -17,11 +17,18 @@ export default function Nav ({ leftItems, mobileItems, rightItems }) {
     }
 
     return (
-      <Link key={item.name} href={item.href} passHref>
-        <a href={item.href} key={item.name} className={`text-lg text-white ${router.asPath === item.href ? 'font-bold' : 'hover:text-primary-100'}`}>
+      (
+        <Link
+          key={item.name}
+          href={item.href}
+          passHref
+          className={`text-lg text-white ${router.asPath === item.href ? 'font-bold' : 'hover:text-primary-100'}`}
+        >
+
           {item.name}
-        </a>
-      </Link>
+
+        </Link>
+      )
     )
   })
 
@@ -45,10 +52,10 @@ export default function Nav ({ leftItems, mobileItems, rightItems }) {
         <div className='flex justify-between items-center my-6 pb-6 md:justify-start md:space-x-10'>
           <div className='flex justify-start lg:w-0 lg:flex-1'>
             <Link href='/' passHref>
-              <a>
-                <span className='sr-only'>Home</span>
-                <Image src={process.env.BASE_PATH + '/images/banmanager-icon.png'} alt='Logo' width='40' height='40' />
-              </a>
+
+              <span className='sr-only'>Home</span>
+              <Image src={process.env.BASE_PATH + '/images/banmanager-icon.png'} alt='Logo' width='40' height='40' />
+
             </Link>
             <div className='mx-8 w-48'>
               <PlayerSelector
@@ -75,10 +82,10 @@ export default function Nav ({ leftItems, mobileItems, rightItems }) {
       <NavigationOverlay drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen}>
         <NavigationOverlay.Header>
           <Link href='/' passHref key='logo-icon'>
-            <a>
-              <span className='sr-only'>Home</span>
-              <Image width='40' height='40' src={process.env.BASE_PATH + '/images/banmanager-icon.png'} alt='Logo' />
-            </a>
+
+            <span className='sr-only'>Home</span>
+            <Image width='40' height='40' src={process.env.BASE_PATH + '/images/banmanager-icon.png'} alt='Logo' />
+
           </Link>
         </NavigationOverlay.Header>
         <NavigationOverlay.Body className='!px-2 flex flex-col sm:flex-row sm:justify-around'>
@@ -86,21 +93,25 @@ export default function Nav ({ leftItems, mobileItems, rightItems }) {
             {renderMenu(rightItems)}
             {mobileItems.map(({ href, name, icon, label, splitBorder }) => (
               <Fragment key={`${href}${name}`}>
-                <Link href={href} passHref>
-                  <a className='hover:text-accent-200 hover:bg-gray-600 flex transition-colors text-gray-100 text-xl p-2 my-4 rounded-lg'>
-                    {icon}
-                    <span className='mx-4 text-lg font-normal'>
-                      {name}
-                    </span>
-                    {!!label &&
-                      <span className='flex-grow text-right'>
-                        <button type='button' className='w-6 h-6 text-xs rounded-full text-white bg-accent-500'>
-                          <span className='p-1'>
-                            {label}
-                          </span>
-                        </button>
-                      </span>}
-                  </a>
+                <Link
+                  href={href}
+                  passHref
+                  className='hover:text-accent-200 hover:bg-gray-600 flex transition-colors text-gray-100 text-xl p-2 my-4 rounded-lg'
+                >
+
+                  {icon}
+                  <span className='mx-4 text-lg font-normal'>
+                    {name}
+                  </span>
+                  {!!label &&
+                    <span className='flex-grow text-right'>
+                      <button type='button' className='w-6 h-6 text-xs rounded-full text-white bg-accent-500'>
+                        <span className='p-1'>
+                          {label}
+                        </span>
+                      </button>
+                    </span>}
+
                 </Link>
                 {splitBorder && <span className='text-5xl pb-4 mb-4 border-b border-accent-200 leading-none' />}
               </Fragment>

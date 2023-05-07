@@ -40,9 +40,9 @@ export default function Page () {
       <AdminHeader title='Servers'>
         <div>
           <Link href='/admin/servers/add' passHref>
-            <a>
-              <Button className='bg-emerald-600 hover:bg-emerald-700 text-sm px-4 py-2'><AiOutlinePlus className='text-xl -ml-1 mr-2' /> Add Server</Button>
-            </a>
+
+            <Button className='bg-emerald-600 hover:bg-emerald-700 text-sm px-4 py-2'><AiOutlinePlus className='text-xl -ml-1 mr-2' /> Add Server</Button>
+
           </Link>
         </div>
       </AdminHeader>

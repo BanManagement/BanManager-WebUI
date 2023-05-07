@@ -10,6 +10,9 @@ const basePath = process.env.BASE_PATH || ''
 
 const nextConfig = (phase) => {
   return {
+    experimental: {
+      appDir: false
+    },
     transpilePackages: ['lodash-es'],
     webpack (config) {
       config.module.rules.push({

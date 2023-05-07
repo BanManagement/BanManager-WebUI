@@ -46,9 +46,9 @@ export default function Page () {
       <AdminHeader title='Notification Rules'>
         <div>
           <Link href='/admin/notification-rules/add' passHref>
-            <a>
-              <Button className='bg-emerald-600 hover:bg-emerald-700 text-sm px-4 py-2'><AiOutlinePlus className='text-xl -ml-1 mr-2' /> Add Rule</Button>
-            </a>
+
+            <Button className='bg-emerald-600 hover:bg-emerald-700 text-sm px-4 py-2'><AiOutlinePlus className='text-xl -ml-1 mr-2' /> Add Rule</Button>
+
           </Link>
         </div>
       </AdminHeader>
@@ -59,9 +59,9 @@ export default function Page () {
           : (
             <EmptyState title={'There\'s nothing here'} subTitle='Notification rules will appear here, try creating one!'>
               <Link href='/admin/notification-rules/add' passHref>
-                <a>
-                  <Button className='w-44 bg-emerald-600 hover:bg-emerald-700 text-sm px-4 py-2'><AiOutlinePlus className='text-xl -ml-1 mr-2' /> Create a rule</Button>
-                </a>
+
+                <Button className='w-44 bg-emerald-600 hover:bg-emerald-700 text-sm px-4 py-2'><AiOutlinePlus className='text-xl -ml-1 mr-2' /> Create a rule</Button>
+
               </Link>
             </EmptyState>
             )}

@@ -70,8 +70,8 @@ const AdminLayout = ({ children, title }) => {
                       <span className='mx-4'>
                         <Link href='/admin'>Admin</Link>
                       </span>
-                      <Link href='/dashboard' passHref>
-                        <a className='m-auto flex-grow text-right'><MdOutlineExitToApp className='inline-flex mx-5 hover:text-accent-200' /></a>
+                      <Link href='/dashboard' passHref className='m-auto flex-grow text-right'>
+                        <MdOutlineExitToApp className='inline-flex mx-5 hover:text-accent-200' />
                       </Link>
                     </div>
                   </div>
@@ -82,8 +82,9 @@ const AdminLayout = ({ children, title }) => {
                           'border-l-4 border-accent-500': router.asPath === href
                         })
                         return (
-                          <Link key={`${href}${name}`} href={href} passHref>
-                            <a className={className}>
+                          (
+                            <Link key={`${href}${name}`} href={href} passHref className={className}>
+
                               {icons[name] && <span className='text-left m-auto'>{icons[name]}</span>}
                               <span className='mx-4 text-base m-auto font-normal'>
                                 {name}
@@ -96,40 +97,41 @@ const AdminLayout = ({ children, title }) => {
                                     </span>
                                   </button>
                                 </span>}
-                            </a>
-                          </Link>
+
+                            </Link>
+                          )
                         )
                       })}
                     </div>
                     <div className='h-1/5 flex flex-col'>
                       <div className='flex-grow'>
                         <div className='flex px-4'>
-                          <Link href={`/player/${user.id}`}>
-                            <a className='flex'>
-                              <Avatar width='36' height='36' uuid={user.id} />
-                              <div className='ml-4 text-sm'>
-                                <div>{user.name}</div>
-                                <div>View Profile</div>
-                              </div>
-                            </a>
+                          <Link href={`/player/${user.id}`} className='flex'>
+
+                            <Avatar width='36' height='36' uuid={user.id} />
+                            <div className='ml-4 text-sm'>
+                              <div>{user.name}</div>
+                              <div>View Profile</div>
+                            </div>
+
                           </Link>
                         </div>
                       </div>
                       <div className='flex justify-evenly py-3 bg-gray-800'>
-                        <Link href='/notifications'>
-                          <a title='Notifications'>
-                            <MdOutlineNotifications className='w-6 h-6' />
-                          </a>
+                        <Link href='/notifications' title='Notifications'>
+
+                          <MdOutlineNotifications className='w-6 h-6' />
+
                         </Link>
-                        <Link href='/account'>
-                          <a title='Settings'>
-                            <MdSettings className='w-6 h-6' />
-                          </a>
+                        <Link href='/account' title='Settings'>
+
+                          <MdSettings className='w-6 h-6' />
+
                         </Link>
-                        <Link href='/dashboard'>
-                          <a title='Return'>
-                            <MdLogout className='w-6 h-6' />
-                          </a>
+                        <Link href='/dashboard' title='Return'>
+
+                          <MdLogout className='w-6 h-6' />
+
                         </Link>
                       </div>
                     </div>

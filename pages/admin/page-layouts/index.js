@@ -20,11 +20,11 @@ export default function Page () {
   const items = data.pageLayouts.map(layout => (
     <div key={layout.pathname} className='bg-black shadow-md rounded-md overflow-hidden text-center w-80'>
       <Link href={`/admin/page-layouts/${layout.pathname}`} passHref>
-        <a>
-          <div className='p-5'>
-            <h5 className='text-xl font-semibold mb-2'>{layout.pathname}</h5>
-          </div>
-        </a>
+
+        <div className='p-5'>
+          <h5 className='text-xl font-semibold mb-2'>{layout.pathname}</h5>
+        </div>
+
       </Link>
     </div>
   ))

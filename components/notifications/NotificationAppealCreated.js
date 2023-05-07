@@ -6,8 +6,9 @@ import { fromNow } from '../../utils'
 
 export default function NotificationAppealCreated ({ id, actor, created, state, appeal }) {
   return (
-    <Link href={`/api/notifications/${id}`} prefetch={false}>
-      <a>
+    (
+      <Link href={`/api/notifications/${id}`} prefetch={false}>
+
         <div className={clsx('bg-black border-black border-l-2 border-r-2 hover:bg-gray-900', { 'border-accent-600': state === 'unread', 'hover:border-gray-900': state === 'read' })}>
           <div className='flex pl-2 py-2 border-b border-accent-200'>
             <div className='flex-col mt-1 mr-2'>
@@ -29,7 +30,8 @@ export default function NotificationAppealCreated ({ id, actor, created, state, 
             <p className='flex-shrink-0 text-gray-400 text-xs mr-3'>{fromNow(created)}</p>
           </div>
         </div>
-      </a>
-    </Link>
+
+      </Link>
+    )
   )
 }

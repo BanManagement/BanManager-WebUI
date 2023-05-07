@@ -97,14 +97,14 @@ export default function Page () {
           </h1>
           <p className='pb-4 border-b border-accent-200 text-gray-400'>
             <Link href={`/player/${appeal.actor.id}`}>
-              <a>
-                {appeal.actor.name}
-              </a>
+
+              {appeal.actor.name}
+
             </Link> is appealing a{appeal.punishmentExpires === 0 ? ' permanent' : ' temporary'} <PlayerAppealBadge appeal={appeal} /> issued on {format(fromUnixTime(appeal.punishmentCreated), 'dd MMM yyyy')} by&nbsp;
             <Link href={`/player/${appeal.punishmentActor.id}`}>
-              <a>
-                {appeal.punishmentActor.name}
-              </a>
+
+              {appeal.punishmentActor.name}
+
             </Link>
             {appeal.punishmentExpires !== 0 && ` which expires ${fromNow(appeal.punishmentExpires)}`}
           </p>
