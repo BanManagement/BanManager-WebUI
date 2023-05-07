@@ -4,13 +4,13 @@ const {
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.BUNDLE_ANALYZE === 'true'
 })
-const withTM = require('next-transpile-modules')(['lodash-es'])
 const { GitRevisionPlugin } = require('git-revision-webpack-plugin')
 
 const basePath = process.env.BASE_PATH || ''
 
 const nextConfig = (phase) => {
   return {
+    transpilePackages: ['lodash-es'],
     webpack (config) {
       config.module.rules.push({
         test: /\.(png|svg)$/i,
@@ -52,8 +52,7 @@ const nextConfig = (phase) => {
 
 module.exports = (phase, { defaultConfig }) => {
   const plugins = [
-    withBundleAnalyzer,
-    withTM
+    withBundleAnalyzer
   ]
 
   return plugins.reduce((acc, plugin) => plugin(acc), { ...nextConfig(phase) })
