@@ -19,7 +19,9 @@ const ServerSelector = forwardRef(({ onChange, filter = () => true, value, ...re
 
     if (data && !selected) setSelected(data.servers[0].id)
   }, [data, errors])
-  useEffect(() => onChange(selected), [selected])
+  useEffect(() => {
+    onChange(selected)
+  }, [selected])
 
   if (queryLoading) return null
 
