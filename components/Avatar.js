@@ -15,6 +15,7 @@ const Avatar = ({ height, width, scale = '6', uuid, className = '', type = 'avat
       height={height}
       src={url}
       className={`${className} rounded-lg`}
+      alt={uuid}
     />
   )
 }

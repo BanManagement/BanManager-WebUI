@@ -126,8 +126,8 @@ const PlayerBanRow = ({ row, dateFormat, serverId, onDeleted }) => {
 }
 
 export default function PlayerBans ({ id, color, limit = 10 }) {
-  const [tableState, setTableState] = useState({ type: 'PlayerBanRecord', activePage: 1, limit, offset: 0, player: id, serverId: null })
-  const { loading, data, mutate } = useApi({ query: !tableState.serverId ? null : query, variables: tableState })
+  const [tableState, setTableState] = useState({ type: 'PlayerBanRecord', activePage: 1, limit, offset: 0, serverId: null })
+  const { loading, data, mutate } = useApi({ query: !tableState.serverId ? null : query, variables: { ...tableState, player: id } })
 
   const handlePageChange = ({ activePage }) => setTableState({ ...tableState, activePage, offset: (activePage - 1) * limit })
 

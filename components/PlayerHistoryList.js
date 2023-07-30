@@ -9,7 +9,7 @@ import ServerSelector from './admin/ServerSelector'
 export default function PlayerHistoryList ({ id, color }) {
   const { hasServerPermission } = useUser()
   const limit = 10
-  const [tableState, setTableState] = useState({ activePage: 1, limit, offset: 0, serverId: null, player: id })
+  const [tableState, setTableState] = useState({ activePage: 1, limit, offset: 0, serverId: null })
   const { loading, data, errors } = useApi({
     query: !tableState.serverId
       ? null
@@ -24,7 +24,7 @@ export default function PlayerHistoryList ({ id, color }) {
         }
       }
     }`,
-    variables: tableState
+    variables: { ...tableState, player: id }
   })
 
   const handlePageChange = ({ activePage }) => setTableState({ ...tableState, activePage, offset: (activePage - 1) * limit })
