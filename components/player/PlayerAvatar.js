@@ -12,7 +12,7 @@ const PlayerAvatar = ({ id, colourData }) => {
 
   return (
     <div className='text-center relative'>
-      <Avatar className='z-20 scale-x-[-1]' scale='10' uuid={id} type='body' height='365' width='161' />
+      <Avatar className='z-20 scale-x-[-1] relative m-auto' scale='10' uuid={id} type='body' height='365' width='161' />
       <div className='absolute top-0 right-0 h-full w-full'>
         <div className='block absolute top-0 left-0 bottom-0 right-0 z-10'>
           <div className='block absolute bottom-0 w-1/2 h-3/4 left-1/2 ml-2 -translate-x-1/2 -skew-x-20 before:contents before:absolute before:top-0 before:w-11/12 before:right-3 before:bottom-0 before:mix-blend-overlay before:bg-opacity-20 before:bg-black' style={backgroundStyle} />
