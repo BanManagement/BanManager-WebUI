@@ -52,7 +52,7 @@
     "knex": "2.4.0",
     "knex-on-duplicate-update": "2.3.0",
     "koa": "2.14.2",
-    "koa-bodyparser": "4.3.0",
+    "koa-bodyparser": "4.4.1",
     "koa-conditional-get": "3.0.0",
     "koa-etag": "4.0.0",
     "koa-pino-logger": "4.0.0",
