@@ -37,7 +37,8 @@ const graphQLClient = new GraphQLClient(process.env.BASE_PATH + '/graphql', {
   credentials: 'include'
 })
 
-const graphqlFetcher = (query, ...args) => {
+const graphqlFetcher = (key) => {
+  const [query, ...args] = key
   // Creates an object. Odd indexes are keys and even indexes are values.
   // Needs to be flat to avoid unnecessary rerendering since swr does shallow comparison.
   const variables = [...(args || [])].reduce((acc, arg, index, arr) => {
@@ -66,7 +67,7 @@ export const useMutateApi = (operation) => {
     setLoading(true)
 
     try {
-      const data = await graphqlFetcher(operation.query, ...flatVars)
+      const data = await graphqlFetcher([operation.query, ...flatVars])
 
       setState({ ...state, errors: null, data })
     } catch (error) {
@@ -87,20 +88,17 @@ export const useMatchMutate = () => {
       throw new Error('matchMutate requires the cache provider to be a Map instance')
     }
 
-    const flatVars = toPairs(args).flat()
-    const argKey = unstableSerialize(flatVars).slice(1)
-
     let matchingKey
 
     for (const key of cache.keys()) {
       if (key.includes(operation)) {
         const value = cache.get(key)
 
-        if (!value || !value[operation]) {
+        if (!value) {
           continue
         }
 
-        if (!argKey || key.includes(argKey)) {
+        if (key === unstableSerialize(value._k)) {
           matchingKey = key
           break
         }
@@ -110,7 +108,7 @@ export const useMatchMutate = () => {
     if (!matchingKey) return () => {}
 
     return executor(cache.get(matchingKey), (...args) => {
-      mutate(matchingKey, ...args)
+      mutate(matchingKey, args[0])
     })
   }
 }

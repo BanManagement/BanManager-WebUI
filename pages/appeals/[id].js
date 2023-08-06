@@ -77,7 +77,7 @@ export default function Page () {
   const canComment = appeal.state.id < 3 && appeal.acl.comment
   const canUpdateState = appeal.acl.state
   const canAssign = appeal.acl.assign
-  const mutateCommentInsert = (comment) => (data, mutate) => {
+  const mutateCommentInsert = (comment) => ({ data }, mutate) => {
     const records = data.listPlayerAppealComments.records.slice()
 
     records.push(comment)
