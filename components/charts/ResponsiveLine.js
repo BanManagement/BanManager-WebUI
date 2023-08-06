@@ -1,4 +1,6 @@
-import { ResponsiveLine as Line } from '@nivo/line'
+import dynamic from 'next/dynamic'
+
+const Line = dynamic(() => import('@nivo/line').then(m => m.ResponsiveLine), { ssr: false })
 
 const ResponsiveLine = ({ chartData }) => {
   return (
