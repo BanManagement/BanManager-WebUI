@@ -20,7 +20,7 @@
 </p>
 <p align="center">
   <a aria-label="Tests status" href="https://github.com/BanManagement/BanManager-WebUI/actions/workflows/build.yaml">
-    <img alt="" src="https://img.shields.io/github/workflow/status/BanManagement/BanManager-WebUI/Node.js%20CI?label=Tests&style=for-the-badge&labelColor=000000">
+    <img alt="" src="https://img.shields.io/github/actions/workflow/status/BanManagement/BanManager-WebUI/build.yaml?label=Tests&style=for-the-badge&labelColor=000000">
   </a>
   <a aria-label="License" href="https://github.com/BanManagement/BanManager-WebUI/blob/master/LICENSE">
     <img alt="" src="https://img.shields.io/github/license/BanManagement/BanManager-WebUI?labelColor=000&style=for-the-badge">
