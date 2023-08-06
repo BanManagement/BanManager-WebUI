@@ -1,7 +1,7 @@
 import { createContext, useState } from 'react'
 import dynamic from 'next/dynamic'
 
-const Pie = dynamic(() => import('@nivo/pie').then(m => m.ResponsivePie), { ssr: false });
+const Pie = dynamic(() => import('@nivo/pie').then(m => m.ResponsivePie), { ssr: false })
 
 export const PieContext = createContext({
   selectedLabel: null,
