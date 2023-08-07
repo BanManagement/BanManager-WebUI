@@ -8,15 +8,14 @@ const DropdownContext = createContext({ isActive: false, setIsActive: () => {} }
 const Dropdown = ({ trigger = () => {}, children }) => {
   const dropdownRef = useRef(null)
   const [isActive, setIsActive] = useDetectOutsideClick(dropdownRef, false)
-  const onClickToggle = () => setIsActive(!isActive)
+  const onClickToggle = () => setIsActive(prevActive => !prevActive)
 
   return (
     <div className='relative inline-block text-left'>
-      <div>
+      <div ref={dropdownRef}>
         {trigger({ onClickToggle })}
       </div>
       <div
-        ref={dropdownRef}
         className={clsx('origin-top-right absolute z-50 right-0 mt-2 w-56 rounded-md shadow-lg bg-gray-800 ring-1 ring-black ring-opacity-5',
           {
             hidden: !isActive
