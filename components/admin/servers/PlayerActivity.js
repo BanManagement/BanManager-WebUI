@@ -129,7 +129,7 @@ const ActivityRow = ({ row, index }) => {
             </span>
           </div>
           <div className='pt-2'>
-            {message.reduce((prev, curr) => [prev, ' ', curr])}
+            {message.length > 0 ? message.reduce((prev, curr) => [prev, ' ', curr]) : ''}
           </div>
           <div>
             <TimeFromNow timestamp={row.created} />
