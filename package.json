@@ -31,7 +31,7 @@
     "apollo-server-plugin-response-cache": "3.8.1",
     "argon2": "0.29.1",
     "autoprefixer": "10.4.16",
-    "clsx": "1.2.1",
+    "clsx": "2.0.0",
     "dataloader": "2.1.0",
     "date-fns": "2.29.3",
     "db-migrate": "1.0.0-beta.18",
