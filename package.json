@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@acusti/react-code-input": "3.11.0",
-    "@artsy/fresnel": "3.5.0",
+    "@artsy/fresnel": "6.2.1",
     "@confuser/db-migrate-mysql": "^2.3.0",
     "@graphql-tools/schema": "9.0.19",
     "@graphql-tools/utils": "8.13.1",
