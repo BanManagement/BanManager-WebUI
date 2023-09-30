@@ -14,7 +14,7 @@ jobs:
     name: Node.js ${{ matrix.node-version }}
     strategy:
       matrix:
-        node-version: [16.x, 18.x, 20.x]
+        node-version: [18.x, 20.x]
 
     env:
       DB_HOST: 127.0.0.1

@@ -110,7 +110,7 @@
     "uuid": "9.0.0"
   },
   "engines": {
-    "node": "16 || 18 || 20"
+    "node": "18 || 20"
   },
   "license": "MIT",
   "private": true,
