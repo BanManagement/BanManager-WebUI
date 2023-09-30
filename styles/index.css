@@ -12,12 +12,7 @@
 @layer components {
   @import './react-select.css';
   @import './react-code-input.css';
-  @import './react-grid-layout.css';
   @import './react-datetime.css';
-
-  .react-grid-item > .react-resizable-handle::after {
-    border-right: 2px white !important;
-  }
 
   .loader {
     border-top-color: theme('colors.accent.400') !important;

@@ -1,7 +1,6 @@
 import Head from 'next/head'
 import { DefaultSeo } from 'next-seo'
 
-import 'react-resizable/css/styles.css'
 import '../styles/index.css'
 
 function MyApp ({ Component, pageProps, graphql }) {

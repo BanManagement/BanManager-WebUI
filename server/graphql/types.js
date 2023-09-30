@@ -462,42 +462,6 @@ enum OrderBySessionHistoryInput {
   join_DESC
 }
 
-type DeviceComponent {
-  id: ID!
-  component: String!
-  x: Int!
-  y: Int!
-  w: Int!
-  h: Int!
-  meta: JSONObject
-}
-
-type ReusableDeviceComponent {
-  component: String!
-  x: Int
-  y: Int
-  w: Int
-  h: Int
-  meta: JSONObject
-}
-
-type PageDevice {
-  components: [DeviceComponent!]! @cacheControl(scope: PUBLIC, maxAge: 300)
-  unusedComponents: [DeviceComponent!]! @allowIf(resource: "servers", permission: "manage")
-  reusableComponents: [ReusableDeviceComponent!]! @allowIf(resource: "servers", permission: "manage")
-}
-
-type PageDevices {
-  mobile: PageDevice @cacheControl(scope: PUBLIC, maxAge: 300)
-  tablet: PageDevice @cacheControl(scope: PUBLIC, maxAge: 300)
-  desktop: PageDevice @cacheControl(scope: PUBLIC, maxAge: 300)
-}
-
-type PageLayout @cacheControl(scope: PUBLIC, maxAge: 300) {
-  pathname: ID! @cacheControl(scope: PUBLIC, maxAge: 300)
-  devices: PageDevices! @cacheControl(scope: PUBLIC, maxAge: 300)
-}
-
 type Statistics {
   totalActiveBans: Int!
   totalActiveMutes: Int!
@@ -627,9 +591,6 @@ type Query {
 
   navigation: Navigation!
   adminNavigation: AdminNavigation! @allowIf(resource: "servers", permission: "manage")
-
-  pageLayout(pathname: String!): PageLayout!
-  pageLayouts: [PageLayout!] @allowIf(resource: "servers", permission: "manage")
 
   roles(defaultOnly: Boolean): [Role!] @allowIf(resource: "servers", permission: "manage")
   role(id: ID!): Role! @allowIf(resource: "servers", permission: "manage")
@@ -777,27 +738,6 @@ input ReportCommentInput {
   comment: String! @constraint(minLength: 2, maxLength: 255)
 }
 
-input UpdatePageLayoutInput {
-  mobile: PageLayoutDeviceInput!
-  tablet: PageLayoutDeviceInput!
-  desktop: PageLayoutDeviceInput!
-}
-
-input PageLayoutDeviceInput {
-  components: [PageLayoutComponentInput!]!
-  unusedComponents: [PageLayoutComponentInput!]!
-}
-
-input PageLayoutComponentInput {
-  id: ID
-  component: String!
-  x: Int!
-  y: Int!
-  w: Int!
-  h: Int!
-  meta: JSONObject
-}
-
 input RoleInput {
   id: ID!
 }
@@ -880,8 +820,6 @@ type Mutation {
 
   setPassword(currentPassword: String, newPassword: String!): Me! @allowIfLoggedIn
   setEmail(currentPassword: String!, email: String!): Me! @allowIfLoggedIn
-
-  updatePageLayout(pathname: ID!, input: UpdatePageLayoutInput!): PageLayout @allowIf(resource: "servers", permission: "manage")
 
   createNotificationRule(input: NotificationRuleInput!): NotificationRule! @allowIf(resource: "servers", permission: "manage")
   updateNotificationRule(id: ID!, input: NotificationRuleInput!): NotificationRule! @allowIf(resource: "servers", permission: "manage")

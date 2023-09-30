@@ -1,5 +1,4 @@
 import Document, { Html, Head, Main, NextScript } from 'next/document'
-import { mediaStyles } from '../components/Media'
 
 export default class MyDocument extends Document {
   render () {
@@ -20,11 +19,6 @@ export default class MyDocument extends Document {
           <link
             href='https://fonts.googleapis.com/css2?family=Inter&display=optional'
             rel='stylesheet'
-          />
-
-          <style
-            type='text/css'
-            dangerouslySetInnerHTML={{ __html: mediaStyles }}
           />
         </Head>
         <body>
