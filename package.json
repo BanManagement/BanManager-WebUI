@@ -93,7 +93,7 @@
   "devDependencies": {
     "@babel/eslint-parser": "7.19.1",
     "@next/eslint-plugin-next": "13.4.1",
-    "@oclif/test": "2.2.13",
+    "@oclif/test": "3.0.1",
     "coveralls-next": "4.2.0",
     "cypress": "9.7.0",
     "eslint-plugin-cypress": "2.12.1",
