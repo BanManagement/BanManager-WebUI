@@ -27,7 +27,7 @@ jobs:
       SERVER_FOOTER_NAME: BanManagement
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
@@ -93,7 +93,7 @@ jobs:
   build_docker:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - run: docker build . # TODO cache
 
   finish:
