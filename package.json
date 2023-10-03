@@ -46,7 +46,7 @@
     "graphql-request": "6.1.0",
     "graphql-type-json": "0.3.2",
     "hibp": "13.0.0",
-    "inquirer": "8.2.5",
+    "inquirer": "8.2.6",
     "js-yaml": "4.1.0",
     "knex": "2.5.1",
     "knex-on-duplicate-update": "2.3.0",
