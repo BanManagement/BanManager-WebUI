@@ -87,7 +87,7 @@
     "url-loader": "4.1.1",
     "uuid-parse": "1.1.0",
     "validator": "13.11.0",
-    "web-push": "3.5.0",
+    "web-push": "3.6.6",
     "xstate": "4.33.6"
   },
   "devDependencies": {
