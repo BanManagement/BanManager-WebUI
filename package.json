@@ -103,7 +103,7 @@
     "json-to-graphql-query": "2.2.5",
     "mockdate": "3.0.5",
     "nixt": "0.5.1",
-    "nock": "13.3.6",
+    "nock": "13.3.7",
     "standard": "16.0.4",
     "standardx": "7.0.0",
     "supertest": "6.3.3",
