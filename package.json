@@ -59,7 +59,7 @@
     "koa-session": "6.4.0",
     "lodash-es": "4.17.21",
     "memoizee": "0.4.15",
-    "mysql2": "3.6.3",
+    "mysql2": "3.6.5",
     "nanoid": "3.3.7",
     "next": "13.4.1",
     "next-absolute-url": "1.2.2",
