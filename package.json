@@ -69,7 +69,7 @@
     "pino": "8.16.2",
     "points": "3.2.0",
     "postcss": "8.4.32",
-    "rate-limiter-flexible": "3.0.4",
+    "rate-limiter-flexible": "3.0.6",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-favicon": "2.0.3",
