@@ -1,9 +1,9 @@
-const { Command } = require('@oclif/command')
+const { Command } = require('@oclif/core')
 const DBMigrate = require('db-migrate')
 
 class CreateMigrationCommand extends Command {
   async run () {
-    const { args } = this.parse(CreateMigrationCommand)
+    const { args } = await this.parse(CreateMigrationCommand)
     const dbConfig = {
       connectionLimit: 1,
       host: process.env.DB_HOST,

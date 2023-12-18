@@ -1,4 +1,4 @@
-const { Command } = require('@oclif/command')
+const { Command } = require('@oclif/core')
 const DBMigrate = require('db-migrate')
 
 class UpdateCommand extends Command {
