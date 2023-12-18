@@ -154,7 +154,7 @@ const notifyAppealPlayers = async (dbPool, type, appealId, serverId, commentId, 
 
     const canView = hasPermission(permissionValues, resourceValue, 'player.appeals', 'view.any') ||
       (hasPermission(permissionValues, resourceValue, 'player.appeals', 'view.own') && player.equals(data.actor_id)) ||
-      (hasPermission(permissionValues, resourceValue, 'player.appeals', 'view.assigned') && player.equals(data.assignee_id))
+      (hasPermission(permissionValues, resourceValue, 'player.appeals', 'view.assigned') && data.assignee_id && player.equals(data.assignee_id))
 
     return canView
   })
