@@ -40,7 +40,7 @@ const nextConfig = (phase) => {
 
       return {
         GIT_COMMIT: version,
-        IS_DEV: phase === PHASE_DEVELOPMENT_SERVER,
+        IS_DEV: (phase === PHASE_DEVELOPMENT_SERVER).toString(),
         SERVER_FOOTER_NAME: process.env.SERVER_FOOTER_NAME || 'Missing SERVER_FOOTER_NAME env var',
         BASE_PATH: basePath
       }
