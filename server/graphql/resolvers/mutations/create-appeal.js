@@ -5,7 +5,10 @@ const { notifyRuleGroups, subscribeAppeal } = require('../../../data/notificatio
 module.exports = async function createAppeal (obj, { input: { serverId, punishmentId, type, reason } }, { state, session }, info) {
   if (!state.serversPool.has(serverId)) throw new ExposedError('Server does not exist')
 
-  const exists = await state.dbPool('bm_web_appeals').where({ server_id: serverId, punishment_id: punishmentId, punishment_type: type }).first()
+  const exists = await state.dbPool('bm_web_appeals')
+    .where({ server_id: serverId, punishment_id: punishmentId, punishment_type: type })
+    .andWhere('state_id', '<=', 2)
+    .first()
 
   if (exists) {
     throw new ExposedError('An appeal already exists for this punishment')
