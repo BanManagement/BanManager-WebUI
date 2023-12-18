@@ -22,9 +22,7 @@ export default function PlayerNoteForm ({ serverFilter, onFinished, query, parse
     if (Object.keys(data).some(key => !!data[key].id)) onFinished()
   }, [data])
 
-  const onSubmit = (data) => {
-    load(parseVariables(data))
-  }
+  const onSubmit = (data) => load(parseVariables(data))
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className='mx-auto'>
