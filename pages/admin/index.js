@@ -58,7 +58,7 @@ function Page ({ latestVersion, version, newFeatures, fixes }) {
 
   return (
     <AdminLayout title='Admin'>
-      {process.env.IS_DEV &&
+      {process.env.IS_DEV === 'true' &&
         <Message warning>
           <Message.Header>Developer Mode</Message.Header>
           <Message.List>
