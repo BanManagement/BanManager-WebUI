@@ -83,7 +83,7 @@ export default function PlayerAppeals ({ id, title }) {
 
   const handlePageChange = ({ activePage }) => setTableState({ ...tableState, activePage, offset: (activePage - 1) * tableState.limit })
   const dateFormat = 'yyyy-MM-dd HH:mm:ss'
-  const total = data?.listPlayerSessionHistory?.total || 0
+  const total = data?.listPlayerAppeals?.total || 0
   const totalPages = Math.ceil(total / tableState.limit)
 
   return (
