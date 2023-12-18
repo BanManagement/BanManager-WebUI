@@ -22,8 +22,7 @@
     "@nivo/core": "0.83.1",
     "@nivo/line": "0.83.1",
     "@nivo/pie": "0.83.1",
-    "@oclif/command": "1.8.36",
-    "@oclif/config": "1.18.17",
+    "@oclif/core": "3.15.0",
     "@oclif/plugin-help": "5.2.20",
     "@universemc/react-palette": "1.0.3",
     "@xstate/react": "3.2.2",
@@ -128,6 +127,8 @@
   },
   "oclif": {
     "commands": "./cli/commands",
+    "additionalHelpFlags": ["-h"],
+    "additionalVersionFlags": ["-v"],
     "bin": "bm-cli",
     "hooks": {
       "init": "./cli/hooks/init"

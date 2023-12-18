@@ -2,7 +2,7 @@ const fs = require('fs').promises
 const inquirer = require('inquirer')
 const editDotenv = require('edit-dotenv')
 const DBMigrate = require('db-migrate')
-const { Command, flags } = require('@oclif/command')
+const { Command, Flags } = require('@oclif/core')
 const { isAlphanumeric, isEmail, isLength, isUUID } = require('validator')
 const { generateVAPIDKeys } = require('web-push')
 const { merge } = require('lodash')
@@ -15,7 +15,7 @@ const defaultTables = require('../../server/data/tables').tables
 
 class SetupCommand extends Command {
   async run () {
-    const { flags } = this.parse(SetupCommand)
+    const { flags } = await this.parse(SetupCommand)
     let contents = ''
     const save = async (changes = {}) => {
       if (flags.writeFile) {
@@ -386,7 +386,7 @@ class SetupCommand extends Command {
 
 SetupCommand.description = 'Setup the WebUI'
 SetupCommand.flags = {
-  writeFile: flags.string()
+  writeFile: Flags.string()
 }
 
 module.exports = SetupCommand
