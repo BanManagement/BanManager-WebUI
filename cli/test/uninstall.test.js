@@ -38,7 +38,7 @@ describe.skip('uninstall', () => {
       .env('DB_USER', dbPool.user)
       .env('DB_PASSWORD', dbPool.password)
       .env('DB_NAME', dbPool.database)
-      .run('./bin/run uninstall')
+      .run('./bin/run.js uninstall')
       .on(/Confirm/).respond('y\n')
       .stdout(/Database rolled back/)
       .end(done)

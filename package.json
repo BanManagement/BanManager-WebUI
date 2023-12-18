@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "author": "James Mortemore (jamesmortemore@gmail.com)",
   "bin": {
-    "bm-cli": "./bin/run --writeFile .env"
+    "bm-cli": "./bin/run.js --writeFile .env"
   },
   "browser": {
     "mobile-detect": false
@@ -117,11 +117,11 @@
     "build": "next build",
     "coveralls": "cat ./coverage/lcov.info | coveralls",
     "dev": "npx nodemon server.js | npx pino-pretty",
-    "heroku-postbuild": "npm run build && node bin/run update",
+    "heroku-postbuild": "npm run build && node bin/run.js update",
     "lint": "standardx",
     "start": "node server.js",
     "test": "npm run lint && jest --coverage -w 1 --no-cache",
-    "setup": "node bin/run setup --writeFile .env",
+    "setup": "node bin/run.js setup --writeFile .env",
     "cypress": "cypress open",
     "e2e:build": "node cypress/setup.js && npm run build"
   },

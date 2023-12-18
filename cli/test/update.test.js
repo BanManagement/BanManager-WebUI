@@ -21,7 +21,7 @@ describe('update', () => {
       .env('DB_USER', dbPool.user)
       .env('DB_PASSWORD', dbPool.password)
       .env('DB_NAME', dbPool.database)
-      .run('./bin/run update')
+      .run('./bin/run.js update')
       .stdout(/Done/)
       .end(done)
   })

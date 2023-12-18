@@ -7,7 +7,7 @@ describe('encrypt', () => {
     crypto.createKey().then((key) => {
       nixt()
         .env('ENCRYPTION_KEY', key.toString('hex'))
-        .run('./bin/run encrypt')
+        .run('./bin/run.js encrypt')
         .on(/Value to encrypt/).respond('test\n')
         .stdout(/Encrypted value/)
         .end(done)
