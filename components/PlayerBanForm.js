@@ -20,9 +20,7 @@ export default function PlayerBanForm ({ serverFilter, onFinished, query, parseV
     if (Object.keys(data).some(key => !!data[key])) onFinished(data)
   }, [data])
 
-  const onSubmit = (data) => {
-    load(parseVariables(data))
-  }
+  const onSubmit = (data) => load(parseVariables(data))
   const toggleExpiry = (e) => {
     e.preventDefault()
 

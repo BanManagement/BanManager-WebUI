@@ -18,9 +18,7 @@ export default function PlayerCommentForm ({ onFinish, parseVariables, query }) 
     }
   }, [data])
 
-  const onSubmit = (data) => {
-    load(parseVariables(data))
-  }
+  const onSubmit = (data) => load(parseVariables(data))
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className='mx-auto flex flex-wrap'>

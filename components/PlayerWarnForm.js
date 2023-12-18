@@ -20,9 +20,7 @@ export default function PlayerWarnForm ({ serverFilter, onFinished, query, parse
     if (Object.keys(data).some(key => !!data[key].id)) onFinished(data)
   }, [data])
 
-  const onSubmit = (data) => {
-    load(parseVariables(data))
-  }
+  const onSubmit = (data) => load(parseVariables(data))
   const toggleExpiry = (e) => {
     e.preventDefault()
 

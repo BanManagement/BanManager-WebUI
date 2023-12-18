@@ -25,9 +25,7 @@ export default function PlayerAppealForm ({ actor, reason, expires, created, ser
     if (Object.keys(data).some(key => !!data[key].id)) onFinished(data)
   }, [data])
 
-  const onSubmit = (data) => {
-    load(parseVariables(data))
-  }
+  const onSubmit = (data) => load(parseVariables(data))
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className='mx-auto'>
