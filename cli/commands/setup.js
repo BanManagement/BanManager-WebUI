@@ -285,7 +285,7 @@ class SetupCommand extends Command {
       const player = await playerExists(conn, table, parsedId)
 
       if (!player) {
-        this.log(`Could not find Player ${id}`)
+        this.log(`Could not find Player ${id}, ensure the player has joined the Minecraft server after installing BanManager`)
         return askPlayer(question, conn, table)
       }
 
