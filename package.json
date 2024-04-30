@@ -29,7 +29,7 @@
     "apollo-server-koa": "3.12.1",
     "apollo-server-plugin-response-cache": "3.8.2",
     "argon2": "0.29.1",
-    "autoprefixer": "10.4.16",
+    "autoprefixer": "10.4.19",
     "clsx": "2.1.0",
     "dataloader": "2.2.2",
     "date-fns": "3.6.0",
