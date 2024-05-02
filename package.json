@@ -48,7 +48,7 @@
     "inquirer": "8.2.6",
     "js-yaml": "4.1.0",
     "knex": "3.1.0",
-    "knex-on-duplicate-update": "2.3.1",
+    "knex-on-duplicate-update": "2.3.2",
     "koa": "2.15.0",
     "koa-bodyparser": "4.4.1",
     "koa-conditional-get": "3.0.0",
