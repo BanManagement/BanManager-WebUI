@@ -4,7 +4,7 @@ const { unparse } = require('uuid-parse')
 const { makeExecutableSchema } = require('@graphql-tools/schema')
 const typeDefs = require('./types')
 const resolvers = require('./resolvers')
-const { constraintDirectiveTypeDefs, constraintDirective } = require('graphql-constraint-directive')
+const { constraintDirectiveTypeDefs, createApollo4QueryValidationPlugin } = require('graphql-constraint-directive/apollo4')
 const { allowIfDirectiveTypeDefs, allowIfDirective } = require('./directives/allow-if')
 const { allowIfLoggedInDirectiveTypeDefs, allowIfLoggedInDirective } = require('./directives/allow-if-logged-in')
 const { sqlRelationDirectiveTypeDefs, sqlRelationDirective } = require('./directives/sql-relation')
@@ -29,7 +29,6 @@ module.exports = ({ logger }) => {
     resolvers
   })
 
-  schema = constraintDirective()(schema)
   schema = allowIfDirective()(schema)
   schema = allowIfLoggedInDirective()(schema)
   schema = sqlRelationDirective()(schema)
@@ -49,14 +48,8 @@ module.exports = ({ logger }) => {
     formatError (error) {
       const originalError = findOriginalError(error)
 
-      if (originalError?.extensions?.code === 'ERR_EXPOSED') {
+      if (originalError?.extensions?.code === 'ERR_EXPOSED' || originalError?.extensions?.code === 'BAD_USER_INPUT') {
         return originalError
-      }
-
-      if (originalError?.extensions?.code === 'ERR_GRAPHQL_CONSTRAINT_VALIDATION') {
-        const { fieldName, message } = originalError
-
-        return { ...originalError, message: `${fieldName} ${message}` }
       }
 
       logger.error(originalError.stack ? originalError.stack : originalError)
@@ -64,6 +57,7 @@ module.exports = ({ logger }) => {
       return { message: 'Internal Server Error' }
     },
     plugins: [
+      createApollo4QueryValidationPlugin(),
       {
         requestDidStart ({ request, contextValue }) {
           contextValue.log.debug(request.query)
