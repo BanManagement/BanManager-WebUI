@@ -6,9 +6,12 @@ const Koa = require('koa')
 const Router = require('@koa/router')
 const reqLogger = require('koa-pino-logger')
 const session = require('koa-session')
+const cors = require('@koa/cors')
+const bodyParser = require('koa-bodyparser')
 
 // GraphQL/Apollo
-const { ApolloServer } = require('apollo-server-koa')
+const { ApolloServer } = require('@apollo/server')
+const { koaMiddleware } = require('@as-integrations/koa')
 const schema = require('./graphql/schema')
 const loaders = require('./graphql/loaders')
 const acl = require('./middleware/acl')
@@ -33,6 +36,8 @@ module.exports = async function ({ dbPool, logger, serversPool, disableUI = fals
 
   server.keys = [process.env.SESSION_KEY]
 
+  server.use(cors())
+  server.use(bodyParser())
   server.use(async (ctx, next) => {
     try {
       await next()
@@ -80,7 +85,11 @@ module.exports = async function ({ dbPool, logger, serversPool, disableUI = fals
 
   await apolloServer.start()
 
-  router.use(apolloServer.getMiddleware({ path: (process.env.BASE_PATH || '') + '/graphql' }))
+  router.post('/graphql', koaMiddleware(apolloServer, {
+    context: async ({ ctx }) => {
+      return ctx
+    }
+  }))
 
   if (handle) {
     router.all('(.*)', async ctx => {

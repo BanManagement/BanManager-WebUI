@@ -82,7 +82,7 @@ describe('Mutation create player note', () => {
 
     assert(body)
     assert.strictEqual(body.errors[0].message,
-      'message Must be no more than 255 characters in length')
+      'Argument "input" of "createPlayerNote" got invalid value "wowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowowo" at "message". Must be no more than 255 characters in length')
   })
 
   test('should resolve all fields', async () => {

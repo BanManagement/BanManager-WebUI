@@ -64,7 +64,7 @@ describe('Mutation create appeal', () => {
     assert(body)
     assert(body.errors)
 
-    assert.strictEqual(body.errors[0].message, 'reason Must be at least 20 characters in length')
+    assert.strictEqual(body.errors[0].message, 'Argument "input" of "createAppeal" got invalid value "testtesttesttesttes" at "reason". Must be at least 20 characters in length')
   })
 
   test('should error if appealing a punishment owned by another player', async () => {

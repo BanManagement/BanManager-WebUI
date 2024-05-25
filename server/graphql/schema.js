@@ -1,10 +1,10 @@
 const depthLimit = require('graphql-depth-limit')
-const responseCachePlugin = require('apollo-server-plugin-response-cache').default
+const responseCachePlugin = require('@apollo/server-plugin-response-cache').default
 const { unparse } = require('uuid-parse')
 const { makeExecutableSchema } = require('@graphql-tools/schema')
 const typeDefs = require('./types')
 const resolvers = require('./resolvers')
-const { constraintDirectiveTypeDefs, constraintDirective } = require('graphql-constraint-directive')
+const { constraintDirectiveTypeDefs, createApollo4QueryValidationPlugin } = require('graphql-constraint-directive/apollo4')
 const { allowIfDirectiveTypeDefs, allowIfDirective } = require('./directives/allow-if')
 const { allowIfLoggedInDirectiveTypeDefs, allowIfLoggedInDirective } = require('./directives/allow-if-logged-in')
 const { sqlRelationDirectiveTypeDefs, sqlRelationDirective } = require('./directives/sql-relation')
@@ -29,7 +29,6 @@ module.exports = ({ logger }) => {
     resolvers
   })
 
-  schema = constraintDirective()(schema)
   schema = allowIfDirective()(schema)
   schema = allowIfLoggedInDirective()(schema)
   schema = sqlRelationDirective()(schema)
@@ -49,14 +48,8 @@ module.exports = ({ logger }) => {
     formatError (error) {
       const originalError = findOriginalError(error)
 
-      if (originalError.exposed) {
+      if (originalError?.extensions?.code === 'ERR_EXPOSED' || originalError?.extensions?.code === 'BAD_USER_INPUT') {
         return originalError
-      }
-
-      if (originalError.code === 'ERR_GRAPHQL_CONSTRAINT_VALIDATION') {
-        const { fieldName, message } = originalError
-
-        return { ...originalError, message: `${fieldName} ${message}` }
       }
 
       logger.error(originalError.stack ? originalError.stack : originalError)
@@ -64,15 +57,16 @@ module.exports = ({ logger }) => {
       return { message: 'Internal Server Error' }
     },
     plugins: [
+      createApollo4QueryValidationPlugin(),
       {
-        requestDidStart ({ request, context }) {
-          context.log.debug(request.query)
+        requestDidStart ({ request, contextValue }) {
+          contextValue.log.debug(request.query)
         }
       },
       responseCachePlugin({
-        sessionId: ({ context }) => {
-          if (context.session && context.session.playerId) {
-            return unparse(context.session.playerId)
+        sessionId: ({ contextValue }) => {
+          if (contextValue.session && contextValue.session.playerId) {
+            return unparse(contextValue.session.playerId)
           }
 
           return 'public' // Shared cache for guests
