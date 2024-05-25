@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { GraphQLClient } from 'graphql-request'
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/compat/router'
 import { formatDistanceStrict, fromUnixTime } from 'date-fns'
 import useSWR, { useSWRConfig, unstable_serialize as unstableSerialize } from 'swr'
 import { toPairs } from 'lodash-es'
@@ -33,7 +33,7 @@ export const absoluteUrl = (req, localhostAddress = 'localhost:3000') => {
   }
 }
 
-const graphQLClient = new GraphQLClient(process.env.BASE_PATH + '/graphql', {
+const graphQLClient = new GraphQLClient((process.env.BASE_PATH || '') + '/graphql', {
   credentials: 'include'
 })
 
@@ -114,7 +114,7 @@ export const useMatchMutate = () => {
 }
 
 const userFetcher = () =>
-  fetch(process.env.BASE_PATH + '/graphql', {
+  fetch((process.env.BASE_PATH || '') + '/graphql', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     credentials: 'include',

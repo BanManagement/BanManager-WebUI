@@ -54,7 +54,7 @@ export default function Nav ({ leftItems, mobileItems, rightItems }) {
             <Link href='/' passHref>
 
               <span className='sr-only'>Home</span>
-              <Image src={process.env.BASE_PATH + '/images/banmanager-icon.png'} alt='Logo' width='40' height='40' />
+              <Image src={(process.env.BASE_PATH || '') + '/images/banmanager-icon.png'} alt='Logo' width='40' height='40' />
 
             </Link>
             <div className='mx-8 w-48'>
@@ -84,7 +84,7 @@ export default function Nav ({ leftItems, mobileItems, rightItems }) {
           <Link href='/' passHref key='logo-icon'>
 
             <span className='sr-only'>Home</span>
-            <Image width='40' height='40' src={process.env.BASE_PATH + '/images/banmanager-icon.png'} alt='Logo' />
+            <Image width='40' height='40' src={(process.env.BASE_PATH || '') + '/images/banmanager-icon.png'} alt='Logo' />
 
           </Link>
         </NavigationOverlay.Header>

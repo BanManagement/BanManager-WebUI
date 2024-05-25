@@ -13,7 +13,7 @@ const AccountPanel = () => {
   const handleLogout = async () => {
     // Using cookies for SSR instead of local storage, which are set to HttpOnly
     // requires server to delete cookie
-    const response = await fetch(process.env.BASE_PATH + '/api/logout',
+    const response = await fetch((process.env.BASE_PATH || '') + '/api/logout',
       {
         method: 'POST',
         headers: new Headers({ 'Content-Type': 'application/json' }),

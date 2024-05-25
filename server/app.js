@@ -86,6 +86,8 @@ module.exports = async function ({ dbPool, logger, serversPool, disableUI = fals
     router.all('(.*)', async ctx => {
       if (ctx.session) await ctx.session.manuallyCommit()
 
+      ctx.response.status = 200
+
       await handle(ctx.req, ctx.res)
       ctx.respond = false
     })
