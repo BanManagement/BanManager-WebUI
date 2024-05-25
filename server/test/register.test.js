@@ -133,6 +133,7 @@ describe('/api/register', () => {
   test('should error if password too common/insecure', async () => {
     nock('https://api.pwnedpasswords.com')
       .get('/range/8843D')
+      .query(true)
       .reply(200, '7F92416211DE9EBB963FF4CE28125932878:11603')
 
     const cookie = await getAuthPassword(request, 'admin@banmanagement.com')
@@ -152,6 +153,7 @@ describe('/api/register', () => {
   test('should error if player has an account', async () => {
     nock('https://api.pwnedpasswords.com')
       .get('/range/DDE9E')
+      .query(true)
       .reply(200, '')
 
     const cookie = await getAuthPassword(request, 'admin@banmanagement.com')
@@ -176,6 +178,7 @@ describe('/api/register', () => {
 
     nock('https://api.pwnedpasswords.com')
       .get('/range/DC724')
+      .query(true)
       .reply(200, '')
 
     const cookie = await getAuthPin(request, server, player)
@@ -200,6 +203,7 @@ describe('/api/register', () => {
 
     nock('https://api.pwnedpasswords.com')
       .get('/range/DC724')
+      .query(true)
       .reply(200, '')
 
     const cookie = await getAuthPin(request, server, player)
@@ -245,6 +249,7 @@ describe('/api/register', () => {
 
     nock('https://api.pwnedpasswords.com')
       .get('/range/DC724')
+      .query(true)
       .reply(200, '')
 
     const cookie = await getAuthPin(request, server, player)

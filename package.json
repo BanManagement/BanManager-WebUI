@@ -47,7 +47,7 @@
     "graphql-request": "6.1.0",
     "graphql-tag": "^2.12.6",
     "graphql-type-json": "0.3.2",
-    "hibp": "13.0.0",
+    "hibp": "14.1.1",
     "inquirer": "8.2.6",
     "js-yaml": "4.1.0",
     "knex": "3.1.0",
@@ -105,14 +105,14 @@
     "json-to-graphql-query": "2.2.5",
     "mockdate": "3.0.5",
     "nixt": "0.5.1",
-    "nock": "13.4.0",
+    "nock": "^14.0.0-beta.6",
     "standard": "16.0.4",
     "standardx": "7.0.0",
     "supertest": "6.3.4",
     "uuid": "9.0.1"
   },
   "engines": {
-    "node": "18 || 20"
+    "node": "20 || 22"
   },
   "license": "MIT",
   "private": true,

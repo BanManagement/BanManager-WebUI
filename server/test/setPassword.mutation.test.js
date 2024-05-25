@@ -110,6 +110,7 @@ describe('Mutation set password', () => {
   test('should error if new password is too common', async () => {
     nock('https://api.pwnedpasswords.com')
       .get('/range/8843D')
+      .query(true)
       .reply(200, '7F92416211DE9EBB963FF4CE28125932878:11063')
 
     const cookie = await getAuthPassword(request, 'admin@banmanagement.com')
@@ -143,6 +144,7 @@ describe('Mutation set password', () => {
 
     nock('https://api.pwnedpasswords.com')
       .get('/range/8843D')
+      .query(true)
       .reply(200, '7F92416211DE9EBB963FF4CE28125932878:1')
 
     const { header, body, statusCode } = await request
