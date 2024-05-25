@@ -1,5 +1,5 @@
 const depthLimit = require('graphql-depth-limit')
-const responseCachePlugin = require('apollo-server-plugin-response-cache').default
+const responseCachePlugin = require('@apollo/server-plugin-response-cache').default
 const { unparse } = require('uuid-parse')
 const { makeExecutableSchema } = require('@graphql-tools/schema')
 const typeDefs = require('./types')
@@ -65,14 +65,14 @@ module.exports = ({ logger }) => {
     },
     plugins: [
       {
-        requestDidStart ({ request, context }) {
-          context.log.debug(request.query)
+        requestDidStart ({ request, contextValue }) {
+          contextValue.log.debug(request.query)
         }
       },
       responseCachePlugin({
-        sessionId: ({ context }) => {
-          if (context.session && context.session.playerId) {
-            return unparse(context.session.playerId)
+        sessionId: ({ contextValue }) => {
+          if (contextValue.session && contextValue.session.playerId) {
+            return unparse(contextValue.session.playerId)
           }
 
           return 'public' // Shared cache for guests
