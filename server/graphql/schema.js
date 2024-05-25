@@ -49,11 +49,11 @@ module.exports = ({ logger }) => {
     formatError (error) {
       const originalError = findOriginalError(error)
 
-      if (originalError.exposed) {
+      if (originalError?.extensions?.code === 'ERR_EXPOSED') {
         return originalError
       }
 
-      if (originalError.code === 'ERR_GRAPHQL_CONSTRAINT_VALIDATION') {
+      if (originalError?.extensions?.code === 'ERR_GRAPHQL_CONSTRAINT_VALIDATION') {
         const { fieldName, message } = originalError
 
         return { ...originalError, message: `${fieldName} ${message}` }

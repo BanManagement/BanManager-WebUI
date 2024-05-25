@@ -22,7 +22,9 @@ module.exports = async function createServer (obj, { input }, { log, state }) {
   try {
     conn = await createConnection(pick(input, ['host', 'port', 'database', 'user', 'password']))
   } catch (e) {
-    e.exposed = true
+    e.extensions = {
+      code: 'ERR_EXPOSED'
+    }
 
     throw e
   }
