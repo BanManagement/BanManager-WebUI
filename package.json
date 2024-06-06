@@ -93,7 +93,7 @@
     "xstate": "4.38.3"
   },
   "devDependencies": {
-    "@babel/eslint-parser": "7.24.6",
+    "@babel/eslint-parser": "7.24.7",
     "@next/eslint-plugin-next": "14.2.3",
     "@oclif/test": "3.2.15",
     "coveralls-next": "4.2.1",
