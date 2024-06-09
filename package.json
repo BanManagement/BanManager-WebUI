@@ -27,7 +27,7 @@
     "@nivo/line": "0.87.0",
     "@nivo/pie": "0.87.0",
     "@oclif/core": "3.27.0",
-    "@oclif/plugin-help": "6.1.0",
+    "@oclif/plugin-help": "6.2.1",
     "@universemc/react-palette": "1.0.3",
     "@xstate/react": "3.2.2",
     "argon2": "0.29.1",
