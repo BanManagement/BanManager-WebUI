@@ -40,7 +40,7 @@
     "edit-dotenv": "1.0.4",
     "es6-dynamic-template": "2.0.0",
     "git-revision-webpack-plugin": "5.0.0",
-    "graphql": "16.8.1",
+    "graphql": "16.8.2",
     "graphql-constraint-directive": "5.4.3",
     "graphql-depth-limit": "1.1.0",
     "graphql-parse-resolve-info": "4.13.0",
