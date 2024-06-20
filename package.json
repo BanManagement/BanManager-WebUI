@@ -109,7 +109,7 @@
     "standard": "16.0.4",
     "standardx": "7.0.0",
     "supertest": "7.0.0",
-    "uuid": "9.0.1"
+    "uuid": "10.0.0"
   },
   "engines": {
     "node": "20 || 22"
