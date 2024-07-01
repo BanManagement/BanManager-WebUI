@@ -129,8 +129,33 @@ export default function PlayerAppealActions ({ appeal, server, onAction }) {
         </div>
       )
     }
-    case 'PlayerWarning':
-      return null
+    case 'PlayerWarning': {
+      const canDelete = hasServerPermission('player.warnings', 'delete.any', server.id) ||
+        (hasServerPermission('player.warnings', 'delete.own', server.id) && user.id === appeal.punishmentActor.id)
+      const canUpdate = hasServerPermission('player.warnings', 'update.any', server.id) ||
+       (hasServerPermission('player.warnings', 'update.own', server.id) && user.id === appeal.punishmentActor.id)
+
+      return (
+        <div className='flex flex-col gap-6'>
+          {canUpdate &&
+            <PlayerAppealActionUpdate
+              appeal={appeal}
+              title='Edit Warning'
+              type='warning'
+              query={createUpdateQuery('resolveAppealUpdateWarning', 'UpdatePlayerWarningInput')}
+              onUpdated={onAction}
+            />}
+          {canDelete &&
+            <PlayerAppealActionDelete
+              appeal={appeal}
+              title='Delete warning'
+              type='warning'
+              query={createDeleteQuery('resolveAppealDeleteWarning')}
+              onDeleted={data => onAction(data.resolveAppealDeleteWarning)}
+            />}
+        </div>
+      )
+    }
   }
 
   return null

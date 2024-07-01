@@ -38,6 +38,23 @@ query playerBans($id: UUID!) {
       yours
     }
   }
+  playerWarnings(player: $id) {
+    id
+    actor {
+      id
+      name
+    }
+    reason
+    created
+    expires
+    server {
+      id
+      name
+    }
+    acl {
+      yours
+    }
+  }
 }`
 
 export default function PunishmentPicker () {
@@ -45,7 +62,7 @@ export default function PunishmentPicker () {
   const { loading, data, errors } = useApi({ query, variables: { id: user?.id } })
 
   if (loading) return <Loader />
-  if (errors || !data || (!data?.playerBans?.length && !data?.playerMutes?.length)) {
+  if (errors || !data || (!data?.playerBans?.length && !data?.playerMutes?.length && !data?.playerWarnings?.length)) {
     return <p>No punishments found</p>
   }
 
@@ -57,6 +74,10 @@ export default function PunishmentPicker () {
 
   if (data?.playerMutes?.length) {
     rows = rows.concat(data.playerMutes.map(data => ({ type: 'mute', ...data })))
+  }
+
+  if (data?.playerWarnings?.length) {
+    rows = rows.concat(data.playerWarnings.map(data => ({ type: 'warning', ...data })))
   }
 
   const items = rows.map((row, i) => (
