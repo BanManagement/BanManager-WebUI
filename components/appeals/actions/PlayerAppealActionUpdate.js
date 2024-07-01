@@ -73,13 +73,12 @@ export default function PlayerAppealActionUpdate ({ appeal, title, type, query, 
             warning:
   <PlayerWarnForm
     serverFilter={s => s.id === appeal.server.id}
+    defaults={{ reason: appeal.punishmentReason, expires: appeal.punishmentExpires, points: appeal.punishmentPoints }}
     query={query}
     submitRef={submitRef}
     parseVariables={(input) => ({
       id: appeal.id,
       input: {
-        player: appeal.player.id,
-        server: input.server,
         reason: input.reason,
         expires: Math.floor(input.expires / 1000),
         points: input.points

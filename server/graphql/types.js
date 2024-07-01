@@ -583,6 +583,7 @@ type Query {
   playerNote(id: ID!, serverId: ID!): PlayerNote @allowIf(resource: "player.notes", permission: "view", serverVar: "serverId")
 
   playerWarning(id: ID!, serverId: ID!): PlayerWarning @allowIf(resource: "player.warnings", permission: "view", serverVar: "serverId")
+  playerWarnings(player: UUID!): [PlayerWarning!] @allowIf(resource: "player.warnings", permission: "view")
   listPlayerWarnings(serverId: ID!, actor: UUID, player: UUID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerWarningList! @cacheControl(scope: PRIVATE, maxAge: 300) @allowIf(resource: "player.warnings", permission: "view")
 
   listPlayerPunishmentRecords(serverId: ID!, actor: UUID, player: UUID!, type: RecordType!, limit: Int = 20, offset: Int = 0, order: OrderByInput): PlayerPunishmentRecords! @cacheControl(scope: PRIVATE, maxAge: 300)
