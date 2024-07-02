@@ -49,20 +49,21 @@ const AppealRow = ({ row, dateFormat, showActor }) => {
           <Badge className='bg-accent-500 sm:mx-auto'>#{row.id}</Badge>
         </Link>
       </Table.Cell>
-      {showActor && <Table.Cell>
-        <Link href={`/player/${row.actor.id}`} passHref>
-          <div className='flex items-center'>
-            <div className='flex-shrink-0'>
-              <Avatar uuid={row.actor.id} height='26' width='26' />
+      {showActor &&
+        <Table.Cell>
+          <Link href={`/player/${row.actor.id}`} passHref>
+            <div className='flex items-center'>
+              <div className='flex-shrink-0'>
+                <Avatar uuid={row.actor.id} height='26' width='26' />
+              </div>
+              <div className='ml-3'>
+                <p className='whitespace-no-wrap'>
+                  {row.actor.name}
+                </p>
+              </div>
             </div>
-            <div className='ml-3'>
-              <p className='whitespace-no-wrap'>
-                {row.actor.name}
-              </p>
-            </div>
-          </div>
-        </Link>
-      </Table.Cell>}
+          </Link>
+        </Table.Cell>}
       <Table.Cell>
         <PlayerAppealBadge appeal={row} />
       </Table.Cell>
@@ -119,14 +120,15 @@ export default function PlayerAppeals ({ id, title, showActor }) {
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell>ID</Table.HeaderCell>
-            {showActor && <Table.HeaderCell>
-              <PlayerSelector
-                multiple={false}
-                onChange={(id) => setTableState({ ...tableState, id })}
-                placeholder='By'
-                clearable
-              />
-            </Table.HeaderCell>}
+            {showActor &&
+              <Table.HeaderCell>
+                <PlayerSelector
+                  multiple={false}
+                  onChange={(id) => setTableState({ ...tableState, id })}
+                  placeholder='By'
+                  clearable
+                />
+              </Table.HeaderCell>}
             <Table.HeaderCell>Type</Table.HeaderCell>
             <Table.HeaderCell>At</Table.HeaderCell>
             <Table.HeaderCell>
