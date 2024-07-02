@@ -34,8 +34,8 @@ export default function PlayerLoginPasswordForm ({ onSuccess }) {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className='mx-auto'>
-      <div className='flex flex-col relative w-full max-w-md px-4 sm:px-6 md:px-8 lg:px-10'>
+    <form onSubmit={handleSubmit(onSubmit)} className='mx-auto w-full'>
+      <div className='flex flex-col relative w-full'>
         <ErrorMessages error={error} />
         <Input
           required
@@ -55,8 +55,8 @@ export default function PlayerLoginPasswordForm ({ onSuccess }) {
           data-cy='password'
           {...register('password')}
         />
-        <Link href='/forgotten-password' passHref className='text-lg md:text-sm mb-3'>
-          Forgot password?
+        <Link href='/forgotten-password' passHref className='-mt-3 mb-3 text-gray-300'>
+          Register or forgotten password?
         </Link>
         <Button data-cy='submit-login-password' disabled={isSubmitting} loading={isSubmitting}>
           Login

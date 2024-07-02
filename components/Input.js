@@ -23,17 +23,19 @@ const Input = forwardRef((props, ref) => {
     w-full
     py-2
     px-4
-    bg-black
-    text-white
+    bg-primary-900
+    text-gray-300
     placeholder-gray-400
     shadow-sm
     text-lg
-    rounded-sm
+    rounded-r-3xl
     focus:outline-none
-    focus:ring-2
-    focus:ring-accent-600
-    focus:border-transparent
-    ${inputClassName}`
+    ${inputClassName}`,
+  {
+    'rounded-r-3xl': icon && iconPosition === 'left',
+    'rounded-l-3xl': icon && iconPosition === 'right',
+    'rounded-3xl': !icon
+  }
   )
 
   const handleChange = (e) => {
@@ -41,7 +43,7 @@ const Input = forwardRef((props, ref) => {
   }
 
   return (
-    <div className={`flex relative mb-6 ${className}`}>
+    <div className={`flex relative mb-6 ${className} focus-within:outline-none focus-within:rounded-3xl focus-within:ring-2 focus-within:ring-accent-600 focus-within:border-transparent`}>
       {label &&
         <label
           htmlFor={id}
@@ -50,7 +52,7 @@ const Input = forwardRef((props, ref) => {
           {label} {required && <span className='text-red'>*</span>}
         </label>}
       {icon && iconPosition === 'left' &&
-        <span className='inline-flex items-center px-3 bg-black text-gray-500 shadow-sm text-lg'>
+        <span className='rounded-l-3xl inline-flex items-center px-3 bg-primary-900 text-gray-500 shadow-sm text-lg'>
           {icon}
         </span>}
       <input

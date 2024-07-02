@@ -4,6 +4,8 @@ import PlayerLoginPasswordForm from '../PlayerLoginPasswordForm'
 import Avatar from '../Avatar'
 import Button from '../Button'
 import { useUser } from '../../utils'
+import PageHeader from '../PageHeader'
+import Panel from '../Panel'
 
 const AccountPanel = () => {
   const { user } = useUser()
@@ -30,9 +32,8 @@ const AccountPanel = () => {
   }
 
   return (
-    <div className='h-full p-6 flex flex-col relative text-center md:border-2 md:border-black'>
-      <h2 className='text-xs tracking-widest title-font mb-5 font-medium uppercase'>{user ? 'My Account' : 'Already have an account?'}</h2>
-      <h1 className='text-5xl pb-4 mb-4 border-b border-accent-200 leading-none'>{user ? user.name : 'Sign In'}</h1>
+    <Panel>
+      <PageHeader title={user ? user.name : 'Sign In'} subTitle={user ? 'My Account' : 'Already have an account?'} />
       <div className='flex items-center'>
         {user
           ? (
@@ -43,9 +44,7 @@ const AccountPanel = () => {
               <div className='grid-flow-col grid gap-2 grid-rows-2'>
                 <div className='grid-flow-row'>
                   <Link href='/dashboard' passHref>
-
                     <Button>View Dashboard</Button>
-
                   </Link>
                 </div>
                 <div className='grid-flow-row'>
@@ -56,7 +55,7 @@ const AccountPanel = () => {
             )
           : <PlayerLoginPasswordForm onSuccess={handleLogin} />}
       </div>
-    </div>
+    </Panel>
   )
 }
 

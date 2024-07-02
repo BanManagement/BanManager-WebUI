@@ -1,28 +1,29 @@
 .react_select .react_select__control {
-  @apply relative w-full bg-black text-lg text-white shadow-lg pl-3 pr-3 py-3 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-accent-500 focus:border-accent-500 sm:text-sm border-0
+  @apply relative w-full bg-primary-900 text-gray-400 shadow-lg rounded-3xl pl-3 pr-3 py-3 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-accent-500 focus:border-accent-500 border-0
 }
 
-/* .react_select .react_select__control--is-focused {
-} */
+.react_select .react_select__control--menu-is-open {
+  @apply rounded-b-none
+}
 
 .react_select .react_select__value-container {
   @apply p-0
 }
 
 .react_select .react_select__input-container {
-  @apply p-0 m-0 text-white;
+  @apply p-0 m-0 text-gray-400;
 }
 
 .react_select .react_select__option {
-  @apply text-white cursor-default hover:bg-gray-500 select-none relative py-2 pl-3 pr-9
+  @apply text-gray-400 cursor-default hover:bg-accent-700 hover:bg-opacity-50 hover:text-white select-none relative py-2 pl-3 pr-9
 }
 
 .react_select .react_select__option--is-focused {
-  @apply bg-accent-500
+  @apply bg-accent-700 text-white
 }
 
 .react_select .react_select__option--is-selected {
-  @apply bg-accent-500
+  @apply bg-accent-700 text-white
 }
 
 .react_select .react_select__dropdown-indicator {
@@ -30,19 +31,23 @@
 }
 
 .react_select .react_select__placeholder {
-  @apply text-white;
+  @apply text-gray-400;
   opacity: 1;
 }
 
 .react_select .react_select__single-value {
-  @apply text-white;
+  @apply text-white rounded-b-3xl;
   opacity: 1;
 }
 
 .react_select .react_select__menu {
-  @apply absolute mt-1 w-full z-50 rounded-md bg-black shadow-lg
+  @apply absolute -mt-2 w-full z-50 rounded-b-3xl bg-primary-900 shadow-lg
 }
 
 .react_select .react_select__menu-list {
-  @apply max-h-56 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm
+  @apply max-h-56 text-base ring-1 ring-primary-900 ring-opacity-5 overflow-auto focus:outline-none sm:text-sm pb-0
+}
+
+.react_select .react_select__menu-list:has(:only-child) {
+  @apply rounded-b-3xl
 }
