@@ -41,7 +41,7 @@ describe('setup', () => {
       .env('SERVER_FOOTER_NAME', '')
       .run('./bin/run.js setup')
       .on(/Server name \(displayed in footer of website\)/).respond('#123456789_+aaaaaaaaaaaaaaaaaaaaa\n')
-      .stdout(/Invalid name, only letters, numbers and a maximum of 32 characters allowed/)
+      .stdout(/Invalid server footer name, only a maximum of 32 characters allowed/)
       .end(done)
   })
 

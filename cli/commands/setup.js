@@ -3,7 +3,7 @@ const inquirer = require('inquirer')
 const editDotenv = require('edit-dotenv')
 const DBMigrate = require('db-migrate')
 const { Command, Flags } = require('@oclif/core')
-const { isAlphanumeric, isEmail, isLength, isUUID } = require('validator')
+const { isEmail, isLength, isUUID } = require('validator')
 const { generateVAPIDKeys } = require('web-push')
 const { merge } = require('lodash')
 const { parse } = require('uuid-parse')
@@ -59,9 +59,9 @@ class SetupCommand extends Command {
         name: 'value',
         message: 'Server name (displayed in footer of website)',
         validate: function (input) {
-          if (isAlphanumeric(input) && isLength(input, { min: 0, max: 32 })) return true
+          if (isLength(input, { min: 0, max: 32 })) return true
 
-          return 'Invalid name, only letters, numbers and a maximum of 32 characters allowed'
+          return 'Invalid server footer name, only a maximum of 32 characters allowed'
         }
       }])
 
