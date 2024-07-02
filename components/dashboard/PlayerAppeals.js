@@ -29,6 +29,10 @@ const query = `
           id
           name
         }
+        actor {
+          id
+          name
+        }
       }
     }
     appealStates {
@@ -37,16 +41,29 @@ const query = `
     }
   }`
 
-const AppealRow = ({ row, dateFormat }) => {
+const AppealRow = ({ row, dateFormat, showActor }) => {
   return (
     <Table.Row>
       <Table.Cell>
         <Link href={`/appeals/${row.id}`} passHref>
-
           <Badge className='bg-accent-500 sm:mx-auto'>#{row.id}</Badge>
-
         </Link>
       </Table.Cell>
+      {showActor &&
+        <Table.Cell>
+          <Link href={`/player/${row.actor.id}`} passHref>
+            <div className='flex items-center'>
+              <div className='flex-shrink-0'>
+                <Avatar uuid={row.actor.id} height='26' width='26' />
+              </div>
+              <div className='ml-3'>
+                <p className='whitespace-no-wrap'>
+                  {row.actor.name}
+                </p>
+              </div>
+            </div>
+          </Link>
+        </Table.Cell>}
       <Table.Cell>
         <PlayerAppealBadge appeal={row} />
       </Table.Cell>
@@ -74,9 +91,9 @@ const AppealRow = ({ row, dateFormat }) => {
   )
 }
 
-export default function PlayerAppeals ({ id, title }) {
+export default function PlayerAppeals ({ id, title, showActor }) {
   const { hasPermission } = useUser()
-  const [tableState, setTableState] = useState({ id, serverId: null, activePage: 1, limit: 10, offset: 0, actor: null, assigned: null, state: null })
+  const [tableState, setTableState] = useState({ id, serverId: null, activePage: 1, limit: 10, offset: 0, assigned: null, state: null })
   const { loading, data } = useApi({ query, variables: tableState })
 
   if (loading) return <Loader />
@@ -103,6 +120,15 @@ export default function PlayerAppeals ({ id, title }) {
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell>ID</Table.HeaderCell>
+            {showActor &&
+              <Table.HeaderCell>
+                <PlayerSelector
+                  multiple={false}
+                  onChange={(id) => setTableState({ ...tableState, id })}
+                  placeholder='By'
+                  clearable
+                />
+              </Table.HeaderCell>}
             <Table.HeaderCell>Type</Table.HeaderCell>
             <Table.HeaderCell>At</Table.HeaderCell>
             <Table.HeaderCell>
@@ -127,11 +153,11 @@ export default function PlayerAppeals ({ id, title }) {
         <Table.Body>
           {loading
             ? <Table.Row><Table.Cell colSpan='6'><Loader /></Table.Cell></Table.Row>
-            : data?.listPlayerAppeals?.records?.map((row, i) => (<AppealRow serverId={tableState.serverId} row={row} dateFormat={dateFormat} key={i} />))}
+            : data?.listPlayerAppeals?.records?.map((row, i) => (<AppealRow showActor={showActor} serverId={tableState.serverId} row={row} dateFormat={dateFormat} key={i} />))}
         </Table.Body>
         <Table.Footer>
           <Table.Row>
-            <Table.HeaderCell colSpan='6' border={false}>
+            <Table.HeaderCell colSpan={showActor ? 7 : 6} border={false}>
               <Pagination
                 totalPages={totalPages}
                 activePage={tableState.activePage}

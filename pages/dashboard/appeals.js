@@ -14,7 +14,7 @@ export default function Page () {
     <DefaultLayout title='Appeals | Dashboard'>
       <PageContainer>
         <PageHeader title='Dashboard' />
-        <PlayerAppeals title='Appeals' />
+        <PlayerAppeals title='Appeals' showActor />
       </PageContainer>
     </DefaultLayout>
   )
