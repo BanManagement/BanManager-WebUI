@@ -15,15 +15,13 @@ function Page () {
     router.push('/dashboard')
   }
 
-  if (user) return <DefaultLayout><Loader active inline='centered' /></DefaultLayout>
-
   return (
-    <DefaultLayout title='Forgotten Password'>
+    <DefaultLayout title='Forgotten Password' loading={user}>
       <PageContainer>
         <div className='mx-auto flex flex-col w-full max-w-lg px-4 py-8 sm:px-6 md:px-8 lg:px-10 text-center md:border-2 md:rounded-lg md:border-black'>
           <PageHeader title='Forgotten Password' subTitle='Help' />
           <div className='mt-5'>
-            <PlayerLoginPinForm onSuccess={onSuccess} />
+            <PlayerLoginPinForm onSuccess={onSuccess} showHint />
           </div>
         </div>
       </PageContainer>

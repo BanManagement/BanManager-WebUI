@@ -8,12 +8,13 @@ import SessionNavProfile from './SessionNavProfile'
 import PlayerSelector from './admin/PlayerSelector'
 import { useApi, useUser } from '../utils'
 import { useRouter, withRouter } from 'next/router'
+import Loader from './Loader'
 
 const query = `query unreadNotificationCount {
   unreadNotificationCount
 }`
 
-function DefaultLayout ({ title = 'Default Title', children, description }) {
+function DefaultLayout ({ title = 'Default Title', children, description, loading }) {
   const { user } = useUser()
   const { data } = useApi({ query: user?.id ? query : null }, { refreshInterval: 10000, refreshWhenHidden: true })
   const router = useRouter()
@@ -69,8 +70,8 @@ function DefaultLayout ({ title = 'Default Title', children, description }) {
           animated={false}
         />
         <Nav leftItems={left} rightItems={right} unreadNotificationCount={data?.unreadNotificationCount || null} />
-        <div className='flex-grow text-gray-200 bg-primary-500 pb-12'>
-          {children}
+        <div className='flex-grow text-gray-200 bg-primary-500 pb-12 relative'>
+          {loading ? <Loader className='-mt-32' /> : children}
         </div>
         <Footer />
       </BodyWrapper>

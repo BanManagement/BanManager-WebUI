@@ -53,7 +53,7 @@ export default function Nav ({ leftItems, mobileItems, rightItems, unreadNotific
           <div className='flex justify-start lg:w-0 lg:flex-1'>
             <Link href='/' passHref>
               <span className='sr-only'>Home</span>
-              <Image src={(process.env.BASE_PATH || '') + '/images/banmanager-icon.png'} alt='Logo' width='40' height='40' />
+              <Image src={(process.env.BASE_PATH || '') + '/images/banmanager-icon.png'} alt='Logo' width='40' height='40' priority />
             </Link>
           </div>
           <div className='flex items-center justify-center flex-1 lg:w-0'>

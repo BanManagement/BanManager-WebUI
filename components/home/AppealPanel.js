@@ -11,7 +11,7 @@ const AppealPanel = () => {
         If you believe your account has been wrongfully punished, create an appeal justifying why including any relevant evidence.
       </p>
       <p className='mb-3'>There is no guarantee your appeal will be successful.</p>
-      <Link href='/tutorial' passHref className='mt-auto'>
+      <Link href='/appeal' passHref className='mt-auto'>
         <Button>
           Create Appeal
         </Button>

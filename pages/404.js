@@ -20,7 +20,7 @@ function Error () {
               <h3 className='font-semibold'>Let&apos;s find our way back together:</h3>
               <ol className='list-disc pl-3'>
                 <li>
-                  <Link href="/" className='text-accent-500'>Head to the Homepage</Link> - start a new adventure!
+                  <Link href='/' className='text-accent-500'>Head to the Homepage</Link> - start a new adventure!
                 </li>
                 <li>
                   Use the Search Bar - it&apos;s like a treasure map!

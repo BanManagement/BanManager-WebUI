@@ -87,7 +87,7 @@ export default function PlayerPunishment ({ punishment, server, type, onDeleted 
 
   return (
     <div className='flex items-center'>
-      <div className='bg-black w-full rounded-lg flex flex-col justify-center sm:justify-start items-center sm:items-start sm:flex-row space-x-5 p-8'>
+      <div className='bg-primary-900 w-full rounded-3xl flex flex-col justify-center sm:justify-start items-center sm:items-start sm:flex-row space-x-5 p-8'>
         <div className=''>
           <Avatar uuid={punishment.actor.id} height='40' width='40' />
         </div>

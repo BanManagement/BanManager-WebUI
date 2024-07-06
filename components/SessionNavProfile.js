@@ -49,7 +49,7 @@ export default function SessionNavProfile ({ user, unreadNotificationCount }) {
             {router.pathname.endsWith('/notifications') ? <MdNotifications /> : <MdOutlineNotifications />}
           </Button>
         </Link>
-        <Link href='/dashboard' passHref><Button className={buttonClassName} title='Dashboard'>{router.pathname.endsWith('/dashboard') ? <MdDashboard /> : <MdOutlineDashboard /> }</Button></Link>
+        <Link href='/dashboard' passHref><Button className={buttonClassName} title='Dashboard'>{router.pathname.endsWith('/dashboard') ? <MdDashboard /> : <MdOutlineDashboard />}</Button></Link>
         <Dropdown
           trigger={({ onClickToggle }) => (
             <Button
@@ -64,7 +64,7 @@ export default function SessionNavProfile ({ user, unreadNotificationCount }) {
           <Dropdown.Item name='Account' href='/account' />
           {!user.hasAccount && <Dropdown.Item name='Register' href='/register' />}
           <Dropdown.Item name='Profile' href={'/player/' + user.id} />
-          <div className='border-primary-400 border-b mx-1'></div>
+          <div className='border-primary-400 border-b mx-1' />
           <Dropdown.Item name='Log out' onClick={handleLogout} disabled={loggingOut} />
         </Dropdown>
       </div>
@@ -91,8 +91,7 @@ export default function SessionNavProfile ({ user, unreadNotificationCount }) {
           <>
             <span className='text-5xl mb-2 border-b border-primary-400 leading-none' />
             <Dropdown.Item name='Admin' href='/admin' className='px-2' />
-          </>)
-        }
+          </>)}
       </div>
     </>
   )

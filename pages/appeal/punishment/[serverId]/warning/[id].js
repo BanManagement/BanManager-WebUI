@@ -5,7 +5,7 @@ import DefaultLayout from '../../../../../components/DefaultLayout'
 import PageContainer from '../../../../../components/PageContainer'
 import ErrorLayout from '../../../../../components/ErrorLayout'
 import PageHeader from '../../../../../components/PageHeader'
-import PlayerAppealForm from '../../../../../components/PlayerAppealForm'
+import PlayerAppealForm from '../../../../../components/appeal/PlayerAppealForm'
 import { fromNow, useApi, useUser } from '../../../../../utils'
 
 export default function Page () {

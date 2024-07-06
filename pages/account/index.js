@@ -13,7 +13,7 @@ export default function Page () {
   if (!user) return <DefaultLayout><Loader /></DefaultLayout>
 
   return (
-    <DefaultLayout title={'Account'}>
+    <DefaultLayout title='Account'>
       <PageContainer>
         <div className='mx-auto flex flex-col w-full max-w-md px-4 py-8 sm:px-6 md:px-8 lg:px-10 text-center md:border-2 md:rounded-lg md:border-black'>
           <h2 className='text-xs tracking-widest title-font mb-5 font-medium uppercase'>Account</h2>

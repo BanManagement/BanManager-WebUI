@@ -19,14 +19,14 @@ const AccountPanel = () => {
       <div className='flex items-center'>
         {user
           ? (
-              <div className='flex flex-col items-center w-full gap-2'>
-                <Avatar type='body' height='148' width='66' uuid={user.id} />
-                <Link href='/dashboard' passHref>
-                  <Button>View Dashboard</Button>
-                </Link>
-              </div>
+            <div className='flex flex-col items-center w-full gap-2'>
+              <Avatar type='body' height='148' width='66' uuid={user.id} />
+              <Link href='/dashboard' passHref>
+                <Button>View Dashboard</Button>
+              </Link>
+            </div>
             )
-          : <PlayerLoginPasswordForm onSuccess={handleLogin} />}
+          : <PlayerLoginPasswordForm onSuccess={handleLogin} showForgotPassword />}
       </div>
     </Panel>
   )

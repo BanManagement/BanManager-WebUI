@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { GraphQLClient } from 'graphql-request'
 import { useRouter } from 'next/compat/router'
-import { formatDistanceStrict, fromUnixTime } from 'date-fns'
+import { format, formatDistanceStrict, fromUnixTime } from 'date-fns'
 import useSWR, { useSWRConfig, unstable_serialize as unstableSerialize } from 'swr'
 import { toPairs } from 'lodash-es'
 
@@ -211,6 +211,10 @@ export const fromNow = (timestamp) => {
 
     return timestamp
   }
+}
+
+export const formatTimestamp = (timestamp) => {
+  return format(fromUnixTime(timestamp), 'MMM d yyyy, h:mm a')
 }
 
 export const currentVersion = () => {

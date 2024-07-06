@@ -5,8 +5,11 @@ import DefaultLayout from '../../../../../components/DefaultLayout'
 import PageContainer from '../../../../../components/PageContainer'
 import ErrorLayout from '../../../../../components/ErrorLayout'
 import PageHeader from '../../../../../components/PageHeader'
-import PlayerAppealForm from '../../../../../components/PlayerAppealForm'
+import PlayerAppealForm from '../../../../../components/appeal/PlayerAppealForm'
 import { fromNow, useApi, useUser } from '../../../../../utils'
+import Panel from '../../../../../components/Panel'
+import AppealStepHeader from '../../../../../components/appeal/AppealStepHeader'
+import Button from '../../../../../components/Button'
 
 export default function Page () {
   const router = useRouter()
@@ -46,22 +49,31 @@ export default function Page () {
     }
   }, [data])
 
-  if (loading) return <DefaultLayout title='Appeal Ban'><Loader /></DefaultLayout>
-  if (errors || !data) return <ErrorLayout errors={errors} />
+  if (errors) return <ErrorLayout errors={errors} />
 
   return (
-    <DefaultLayout title='Appeal Ban'>
+    <DefaultLayout title='Appeal Ban | Appeal' loading={loading}>
       <PageContainer>
-        <div className='mx-auto flex flex-col w-full max-w-md px-4 py-8 sm:px-6 md:px-8 lg:px-10 text-center md:border-2 md:rounded-lg md:border-black'>
-          <PageHeader title='Appeal ban' subTitle={`Created ${fromNow(data.playerBan.created)}`} />
-          <PlayerAppealForm
+        <Panel className='mx-auto w-full max-w-md'>
+          <AppealStepHeader step={3} title='Appeal Ban' nextStep='Await Review' />
+          {!loading && !data?.playerBan && (
+            <div>
+              <h2 className="text-center text-base font-semibold leading-relaxed pb-1">Punishment not found</h2>
+              <p className="text-center text-sm font-normal leading-snug pb-4">Head back to the previous page</p>
+              <div className="flex gap-3">
+                <Button onClick={() => router.back()}>Back</Button>
+              </div>
+            </div>
+          )}
+          {data?.playerBan && <PlayerAppealForm
             {...data.playerBan}
+            type='ban'
             parseVariables={(input) => ({ input: { reason: input.reason, type: 'PlayerBan', serverId, punishmentId: id } })}
             onFinished={({ createAppeal }) => {
               router.push(`/appeals/${createAppeal.id}`)
             }}
-          />
-        </div>
+          />}
+        </Panel>
       </PageContainer>
     </DefaultLayout>
   )

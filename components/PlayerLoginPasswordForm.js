@@ -5,7 +5,7 @@ import Link from 'next/link'
 import Input from './Input'
 import Button from './Button'
 
-export default function PlayerLoginPasswordForm ({ onSuccess }) {
+export default function PlayerLoginPasswordForm ({ onSuccess, showForgotPassword }) {
   const [error, setError] = useState(null)
   const { handleSubmit, formState, register } = useForm()
   const { isSubmitting } = formState
@@ -55,9 +55,11 @@ export default function PlayerLoginPasswordForm ({ onSuccess }) {
           error={error?.message}
           {...register('password')}
         />
-        <Link href='/forgotten-password' passHref className='-mt-3 mb-3 text-gray-300'>
-          Forgot password or create account?
-        </Link>
+        {showForgotPassword && (
+          <Link href='/forgotten-password' passHref className='-mt-3 mb-3 text-gray-300'>
+            Forgot password or create account?
+          </Link>
+        )}
         <Button data-cy='submit-login-password' disabled={isSubmitting} loading={isSubmitting}>
           Login
         </Button>

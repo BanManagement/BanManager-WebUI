@@ -14,14 +14,12 @@ function Page () {
     router.push('/dashboard')
   }
 
-  if (user) return <DefaultLayout><Loader active inline='centered' /></DefaultLayout>
-
   return (
-    <DefaultLayout title='Login'>
+    <DefaultLayout title='Login' loading={user}>
       <PageContainer>
         <Panel className='mx-auto w-full max-w-md'>
           <PageHeader title='Login' subTitle='Welcome back' />
-          <PlayerLoginPasswordForm onSuccess={onSuccess} />
+          <PlayerLoginPasswordForm onSuccess={onSuccess} showForgotPassword />
         </Panel>
       </PageContainer>
     </DefaultLayout>

@@ -10,7 +10,7 @@ const basePath = process.env.BASE_PATH || ''
 let version = 'unknown'
 
 try {
-  version = new GitRevisionPlugin().commithash()
+  version = new GitRevisionPlugin().commithash() || 'unknown'
 } catch (e) {}
 
 const nextConfig = (phase) => {

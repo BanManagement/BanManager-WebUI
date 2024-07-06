@@ -1,3 +1,9 @@
 .react-code-input input {
-  @apply flex-1 appearance-none w-full mx-0.5 py-2 px-4 bg-black text-white placeholder-gray-400 shadow-sm text-lg focus:outline-none focus:ring-2 focus:ring-accent-600 focus:border-transparent;
+  @apply flex-1 relative appearance-none w-full mx-0.5 py-2 px-4 bg-transparent text-gray-300 placeholder-gray-400 shadow-sm text-lg focus:outline-none focus:ring-2 focus:ring-accent-600 focus:border-transparent text-center;
+  border-image: linear-gradient(transparent 10%, #9ca3af 10% 90%, transparent 90%) 0 1 0 0 / 1px;
+}
+
+.react-code-input input:last-child {
+  @apply rounded-r-3xl;
+  border-image: none;
 }
