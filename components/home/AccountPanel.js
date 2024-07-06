@@ -12,24 +12,6 @@ const AccountPanel = () => {
   const handleLogin = () => {
     mutate('/api/user')
   }
-  const handleLogout = async () => {
-    // Using cookies for SSR instead of local storage, which are set to HttpOnly
-    // requires server to delete cookie
-    const response = await fetch((process.env.BASE_PATH || '') + '/api/logout',
-      {
-        method: 'POST',
-        headers: new Headers({ 'Content-Type': 'application/json' }),
-        credentials: 'include'
-      })
-
-    if (response.status !== 204) {
-      const responseData = await response.json()
-
-      throw new Error(responseData.error)
-    }
-
-    mutate('/api/user')
-  }
 
   return (
     <Panel>
@@ -37,21 +19,12 @@ const AccountPanel = () => {
       <div className='flex items-center'>
         {user
           ? (
-            <div className='grid grid-cols-2 gap-8'>
-              <div className='grid-flow-col'>
-                <Avatar type='body' height='200' width='88' uuid={user.id} />
+              <div className='flex flex-col items-center w-full gap-2'>
+                <Avatar type='body' height='148' width='66' uuid={user.id} />
+                <Link href='/dashboard' passHref>
+                  <Button>View Dashboard</Button>
+                </Link>
               </div>
-              <div className='grid-flow-col grid gap-2 grid-rows-2'>
-                <div className='grid-flow-row'>
-                  <Link href='/dashboard' passHref>
-                    <Button>View Dashboard</Button>
-                  </Link>
-                </div>
-                <div className='grid-flow-row'>
-                  <Button onClick={handleLogout}>Logout</Button>
-                </div>
-              </div>
-            </div>
             )
           : <PlayerLoginPasswordForm onSuccess={handleLogin} />}
       </div>

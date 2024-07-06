@@ -41,7 +41,7 @@
 }
 
 .react_select .react_select__menu {
-  @apply absolute -mt-2 w-full z-50 rounded-b-3xl bg-primary-900 shadow-lg
+  @apply absolute -mt-2 w-full z-50 rounded-b-3xl bg-primary-900 shadow-lg shadow-black
 }
 
 .react_select .react_select__menu-list {

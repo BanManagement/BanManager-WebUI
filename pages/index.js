@@ -20,7 +20,7 @@ export default function Page () {
           <div className='p-4 lg:w-1/3'>
             <SearchPanel />
           </div>
-          <div className='p-4 lg:w-1/3'>
+          <div className='p-4 lg:w-1/3 w-full'>
             <AccountPanel />
           </div>
         </div>

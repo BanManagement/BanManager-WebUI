@@ -6,10 +6,10 @@ const MessageContext = createContext()
 // eslint-disable-next-line react/display-name
 const Message = forwardRef(({ error, info, success, warning, children, className, ...rest }, ref) => {
   const classes = clsx('bg-black border-l-4 p-4 mb-4 shadow-lg', {
-    'border-red-600': !!error,
-    'border-blue-600': !!info,
-    'border-emerald-600': !!success,
-    'border-amber-400': !!warning,
+    'border-red-800': !!error,
+    'border-sky-800': !!info,
+    'border-emerald-800': !!success,
+    'border-amber-500': !!warning,
     [className]: !!className
   })
 
@@ -27,10 +27,10 @@ const Header = ({ children, ...rest }) => {
     <MessageContext.Consumer>
       {({ error, info, success, warning }) => {
         const className = clsx('font-bold', {
-          'text-red-500': !!error,
-          'text-blue-500': !!info,
-          'text-emerald-500': !!success,
-          'text-amber-400': !!warning
+          'text-red-700': !!error,
+          'text-sky-700': !!info,
+          'text-emerald-700': !!success,
+          'text-yellow-600': !!warning
         })
 
         return (

@@ -1,15 +1,15 @@
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-import { Fragment, useEffect, useState, isValidElement } from 'react'
+import { Fragment, useEffect, isValidElement } from 'react'
 import { FaBars } from 'react-icons/fa'
 import PageContainer from './PageContainer'
-import PlayerSelector from './admin/PlayerSelector'
 import NavigationOverlay from './NavigationOverlay'
+import { useHashRouteToggle } from '../utils'
 
-export default function Nav ({ leftItems, mobileItems, rightItems }) {
+export default function Nav ({ leftItems, mobileItems, rightItems, unreadNotificationCount }) {
   const router = useRouter()
-  const [drawerOpen, setDrawerOpen] = useState(false)
+  const [drawerOpen, setDrawerOpen] = useHashRouteToggle('#nav')
 
   const renderMenu = (items = []) => items.map(item => {
     if (isValidElement(item)) {
@@ -52,46 +52,34 @@ export default function Nav ({ leftItems, mobileItems, rightItems }) {
         <div className='flex justify-between items-center my-6 pb-6 md:justify-start md:space-x-10'>
           <div className='flex justify-start lg:w-0 lg:flex-1'>
             <Link href='/' passHref>
-
               <span className='sr-only'>Home</span>
               <Image src={(process.env.BASE_PATH || '') + '/images/banmanager-icon.png'} alt='Logo' width='40' height='40' />
-
             </Link>
-            <div className='mx-8 w-48'>
-              <PlayerSelector
-                multiple={false}
-                onChange={(id) => id ? router.push(`/player/${id}`) : undefined}
-                placeholder='Search player'
-              />
-            </div>
           </div>
-          <div className='-mr-2 -my-2 md:hidden'>
-            <button type='button' className='rounded-md p-2 inline-flex items-center justify-center text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500 text-2xl' onClick={() => setDrawerOpen(true)}>
+          <div className='flex items-center justify-center flex-1 lg:w-0'>
+            {renderMenu(leftItems)}
+          </div>
+          <div className='md:hidden'>
+            <button type='button' className='rounded-md w-10 h-10 p-2 relative inline-flex items-center justify-center text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500 text-2xl' onClick={() => setDrawerOpen(true)}>
               <span className='sr-only'>Open menu</span>
               <FaBars />
+              {unreadNotificationCount > 0 && (
+                <span className='absolute bg-red-500 text-red-100 px-2 py-1 text-xs font-bold rounded-full -top-1 -right-1'>
+                  {unreadNotificationCount > 9 ? '9+' : unreadNotificationCount}
+                </span>
+              )}
             </button>
           </div>
-          <nav className='hidden md:flex space-x-10'>
-            {renderMenu(leftItems)}
-          </nav>
           <div className='hidden md:flex items-center justify-end md:flex-1 lg:w-0'>
             {renderMenu(rightItems)}
           </div>
         </div>
       </PageContainer>
       <NavigationOverlay drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen}>
-        <NavigationOverlay.Header>
-          <Link href='/' passHref key='logo-icon'>
-
-            <span className='sr-only'>Home</span>
-            <Image width='40' height='40' src={(process.env.BASE_PATH || '') + '/images/banmanager-icon.png'} alt='Logo' />
-
-          </Link>
-        </NavigationOverlay.Header>
         <NavigationOverlay.Body className='!px-2 flex flex-col sm:flex-row sm:justify-around'>
           <nav>
             {renderMenu(rightItems)}
-            {mobileItems.map(({ href, name, icon, label, splitBorder }) => (
+            {mobileItems?.map(({ href, name, icon, label, splitBorder }) => (
               <Fragment key={`${href}${name}`}>
                 <Link
                   href={href}

@@ -13,13 +13,20 @@
   @import './react-select.css';
   @import './react-code-input.css';
   @import './react-datetime.css';
+  @import './button.css';
 
   .loader {
-    border-top-color: theme('colors.accent.400') !important;
+    border-top-color: theme('colors.accent.800') !important;
     -webkit-animation: spinner 1.5s linear infinite;
     animation: spinner 1.5s linear infinite;
+    position: absolute;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(50% - 0.625rem);
+    display: none;
 
-    @apply ease-linear rounded-full border-2 border-t-2 border-gray-200;
+    @apply ease-linear rounded-full border-2 border-t-2 border-gray-200 mx-auto;
   }
 
   @-webkit-keyframes spinner {

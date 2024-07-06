@@ -1,0 +1,45 @@
+.btn {
+  @apply relative gap-2 font-semibold no-underline duration-200 ease-out rounded-3xl inline-flex py-1 px-6 justify-center text-gray-200 w-full;
+  transition-property: color, background-color, border-color, opacity, box-shadow, transform;
+  @media (prefers-reduced-motion: no-preference) {
+    animation: button-pop var(--animation-btn, 0.25s) ease-out;
+  }
+  &:active:hover,
+  &:active:focus {
+    animation: button-pop 0s ease-out;
+    transform: scale(var(--btn-focus-scale, 0.97));
+  }
+
+  /* default btn */
+  & {
+    @apply no-underline;
+    &:focus-visible {
+      @apply outline outline-2 outline-offset-2;
+    }
+  }
+  /* disabled */
+  &.btn-disabled,
+  &[disabled],
+  &:disabled {
+    @apply border-opacity-0 opacity-50 cursor-not-allowed;
+  }
+  @media (hover: hover) {
+    &-disabled:hover,
+    &[disabled]:hover,
+    &:disabled:hover {
+      @apply border-opacity-0 bg-opacity-20 text-opacity-20;
+    }
+  }
+}
+
+@keyframes button-pop {
+  0% {
+    transform: scale(var(--btn-focus-scale, 0.98));
+  }
+  40% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+  }
+}

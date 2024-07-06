@@ -13,10 +13,10 @@ export default function Page () {
   if (!user) return <DefaultLayout><Loader /></DefaultLayout>
 
   return (
-    <DefaultLayout title={`Settings for ${user.name}`}>
+    <DefaultLayout title={'Account'}>
       <PageContainer>
         <div className='mx-auto flex flex-col w-full max-w-md px-4 py-8 sm:px-6 md:px-8 lg:px-10 text-center md:border-2 md:rounded-lg md:border-black'>
-          <h2 className='text-xs tracking-widest title-font mb-5 font-medium uppercase'>Settings</h2>
+          <h2 className='text-xs tracking-widest title-font mb-5 font-medium uppercase'>Account</h2>
           <div className='w-24 mx-auto mb-2'>
             <Avatar uuid={user.id} height='96' width='96' />
           </div>

@@ -18,7 +18,7 @@ export default function Page () {
     <DefaultLayout title='Change Password'>
       <PageContainer>
         <div className='mx-auto flex flex-col w-full max-w-md px-4 py-8 sm:px-6 md:px-8 lg:px-10 text-center md:border-2 md:rounded-lg md:border-black'>
-          <PageHeader title='Change Password' subTitle='Settings' />
+          <PageHeader title='Change Password' subTitle='Account' />
           <div className='mt-5'>
             <ResetPasswordForm showCurrentPassword={user.type === 'password'} />
             <div className='flex flex-col relative w-full max-w-md px-4 sm:px-6 md:px-8 lg:px-10'>
