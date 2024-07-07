@@ -7,6 +7,9 @@ import ErrorLayout from '../../../../../components/ErrorLayout'
 import PageHeader from '../../../../../components/PageHeader'
 import PlayerAppealForm from '../../../../../components/appeal/PlayerAppealForm'
 import { fromNow, useApi, useUser } from '../../../../../utils'
+import Panel from '../../../../../components/Panel'
+import AppealStepHeader from '../../../../../components/appeal/AppealStepHeader'
+import Button from '../../../../../components/Button'
 
 export default function Page () {
   const router = useRouter()
@@ -46,22 +49,31 @@ export default function Page () {
     }
   }, [data])
 
-  if (loading) return <DefaultLayout title='Appeal Warning'><Loader /></DefaultLayout>
-  if (errors || !data) return <ErrorLayout errors={errors} />
+  if (errors) return <ErrorLayout errors={errors} />
 
   return (
-    <DefaultLayout title='Appeal Warning'>
+    <DefaultLayout title='Appeal Warning | Appeal' loading={loading}>
       <PageContainer>
-        <div className='mx-auto flex flex-col w-full max-w-md px-4 py-8 sm:px-6 md:px-8 lg:px-10 text-center md:border-2 md:rounded-lg md:border-black'>
-          <PageHeader title='Appeal warning' subTitle={`Created ${fromNow(data.playerWarning.created)}`} />
-          <PlayerAppealForm
-            {...data.playerWarning}
+        <Panel className='mx-auto w-full max-w-md'>
+          <AppealStepHeader step={3} title='Appeal Warning' nextStep='Await Review' />
+          {!loading && !data?.playerWarning && (
+            <div>
+              <h2 className='text-center text-base font-semibold leading-relaxed pb-1'>Punishment not found</h2>
+              <p className='text-center text-sm font-normal leading-snug pb-4'>Head back to the previous page</p>
+              <div className='flex gap-3'>
+                <Button onClick={() => router.back()}>Back</Button>
+              </div>
+            </div>
+          )}
+          {data?.playerWarning && <PlayerAppealForm
+            {...data?.playerWarning}
+            type='warning'
             parseVariables={(input) => ({ input: { reason: input.reason, type: 'PlayerWarning', serverId, punishmentId: id } })}
             onFinished={({ createAppeal }) => {
               router.push(`/appeals/${createAppeal.id}`)
             }}
-          />
-        </div>
+                              />}
+        </Panel>
       </PageContainer>
     </DefaultLayout>
   )

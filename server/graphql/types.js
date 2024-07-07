@@ -412,10 +412,6 @@ type AdminMenuItem {
   label: Int
 }
 
-type Navigation @cacheControl(scope: PRIVATE, maxAge: 300) {
-  left: [MenuItem!]! @cacheControl(scope: PRIVATE, maxAge: 300)
-}
-
 type AdminNavigation {
   left: [AdminMenuItem!]!
 }
@@ -590,7 +586,6 @@ type Query {
 
   me: Me
 
-  navigation: Navigation!
   adminNavigation: AdminNavigation! @allowIf(resource: "servers", permission: "manage")
 
   roles(defaultOnly: Boolean): [Role!] @allowIf(resource: "servers", permission: "manage")

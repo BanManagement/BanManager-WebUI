@@ -5,9 +5,11 @@ import TextArea from '../TextArea'
 import ErrorMessages from '../ErrorMessages'
 import { useMutateApi } from '../../utils'
 import AppealPunishment from './AppealPunishment'
+import InputCharCounter from '../InputCharCounter'
 
 export default function PlayerAppealForm ({ actor, reason, expires, created, server, type, onFinished, parseVariables }) {
-  const { handleSubmit, formState, register } = useForm({ defaultValues: { reason: '' } })
+  const { handleSubmit, formState, register, watch } = useForm({ defaultValues: { reason: '' } })
+  const watchReason = watch('reason')
   const { isSubmitting } = formState
 
   const { load, data, errors } = useMutateApi({
@@ -33,9 +35,13 @@ export default function PlayerAppealForm ({ actor, reason, expires, created, ser
         required
         rows={6}
         label='Why should this punishment be removed?'
+        minLength={20}
+        maxLength={2000}
+        className='-mb-6'
         {...register('reason')}
       />
-      <Button disabled={isSubmitting} loading={isSubmitting}>
+      <InputCharCounter currentLength={watchReason.length} minLength={20} maxLength={2000} />
+      <Button disabled={isSubmitting || watchReason.length < 20} loading={isSubmitting}>
         Appeal
       </Button>
     </form>

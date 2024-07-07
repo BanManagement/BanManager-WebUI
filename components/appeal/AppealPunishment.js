@@ -8,8 +8,8 @@ import Button from '../Button'
 
 export default function AppealPunishment ({ punishment, appealable, open }) {
   return (
-    <Disclosure key={punishment.server.id + punishment.id + punishment.type} as="div" className="w-full max-w-md bg-primary-900 rounded-3xl p-4" defaultOpen={open}>
-      <Disclosure.Button className="w-full flex flex-row items-center gap-4">
+    <Disclosure key={punishment.server.id + punishment.id + punishment.type} as='div' className='w-full max-w-md bg-primary-900 rounded-3xl p-4 mb-2' defaultOpen={open}>
+      <Disclosure.Button className='w-full flex flex-row items-center gap-4'>
         <Avatar uuid={punishment.actor.id} height='54' width='54' />
         <div className='flex flex-col text-left'>
           <span>{punishment.actor.name}</span>
@@ -23,7 +23,7 @@ export default function AppealPunishment ({ punishment, appealable, open }) {
           <ActivityBadge type={punishment.type.toUpperCase()} />
         </div>
       </Disclosure.Button>
-      <div className="overflow-hidden">
+      <div className='overflow-hidden'>
         <Disclosure.Panel className='mt-4'>
           <p>{punishment.reason}</p>
           {appealable && (
@@ -33,7 +33,7 @@ export default function AppealPunishment ({ punishment, appealable, open }) {
               </Button>
             </Link>
           )}
-      </Disclosure.Panel>
+        </Disclosure.Panel>
       </div>
     </Disclosure>
   )

@@ -1,6 +1,8 @@
 import { forwardRef, useId } from 'react'
 import clsx from 'clsx'
-import { MdError } from 'react-icons/md'
+import { MdError, MdOutlineInfo } from 'react-icons/md'
+import { useToggle } from '../utils'
+import { FaEye, FaEyeSlash } from 'react-icons/fa'
 
 // eslint-disable-next-line react/display-name
 const Input = forwardRef((props, ref) => {
@@ -16,10 +18,12 @@ const Input = forwardRef((props, ref) => {
     required = false,
     icon = null,
     iconPosition = 'left',
+    description = '',
     onChange = () => {},
     ...rest
   } = props
   const uniqueId = useId()
+  const [showInput, toggleShowInput] = useToggle(!(type === 'password'))
 
   const inputClass = clsx(`
     flex-1
@@ -92,7 +96,7 @@ const Input = forwardRef((props, ref) => {
           </span>}
         <input
           ref={ref}
-          type={type}
+          type={type === 'password' && showInput ? 'text' : type}
           className={inputClass}
           id={id || uniqueId}
           placeholder={placeholder}
@@ -101,6 +105,10 @@ const Input = forwardRef((props, ref) => {
           aria-describedby={id || uniqueId}
           {...rest}
         />
+        {type === 'password' &&
+          <span className='absolute right-5 top-4 text-gray-400 text-lg cursor-pointer' onClick={toggleShowInput}>
+            {showInput ? <FaEye /> : <FaEyeSlash />}
+          </span>}
         {label &&
           <label
             htmlFor={id || uniqueId}
@@ -110,6 +118,7 @@ const Input = forwardRef((props, ref) => {
           </label>}
       </div>
       {error && <p className='text-xs flex items-center gap-2 pl-4 text-red-700'><MdError /> {error}</p>}
+      {description && <p className='text-xs flex items-center gap-2 pl-4 text-gray-400'><MdOutlineInfo /> {description}</p>}
     </div>
   )
 })

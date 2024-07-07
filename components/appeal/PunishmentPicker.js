@@ -65,7 +65,7 @@ const types = [
 
 export default function PunishmentPicker () {
   const { user } = useUser()
-  const { loading, data, errors } = useApi({ query, variables: { id: user?.id } })
+  const { loading, data } = useApi({ query, variables: { id: user?.id } })
   const [activeFilter, setActiveFilter] = useState(['ban', 'mute', 'warning'])
 
   const toggleFilter = type => {
@@ -111,15 +111,15 @@ export default function PunishmentPicker () {
         {filters}
       </div>
       <div className='flex flex-col gap-4 pt-4'>
-        {(errors || !data || !rows.length)
+        {(!data || !rows.length)
           ? (
-          <div>
-            <h2 className="text-center text-base font-semibold leading-relaxed pb-1">No punishments founds</h2>
-            <p className="text-center text-sm font-normal leading-snug pb-4">Try changing your filters</p>
-            <div className="flex gap-3">
-              <Button onClick={() => setActiveFilter(['ban', 'mute', 'warning'])}>Clear filters</Button>
+            <div>
+              <h2 className='text-center text-base font-semibold leading-relaxed pb-1'>No punishments founds</h2>
+              <p className='text-center text-sm font-normal leading-snug pb-4'>Try changing your filters</p>
+              <div className='flex gap-3'>
+                <Button onClick={() => setActiveFilter(['ban', 'mute', 'warning'])}>Clear filters</Button>
+              </div>
             </div>
-          </div>
             )
           : items}
       </div>

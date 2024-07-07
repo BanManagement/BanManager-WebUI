@@ -122,6 +122,7 @@ const userFetcher = () =>
       query: `{ me {
     id
     name
+    email
     hasAccount
     session {
       type

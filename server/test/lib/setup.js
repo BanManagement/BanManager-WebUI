@@ -19,12 +19,13 @@ module.exports = async (disableTestMigrations) => { // eslint-disable-line max-s
       password: process.env.DB_PASSWORD,
       multipleStatements: true
     }
+
   const logger = pino(
     {
       name: 'banmanager-api-test',
       level: 'info'
     })
-  let dbPool = await setupPool(dbConfig)
+  let dbPool = await setupPool({ ...dbConfig })
 
   await dbPool.raw(`CREATE DATABASE ${dbName}`)
   await dbPool.destroy()
@@ -35,7 +36,7 @@ module.exports = async (disableTestMigrations) => { // eslint-disable-line max-s
 
   // Recreate the pool, as USE DATABASE would only apply to one connection, not the whole pool?
   // @TODO Confirm above
-  dbPool = await setupPool(dbConfig)
+  dbPool = await setupPool({ ...dbConfig })
 
   // Run migrations, then 'test' migrations
   let dbmOpts = { throwUncatched: true, config: { dev: { ...dbConfig, driver: { require: '@confuser/db-migrate-mysql' } } }, cmdOptions: { 'migrations-dir': path.join(__dirname, '..', '..', 'data', 'migrations') } }

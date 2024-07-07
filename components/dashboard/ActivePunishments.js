@@ -62,12 +62,10 @@ const PunishmentRow = ({ row, dateFormat }) => {
       <Table.Cell>{format(fromUnixTime(row.created), dateFormat)}</Table.Cell>
       <Table.Cell>{row.expires === 0 ? <Badge className='bg-red-500 sm:mx-auto'>Permanent</Badge> : fromNow(row.expires)}</Table.Cell>
       <Table.Cell>
-        <Link href={`/player/appeal/${row.server.id}/${row.id}/${row.type}`} passHref>
-
+        <Link href={`/appeal/punishment/${row.server.id}/${row.type}/${row.id}`} passHref>
           <Badge className='bg-blue-600 hover:bg-blue-900 mt-4'>
             Appeal
           </Badge>
-
         </Link>
       </Table.Cell>
     </Table.Row>

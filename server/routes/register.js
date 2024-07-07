@@ -14,8 +14,10 @@ module.exports = async function ({ request: { body }, throw: throwError, respons
     return throwError(400, 'Invalid password, minimum length 6 characters')
   }
 
-  if ((await pwnedPassword(body.password)) > 5) {
-    return throwError(400, 'Commonly used password, please choose another')
+  const commonPassword = await pwnedPassword(body.password)
+
+  if (commonPassword > 5) {
+    return throwError(400, `This password isn't safe to use as it's appeared in ${new Intl.NumberFormat().format(commonPassword)} known data breaches`)
   }
 
   const checkResult = await state.dbPool('bm_web_users')

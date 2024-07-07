@@ -62,7 +62,7 @@ export default function SessionNavProfile ({ user, unreadNotificationCount }) {
           )}
         >
           <Dropdown.Item name='Account' href='/account' />
-          {!user.hasAccount && <Dropdown.Item name='Register' href='/register' />}
+          {!user.hasAccount && <Dropdown.Item name='Register' href='/account/register' />}
           <Dropdown.Item name='Profile' href={'/player/' + user.id} />
           <div className='border-primary-400 border-b mx-1' />
           <Dropdown.Item name='Log out' onClick={handleLogout} disabled={loggingOut} />

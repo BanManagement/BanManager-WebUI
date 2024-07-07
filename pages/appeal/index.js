@@ -5,8 +5,11 @@ import PageContainer from '../../components/PageContainer'
 import Panel from '../../components/Panel'
 import AppealStepHeader from '../../components/appeal/AppealStepHeader'
 import { MdOutlineEmail, MdPin } from 'react-icons/md'
+import { useUser } from '../../utils'
 
 function Page () {
+  useUser({ redirectIfFound: true, redirectTo: '/appeal/punishment' })
+
   return (
     <DefaultLayout title='Appeal'>
       <PageContainer>
@@ -23,9 +26,9 @@ function Page () {
               </div>
             </div>
           </Link>
-          <div className="inline-flex items-center justify-center w-full">
-            <hr className="w-full h-px my-8 bg-primary-900 border-0 " />
-            <span className="absolute px-3 font-medium bg-primary-500 -translate-x-1/2  left-1/2">OR</span>
+          <div className='inline-flex items-center justify-center w-full'>
+            <hr className='w-full h-px my-8 bg-primary-900 border-0 ' />
+            <span className='absolute px-3 font-medium bg-primary-500 -translate-x-1/2  left-1/2'>OR</span>
           </div>
           <Link href='/appeal/account'>
             <div className='flex gap-4'>

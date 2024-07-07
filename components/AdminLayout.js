@@ -30,13 +30,6 @@ const AdminLayout = ({ children, title }) => {
           label
         }
       }
-      navigation {
-        left {
-          id
-          name
-          href
-        }
-      }
     }`
   })
 
@@ -49,15 +42,13 @@ const AdminLayout = ({ children, title }) => {
 
   mobileItems[mobileItems.length - 1].splitBorder = true
 
-  mobileItems.push(...data.navigation.left)
-
   return (
     <>
       <Head>
         <title>{title}</title>
       </Head>
       <div className='flex flex-col h-screen font-primary bg-primary-500'>
-        <div className='md:hidden'><Nav leftItems={data.navigation.left} mobileItems={mobileItems} rightItems={right} /></div>
+        <div className='md:hidden'><Nav leftItems={[]} mobileItems={mobileItems} rightItems={right} /></div>
         <div className='flex-grow text-white bg-primary-500'>
           <main className='h-screen overflow-hidden relative'>
             <div className='flex items-start justify-between'>

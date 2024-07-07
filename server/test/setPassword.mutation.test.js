@@ -131,7 +131,7 @@ describe('Mutation set password', () => {
 
     assert(body)
     assert.strictEqual(body.errors[0].message,
-      'Commonly used password, please choose another')
+      'This password isn\'t safe to use as it\'s appeared in 11,063 known data breaches')
   })
 
   test('should update password and invalidate all other sessions', async () => {

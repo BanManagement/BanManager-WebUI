@@ -32,7 +32,7 @@ describe('Account/Password', () => {
 
     cy.get('[data-cy=submit-password-change]').click()
 
-    cy.get('[data-cy=errors]').contains('Commonly used password, please choose another')
+    cy.get('[data-cy=errors]').contains('This password isn\'t safe to use')
   })
 
   it('successfully changes password', () => {

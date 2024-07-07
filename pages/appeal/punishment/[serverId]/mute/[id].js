@@ -7,6 +7,8 @@ import ErrorLayout from '../../../../../components/ErrorLayout'
 import PageHeader from '../../../../../components/PageHeader'
 import PlayerAppealForm from '../../../../../components/appeal/PlayerAppealForm'
 import { fromNow, useApi, useUser } from '../../../../../utils'
+import Panel from '../../../../../components/Panel'
+import AppealStepHeader from '../../../../../components/appeal/AppealStepHeader'
 
 export default function Page () {
   const router = useRouter()
@@ -46,22 +48,31 @@ export default function Page () {
     }
   }, [data])
 
-  if (loading) return <DefaultLayout title='Appeal Mute'><Loader /></DefaultLayout>
-  if (errors || !data) return <ErrorLayout errors={errors} />
+  if (errors) return <ErrorLayout errors={errors} />
 
   return (
-    <DefaultLayout title='Appeal Mute'>
+    <DefaultLayout title='Appeal Mute | Appeal' loading={loading}>
       <PageContainer>
-        <div className='mx-auto flex flex-col w-full max-w-md px-4 py-8 sm:px-6 md:px-8 lg:px-10 text-center md:border-2 md:rounded-lg md:border-black'>
-          <PageHeader title='Appeal mute' subTitle={`Created ${fromNow(data.playerMute.created)}`} />
-          <PlayerAppealForm
-            {...data.playerMute}
+        <Panel className='mx-auto w-full max-w-md'>
+          <AppealStepHeader step={3} title='Appeal Mute' nextStep='Await Review' />
+          {!loading && !data?.playerMute && (
+            <div>
+              <h2 className='text-center text-base font-semibold leading-relaxed pb-1'>Punishment not found</h2>
+              <p className='text-center text-sm font-normal leading-snug pb-4'>Head back to the previous page</p>
+              <div className='flex gap-3'>
+                <Button onClick={() => router.back()}>Back</Button>
+              </div>
+            </div>
+          )}
+          {data?.playerMute && <PlayerAppealForm
+            {...data?.playerMute}
+            type='mute'
             parseVariables={(input) => ({ input: { reason: input.reason, type: 'PlayerMute', serverId, punishmentId: id } })}
             onFinished={({ createAppeal }) => {
               router.push(`/appeals/${createAppeal.id}`)
             }}
-          />
-        </div>
+                              />}
+        </Panel>
       </PageContainer>
     </DefaultLayout>
   )

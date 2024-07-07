@@ -137,12 +137,10 @@ export default function PlayerPunishment ({ punishment, server, type, onDeleted 
             </ul>
           </div>
           {punishment.acl.yours &&
-            <Link href={`/player/appeal/${server.id}/${punishment.id}/${meta.editPath.replace('edit-', '')}`} passHref>
-
+            <Link href={`/appeal/punishment/${server.id}/${meta.editPath.replace('edit-', '')}/${punishment.id}`} passHref>
               <Button className='bg-blue-600 hover:bg-blue-900 mt-4'>
                 Appeal
               </Button>
-
             </Link>}
         </div>
       </div>

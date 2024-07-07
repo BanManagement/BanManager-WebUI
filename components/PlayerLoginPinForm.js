@@ -12,7 +12,7 @@ const ReactCodeInput = dynamic(() => import('@acusti/react-code-input'), { ssr: 
 
 export default function PlayerLoginPinForm ({ onSuccess, showHint }) {
   const [error, setError] = useState(null)
-  const { handleSubmit, formState, register, control} = useForm()
+  const { handleSubmit, formState, register, control } = useForm()
   const { isSubmitting } = formState
 
   const onSubmit = async (data) => {
@@ -58,12 +58,14 @@ export default function PlayerLoginPinForm ({ onSuccess, showHint }) {
           {...register('name')}
         />
         {showHint && (
-          <Message info>
-            <Message.Header>Your 6 digit pin</Message.Header>
-            <Message.List>
-              <Message.Item>Join the chosen Minecraft server &amp; type /bmpin or use the pin from the banned screen</Message.Item>
-            </Message.List>
-          </Message>)}
+          <div className='flex gap-4 text-left mb-6 rounded-3xl border-primary-900 border-2 p-2'>
+          <Button disabled className='w-12 h-12'><MdPin /></Button>
+          <div>
+            <p className='underline'>Your 6 digit pin, e.g. <code>123456</code></p>
+            <p className='text-sm text-gray-400'>This can be found when you join the Minecraft server, either on the ban screen or by using the <code className='bg-primary-900'>/bmpin</code> command.</p>
+            <p className='text-sm text-gray-400 mt-2'>Note: this pin expires after 5 minutes.</p>
+          </div>
+        </div>)}
         <Controller
           name='pin'
           control={control}

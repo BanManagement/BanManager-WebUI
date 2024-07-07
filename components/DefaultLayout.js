@@ -50,6 +50,7 @@ function DefaultLayout ({ title = 'Default Title', children, description, loadin
       />
     </div>]
   const right = useMemo(() => user?.id ? [<SessionNavProfile key='session-nav-profile' user={user} unreadNotificationCount={data?.unreadNotificationCount} />] : [], [user, data])
+  const mobileItems = useMemo(() => !user?.id ? [{ name: 'Login', href: '/login' }, { name: 'Create Appeal', href: '/appeal' }] : [], [user])
 
   return (
     <>
@@ -69,7 +70,7 @@ function DefaultLayout ({ title = 'Default Title', children, description, loadin
           alertCount={data?.unreadNotificationCount || null}
           animated={false}
         />
-        <Nav leftItems={left} rightItems={right} unreadNotificationCount={data?.unreadNotificationCount || null} />
+        <Nav leftItems={left} rightItems={right} mobileItems={mobileItems} unreadNotificationCount={data?.unreadNotificationCount || null} />
         <div className='flex-grow text-gray-200 bg-primary-500 pb-12 relative'>
           {loading ? <Loader className='-mt-32' /> : children}
         </div>

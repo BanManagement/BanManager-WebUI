@@ -1,5 +1,6 @@
 import { forwardRef, useId } from 'react'
 import clsx from 'clsx'
+import { MdError } from 'react-icons/md'
 
 // eslint-disable-next-line react/display-name
 const TextArea = forwardRef((props, ref) => {
@@ -13,6 +14,8 @@ const TextArea = forwardRef((props, ref) => {
     error = '',
     required = false,
     onChange = () => {},
+    minLength,
+    maxLength,
     ...rest
   } = props
   const inputClass = clsx(`
@@ -37,6 +40,7 @@ const TextArea = forwardRef((props, ref) => {
     duration-300
     transform
     -translate-y-3
+    translate-x-1.5
     scale-75
     top-2
     left-4
@@ -76,6 +80,8 @@ const TextArea = forwardRef((props, ref) => {
           onChange={handleChange}
           required={required}
           aria-describedby={id || uniqueId}
+          minLength={minLength}
+          maxLength={maxLength}
           {...rest}
         />
         {label &&
