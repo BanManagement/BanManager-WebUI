@@ -48,7 +48,7 @@
     "graphql-tag": "^2.12.6",
     "graphql-type-json": "0.3.2",
     "hibp": "14.1.1",
-    "inquirer": "8.2.6",
+    "inquirer": "9.3.5",
     "js-yaml": "4.1.0",
     "knex": "3.1.0",
     "knex-on-duplicate-update": "2.3.3",
