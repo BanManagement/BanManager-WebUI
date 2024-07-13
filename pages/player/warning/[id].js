@@ -6,6 +6,7 @@ import PlayerWarnForm from '../../../components/PlayerWarnForm'
 import ErrorLayout from '../../../components/ErrorLayout'
 import PageHeader from '../../../components/PageHeader'
 import { fromNow, useApi } from '../../../utils'
+import Panel from '../../../components/Panel'
 
 export default function Page () {
   const router = useRouter()
@@ -33,8 +34,7 @@ export default function Page () {
     variables: { id, serverId }
   })
 
-  if (loading) return <DefaultLayout title='Loading...'><Loader /></DefaultLayout>
-  if (errors || !data) return <ErrorLayout errors={errors} />
+  if (errors) return <ErrorLayout errors={errors} />
 
   const query = `mutation updatePlayerWarning($id: ID!, $serverId: ID!, $input: UpdatePlayerWarningInput!) {
     updatePlayerWarning(id: $id, serverId: $serverId, input: $input) {
@@ -43,12 +43,12 @@ export default function Page () {
   }`
 
   return (
-    <DefaultLayout title={`Update ${data.playerWarning.player.name} warning`}>
+    <DefaultLayout title={`Edit ${data?.playerWarning?.player?.name} warning`} loading={loading}>
       <PageContainer>
-        <div className='mx-auto flex flex-col w-full max-w-md px-4 py-8 sm:px-6 md:px-8 lg:px-10 text-center md:border-2 md:rounded-lg md:border-black'>
-          <PageHeader title='Edit warning' subTitle={`Created ${fromNow(data.playerWarning.created)}`} />
+        <Panel className='mx-auto w-full max-w-md'>
+          <PageHeader title='Edit warning' subTitle={fromNow(data?.playerWarning?.created || 0)} />
           <PlayerWarnForm
-            defaults={data.playerWarning}
+            defaults={data?.playerWarning}
             query={query}
             parseVariables={(input) => ({
               id,
@@ -60,9 +60,9 @@ export default function Page () {
               }
             })}
             disableServers
-            onFinished={() => router.push(`/player/${data.playerWarning.player.id}`)}
+            onFinished={() => router.push(`/player/${data?.playerWarning.player.id}`)}
           />
-        </div>
+        </Panel>
       </PageContainer>
     </DefaultLayout>
   )

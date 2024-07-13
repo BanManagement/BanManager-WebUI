@@ -6,6 +6,7 @@ import PlayerMuteForm from '../../../components/PlayerMuteForm'
 import ErrorLayout from '../../../components/ErrorLayout'
 import PageHeader from '../../../components/PageHeader'
 import { useApi, useUser } from '../../../utils'
+import Panel from '../../../components/Panel'
 
 export default function Page () {
   const router = useRouter()
@@ -23,8 +24,7 @@ export default function Page () {
   })
   const { hasServerPermission } = useUser({ redirectIfFound: false, redirectTo: '/' })
 
-  if (loading) return <DefaultLayout title='Loading...'><Loader /></DefaultLayout>
-  if (errors || !data) return <ErrorLayout errors={errors} />
+  if (errors) return <ErrorLayout errors={errors} />
 
   const query = `mutation createPlayerMute($input: CreatePlayerMuteInput!) {
     createPlayerMute(input: $input) {
@@ -33,27 +33,25 @@ export default function Page () {
   }`
 
   return (
-    <DefaultLayout title={`Mute ${data.player.name}`}>
+    <DefaultLayout title={`Mute ${data?.player?.name}`} loading={loading}>
       <PageContainer>
-        <div className='mx-auto flex flex-col w-full max-w-md px-4 py-8 sm:px-6 md:px-8 lg:px-10 text-center md:border-2 md:rounded-lg md:border-black'>
-          <PageHeader title={`Mute ${data.player.name}`} subTitle='' />
-          <div className='mt-5'>
-            <PlayerMuteForm
-              serverFilter={server => hasServerPermission('player.mutes', 'create', server.id)}
-              query={query}
-              parseVariables={(input) => ({
-                input: {
-                  player: id,
-                  server: input.server,
-                  reason: input.reason,
-                  expires: Math.floor(input.expires / 1000),
-                  soft: input.soft
-                }
-              })}
-              onFinished={() => router.push(`/player/${id}`)}
-            />
-          </div>
-        </div>
+        <Panel className='mx-auto w-full max-w-md'>
+          <PageHeader title={`Mute ${data?.player?.name}`} subTitle='' />
+          <PlayerMuteForm
+            serverFilter={server => hasServerPermission('player.mutes', 'create', server.id)}
+            query={query}
+            parseVariables={(input) => ({
+              input: {
+                player: id,
+                server: input.server,
+                reason: input.reason,
+                expires: Math.floor(input.expires / 1000),
+                soft: input.soft
+              }
+            })}
+            onFinished={() => router.push(`/player/${id}`)}
+          />
+        </Panel>
       </PageContainer>
     </DefaultLayout>
   )

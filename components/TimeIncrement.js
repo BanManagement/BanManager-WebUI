@@ -1,16 +1,14 @@
 import Button from './Button'
 
-const TimeIncrement = ({ incrementMs = 0, getValues, setValue, field, children }) => {
+const TimeIncrement = ({ incrementMs = 0, onChange, value, children }) => {
   return (
     <Button
-      className='bg-gray-500 hover:bg-gray-600'
+      className='btn-outline'
+      disabled={value === 0}
       onClick={(e) => {
         e.preventDefault()
 
-        const value = getValues(field)
-
-        value.setTime(value.getTime() + incrementMs)
-        setValue(field, value)
+        onChange(value + incrementMs)
       }}
     >
       {children}

@@ -1,5 +1,4 @@
 import { useRouter } from 'next/router'
-import Loader from '../../../components/Loader'
 import DefaultLayout from '../../../components/DefaultLayout'
 import PageContainer from '../../../components/PageContainer'
 import PlayerWarnForm from '../../../components/PlayerWarnForm'
@@ -41,20 +40,20 @@ export default function Page () {
       <PageContainer>
         <Panel className='mx-auto w-full max-w-md'>
           <PageHeader title={`Warn ${data?.player?.name}`} />
-            <PlayerWarnForm
-              serverFilter={server => hasServerPermission('player.warnings', 'create', server.id)}
-              query={query}
-              parseVariables={(input) => ({
-                input: {
-                  player: id,
-                  server: input.server,
-                  reason: input.reason,
-                  expires: Math.floor(input.expires / 1000),
-                  points: input.points
-                }
-              })}
-              onFinished={() => router.push(`/player/${id}`)}
-            />
+          <PlayerWarnForm
+            serverFilter={server => hasServerPermission('player.warnings', 'create', server.id)}
+            query={query}
+            parseVariables={(input) => ({
+              input: {
+                player: id,
+                server: input.server,
+                reason: input.reason,
+                expires: Math.floor(input.expires / 1000),
+                points: input.points
+              }
+            })}
+            onFinished={() => router.push(`/player/${id}`)}
+          />
         </Panel>
       </PageContainer>
     </DefaultLayout>

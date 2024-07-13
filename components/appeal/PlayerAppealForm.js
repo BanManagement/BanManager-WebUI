@@ -37,7 +37,7 @@ export default function PlayerAppealForm ({ actor, reason, expires, created, ser
         label='Why should this punishment be removed?'
         minLength={20}
         maxLength={2000}
-        className='-mb-6'
+        className='!-mb-6'
         {...register('reason')}
       />
       <InputCharCounter currentLength={watchReason.length} minLength={20} maxLength={2000} />

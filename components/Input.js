@@ -19,6 +19,7 @@ const Input = forwardRef((props, ref) => {
     icon = null,
     iconPosition = 'left',
     description = '',
+    disabled = false,
     onChange = () => {},
     ...rest
   } = props
@@ -80,7 +81,8 @@ const Input = forwardRef((props, ref) => {
     ${className}`,
   {
     'ring-red-700 ring-2': error,
-    'focus-within:ring-2 focus-within:ring-accent-600': !error
+    'focus-within:ring-2 focus-within:ring-accent-600': !error,
+    'border-opacity-0 opacity-50 cursor-not-allowed': disabled
   })
 
   const handleChange = (e) => {
@@ -103,6 +105,7 @@ const Input = forwardRef((props, ref) => {
           onChange={handleChange}
           required={required}
           aria-describedby={id || uniqueId}
+          disabled={disabled}
           {...rest}
         />
         {type === 'password' &&

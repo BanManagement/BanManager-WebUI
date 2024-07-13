@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { AiOutlineUser } from 'react-icons/ai'
 import dynamic from 'next/dynamic'
-import Message from './Message'
 import Input from './Input'
 import Button from './Button'
 import ServerSelector from './admin/ServerSelector'
@@ -59,13 +58,13 @@ export default function PlayerLoginPinForm ({ onSuccess, showHint }) {
         />
         {showHint && (
           <div className='flex gap-4 text-left mb-6 rounded-3xl border-primary-900 border-2 p-2'>
-          <Button disabled className='w-12 h-12'><MdPin /></Button>
-          <div>
-            <p className='underline'>Your 6 digit pin, e.g. <code>123456</code></p>
-            <p className='text-sm text-gray-400'>This can be found when you join the Minecraft server, either on the ban screen or by using the <code className='bg-primary-900'>/bmpin</code> command.</p>
-            <p className='text-sm text-gray-400 mt-2'>Note: this pin expires after 5 minutes.</p>
-          </div>
-        </div>)}
+            <Button disabled className='w-12 h-12'><MdPin /></Button>
+            <div>
+              <p className='underline'>Your 6 digit pin, e.g. <code>123456</code></p>
+              <p className='text-sm text-gray-400'>This can be found when you join the Minecraft server, either on the ban screen or by using the <code className='bg-primary-900'>/bmpin</code> command.</p>
+              <p className='text-sm text-gray-400 mt-2'>Note: this pin expires after 5 minutes.</p>
+            </div>
+          </div>)}
         <Controller
           name='pin'
           control={control}

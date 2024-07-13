@@ -1,12 +1,10 @@
 import { useEffect } from 'react'
 import { useRouter } from 'next/router'
-import Loader from '../../../../../components/Loader'
 import DefaultLayout from '../../../../../components/DefaultLayout'
 import PageContainer from '../../../../../components/PageContainer'
 import ErrorLayout from '../../../../../components/ErrorLayout'
-import PageHeader from '../../../../../components/PageHeader'
 import PlayerAppealForm from '../../../../../components/appeal/PlayerAppealForm'
-import { fromNow, useApi, useUser } from '../../../../../utils'
+import { useApi, useUser } from '../../../../../utils'
 import Panel from '../../../../../components/Panel'
 import AppealStepHeader from '../../../../../components/appeal/AppealStepHeader'
 import Button from '../../../../../components/Button'
@@ -72,7 +70,7 @@ export default function Page () {
             onFinished={({ createAppeal }) => {
               router.push(`/appeals/${createAppeal.id}`)
             }}
-                              />}
+                                  />}
         </Panel>
       </PageContainer>
     </DefaultLayout>
