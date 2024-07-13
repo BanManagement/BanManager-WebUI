@@ -1,5 +1,4 @@
 import { useRouter } from 'next/router'
-import Loader from '../../../components/Loader'
 import DefaultLayout from '../../../components/DefaultLayout'
 import PageContainer from '../../../components/PageContainer'
 import PlayerBanForm from '../../../components/PlayerBanForm'
@@ -33,7 +32,7 @@ export default function Page () {
   }`
 
   return (
-    <DefaultLayout title={`Ban ${data?.player?.name}`}>
+    <DefaultLayout title={`Ban ${data?.player?.name}`} loading={loading}>
       <PageContainer>
         <Panel className='mx-auto w-full max-w-md'>
           <PageHeader title={`Ban ${data?.player?.name}`} />

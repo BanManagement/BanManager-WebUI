@@ -8,7 +8,7 @@ export default function ErrorLayout ({ errors }) {
   return (
     <DefaultLayout title='Error'>
       <PageContainer>
-        <Panel>
+        <Panel className='mx-auto w-full max-w-md'>
           <PageHeader subTitle='Error' title='Something went wrong' />
           <ErrorMessages errors={errors} />
         </Panel>

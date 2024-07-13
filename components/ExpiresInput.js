@@ -40,14 +40,15 @@ const ExpiresInput = ({ onChange, value }) => {
 
   return (
     <div>
-      <div className="relative flex items-center justify-end">
+      <div className='relative flex items-center justify-end'>
         <div className={clsx(
           'transition-opacity duration-500 ease-in-out transform w-full',
           {
             'scale-0 opacity-0 absolute': inputTransitionState === 'hidden',
             'scale-100 opacity-100': inputTransitionState === 'visible'
           }
-        )}>
+        )}
+        >
           <DateTimePicker dateTypeMode='utc-ms-timestamp' inputClassName='!rounded-none' icon={<MdOutlineCalendarMonth />} isValidDate={disablePast} onChange={onChange} value={value} />
         </div>
         <Button
@@ -60,7 +61,8 @@ const ExpiresInput = ({ onChange, value }) => {
           <span className={clsx(
             'transition-opacity duration-500 ease-in-out',
             { 'opacity-0': isTransitioning, 'opacity-100': !isTransitioning }
-          )}>
+          )}
+          >
             {buttonContent}
           </span>
         </Button>

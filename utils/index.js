@@ -204,9 +204,9 @@ export const useUser = ({
   return { user: hasUser ? user : null, hasPermission, hasServerPermission }
 }
 
-export const fromNow = (timestamp) => {
+export const fromNow = (timestamp, options = { addSuffix: true }) => {
   try {
-    return formatDistanceStrict(fromUnixTime(timestamp), new Date(), { addSuffix: true })
+    return formatDistanceStrict(fromUnixTime(timestamp), new Date(), options)
   } catch (e) {
     console.error(e)
 

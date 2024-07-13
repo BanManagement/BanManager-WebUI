@@ -1,5 +1,4 @@
 import { useRouter } from 'next/router'
-import Loader from '../../../components/Loader'
 import DefaultLayout from '../../../components/DefaultLayout'
 import PageContainer from '../../../components/PageContainer'
 import PlayerNoteForm from '../../../components/PlayerNoteForm'

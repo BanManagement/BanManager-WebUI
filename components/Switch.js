@@ -33,10 +33,10 @@ const Switch = forwardRef((props, ref) => {
         <HeadlessSwitch
           id={id || uniqueId}
           ref={ref}
-          className="group inline-flex h-6 w-11 items-center rounded-full bg-primary-900 data-[checked]:bg-accent-700 data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50"
+          className='group inline-flex h-6 w-11 items-center rounded-full bg-primary-900 data-[checked]:bg-accent-700 data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50'
           {...props}
         >
-          <span className="size-4 translate-x-1 rounded-full bg-gray-200 transition group-data-[checked]:translate-x-6" />
+          <span className='size-4 translate-x-1 rounded-full bg-gray-200 transition group-data-[checked]:translate-x-6' />
         </HeadlessSwitch>
       </div>
       {description && <p className='text-xs flex items-center gap-2 pl-4 text-gray-400'><MdOutlineInfo /> {description}</p>}

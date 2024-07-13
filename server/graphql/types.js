@@ -504,7 +504,7 @@ type NotificationList {
 
 type NotificationComment {
   id: ID!
-  comment: String!
+  content: String
   actor: Player! @cacheControl(scope: PUBLIC, maxAge: 3600)
   created: Timestamp!
   updated: Timestamp!

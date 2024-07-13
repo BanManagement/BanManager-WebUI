@@ -1,16 +1,17 @@
+import clsx from 'clsx'
 import Badge from '../Badge'
 
-export default function PlayerAppealBadge ({ appeal }) {
+export default function PlayerAppealBadge ({ appeal, children, className }) {
   switch (appeal.punishmentType) {
     case 'PlayerBan':
-      return <Badge className='bg-red-500 sm:mx-auto'>Ban</Badge>
+      return <Badge className={clsx('bg-red-800', className)}>{children || 'Ban'}</Badge>
 
     case 'PlayerMute':
-      return <Badge className='bg-indigo-500 sm:mx-auto'>Mute</Badge>
+      return <Badge className={clsx('bg-indigo-800', className)}>{children || 'Mute'}</Badge>
 
     case 'PlayerWarning':
-      return <Badge className='bg-amber-500 sm:mx-auto'>Warning</Badge>
+      return <Badge className={clsx('bg-amber-800', className)}>{children || 'Warning'}</Badge>
   }
 
-  return null
+  return <Badge className={clsx('bg-fuchsia-800', className)}>{children || 'Unknown'}</Badge>
 }
