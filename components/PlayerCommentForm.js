@@ -6,9 +6,10 @@ import ErrorMessages from './ErrorMessages'
 import { useMutateApi } from '../utils'
 
 export default function PlayerCommentForm ({ onFinish, parseVariables, query }) {
-  const { handleSubmit, formState, register, setValue } = useForm({ defaultValues: { comment: '' } })
+  const { handleSubmit, formState, register, setValue, watch } = useForm({ defaultValues: { comment: '' } })
   const { isSubmitting } = formState
   const { load, loading, data, errors } = useMutateApi({ query })
+  const watchComment = watch('comment')
 
   useEffect(() => {
     if (!data) return
@@ -21,17 +22,17 @@ export default function PlayerCommentForm ({ onFinish, parseVariables, query }) 
   const onSubmit = (data) => load(parseVariables(data))
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className='mx-auto flex flex-wrap'>
+    <form onSubmit={handleSubmit(onSubmit)} className='mx-auto flex flex-col flex-wrap'>
       <ErrorMessages errors={errors} />
       <TextArea
-        className='w-full'
         required
+        className='!-mb-2'
         maxLength='250'
-        placeholder='Leave a comment'
+        label='Leave a comment'
         {...register('comment')}
       />
-      <div className='-mr-1'>
-        <Button data-cy='submit-report-comment-form' disabled={isSubmitting} loading={loading}>Comment</Button>
+      <div className='md:self-end'>
+        <Button data-cy='submit-report-comment-form' disabled={isSubmitting || !watchComment.length} loading={loading}>Comment</Button>
       </div>
     </form>
   )

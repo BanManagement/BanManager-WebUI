@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 import { MdNotifications, MdNotificationsOff } from 'react-icons/md'
 import Button from '../Button'
-import Loader from '../Loader'
 import ErrorMessages from '../ErrorMessages'
 import { useMutateApi } from '../../utils'
 
@@ -25,8 +24,6 @@ export default function PlayerReportNotifications ({ report: { id, viewerSubscri
   const handleChange = (subscriptionState) => () => {
     load({ serverId: server.id, report: id, subscriptionState })
   }
-
-  if (loading) return <Loader />
 
   return (
     <div>

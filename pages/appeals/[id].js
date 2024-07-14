@@ -95,7 +95,7 @@ export default function Page () {
             <span className='block md:inline text-gray-400'>#{appeal.id}</span>
             <span className='block md:inline text-gray-400'> {format(fromUnixTime(appeal.created), 'dd MMM yyyy')}</span>
           </h1>
-          <p className='pb-4 border-b border-accent-200 text-gray-400'>
+          <p className='pb-4 border-b border-accent-400 text-gray-400'>
             <Link href={`/player/${appeal.actor.id}`}>
 
               {appeal.actor.name}
@@ -160,7 +160,7 @@ export default function Page () {
                   </div>
                 </li>
               </ul>
-              {!!user && appeal.state.id < 3 ? <PageHeader title='Actions' /> : <></>}
+              {!!user && appeal.state.id < 3 ? <PageHeader className='text-base !text-left' title='Actions' /> : <></>}
               {!!user && appeal.state.id < 3 &&
                 <PlayerAppealActions
                   appeal={appeal}
@@ -218,7 +218,7 @@ export default function Page () {
             </li>
           </ul>
           <div>
-            {!!user && appeal.state.id < 3 ? <PageHeader title='Actions' /> : <></>}
+            {!!user && appeal.state.id < 3 ? <PageHeader className='text-base !text-left' title='Actions' /> : <></>}
             {!!user && appeal.state.id < 3 &&
               <PlayerAppealActions
                 appeal={appeal}

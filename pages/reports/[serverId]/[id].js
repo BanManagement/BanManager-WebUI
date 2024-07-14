@@ -122,7 +122,7 @@ export default function Page () {
             <span className='mr-3'>{report.reason}</span>
             <span className='block md:inline text-gray-400'>#{report.id}</span>
           </h1>
-          <p className='pb-4 border-b border-accent-200 text-gray-400'>
+          <p className='pb-4 border-b border-accent-400 text-gray-400'>
             <Link href={`/player/${report.actor.id}`}>
 
               {report.actor.name}
@@ -234,12 +234,12 @@ export default function Page () {
                     </div>
                   </li>}
               </ul>
-              <PageHeader title='Locations' />
+              <PageHeader className='mt-4 text-base !text-left mb-0' title='Locations' />
               <ul role='list' className='divide-y divide-gray-700'>
                 {report.playerLocation && <PlayerReportLocation location={report.playerLocation} player={report.player} />}
                 {report.actorLocation && <PlayerReportLocation location={report.actorLocation} player={report.actor} />}
               </ul>
-              {report?.commands?.length || (!!user && report.state.id < 3) ? <PageHeader title='Actions' /> : <></>}
+              {report?.commands?.length || (!!user && report.state.id < 3) ? <PageHeader className='mt-4 text-base !text-left mb-0' title='Actions' /> : <></>}
               {!!user && report.state.id < 3 && !report?.commands?.length &&
                 <PlayerReportActions
                   report={report} server={data.server} onAction={({ state, updated, commands }) => {
@@ -317,14 +317,14 @@ export default function Page () {
               </li>}
           </ul>
           <div>
-            <PageHeader title='Locations' />
+            <PageHeader className='text-base !text-left' title='Locations' />
             <ul role='list' className='divide-y divide-gray-700'>
               {report.playerLocation && <PlayerReportLocation location={report.playerLocation} player={report.player} />}
               {report.actorLocation && <PlayerReportLocation location={report.actorLocation} player={report.actor} />}
             </ul>
           </div>
           <div>
-            {report?.commands?.length || (!!user && report.state.id < 3) ? <PageHeader title='Actions' /> : <></>}
+            {report?.commands?.length || (!!user && report.state.id < 3) ? <PageHeader className='text-base !text-left' title='Actions' /> : <></>}
             {!!user && report.state.id < 3 && !report?.commands?.length &&
               <PlayerReportActions
                 report={report} server={data.server} onAction={({ state, updated, commands }) => {

@@ -97,7 +97,7 @@ export default function PlayerAppealCommentList ({ appeal, showReply }) {
   if (!items.length && !showReply) return null
 
   return (
-    <div className="relative block ml-11 pl-4 before:block before:absolute before:content-[''] before:mt-3 before:mb-4 before:top-0 before:bottom-0 before:left-8 before:w-0.5 before:bg-gray-700 before:z-0">
+    <div className="relative block ml-11 pl-4 before:block before:absolute before:content-[''] before:mt-3 before:mb-4 before:top-0 before:bottom-0 before:left-8 before:w-0.5 before:bg-primary-900 before:z-0">
       <PlayerAppealComment id={0} actor={appeal.actor} created={appeal.created} content={appeal.reason} />
       {items}
       {showReply &&

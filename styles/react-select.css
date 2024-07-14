@@ -18,6 +18,10 @@
   @apply text-gray-400 cursor-default hover:bg-accent-700 hover:bg-opacity-50 hover:text-white select-none relative py-2 pl-3 pr-9
 }
 
+.react_select .react_select__option:last-child {
+  @apply rounded-b-3xl
+}
+
 .react_select .react_select__option--is-focused {
   @apply bg-accent-700 text-gray-300
 }
