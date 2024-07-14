@@ -1,11 +1,8 @@
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { format, fromUnixTime } from 'date-fns'
-import { Disclosure } from '@headlessui/react'
-import { BsChevronUp, BsChevronDown } from 'react-icons/bs'
 import { useApi, useUser } from '../../../utils'
 import Loader from '../../../components/Loader'
-import Table from '../../../components/Table'
 import DefaultLayout from '../../../components/DefaultLayout'
 import ErrorLayout from '../../../components/ErrorLayout'
 import PageContainer from '../../../components/PageContainer'
@@ -17,6 +14,8 @@ import PlayerReportLocation from '../../../components/reports/PlayerReportLocati
 import PlayerReportActions from '../../../components/reports/PlayerReportActions'
 import PlayerReportCommand from '../../../components/reports/PlayerReportCommand'
 import PlayerReportNotifications from '../../../components/reports/PlayerReportNotifications'
+import PlayerReportServerLogs from '../../../components/reports/PlayerReportServerLogs'
+import PlayerReportSidebar from '../../../components/reports/PlayerReportSidebar'
 
 export default function Page () {
   const { user } = useUser()
@@ -113,7 +112,7 @@ export default function Page () {
   const canAssign = report.acl.assign
 
   return (
-    <DefaultLayout title={`#${id} Report`}>
+    <DefaultLayout title={`#${id} | ${report.actor.name} | ${report.reason} | Report`}>
       <PageContainer>
         <div className='pb-6'>
           <h1
@@ -141,203 +140,30 @@ export default function Page () {
             <div>
               <PlayerReportCommentList report={id} serverId={serverId} showReply={canComment} />
             </div>
-            <div>
-              {!!report.serverLogs && !!report.serverLogs.length &&
-                <Disclosure>
-                  {({ open }) => (
-                    <>
-                      <Disclosure.Button className='flex justify-between w-full text-left'>
-                        <PageHeader title='Server Logs' className='w-full' />
-                        {open ? <BsChevronDown /> : <BsChevronUp />}
-                      </Disclosure.Button>
-                      <Disclosure.Panel>
-                        <Table>
-                          <Table.Body>
-                            {report.serverLogs.map(({ id, log }) => (
-                              <Table.Row key={id} className='text-xs'>
-                                <Table.Cell className='hidden md:table-cell pl-5 pr-3 whitespace-no-wrap'>
-                                  <div>{format(fromUnixTime(log.created), 'dd MMM yyyy HH:mm:ss')}</div>
-                                </Table.Cell>
-                                <Table.Cell className='px-2 py-2 whitespace-no-wrap'>
-                                  <div className='md:hidden'>{format(fromUnixTime(log.created), 'dd MMM yyyy HH:mm:ss')}</div>
-                                  <div>{log.message}</div>
-                                </Table.Cell>
-                              </Table.Row>
-                            ))}
-                          </Table.Body>
-                        </Table>
-                      </Disclosure.Panel>
-                    </>
-                  )}
-                </Disclosure>}
+            <div className='flex'>
+              {!!report.serverLogs && !!report.serverLogs.length && <PlayerReportServerLogs report={report} />}
             </div>
           </div>
           <div className='hidden md:block col-span-3 space-y-6 mx-6'>
             <div className='sticky top-6'>
-              <ul role='list' className='divide-y divide-gray-700'>
-                <li className='pb-3'>
-                  <div className='flex items-center'>
-                    <div className='flex-1 min-w-0 space-y-3'>
-                      <p>
-                        State
-                      </p>
-                      {canUpdateState
-                        ? (
-                          <PlayerReportState
-                            id={report.id}
-                            server={data.server.id}
-                            currentState={report?.state}
-                            states={stateOptions}
-                            onChange={({ reportState: { state, updated } }) => {
-                              mutate({ ...data, report: { ...data.report, state, updated } }, false)
-                            }}
-                          />)
-                        : (<p className='text-sm text-gray-400'>{report?.state?.name}</p>)}
-                    </div>
-                  </div>
-                </li>
-                <li className='py-3 sm:py-4'>
-                  <div className='flex items-center space-x-4'>
-                    <div className='flex-1 min-w-0 space-y-3'>
-                      <p>
-                        Assignee
-                      </p>
-                      {canAssign
-                        ? (
-                          <PlayerReportAssign
-                            id={report.id}
-                            player={report.assignee}
-                            server={data.server.id}
-                            onChange={({ assignReport: { assignee, updated } }) => {
-                              mutate({ ...data, report: { ...data.report, assignee, updated } }, false)
-                            }}
-                          />)
-                        : (<p className='text-sm text-gray-400'>{report?.assignee?.name || 'No one'}</p>)}
-                    </div>
-                  </div>
-                </li>
-                {!!user &&
-                  <li className='py-3 sm:py-4'>
-                    <div className='flex items-center space-x-4'>
-                      <div className='flex-1 min-w-0 space-y-3'>
-                        <p>
-                          Notifications
-                        </p>
-                        <PlayerReportNotifications
-                          report={report}
-                          server={data.server}
-                          onChange={({ reportSubscriptionState }) => {
-                            mutate({ ...data, report: { ...data.report, viewerSubscription: reportSubscriptionState } }, false)
-                          }}
-                        />
-                      </div>
-                    </div>
-                  </li>}
-              </ul>
-              <PageHeader className='mt-4 text-base !text-left mb-0' title='Locations' />
-              <ul role='list' className='divide-y divide-gray-700'>
-                {report.playerLocation && <PlayerReportLocation location={report.playerLocation} player={report.player} />}
-                {report.actorLocation && <PlayerReportLocation location={report.actorLocation} player={report.actor} />}
-              </ul>
-              {report?.commands?.length || (!!user && report.state.id < 3) ? <PageHeader className='mt-4 text-base !text-left mb-0' title='Actions' /> : <></>}
-              {!!user && report.state.id < 3 && !report?.commands?.length &&
-                <PlayerReportActions
-                  report={report} server={data.server} onAction={({ state, updated, commands }) => {
-                    mutate({ ...data, report: { ...data.report, state, updated, commands } }, false)
-                  }}
-                />}
-              {!!report?.commands?.length &&
-                <ul role='list' className='divide-y divide-gray-700'>
-                  {report.commands.map(cmd => (
-                    <PlayerReportCommand key={cmd.id} command={cmd} />
-                  ))}
-                </ul>}
+              <PlayerReportSidebar
+                data={data}
+                canUpdateState={canUpdateState}
+                canAssign={canAssign}
+                stateOptions={stateOptions}
+                mutate={mutate} user={user}
+              />
             </div>
           </div>
         </div>
         <div className='md:hidden col-span-12 space-y-6'>
-          <ul role='list' className='divide-y divide-gray-700'>
-            <li className='py-3'>
-              <div className='flex items-center'>
-                <div className='flex-1 min-w-0 space-y-3'>
-                  <p>
-                    State
-                  </p>
-                  {canUpdateState
-                    ? (
-                      <PlayerReportState
-                        id={report.id}
-                        server={data.server.id}
-                        currentState={report?.state}
-                        states={stateOptions}
-                        onChange={({ reportState: { state, updated } }) => {
-                          mutate({ ...data, report: { ...data.report, state, updated } }, false)
-                        }}
-                      />)
-                    : (<p className='text-sm text-gray-400'>{report?.state?.name}</p>)}
-                </div>
-              </div>
-            </li>
-            <li className='py-3 sm:py-4'>
-              <div className='flex items-center space-x-4'>
-                <div className='flex-1 min-w-0 space-y-3'>
-                  <p>
-                    Assignee
-                  </p>
-                  {canAssign
-                    ? (
-                      <PlayerReportAssign
-                        id={report.id}
-                        player={report.assignee}
-                        server={data.server.id}
-                        onChange={({ assignReport: { assignee, updated } }) => {
-                          mutate({ ...data, report: { ...data.report, assignee, updated } }, false)
-                        }}
-                      />)
-                    : (<p className='text-sm text-gray-400'>{report?.assignee?.name || 'No one'}</p>)}
-                </div>
-              </div>
-            </li>
-            {!!user &&
-              <li className='py-3 sm:py-4'>
-                <div className='flex items-center space-x-4'>
-                  <div className='flex-1 min-w-0 space-y-3'>
-                    <p>
-                      Notifications
-                    </p>
-                    <PlayerReportNotifications
-                      report={report}
-                      server={data.server}
-                      onChange={({ reportSubscriptionState }) => {
-                        mutate({ ...data, report: { ...data.report, viewerSubscription: reportSubscriptionState } }, false)
-                      }}
-                    />
-                  </div>
-                </div>
-              </li>}
-          </ul>
-          <div>
-            <PageHeader className='text-base !text-left' title='Locations' />
-            <ul role='list' className='divide-y divide-gray-700'>
-              {report.playerLocation && <PlayerReportLocation location={report.playerLocation} player={report.player} />}
-              {report.actorLocation && <PlayerReportLocation location={report.actorLocation} player={report.actor} />}
-            </ul>
-          </div>
-          <div>
-            {report?.commands?.length || (!!user && report.state.id < 3) ? <PageHeader className='text-base !text-left' title='Actions' /> : <></>}
-            {!!user && report.state.id < 3 && !report?.commands?.length &&
-              <PlayerReportActions
-                report={report} server={data.server} onAction={({ state, updated, commands }) => {
-                  mutate({ ...data, report: { ...data.report, state, updated, commands } }, false)
-                }}
-              />}
-            {!!report?.commands?.length &&
-              <ul role='list' className='divide-y divide-gray-700'>
-                {report.commands.map(cmd => (
-                  <PlayerReportCommand key={cmd.id} command={cmd} />
-                ))}
-              </ul>}
-          </div>
+          <PlayerReportSidebar
+            data={data}
+            canUpdateState={canUpdateState}
+            canAssign={canAssign}
+            stateOptions={stateOptions}
+            mutate={mutate} user={user}
+          />
         </div>
       </PageContainer>
     </DefaultLayout>

@@ -133,7 +133,7 @@ export default function PlayerReportActions ({ report, server, onAction }) {
   const canCreateWarning = hasServerPermission('player.warnings', 'create', server.id)
 
   return (
-    <div className='flex flex-col gap-8'>
+    <div className='flex flex-col gap-6'>
       {canCreateBan &&
         <PunishmentAction
           type='Ban'
@@ -141,7 +141,7 @@ export default function PlayerReportActions ({ report, server, onAction }) {
           server={server}
           onAction={onAction}
         >
-          <Button><FaBan className='text-xl mr-2' /> Ban</Button>
+          <Button className='bg-red-800'><FaBan className='text-xl mr-2' /> Ban</Button>
         </PunishmentAction>}
       {canCreateMute &&
         <PunishmentAction
@@ -150,7 +150,7 @@ export default function PlayerReportActions ({ report, server, onAction }) {
           server={server}
           onAction={onAction}
         >
-          <Button><BsMicMute className='text-xl mr-2' /> Mute</Button>
+          <Button className='bg-indigo-800'><BsMicMute className='text-xl mr-2' /> Mute</Button>
         </PunishmentAction>}
       {canCreateWarning &&
         <PunishmentAction
@@ -159,7 +159,7 @@ export default function PlayerReportActions ({ report, server, onAction }) {
           server={server}
           onAction={onAction}
         >
-          <Button><AiOutlineWarning className='text-xl mr-2' /> Warn</Button>
+          <Button className='bg-amber-800'><AiOutlineWarning className='text-xl mr-2' /> Warn</Button>
         </PunishmentAction>}
     </div>
   )

@@ -4,7 +4,7 @@ import Avatar from '../Avatar'
 
 export default function PlayerReportCommand ({ command }) {
   return (
-    <li className='py-4'>
+    <li>
       <div className='flex items-center space-x-4'>
         <div className='flex-shrink-0'>
           <Avatar uuid={command.actor.id} width='28' height='28' />

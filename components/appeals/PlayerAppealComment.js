@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { AiOutlineWarning } from 'react-icons/ai'
 import ErrorMessages from '../ErrorMessages'
 import Modal from '../Modal'
 import { fromNow, useMutateApi } from '../../utils'
@@ -44,7 +43,6 @@ export default function PlayerAppealComment ({ id, actor, created, content, acl,
 
       </Link>
       <Modal
-        icon={<AiOutlineWarning className='h-6 w-6 text-red-600' aria-hidden='true' />}
         title='Delete comment'
         confirmButton='Delete'
         open={open}

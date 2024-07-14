@@ -28,7 +28,7 @@ export default function PlayerCommentForm ({ onFinish, parseVariables, query }) 
         required
         className='!-mb-2'
         maxLength='250'
-        label='Leave a comment'
+        placeholder='Add your comment here...'
         {...register('comment')}
       />
       <div className='md:self-end'>

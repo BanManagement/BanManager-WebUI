@@ -2,7 +2,7 @@ import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/re
 import { useRef } from 'react'
 import Button from './Button'
 
-export default function Modal ({ open = false, icon, title, children, confirmButton, confirmDisabled, onCancel, onConfirm, loading }) {
+export default function Modal ({ open = false, title, children, confirmButton, confirmDisabled, onCancel, onConfirm, loading }) {
   const cancelButtonRef = useRef(null)
   const onClose = () => {
     onCancel()

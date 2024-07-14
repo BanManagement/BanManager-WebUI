@@ -6,7 +6,7 @@ export default function PlayerReportLocation ({ location, player }) {
   const command = `/tppos ${location.x} ${location.y} ${location.z} ${location.pitch} ${location.yaw} ${location.world}`
 
   return (
-    <li className='py-4'>
+    <li>
       <div className='flex items-center space-x-4'>
         <div className='flex-shrink-0'>
           <Avatar uuid={player.id} width='28' height='28' />
@@ -23,7 +23,7 @@ export default function PlayerReportLocation ({ location, player }) {
         </div>
         <div className='inline-flex items-center text-base'>
           <AiOutlineCopy
-            className='w-6 h-6 hover:text-accent-600 cursor-pointer'
+            className='w-6 h-6 hover:opacity-80 cursor-pointer'
             onClick={() => { navigator.clipboard.writeText(command) }}
           />
         </div>
