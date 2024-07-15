@@ -65,7 +65,7 @@ export default function PlayerReportCommentList ({ serverId, report, showReply }
     <>
       <div className="relative block ml-4 md:ml-11 pl-4 before:block before:absolute before:content-[''] before:mt-3 before:mb-4 before:top-0 before:bottom-0 before:left-8 before:w-0.5 before:bg-primary-900 before:z-0">
         {items}
-        <div className='pt-3 pb-3 -ml-16 relative top-2 border-t border-primary-900'></div>
+        <div className='pt-3 pb-3 -ml-16 relative top-2 border-t border-primary-900' />
       </div>
       <div>
         {showReply &&

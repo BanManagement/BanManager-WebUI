@@ -3,7 +3,6 @@ import { format, fromUnixTime } from 'date-fns'
 import Link from 'next/link'
 import { FaPencilAlt } from 'react-icons/fa'
 import { BsTrash } from 'react-icons/bs'
-import { AiOutlineWarning } from 'react-icons/ai'
 import { TiTick } from 'react-icons/ti'
 import ErrorMessages from './ErrorMessages'
 import Avatar from './Avatar'
@@ -93,7 +92,6 @@ const PlayerWarningRow = ({ row, dateFormat, serverId, onDeleted }) => {
           {row.acl.delete &&
             <>
               <Modal
-                icon={<AiOutlineWarning className='h-6 w-6 text-red-600' aria-hidden='true' />}
                 title='Delete warning'
                 confirmButton='Delete'
                 open={open}

@@ -2,18 +2,10 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { format, fromUnixTime } from 'date-fns'
 import { useApi, useUser } from '../../../utils'
-import Loader from '../../../components/Loader'
 import DefaultLayout from '../../../components/DefaultLayout'
 import ErrorLayout from '../../../components/ErrorLayout'
 import PageContainer from '../../../components/PageContainer'
-import PageHeader from '../../../components/PageHeader'
 import PlayerReportCommentList from '../../../components/reports/PlayerReportCommentList'
-import PlayerReportAssign from '../../../components/reports/PlayerReportAssign'
-import PlayerReportState from '../../../components/reports/PlayerReportState'
-import PlayerReportLocation from '../../../components/reports/PlayerReportLocation'
-import PlayerReportActions from '../../../components/reports/PlayerReportActions'
-import PlayerReportCommand from '../../../components/reports/PlayerReportCommand'
-import PlayerReportNotifications from '../../../components/reports/PlayerReportNotifications'
 import PlayerReportServerLogs from '../../../components/reports/PlayerReportServerLogs'
 import PlayerReportSidebar from '../../../components/reports/PlayerReportSidebar'
 
@@ -103,7 +95,7 @@ export default function Page () {
 
   const report = data?.report
 
-  if (loading) return <DefaultLayout title='Loading...'><Loader /></DefaultLayout>
+  if (loading) return <DefaultLayout title='Loading...' loading={true} />
   if (errors || !data) return <ErrorLayout errors={errors} />
 
   const stateOptions = data.reportStates.map(state => ({ value: state.id, label: state.name }))

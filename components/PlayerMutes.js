@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { format, fromUnixTime, formatDistance } from 'date-fns'
 import { BsTrash } from 'react-icons/bs'
-import { AiOutlineWarning } from 'react-icons/ai'
 import ErrorMessages from './ErrorMessages'
 import Avatar from './Avatar'
 import Modal from './Modal'
@@ -103,7 +102,6 @@ const PlayerMuteRow = ({ row, dateFormat, serverId, onDeleted }) => {
           {row.acl.delete &&
             <>
               <Modal
-                icon={<AiOutlineWarning className='h-6 w-6 text-red-600' aria-hidden='true' />}
                 title='Delete mute record'
                 confirmButton='Delete'
                 open={open}
