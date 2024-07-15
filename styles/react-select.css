@@ -2,6 +2,10 @@
   @apply relative w-full bg-primary-900 text-gray-400 shadow-lg rounded-3xl pl-3 pr-3 py-3 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-accent-500 focus:border-accent-500 border-0
 }
 
+.react_select .react_select__control--is-disabled {
+  @apply opacity-50
+}
+
 .react_select .react_select__control--menu-is-open {
   @apply rounded-b-none
 }

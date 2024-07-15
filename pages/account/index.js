@@ -36,7 +36,7 @@ const UnregisteredAccountMenu = () => {
 
 const RegisteredAccountMenu = ({ email }) => {
   return (
-    <div className='flex flex-col'>
+    <div className='flex flex-col divide-y divide-primary-400'>
       <Dropdown.Item name={email || 'Email'} className='rounded-t-3xl' href='/account/email' icon={<MdOutlineEmail />} />
       <Dropdown.Item name='Password' className='rounded-b-3xl' href='/account/password' icon={<MdLock />} />
     </div>

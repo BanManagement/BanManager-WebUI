@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { AiOutlineWarning } from 'react-icons/ai'
 import Modal from '../Modal'
 import { useMutateApi } from '../../utils'
 import ErrorMessages from '../ErrorMessages'
@@ -35,7 +34,6 @@ export default function RoleItem ({ role, onDeleted }) {
   return (
     <div className='bg-black shadow-md rounded-md overflow-hidden text-center w-80'>
       <Modal
-        icon={<AiOutlineWarning className='h-6 w-6 text-red-600' aria-hidden='true' />}
         title='Delete role'
         confirmButton='Delete'
         open={open}

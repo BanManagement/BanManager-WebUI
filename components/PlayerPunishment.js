@@ -3,7 +3,6 @@ import Link from 'next/link'
 import { format, fromUnixTime } from 'date-fns'
 import { FaPencilAlt } from 'react-icons/fa'
 import { BsTrash } from 'react-icons/bs'
-import { AiOutlineWarning } from 'react-icons/ai'
 import Badge from './Badge'
 import ErrorMessages from './ErrorMessages'
 import Avatar from './Avatar'
@@ -116,7 +115,6 @@ export default function PlayerPunishment ({ punishment, server, type, onDeleted 
               {punishment.acl.delete &&
                 <>
                   <Modal
-                    icon={<AiOutlineWarning className='h-6 w-6 text-red-600' aria-hidden='true' />}
                     title={`Delete ${type}`}
                     confirmButton='Delete'
                     open={open}

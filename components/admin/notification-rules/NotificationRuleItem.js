@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { AiOutlineWarning } from 'react-icons/ai'
 import { BiServer } from 'react-icons/bi'
 import { MdOutlineGroups } from 'react-icons/md'
 import { FaPencilAlt } from 'react-icons/fa'
@@ -41,7 +40,6 @@ export default function NotificationRuleItem ({ row, onDeleted }) {
   return (
     <div className='hover:bg-gray-900 group border-b border-gray-700'>
       <Modal
-        icon={<AiOutlineWarning className='h-6 w-6 text-red-600' aria-hidden='true' />}
         title='Delete notification rule'
         confirmButton='Delete'
         open={open}
