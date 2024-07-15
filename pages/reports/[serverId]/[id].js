@@ -95,7 +95,7 @@ export default function Page () {
 
   const report = data?.report
 
-  if (loading) return <DefaultLayout title='Loading...' loading={true} />
+  if (loading) return <DefaultLayout title='Loading...' loading />
   if (errors || !data) return <ErrorLayout errors={errors} />
 
   const stateOptions = data.reportStates.map(state => ({ value: state.id, label: state.name }))
@@ -143,7 +143,8 @@ export default function Page () {
                 canUpdateState={canUpdateState}
                 canAssign={canAssign}
                 stateOptions={stateOptions}
-                mutate={mutate} user={user}
+                mutate={mutate}
+                user={user}
               />
             </div>
           </div>
@@ -154,7 +155,8 @@ export default function Page () {
             canUpdateState={canUpdateState}
             canAssign={canAssign}
             stateOptions={stateOptions}
-            mutate={mutate} user={user}
+            mutate={mutate}
+            user={user}
           />
         </div>
       </PageContainer>

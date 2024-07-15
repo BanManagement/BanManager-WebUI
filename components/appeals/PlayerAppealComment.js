@@ -36,11 +36,9 @@ export default function PlayerAppealComment ({ id, actor, created, content, acl,
   const handleDeleteCancel = () => setOpen(false)
 
   return (
-    <div className='ml-4 pt-3 pb-3 relative' id={`comment-${id}`}>
-      <Link href={`/player/${actor.id}`} className='absolute -left-20'>
-
+    <div className='md:ml-4 pt-3 pb-3 relative' id={`comment-${id}`}>
+      <Link href={`/player/${actor.id}`} className='absolute -left-20 hidden md:block'>
         <Avatar uuid={actor.id} width={40} height={40} className='mx-1 inline-block relative' />
-
       </Link>
       <Modal
         title='Delete comment'
@@ -54,7 +52,7 @@ export default function PlayerAppealComment ({ id, actor, created, content, acl,
         <p className='pb-1'>Are you sure you want to delete this comment?</p>
         <p className='pb-1'>This action cannot be undone</p>
       </Modal>
-      <div className='-ml-7 md:-ml-4 rounded-3xl bg-primary-900'>
+      <div className='-ml-8 md:-ml-4 rounded-3xl bg-primary-900'>
         <div className='rounded-tl rounded-tr relative justify-between items-center flex border-b border-primary-400 py-2 px-4 text-sm text-gray-300'>
           <div className='items-center flex'>
             <span>

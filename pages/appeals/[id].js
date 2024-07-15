@@ -1,17 +1,13 @@
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { format, fromUnixTime } from 'date-fns'
-import Loader from '../../components/Loader'
 import DefaultLayout from '../../components/DefaultLayout'
 import ErrorLayout from '../../components/ErrorLayout'
 import PageContainer from '../../components/PageContainer'
 import PlayerAppealBadge from '../../components/appeals/PlayerAppealBadge'
-import PageHeader from '../../components/PageHeader'
 import PlayerAppealCommentList from '../../components/appeals/PlayerAppealCommentList'
-import PlayerAppealAssign from '../../components/appeals/PlayerAppealAssign'
-import PlayerAppealState from '../../components/appeals/PlayerAppealState'
-import { fromNow, useApi, useMatchMutate, useUser } from '../../utils'
-import PlayerAppealActions from '../../components/appeals/PlayerAppealActions'
+import { fromNow, useApi, useUser } from '../../utils'
+import PlayerAppealSidebar from '../../components/appeals/PlayerAppealSidebar'
 
 export default function Page () {
   const { user } = useUser()
@@ -63,29 +59,24 @@ export default function Page () {
           comment
           delete
         }
+        viewerSubscription {
+          state
+        }
       }
     }`
   })
-  const matchMutate = useMatchMutate()
-
   const appeal = data?.appeal
 
-  if (loading) return <Loader active />
+  if (loading) return <DefaultLayout title='Loading...' loading />
   if (errors || !data) return <ErrorLayout errors={errors} />
 
   const stateOptions = data.appealStates.map(state => ({ value: state.id, label: state.name }))
   const canComment = appeal.state.id < 3 && appeal.acl.comment
   const canUpdateState = appeal.acl.state
   const canAssign = appeal.acl.assign
-  const mutateCommentInsert = (comment) => ({ data }, mutate) => {
-    const records = data.listPlayerAppealComments.records.slice()
-
-    records.push(comment)
-    mutate({ listPlayerAppealComments: { total: data.listPlayerAppealComments.total + 1, records } }, false)
-  }
 
   return (
-    <DefaultLayout title={`#${id} Appeal`}>
+    <DefaultLayout title={`#${id} | ${appeal.actor.name} | ${appeal.punishmentReason} | Appeal`}>
       <PageContainer>
         <div className='pb-6'>
           <h1
@@ -117,118 +108,26 @@ export default function Page () {
           </div>
           <div className='hidden md:block col-span-3 space-y-6 mx-6'>
             <div className='sticky top-6'>
-              <ul role='list' className='divide-y divide-gray-700'>
-                <li className='pb-3'>
-                  <div className='flex items-center'>
-                    <div className='flex-1 min-w-0 space-y-3'>
-                      <p>
-                        State
-                      </p>
-                      {canUpdateState
-                        ? (
-                          <PlayerAppealState
-                            id={appeal.id}
-                            currentState={appeal?.state}
-                            states={stateOptions}
-                            onChange={({ appealState: { appeal: { state, updated }, comment } }) => {
-                              mutate({ ...data, appeal: { ...data.appeal, state, updated } }, false)
-                              matchMutate('listPlayerAppealComments', mutateCommentInsert(comment), { id })
-                            }}
-                          />)
-                        : (<p className='text-sm text-gray-400'>{appeal?.state?.name}</p>)}
-                    </div>
-                  </div>
-                </li>
-                <li className='py-3 sm:py-4'>
-                  <div className='flex items-center space-x-4'>
-                    <div className='flex-1 min-w-0 space-y-3'>
-                      <p>
-                        Assignee
-                      </p>
-                      {canAssign
-                        ? (
-                          <PlayerAppealAssign
-                            id={appeal.id}
-                            player={appeal.assignee}
-                            onChange={({ assignAppeal: { appeal: { assignee, updated }, comment } }) => {
-                              mutate({ ...data, appeal: { ...data.appeal, assignee, updated } }, false)
-                              matchMutate('listPlayerAppealComments', mutateCommentInsert(comment), { id })
-                            }}
-                          />)
-                        : (<p className='text-sm text-gray-400'>{appeal?.assignee?.name || 'No one'}</p>)}
-                    </div>
-                  </div>
-                </li>
-              </ul>
-              {!!user && appeal.state.id < 3 ? <PageHeader className='text-base !text-left' title='Actions' /> : <></>}
-              {!!user && appeal.state.id < 3 &&
-                <PlayerAppealActions
-                  appeal={appeal}
-                  server={appeal.server}
-                  onAction={({ appeal: { state, updated }, comment }) => {
-                    mutate({ ...data, appeal: { ...data.appeal, state, updated } }, false)
-                    matchMutate('listPlayerAppealComments', mutateCommentInsert(comment), { id })
-                  }}
-                />}
+              <PlayerAppealSidebar
+                data={data}
+                canUpdateState={canUpdateState}
+                canAssign={canAssign}
+                stateOptions={stateOptions}
+                mutate={mutate}
+                user={user}
+              />
             </div>
           </div>
         </div>
-        <div className='md:hidden col-span-12 space-y-10'>
-          <ul role='list' className='divide-y divide-gray-700'>
-            <li className='py-3'>
-              <div className='flex items-center'>
-                <div className='flex-1 min-w-0 space-y-3'>
-                  <p>
-                    State
-                  </p>
-                  {canUpdateState
-                    ? (
-                      <PlayerAppealState
-                        id={appeal.id}
-                        currentState={appeal?.state}
-                        states={stateOptions}
-                        onChange={({ appealState: { appeal: { state, updated }, comment } }) => {
-                          mutate({ ...data, appeal: { ...data.appeal, state, updated } }, false)
-                          matchMutate('listPlayerAppealComments', mutateCommentInsert(comment), { id })
-                        }}
-                      />)
-                    : (<p className='text-sm text-gray-400'>{appeal?.state?.name}</p>)}
-                </div>
-              </div>
-            </li>
-            <li className='py-3 sm:py-4'>
-              <div className='flex items-center space-x-4'>
-                <div className='flex-1 min-w-0 space-y-3'>
-                  <p>
-                    Assignee
-                  </p>
-                  {canAssign
-                    ? (
-                      <PlayerAppealAssign
-                        id={appeal.id}
-                        player={appeal.assignee}
-                        onChange={({ assignAppeal: { appeal: { assignee, updated }, comment } }) => {
-                          mutate({ ...data, appeal: { ...data.appeal, assignee, updated } }, false)
-                          matchMutate('listPlayerAppealComments', mutateCommentInsert(comment), { id })
-                        }}
-                      />)
-                    : (<p className='text-sm text-gray-400'>{appeal?.assignee?.name || 'No one'}</p>)}
-                </div>
-              </div>
-            </li>
-          </ul>
-          <div>
-            {!!user && appeal.state.id < 3 ? <PageHeader className='text-base !text-left' title='Actions' /> : <></>}
-            {!!user && appeal.state.id < 3 &&
-              <PlayerAppealActions
-                appeal={appeal}
-                server={appeal.server}
-                onAction={({ appeal: { state, updated }, comment }) => {
-                  mutate({ ...data, appeal: { ...data.appeal, state, updated } }, false)
-                  matchMutate('listPlayerAppealComments', mutateCommentInsert(comment), { id })
-                }}
-              />}
-          </div>
+        <div className='md:hidden col-span-12 space-y-6'>
+          <PlayerAppealSidebar
+            data={data}
+            canUpdateState={canUpdateState}
+            canAssign={canAssign}
+            stateOptions={stateOptions}
+            mutate={mutate}
+            user={user}
+          />
         </div>
       </PageContainer>
     </DefaultLayout>

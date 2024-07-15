@@ -27,14 +27,15 @@ export default function Modal ({ open = false, containerClassName = '', title, c
               {children}
             </div>
             <div className='px-4 py-3 sm:px-6 gap-10 flex flex-row-reverse'>
-              {confirmButton && <Button
-                className='w-full'
-                onClick={onConfirm}
-                disabled={confirmDisabled}
-                loading={loading}
-              >
-                {confirmButton}
-              </Button>}
+              {confirmButton &&
+                <Button
+                  className='w-full'
+                  onClick={onConfirm}
+                  disabled={confirmDisabled}
+                  loading={loading}
+                >
+                  {confirmButton}
+                </Button>}
               <Button
                 className='w-full bg-primary-900'
                 onClick={onCancel}
