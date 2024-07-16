@@ -20,8 +20,12 @@ async function interval ({ servers, dbPool, logger }) {
 
     let password
 
-    if (server.password) {
-      password = await decrypt(process.env.ENCRYPTION_KEY, server.password)
+    try {
+      if (server.password) {
+        password = await decrypt(process.env.ENCRYPTION_KEY, server.password)
+      }
+    } catch (error) {
+      logger.error(error, 'servers-pool')
     }
 
     const poolConfig = {
