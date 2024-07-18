@@ -35,7 +35,7 @@
     "clsx": "2.1.1",
     "dataloader": "2.2.2",
     "date-fns": "3.6.0",
-    "db-migrate": "1.0.0-beta.27",
+    "db-migrate": "1.0.0-beta.28",
     "dotenv": "16.4.5",
     "edit-dotenv": "1.0.4",
     "es6-dynamic-template": "2.0.0",
