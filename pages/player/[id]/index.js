@@ -5,10 +5,9 @@ import DefaultLayout from '../../../components/DefaultLayout'
 import { useUser } from '../../../utils'
 
 import PlayerAlts from '../../../components/player/PlayerAlts'
-import PlayerHeader from '../../../components/player/PlayerHeader'
 import PlayerAvatar from '../../../components/player/PlayerAvatar'
-import ActivePlayerBans from '../../../components/ActivePlayerBans'
-import ActivePlayerMutes from '../../../components/ActivePlayerMutes'
+import ActivePlayerBans from '../../../components/player/ActivePlayerBans'
+import ActivePlayerMutes from '../../../components/player/ActivePlayerMutes'
 
 import resolveConfig from 'tailwindcss/resolveConfig'
 import tailwindConfig from '../../../tailwind.config'
@@ -77,8 +76,7 @@ export default function Page ({ data }) {
         <PageContainer>
           <div className='grid grid-flow-row xl:grid-flow-col grid-cols-12'>
             <div className='col-span-12 xl:col-span-9 space-y-10'>
-              <PlayerHeader id={data.player.id} color={color} colourData={colourData} />
-              <PlayerStatistics id={data.player.id} color={color} colourData={colourData} />
+              <PlayerStatistics id={data.player.id} color={color} />
               {hasServerPermission('player.alts', 'view', null, true) && <PlayerAlts id={data.player.id} color={color} />}
               <ActivePlayerBans id={data.player.id} color={color} />
               {hasServerPermission('player.bans', 'view', null, true) && <PlayerBans id={data.player.id} color={color} />}
@@ -89,7 +87,7 @@ export default function Page ({ data }) {
               {hasServerPermission('player.warnings', 'view', null, true) && <PlayerWarnings id={data.player.id} color={color} />}
             </div>
             <div className='hidden xl:block col-span-3 space-y-10'>
-              <PlayerAvatar id={data.player.id} color={color} colourData={colourData} />
+              <PlayerAvatar id={data.player.id} colourData={colourData} />
               {hasServerPermission('player.history', 'view', null, true) && <div className='mx-6'><PlayerHistoryList id={data.player.id} color={color} /></div>}
             </div>
           </div>

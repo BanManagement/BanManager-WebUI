@@ -7,14 +7,13 @@ import ErrorMessages from './ErrorMessages'
 import Avatar from './Avatar'
 import Modal from './Modal'
 import Table from './Table'
-import Pagination from './Pagination'
 import Loader from './Loader'
 import ServerSelector from './admin/ServerSelector'
 import { useApi, useMutateApi } from '../utils'
 
 const query = `
-query listPlayerPunishmentRecords($serverId: ID!, $player: UUID!, $type: RecordType!, $limit: Int, $offset: Int) {
-  listPlayerPunishmentRecords(serverId: $serverId, player: $player, type: $type, limit: $limit, offset: $offset) {
+query listPlayerPunishmentRecords($serverId: ID!, $player: UUID!, $type: RecordType!) {
+  listPlayerPunishmentRecords(serverId: $serverId, player: $player, type: $type) {
     total
     records {
       ... on PlayerNote {
@@ -111,17 +110,14 @@ const PlayerNoteRow = ({ row, dateFormat, serverId, onDeleted }) => {
 }
 
 export default function PlayerNotes ({ id, color, limit = 10 }) {
-  const [tableState, setTableState] = useState({ type: 'PlayerNote', activePage: 1, limit, offset: 0, player: id, serverId: null })
+  const [tableState, setTableState] = useState({ type: 'PlayerNote', player: id, serverId: null })
   const { loading, data, mutate } = useApi({ query: !tableState.serverId ? null : query, variables: { ...tableState, player: id } })
-
-  const handlePageChange = ({ activePage }) => setTableState({ ...tableState, activePage, offset: (activePage - 1) * limit })
 
   if (loading) return <Loader />
 
   const dateFormat = 'yyyy-MM-dd HH:mm:ss'
   const rows = data?.listPlayerPunishmentRecords?.records || []
   const total = data?.listPlayerPunishmentRecords.total || 0
-  const totalPages = Math.ceil(total / limit)
   const onDeleted = ({ deletePlayerNote: { id } }) => {
     const records = rows.filter(c => c.id !== id)
 
@@ -158,17 +154,6 @@ export default function PlayerNotes ({ id, color, limit = 10 }) {
               ? <Table.Row><Table.Cell colSpan='4'><Loader /></Table.Cell></Table.Row>
               : rows.map((row, i) => (<PlayerNoteRow row={row} dateFormat={dateFormat} key={i} serverId={tableState.serverId} onDeleted={onDeleted} />))}
           </Table.Body>
-          <Table.Footer>
-            <Table.Row>
-              <Table.HeaderCell colSpan='5' border={false}>
-                <Pagination
-                  totalPages={totalPages}
-                  activePage={tableState.activePage}
-                  onPageChange={handlePageChange}
-                />
-              </Table.HeaderCell>
-            </Table.Row>
-          </Table.Footer>
         </Table>
       )}
       {!data?.listPlayerPunishmentRecords?.total && (

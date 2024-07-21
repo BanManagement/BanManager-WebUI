@@ -8,28 +8,29 @@ import ErrorMessages from './ErrorMessages'
 import Avatar from './Avatar'
 import Modal from './Modal'
 import Table from './Table'
-import Pagination from './Pagination'
 import Loader from './Loader'
 import ServerSelector from './admin/ServerSelector'
 import { useApi, useMutateApi } from '../utils'
 
 const query = `
-query listPlayerWarnings($serverId: ID!, $player: UUID!, $limit: Int, $offset: Int) {
-  listPlayerWarnings(serverId: $serverId, player: $player, limit: $limit, offset: $offset) {
+query listPlayerPunishmentRecords($serverId: ID!, $player: UUID!, $type: RecordType!) {
+  listPlayerPunishmentRecords(serverId: $serverId, player: $player, type: $type) {
     total
     records {
-      id
-      actor {
+      ... on PlayerWarning {
         id
-        name
-      }
-      created
-      reason
-      points
-      read
-      acl {
-        delete
-        update
+        actor {
+          id
+          name
+        }
+        created
+        reason
+        points
+        read
+        acl {
+          delete
+          update
+        }
       }
     }
   }
@@ -113,22 +114,19 @@ const PlayerWarningRow = ({ row, dateFormat, serverId, onDeleted }) => {
   )
 }
 
-export default function PlayerWarnings ({ id, color, limit = 10 }) {
-  const [tableState, setTableState] = useState({ activePage: 1, limit, offset: 0, player: id, serverId: null })
+export default function PlayerWarnings ({ id, color }) {
+  const [tableState, setTableState] = useState({ player: id, serverId: null, type: 'PlayerWarning' })
   const { loading, data, mutate } = useApi({ query: !tableState.serverId ? null : query, variables: { ...tableState, player: id } })
-
-  const handlePageChange = ({ activePage }) => setTableState({ ...tableState, activePage, offset: (activePage - 1) * limit })
 
   if (loading) return <Loader />
 
   const dateFormat = 'yyyy-MM-dd HH:mm:ss'
-  const rows = data?.listPlayerWarnings?.records || []
-  const total = data?.listPlayerWarnings.total || 0
-  const totalPages = Math.ceil(total / limit)
+  const rows = data?.listPlayerPunishmentRecords?.records || []
+  const total = data?.listPlayerPunishmentRecords.total || 0
   const onDeleted = ({ deletePlayerWarning: { id } }) => {
     const records = rows.filter(c => c.id !== id)
 
-    mutate({ ...data, listPlayerWarnings: { records, total: total - 1 } }, false)
+    mutate({ ...data, listPlayerPunishmentRecords: { records, total: total - 1 } }, false)
   }
 
   return (
@@ -146,7 +144,7 @@ export default function PlayerWarnings ({ id, color, limit = 10 }) {
           </div>
         </div>
       </h1>
-      {data?.listPlayerWarnings?.total > 0 && (
+      {data?.listPlayerPunishmentRecords?.total > 0 && (
         <Table>
           <Table.Header>
             <Table.Row>
@@ -163,20 +161,9 @@ export default function PlayerWarnings ({ id, color, limit = 10 }) {
               ? <Table.Row><Table.Cell colSpan='4'><Loader /></Table.Cell></Table.Row>
               : rows.map((row, i) => (<PlayerWarningRow row={row} dateFormat={dateFormat} key={i} serverId={tableState.serverId} onDeleted={onDeleted} />))}
           </Table.Body>
-          <Table.Footer>
-            <Table.Row>
-              <Table.HeaderCell colSpan='6' border={false}>
-                <Pagination
-                  totalPages={totalPages}
-                  activePage={tableState.activePage}
-                  onPageChange={handlePageChange}
-                />
-              </Table.HeaderCell>
-            </Table.Row>
-          </Table.Footer>
         </Table>
       )}
-      {!data?.listPlayerWarnings?.total && (
+      {!data?.listPlayerPunishmentRecords?.total && (
         <div className='flex items-center'>
           <div className='bg-black w-full rounded-lg flex flex-col justify-center sm:justify-start items-center sm:items-start sm:flex-row space-x-5 p-8'>
             None

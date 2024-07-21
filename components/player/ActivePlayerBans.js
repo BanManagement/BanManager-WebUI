@@ -1,7 +1,7 @@
-import Loader from './Loader'
-import PageHeader from './PageHeader'
+import Loader from '../Loader'
+import PlayerHeader from './PlayerHeader'
 import PlayerPunishment from './PlayerPunishment'
-import { useApi } from '../utils'
+import { useApi } from '../../utils'
 
 const query = `
 query playerBans($id: UUID!) {
@@ -27,7 +27,7 @@ query playerBans($id: UUID!) {
   }
 }`
 
-export default function ActivePlayerBans ({ id, color }) {
+export default function ActivePlayerBans ({ id }) {
   const { loading, data, mutate, errors } = useApi({ query, variables: { id } })
 
   if (loading) return <Loader />
@@ -49,8 +49,8 @@ export default function ActivePlayerBans ({ id, color }) {
 
   return (
     <div>
-      <PageHeader title='Active Bans' style={{ borderColor: `${color}` }} />
-      <div className='grid grid-cols-1 lg:grid-cols-3 gap-4'>
+      <PlayerHeader title={`Active Bans (${data.playerBans.length})`} />
+      <div className='flex flex-col gap-6'>
         {rows}
       </div>
     </div>

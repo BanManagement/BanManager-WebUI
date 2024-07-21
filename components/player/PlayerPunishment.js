@@ -1,14 +1,17 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { format, fromUnixTime } from 'date-fns'
 import { FaPencilAlt } from 'react-icons/fa'
+import { GoReport } from 'react-icons/go'
 import { BsTrash } from 'react-icons/bs'
-import Badge from './Badge'
-import ErrorMessages from './ErrorMessages'
-import Avatar from './Avatar'
-import Modal from './Modal'
-import Button from './Button'
-import { fromNow, useMutateApi } from '../utils'
+import Badge from '../Badge'
+import PermanentBadge from './PermanentBadge'
+import ErrorMessages from '../ErrorMessages'
+import Avatar from '../Avatar'
+import Modal from '../Modal'
+import Button from '../Button'
+import { formatTimestamp, useMutateApi } from '../../utils'
+import { BiServer } from 'react-icons/bi'
+import { TimeFromNow } from '../Time'
 
 const metaMap = {
   ban: {
@@ -79,19 +82,63 @@ export default function PlayerPunishment ({ punishment, server, type, onDeleted 
 
   let label = ''
 
-  if (punishment.expires === 0) label = <Badge className='bg-red-500 sm:mx-auto'>Permanent</Badge>
-  if (punishment.expires) label = <Badge className='bg-amber-500 sm:mx-auto'>{fromNow(punishment.expires)}</Badge>
-
-  const dateFormat = 'yyyy-MM-dd HH:mm:ss'
+  if (punishment.expires === 0) label = <PermanentBadge />
+  if (punishment.expires) label = <Badge className='border border-primary-900 py-0 px-1 flex text-sm truncate'><TimeFromNow timestamp={punishment.expires} /></Badge>
 
   return (
-    <div className='flex items-center'>
-      <div className='bg-primary-900 w-full rounded-3xl flex flex-col justify-center sm:justify-start items-center sm:items-start sm:flex-row space-x-5 p-8'>
-        <div className=''>
-          <Avatar uuid={punishment.actor.id} height='40' width='40' />
+    <div className='w-full max-w-md border border-primary-900 rounded-3xl p-4 mb-2'>
+      <div className='w-full flex flex-row items-center gap-4'>
+        <Avatar uuid={punishment.actor.id} height='40' width='40' />
+        <div className='flex flex-col text-left'>
+          <span>{punishment.actor.name}</span>
+          <span className='text-sm text-gray-400'>{formatTimestamp(punishment.created)}</span>
+          <div className='text-sm text-gray-400 flex items-center gap-4'>
+            <div className='flex items-center gap-1'>
+              <BiServer />
+              <span className='truncate'>{punishment.server.name}</span>
+            </div>
+          </div>
         </div>
-        <div className=''>
-          <div className='flex flex-col sm:flex-row md:space-x-5 text-center'>
+        {<div className='ml-auto self-start'>
+          {label}
+        </div>}
+      </div>
+      <div className='flex flex-col'>
+        <div className='flex gap-4'>
+          {punishment.acl.update &&
+            <Link href={`/player/${meta.editPath}/${server.id}-${punishment.id}`} passHref>
+              <Button className='mt-4'><FaPencilAlt className='text-sm' /></Button>
+            </Link>}
+            {punishment.acl.delete &&
+                <>
+                  <Modal
+                    title={`Delete ${type}`}
+                    confirmButton='Delete'
+                    open={open}
+                    onConfirm={handleConfirmDelete}
+                    onCancel={handleDeleteCancel}
+                    loading={loading}
+                  >
+                    <ErrorMessages errors={errors} />
+                    <p className='pb-1'>Are you sure you want to delete this {type}?</p>
+                    <p className='pb-1'>This action cannot be undone</p>
+                  </Modal>
+                  <div>
+                    <Button className='mt-4 bg-red-800' onClick={showConfirmDelete}>
+                      <BsTrash className='text-sm' />
+                    </Button>
+                    </div>
+                </>}
+            {punishment.acl.yours &&
+              <Link href={`/appeal/punishment/${punishment.server.id}/${type}/${punishment.id}/`} className='ml-auto' title='Appeal'>
+                <Button className='bg-emerald-800 mt-4'><GoReport className='text-sm' /></Button>
+              </Link>}
+        </div>
+        <div className='mt-4'>
+          <p>{punishment.reason || punishment.message}</p>
+        </div>
+      </div>
+          {/* <div className='flex flex-col sm:flex-row md:space-x-5 text-center'>
             <h1 className='font-bold'>{punishment.actor.name}</h1>
             {label}
           </div>
@@ -139,9 +186,7 @@ export default function PlayerPunishment ({ punishment, server, type, onDeleted 
               <Button className='bg-blue-600 hover:bg-blue-900 mt-4'>
                 Appeal
               </Button>
-            </Link>}
+            </Link>} */}
         </div>
-      </div>
-    </div>
   )
 }

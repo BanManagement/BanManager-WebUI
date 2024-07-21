@@ -2,6 +2,7 @@ import { useEffect, useMemo } from 'react'
 import Head from 'next/head'
 import { NextSeo } from 'next-seo'
 import Favicon from 'react-favicon'
+import { MdLogin } from 'react-icons/md'
 import Footer from './Footer'
 import Nav from './Nav'
 import SessionNavProfile from './SessionNavProfile'
@@ -9,10 +10,22 @@ import PlayerSelector from './admin/PlayerSelector'
 import { useApi, useUser } from '../utils'
 import { useRouter, withRouter } from 'next/router'
 import Loader from './Loader'
+import Button from './Button'
+import Link from 'next/link'
 
 const query = `query unreadNotificationCount {
   unreadNotificationCount
 }`
+
+const LoggedOutNav = () => (
+  <div className='hidden md:flex gap-4'>
+    <Link href='/login' passHref>
+      <Button className='text-sm'>
+        <MdLogin className='mr-2' /> Login
+      </Button>
+    </Link>
+  </div>
+)
 
 function DefaultLayout ({ title = 'Default Title', children, description, loading }) {
   const { user } = useUser()
@@ -49,7 +62,7 @@ function DefaultLayout ({ title = 'Default Title', children, description, loadin
         placeholder='Search player'
       />
     </div>]
-  const right = useMemo(() => user?.id ? [<SessionNavProfile key='session-nav-profile' user={user} unreadNotificationCount={data?.unreadNotificationCount} />] : [], [user, data])
+  const right = useMemo(() => user?.id ? [<SessionNavProfile key='session-nav-profile' user={user} unreadNotificationCount={data?.unreadNotificationCount} />] : [<LoggedOutNav key='nav-logged-out' />], [user, data])
   const mobileItems = useMemo(() => !user?.id ? [{ name: 'Login', href: '/login' }, { name: 'Create Appeal', href: '/appeal' }] : [], [user])
 
   return (

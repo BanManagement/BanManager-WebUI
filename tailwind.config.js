@@ -25,7 +25,7 @@ module.exports = {
         check: "url('/images/check.svg')"
       }),
       skew: {
-        '-20': '-20deg'
+        '-10': '-10deg'
       }
     },
     fontFamily: {

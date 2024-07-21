@@ -39,7 +39,7 @@ export default function SessionNavProfile ({ user, unreadNotificationCount }) {
     mutate('/api/user')
     router.push('/')
   }
-
+  // Need to add login/create appeal for desktop site
   return (
     <>
       <div className='hidden md:flex gap-4'>

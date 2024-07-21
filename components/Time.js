@@ -1,19 +1,15 @@
 import { format, formatDistance, formatDuration, formatISODuration, fromUnixTime, intervalToDuration } from 'date-fns'
-import { fromNow, useToggle } from '../utils'
+import { fromNow } from '../utils'
 
 export function TimeFromNow ({ timestamp }) {
-  const [showISO, toggleShowISO] = useToggle()
   const formatted = format(fromUnixTime(timestamp), 'd MMM yyyy, H:mm z')
 
   return (
     <time
       dateTime={fromUnixTime(timestamp).toISOString()}
       title={formatted}
-      onClick={toggleShowISO}
     >
-      {showISO
-        ? formatted
-        : fromNow(timestamp)}
+      {fromNow(timestamp)}
     </time>
   )
 }

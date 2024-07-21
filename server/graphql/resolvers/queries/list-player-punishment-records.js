@@ -25,9 +25,8 @@ const defaultTypes = {
   }
 }
 
-module.exports = async function listPlayerPunishmentRecords (obj, { serverId, actor, player, type, limit, offset, order }, { state }, info) {
+module.exports = async function listPlayerPunishmentRecords (obj, { serverId, actor, player, type, order }, { state }, info) {
   if (!state.serversPool.has(serverId)) throw new ExposedError('Server does not exist')
-  if (limit > 50) throw new ExposedError('Limit too large')
   if (!defaultTypes[type]) throw new ExposedError('Invalid type')
 
   const server = state.serversPool.get(serverId)
@@ -63,8 +62,6 @@ module.exports = async function listPlayerPunishmentRecords (obj, { serverId, ac
   if (fields.records) {
     const query = getSql(info.schema, server, fields.records, typeInfo.table)
       .where(filter)
-      .limit(limit)
-      .offset(offset)
 
     if (order) {
       query.orderByRaw(order.replace('_', ' '))

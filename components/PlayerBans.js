@@ -5,14 +5,13 @@ import ErrorMessages from './ErrorMessages'
 import Avatar from './Avatar'
 import Modal from './Modal'
 import Table from './Table'
-import Pagination from './Pagination'
 import Loader from './Loader'
 import ServerSelector from './admin/ServerSelector'
 import { useApi, useMutateApi } from '../utils'
 
 const query = `
-query listPlayerPunishmentRecords($serverId: ID!, $player: UUID!, $type: RecordType!, $limit: Int, $offset: Int) {
-  listPlayerPunishmentRecords(serverId: $serverId, player: $player, type: $type, limit: $limit, offset: $offset) {
+query listPlayerPunishmentRecords($serverId: ID!, $player: UUID!, $type: RecordType!) {
+  listPlayerPunishmentRecords(serverId: $serverId, player: $player, type: $type) {
     total
     records {
       ... on PlayerBanRecord {
@@ -123,18 +122,15 @@ const PlayerBanRow = ({ row, dateFormat, serverId, onDeleted }) => {
   )
 }
 
-export default function PlayerBans ({ id, color, limit = 10 }) {
-  const [tableState, setTableState] = useState({ type: 'PlayerBanRecord', activePage: 1, limit, offset: 0, serverId: null })
+export default function PlayerBans ({ id }) {
+  const [tableState, setTableState] = useState({ type: 'PlayerBanRecord', activePage: 1, serverId: null })
   const { loading, data, mutate } = useApi({ query: !tableState.serverId ? null : query, variables: { ...tableState, player: id } })
-
-  const handlePageChange = ({ activePage }) => setTableState({ ...tableState, activePage, offset: (activePage - 1) * limit })
 
   if (loading) return <Loader />
 
   const dateFormat = 'yyyy-MM-dd HH:mm:ss'
   const rows = data?.listPlayerPunishmentRecords?.records || []
   const total = data?.listPlayerPunishmentRecords.total || 0
-  const totalPages = Math.ceil(total / limit)
   const onDeleted = ({ deletePlayerBanRecord: { id } }) => {
     const records = rows.filter(c => c.id !== id)
 
@@ -144,11 +140,10 @@ export default function PlayerBans ({ id, color, limit = 10 }) {
   return (
     <div>
       <h1
-        style={{ borderColor: `${color}` }}
-        className='text-2xl font-bold pb-4 mb-4 border-b border-accent-200 leading-none'
+        className='pb-4 mb-4 border-b border-accent-200'
       >
         <div className='flex items-center'>
-          <p className='mr-6'>Past Bans</p>
+          <p className='mr-6 text-xl font-bold '>Past Bans</p>
           <div className='w-40 inline-block'>
             <ServerSelector
               onChange={serverId => setTableState({ ...tableState, serverId })}
@@ -175,17 +170,6 @@ export default function PlayerBans ({ id, color, limit = 10 }) {
               ? <Table.Row><Table.Cell colSpan='4'><Loader /></Table.Cell></Table.Row>
               : rows.map((row, i) => (<PlayerBanRow row={row} dateFormat={dateFormat} key={i} serverId={tableState.serverId} onDeleted={onDeleted} />))}
           </Table.Body>
-          <Table.Footer>
-            <Table.Row>
-              <Table.HeaderCell colSpan='8' border={false}>
-                <Pagination
-                  totalPages={totalPages}
-                  activePage={tableState.activePage}
-                  onPageChange={handlePageChange}
-                />
-              </Table.HeaderCell>
-            </Table.Row>
-          </Table.Footer>
         </Table>
       )}
       {!data?.listPlayerPunishmentRecords?.total && (
