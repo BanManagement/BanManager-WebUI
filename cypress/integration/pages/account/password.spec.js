@@ -6,7 +6,7 @@ describe('Account/Password', () => {
   })
 
   it('renders', () => {
-    cy.title().should('eq', 'Change Password')
+    cy.title().should('eq', 'Change Password | Account')
   })
 
   it('errors if incorrect current password', () => {
@@ -47,16 +47,16 @@ describe('Account/Password', () => {
 
     cy.get('[data-cy=submit-password-change]').click()
 
-    cy.get('[data-cy=success]').contains('Password updated')
+    cy.title().should('eq', 'Account')
 
     // Reset it
-    cy.get('form').then($element => $element[0].reset())
+    cy.visit('/account/password')
     cy.get('[data-cy=currentPassword]').type(newPassword)
     cy.get('[data-cy=newPassword]').type(Cypress.env('admin_password'))
     cy.get('[data-cy=confirmPassword]').type(Cypress.env('admin_password'))
 
     cy.get('[data-cy=submit-password-change]').click()
 
-    cy.get('[data-cy=success]').contains('Password updated')
+    cy.title().should('eq', 'Account')
   })
 })

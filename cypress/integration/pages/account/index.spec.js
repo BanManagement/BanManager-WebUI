@@ -5,6 +5,6 @@ describe('Account', () => {
   })
 
   it('renders', () => {
-    cy.title().should('eq', 'Settings for confuser')
+    cy.title().should('eq', 'Account')
   })
 })

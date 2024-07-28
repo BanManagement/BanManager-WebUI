@@ -120,7 +120,7 @@ const Input = forwardRef((props, ref) => {
             {label}
           </label>}
       </div>
-      {error && <p className='text-xs flex items-center gap-2 pl-4 text-red-700'><MdError /> {error}</p>}
+      {error && <p data-cy='errors' className='text-xs flex items-center gap-2 pl-4 text-red-700'><MdError /> {error}</p>}
       {description && <p className='text-xs flex items-center gap-2 pl-4 text-gray-400'><MdOutlineInfo /> {description}</p>}
     </div>
   )
