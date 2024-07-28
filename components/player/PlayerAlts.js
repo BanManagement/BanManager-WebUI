@@ -35,7 +35,7 @@ const PlayerAlts = ({ id }) => {
   return (
     <div className='mb-3'>
       {data?.player?.ip && <h2 className='text-xs tracking-widest title-font text-center font-medium text-gray-400 uppercase py-2 mb-4'>{data.player.ip}</h2>}
-      {data?.playerAlts?.length > 0 && <div className='flex items-center justify-center text-center gap-4'>{alts}</div>}
+      {data?.playerAlts?.length > 0 && <div className='flex flex-wrap items-center justify-center text-center gap-4'>{alts}</div>}
     </div>
   )
 }
