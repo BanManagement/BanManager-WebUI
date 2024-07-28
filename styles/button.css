@@ -13,9 +13,6 @@
   /* default btn */
   & {
     @apply no-underline;
-    &:focus-visible {
-      @apply outline outline-2 outline-offset-2;
-    }
   }
   &.btn-outline {
     @apply bg-transparent border border-primary-900 text-gray-200 font-normal;
