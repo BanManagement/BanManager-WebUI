@@ -1,4 +1,4 @@
-import { forwardRef } from 'react'
+import { forwardRef, useId } from 'react'
 import ReactSelect from 'react-select'
 
 // eslint-disable-next-line react/display-name
@@ -15,6 +15,7 @@ const Select = forwardRef(({ options, isLoading, onInputChange, onChange, value,
 
   return (
     <ReactSelect
+      instanceId={useId()}
       options={options}
       isLoading={isLoading}
       onInputChange={onInputChange}

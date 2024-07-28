@@ -97,31 +97,34 @@ export default function PlayerAppealCommentList ({ appeal, showReply }) {
   if (!items.length && !showReply) return null
 
   return (
-    <div className="relative block ml-11 pl-4 before:block before:absolute before:content-[''] before:mt-3 before:mb-4 before:top-0 before:bottom-0 before:left-8 before:w-0.5 before:bg-gray-700 before:z-0">
-      <PlayerAppealComment id={0} actor={appeal.actor} created={appeal.created} content={appeal.reason} />
-      {items}
-      {showReply &&
-        <div className='ml-4 pt-3 pb-3 relative'>
-          <Link href={`/player/${user.id}`} className='absolute -left-20'>
+    <>
+      <div className="relative block ml-4 md:ml-11 pl-4 before:block before:absolute before:content-[''] before:mt-3 before:mb-4 before:top-0 before:bottom-0 before:left-8 before:w-0.5 before:bg-primary-900 before:z-0">
+        <PlayerAppealComment id={0} actor={appeal.actor} created={appeal.created} content={appeal.reason} />
+        {items}
+        <div className='pt-3 pb-3 -ml-16 relative top-2 border-t border-primary-900' />
+      </div>
+      <div>
+        {showReply &&
+          <div className='ml-8 pl-4 relative'>
+            <Link href={`/player/${user.id}`} className='hidden md:block absolute -left-10'>
+              <Avatar uuid={user.id} width={40} height={40} className='mx-1 inline-block relative' />
+            </Link>
+            <div className='-ml-12 md:pl-2 md:-ml-0.5'>
+              <div className='relative bg-primary-500 top-0 bottom-0'>
+                <PlayerCommentForm
+                  parseVariables={(input) => ({ id: appeal.id, input: { content: input.comment } })}
+                  onFinish={({ createAppealComment }) => {
+                    const records = data.listPlayerAppealComments.records.slice()
 
-            <Avatar uuid={user.id} width={40} height={40} className='mx-1 inline-block relative' />
-
-          </Link>
-          <div className='-ml-7 md:-ml-4'>
-            <div className='relative bg-primary-500 top-0 bottom-0'>
-              <PlayerCommentForm
-                parseVariables={(input) => ({ id: appeal.id, input: { content: input.comment } })}
-                onFinish={({ createAppealComment }) => {
-                  const records = data.listPlayerAppealComments.records.slice()
-
-                  records.push(createAppealComment)
-                  mutate({ listPlayerAppealComments: { total: data.listPlayerAppealComments.total + 1, records } }, true)
-                }}
-                query={createCommentQuery}
-              />
+                    records.push(createAppealComment)
+                    mutate({ listPlayerAppealComments: { total: data.listPlayerAppealComments.total + 1, records } }, true)
+                  }}
+                  query={createCommentQuery}
+                />
+              </div>
             </div>
-          </div>
-        </div>}
-    </div>
+          </div>}
+      </div>
+    </>
   )
 }

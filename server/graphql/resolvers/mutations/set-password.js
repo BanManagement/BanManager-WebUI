@@ -27,16 +27,16 @@ module.exports = async function setPassword (obj, { currentPassword, newPassword
     if (!match) throw new ExposedError('Incorrect login details')
   }
 
-  let commonPassword = false
+  let commonPassword = 0
 
   try {
-    commonPassword = (await pwnedPassword(newPassword)) > 5
+    commonPassword = await pwnedPassword(newPassword)
   } catch (e) {
     log.error(e, 'hibp failure')
   }
 
-  if (commonPassword) {
-    throw new ExposedError('Commonly used password, please choose another')
+  if (commonPassword > 5) {
+    throw new ExposedError(`This password isn't safe to use as it's appeared in ${new Intl.NumberFormat().format(commonPassword)} known data breaches`)
   }
 
   const encodedHash = await hash(newPassword)

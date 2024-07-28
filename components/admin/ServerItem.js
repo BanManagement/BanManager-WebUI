@@ -86,7 +86,6 @@ export default function ServerItem ({ canDelete, server, onDeleted }) {
   return (
     <div className='bg-black shadow-md rounded-md overflow-hidden text-center w-80'>
       <Modal
-        icon={<AiOutlineWarning className='h-6 w-6 text-red-600' aria-hidden='true' />}
         title='Delete server'
         confirmButton='Delete'
         confirmDisabled={confirmValue !== server.name}

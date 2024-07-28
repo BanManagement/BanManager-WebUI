@@ -10,10 +10,8 @@ function Page () {
   return (
     <DefaultLayout title='Notifications'>
       <PageContainer>
-        <div className='mx-auto flex flex-col w-full px-4 py-8 sm:px-6 md:px-8 lg:px-10'>
-          <PageHeader title='Notifications' className='text-center' />
-          <NotificationList />
-        </div>
+        <PageHeader title='Notifications' className='!text-left' />
+        <NotificationList />
       </PageContainer>
     </DefaultLayout>
   )

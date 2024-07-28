@@ -1,14 +1,13 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { MdLock, MdOutlineEmail } from 'react-icons/md'
-import ErrorMessages from './ErrorMessages'
-import Message from './Message'
 import Input from './Input'
 import Button from './Button'
 import { useMutateApi } from '../utils'
+import { useRouter } from 'next/router'
 
 export default function ResetEmailForm () {
-  const [success, setSuccess] = useState(false)
+  const router = useRouter()
   const { handleSubmit, formState, register } = useForm()
   const { isSubmitting } = formState
 
@@ -21,47 +20,38 @@ export default function ResetEmailForm () {
   })
 
   useEffect(() => {
-    setSuccess(false)
-  }, [errors])
-  useEffect(() => {
     if (!data) return
-    if (Object.keys(data).some(key => !!data[key].id)) setSuccess(true)
+    if (Object.keys(data).some(key => !!data[key].id)) router.push('/account')
   }, [data])
 
   const onSubmit = async (data) => load(data)
 
   return (
-    <>
-      {success &&
-        <Message success data-cy='success'>
-          <Message.Header>Email updated</Message.Header>
-        </Message>}
-      <form onSubmit={handleSubmit(onSubmit)} className='mx-auto'>
-        <div className='flex flex-col relative w-full max-w-md px-4 sm:px-6 md:px-8 lg:px-10'>
-          <ErrorMessages errors={errors} />
-          <Input
-            required
-            placeholder='New email address'
-            type='email'
-            icon={<MdOutlineEmail />}
-            iconPosition='left'
-            data-cy='email'
-            {...register('email')}
-          />
-          <Input
-            required
-            placeholder='Current password'
-            type='password'
-            icon={<MdLock />}
-            iconPosition='left'
-            data-cy='currentPassword'
-            {...register('currentPassword')}
-          />
-          <Button data-cy='submit-email-change' disabled={isSubmitting} loading={isSubmitting}>
-            Save
-          </Button>
-        </div>
-      </form>
-    </>
+    <form onSubmit={handleSubmit(onSubmit)} className='mx-auto w-full'>
+      <div className='flex flex-col relative w-full'>
+        <Input
+          required
+          label='New email address'
+          type='email'
+          icon={<MdOutlineEmail />}
+          iconPosition='left'
+          data-cy='email'
+          {...register('email')}
+        />
+        <Input
+          required
+          label='Current password'
+          type='password'
+          icon={<MdLock />}
+          iconPosition='left'
+          data-cy='currentPassword'
+          error={errors ? errors?.[0]?.message : null}
+          {...register('currentPassword')}
+        />
+        <Button data-cy='submit-email-change' disabled={isSubmitting} loading={isSubmitting}>
+          Save
+        </Button>
+      </div>
+    </form>
   )
 }

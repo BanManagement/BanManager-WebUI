@@ -1,14 +1,15 @@
 import { useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { AiOutlineUser } from 'react-icons/ai'
-import ReactCodeInput from '@acusti/react-code-input'
-import ErrorMessages from './ErrorMessages'
-import Message from './Message'
+import dynamic from 'next/dynamic'
 import Input from './Input'
 import Button from './Button'
 import ServerSelector from './admin/ServerSelector'
+import { MdPin } from 'react-icons/md'
 
-export default function PlayerLoginPinForm ({ onSuccess }) {
+const ReactCodeInput = dynamic(() => import('@acusti/react-code-input'), { ssr: false })
+
+export default function PlayerLoginPinForm ({ onSuccess, showHint }) {
   const [error, setError] = useState(null)
   const { handleSubmit, formState, register, control } = useForm()
   const { isSubmitting } = formState
@@ -40,7 +41,6 @@ export default function PlayerLoginPinForm ({ onSuccess }) {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className='mx-auto'>
       <div className='flex flex-col relative w-full max-w-md md:px-8 lg:px-10'>
-        <ErrorMessages error={error} />
         <Controller
           name='serverId'
           control={control}
@@ -50,30 +50,39 @@ export default function PlayerLoginPinForm ({ onSuccess }) {
         />
         <Input
           required
-          placeholder='Minecraft Username'
+          label='Minecraft Username'
           icon={<AiOutlineUser />}
           iconPosition='left'
+          error={error?.message}
           {...register('name')}
         />
-        <Message info>
-          <Message.Header>Your 6 digit pin</Message.Header>
-          <Message.List>
-            <Message.Item>Join the chosen Minecraft server &amp; type /bmpin or use the pin from the banned screen</Message.Item>
-          </Message.List>
-        </Message>
+        {showHint && (
+          <div className='flex gap-4 text-left mb-6 rounded-3xl border-primary-900 border-2 p-2'>
+            <Button disabled className='w-12 h-12'><MdPin /></Button>
+            <div>
+              <p className='underline'>Your 6 digit pin, e.g. <code>123456</code></p>
+              <p className='text-sm text-gray-400'>This can be found when you join the Minecraft server, either on the ban screen or by using the <code className='bg-primary-900'>/bmpin</code> command.</p>
+              <p className='text-sm text-gray-400 mt-2'>Note: this pin expires after 5 minutes.</p>
+            </div>
+          </div>)}
         <Controller
           name='pin'
           control={control}
           rules={{ required: true }}
-          render={({ field }) => <ReactCodeInput
-            fields={6}
-            className='!flex relative mb-6'
-            inputMode='numeric'
-            filterChars={[...Array(10).keys()].map(i => i.toString())}
-            filterCharsIsWhitelist
-            {...field}
-            autoFocus={false}
-                                 />}
+          render={({ field }) => (
+            <div className='flex bg-primary-900 rounded-3xl mb-6'>
+              <span className='inline-flex items-center px-3 text-gray-400 text-lg'><MdPin /></span>
+              <ReactCodeInput
+                fields={6}
+                className='!flex relative'
+                inputMode='numeric'
+                filterChars={[...Array(10).keys()].map(i => i.toString())}
+                placeholder='-'
+                filterCharsIsWhitelist
+                {...field}
+                autoFocus={false}
+              />
+            </div>)}
         />
         <Button data-cy='submit-login-pin' disabled={isSubmitting} loading={isSubmitting}>
           Login

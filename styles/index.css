@@ -13,13 +13,19 @@
   @import './react-select.css';
   @import './react-code-input.css';
   @import './react-datetime.css';
+  @import './button.css';
 
   .loader {
-    border-top-color: theme('colors.accent.400') !important;
+    border-top-color: theme('colors.accent.800') !important;
     -webkit-animation: spinner 1.5s linear infinite;
     animation: spinner 1.5s linear infinite;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(50% - 0.625rem);
+    display: none;
 
-    @apply ease-linear rounded-full border-2 border-t-2 border-gray-200;
+    @apply ease-linear rounded-full border-2 border-t-2 border-gray-200 mx-auto;
   }
 
   @-webkit-keyframes spinner {
@@ -30,5 +36,17 @@
   @keyframes spinner {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+  }
+
+  @keyframes gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
   }
 }

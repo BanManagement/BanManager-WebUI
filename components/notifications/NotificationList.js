@@ -32,10 +32,19 @@ const NotificationList = () => {
               id
               name
             }
+            actor {
+              id
+              name
+            }
+            player {
+              id
+              name
+            }
           }
           appeal {
             id
             reason
+            punishmentType
             assignee {
               id
               name
@@ -44,10 +53,18 @@ const NotificationList = () => {
               id
               name
             }
+            actor {
+              id
+              name
+            }
           }
           actor {
             id
             name
+          }
+          comment {
+            id
+            content
           }
         }
       }
@@ -55,44 +72,46 @@ const NotificationList = () => {
     variables: tableState
   })
 
-  if (loading) return <Loader />
+  if (loading) return <Loader className='relative flex h-9 w-9 mb-2' />
 
   const handlePageChange = ({ activePage }) => setTableState({ ...tableState, activePage, offset: (activePage - 1) * tableState.limit })
   const total = data?.listNotifications?.total || 0
   const totalPages = Math.ceil(total / tableState.limit)
 
   return (
-    <div className='grid grid-cols-1 bg-black'>
-      {!data?.listNotifications?.total
-        ? 'None'
-        : data?.listNotifications?.records?.map(record => {
-          switch (record.type) {
-            case 'reportComment':
-              return <NotificationReportComment key={record.id} {...record} />
-            case 'reportAssigned':
-              return <NotificationReportAssigned key={record.id} {...record} />
-            case 'reportState':
-              return <NotificationReportState key={record.id} {...record} />
-            case 'appealComment':
-              return <NotificationAppealComment key={record.id} {...record} />
-            case 'appealAssigned':
-              return <NotificationAppealAssigned key={record.id} {...record} />
-            case 'appealState':
-            case 'appealEditPunishment':
-            case 'appealDeletePunishment':
-              return <NotificationAppealState key={record.id} {...record} />
-            case 'appealCreated':
-              return <NotificationAppealCreated key={record.id} {...record} />
-          }
+    <>
+      <div className='grid grid-cols-1 bg-primary-900 rounded-t-3xl rounded-b-3xl py-4 divide-y-2 divide-primary-400'>
+        {!data?.listNotifications?.total
+          ? <p className='text-center'>Nothing to see here yet</p>
+          : data?.listNotifications?.records?.map(record => {
+            switch (record.type) {
+              case 'reportComment':
+                return <NotificationReportComment key={record.id} {...record} />
+              case 'reportAssigned':
+                return <NotificationReportAssigned key={record.id} {...record} />
+              case 'reportState':
+                return <NotificationReportState key={record.id} {...record} />
+              case 'appealComment':
+                return <NotificationAppealComment key={record.id} {...record} />
+              case 'appealAssigned':
+                return <NotificationAppealAssigned key={record.id} {...record} />
+              case 'appealState':
+              case 'appealEditPunishment':
+              case 'appealDeletePunishment':
+                return <NotificationAppealState key={record.id} {...record} />
+              case 'appealCreated':
+                return <NotificationAppealCreated key={record.id} {...record} />
+            }
 
-          return null
-        })}
+            return null
+          })}
+      </div>
       <Pagination
         totalPages={totalPages}
         activePage={tableState.activePage}
         onPageChange={handlePageChange}
       />
-    </div>
+    </>
   )
 }
 

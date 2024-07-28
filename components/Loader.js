@@ -1,9 +1,5 @@
-const Loader = () => {
-  return (
-    <div className='flex justify-center items-center'>
-      <div className='loader h-32 w-32' />
-    </div>
-  )
+const Loader = ({ className = '' }) => {
+  return <div className={`loader inline-block h-32 w-32 ${className}`} />
 }
 
 export default Loader

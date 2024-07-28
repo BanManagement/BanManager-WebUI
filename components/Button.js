@@ -1,11 +1,19 @@
+import clsx from 'clsx'
 import { forwardRef } from 'react'
 
 // eslint-disable-next-line react/display-name
-const Button = forwardRef(({ children, disabled, loading, className = '', ...rest }, ref) => {
+const Button = forwardRef(({ children, disabled, loading, className = '', notificationCount = 0, ...rest }, ref) => {
   return (
-    <button ref={ref} className={`py-4 px-6 inline-flex justify-center rounded-md items-center bg-accent-600 hover:bg-accent-700 focus:ring-accent-700 focus:ring-offset-accent-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed ${className}`} disabled={disabled} {...rest}>
-      {loading && <div className='loader -ml-1 mr-3 h-5 w-5' />}
-      {children}
+    <button ref={ref} className={`btn bg-accent-700 hover:opacity-80 ${className}`} disabled={disabled} {...rest}>
+      <span className={clsx('loader h-5 w-5', { 'inline-block': loading })} />
+      <span className={clsx('flex items-center', { invisible: loading })}>
+        {children}
+      </span>
+      {notificationCount > 0 && (
+        <span className='absolute bg-red-500 text-red-100 px-2 py-1 text-xs font-bold rounded-full -top-3 -right-3'>
+          {notificationCount}
+        </span>
+      )}
     </button>
   )
 })

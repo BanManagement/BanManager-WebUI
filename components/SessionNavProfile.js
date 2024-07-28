@@ -1,46 +1,20 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/router'
+import Link from 'next/link'
 import { mutate } from 'swr'
-import Favicon from 'react-favicon'
 import Dropdown from './Dropdown'
 import Avatar from './Avatar'
 import Button from './Button'
 import NotificationBadge from './NotificationBadge'
-import { CgProfile } from 'react-icons/cg'
-import { FaPencilAlt } from 'react-icons/fa'
-import { MdOutlineNotifications, MdLogout, MdSettings } from 'react-icons/md'
-import { useApi } from '../utils'
+import { MdOutlineNotifications, MdNotifications, MdManageAccounts, MdDashboard, MdOutlineDashboard } from 'react-icons/md'
+import { useUser } from '../utils'
 
-const query = `query unreadNotificationCount {
-  unreadNotificationCount
-}`
+const buttonClassName = 'bg-primary-900 !rounded-lg p-2 transform transition duration-300 hover:scale-110 hover:bg-primary-900 w-12 h-12'
 
-export default function SessionNavProfile ({ user }) {
+export default function SessionNavProfile ({ user, unreadNotificationCount }) {
   const router = useRouter()
   const [loggingOut, setLoggingOut] = useState(false)
-  const { data } = useApi({ query }, { refreshInterval: 10000, refreshWhenHidden: true })
-
-  useEffect(() => {
-    if (data) {
-      const title = document.title
-
-      if (/\([\d]+\)/.test(title)) {
-        const titleStart = title.indexOf(')') + 1
-
-        if (data.unreadNotificationCount === 0) {
-          document.title = title.substring(titleStart)
-        } else {
-          const currentCount = parseInt(title.substring(1, title.indexOf(')')), 10)
-
-          if (data.unreadNotificationCount !== currentCount) {
-            document.title = `(${data.unreadNotificationCount}) ${title.substring(titleStart)}`
-          }
-        }
-      } else if (data.unreadNotificationCount !== 0) {
-        document.title = `(${data.unreadNotificationCount}) ${title}`
-      }
-    }
-  }, [data])
+  const { hasPermission } = useUser()
 
   const handleLogout = async () => {
     setLoggingOut(true)
@@ -65,52 +39,59 @@ export default function SessionNavProfile ({ user }) {
     mutate('/api/user')
     router.push('/')
   }
-
+  // Need to add login/create appeal for desktop site
   return (
     <>
-      <Favicon
-        url='/images/favicon-32x32.png'
-        faviconSize={32}
-        alertCount={data?.unreadNotificationCount || null}
-        animated={false}
-      />
-      <div className='hidden md:block'>
+      <div className='hidden md:flex gap-4'>
+        {hasPermission('servers', 'manage') && <Link href='/admin' passHref><Button className={buttonClassName} title='Admin'><MdManageAccounts /></Button></Link>}
+        <Link href='/notifications' passHref>
+          <Button className={buttonClassName} notificationCount={unreadNotificationCount}>
+            {router.pathname.endsWith('/notifications') ? <MdNotifications /> : <MdOutlineNotifications />}
+          </Button>
+        </Link>
+        <Link href='/dashboard' passHref><Button className={buttonClassName} title='Dashboard'>{router.pathname.endsWith('/dashboard') ? <MdDashboard /> : <MdOutlineDashboard />}</Button></Link>
         <Dropdown
           trigger={({ onClickToggle }) => (
             <Button
               onClick={onClickToggle}
+              className={buttonClassName}
+              title={user.name}
             >
-              <Avatar width='36' height='36' uuid={user.id} />
-              <span className='hidden md:inline-block ml-4'>
-                {user.name}
-              </span>
-              {data?.unreadNotificationCount > 0 && <NotificationBadge>{data.unreadNotificationCount}</NotificationBadge>}
+              <Avatar width='32' height='32' uuid={user.id} />
             </Button>
           )}
         >
-          <Dropdown.Item name='Notifications' href='/notifications' icon={<MdOutlineNotifications />}>
-            {data?.unreadNotificationCount > 0 && <NotificationBadge>{data.unreadNotificationCount}</NotificationBadge>}
-          </Dropdown.Item>
-          <Dropdown.Item name='Profile' href={'/player/' + user.id} icon={<CgProfile />} />
-          {!user.hasAccount && <Dropdown.Item name='Register' href='/register' icon={<FaPencilAlt />} />}
-          <Dropdown.Item name='Settings' href='/account' icon={<MdSettings />} />
-          <Dropdown.Item name='Logout' onClick={handleLogout} disabled={loggingOut} icon={<MdLogout />} />
+          <Dropdown.Item name='Account' href='/account' />
+          {!user.hasAccount && <Dropdown.Item name='Register' href='/account/register' />}
+          <Dropdown.Item name='Profile' href={'/player/' + user.id} />
+          <div className='border-primary-400 border-b mx-1' />
+          <Dropdown.Item name='Log out' onClick={handleLogout} disabled={loggingOut} />
         </Dropdown>
       </div>
       <div className='md:hidden flex flex-col sm:flex-row sm:justify-around'>
-        <div className='text-gray-100 grid items-center text-center mb-3'>
-          <div className='grid-flow-row'>
-            <Avatar width='64' height='64' uuid={user.id} />
+        <Link href={'/player/' + user.id}>
+          <div className='px-2 py-4 text-gray-200 flex flex-row gap-6'>
+            <Avatar width='48' height='48' uuid={user.id} />
+            <div>
+              <div className='text-lg font-normal'>{user.name}</div>
+              <div className='text-gray-400 text-sm font-normal'>View profile</div>
+            </div>
           </div>
-          <span className='grid-flow-row mx-4 text-lg font-normal'>{user.name}</span>
-        </div>
-        <Dropdown.Item name='Notifications' href='/notifications' icon={<MdOutlineNotifications />}>
-          {data?.unreadNotificationCount > 0 && <NotificationBadge>{data.unreadNotificationCount}</NotificationBadge>}
+        </Link>
+        <span className='text-5xl mb-2 border-b border-primary-400 leading-none' />
+        <Dropdown.Item name='Account' href='/account' className='px-2 mb-2 m-0' />
+        <Dropdown.Item name='Dashboard' href='/dashboard' className='px-2 mb-2' />
+        <Dropdown.Item name='Notifications' href='/notifications' className='px-2 mb-2'>
+          {unreadNotificationCount > 0 && <NotificationBadge>{unreadNotificationCount > 9 ? '9+' : unreadNotificationCount}</NotificationBadge>}
         </Dropdown.Item>
-        <Dropdown.Item name='Profile' href={'/player/' + user.id} icon={<CgProfile />} />
-        <Dropdown.Item name='Settings' href='/account' icon={<MdSettings />} />
-        <Dropdown.Item name='Logout' onClick={handleLogout} disabled={loggingOut} icon={<MdLogout />} />
-        <span className='text-5xl pb-4 mb-4 border-b border-accent-200 leading-none' />
+        <Dropdown.Item name='Profile' href={'/player/' + user.id} className='px-2 mb-2' />
+        <span className='text-5xl mb-2 border-b border-primary-400 leading-none' />
+        <Dropdown.Item name='Log out' onClick={handleLogout} disabled={loggingOut} className='px-2 mb-2' />
+        {hasPermission('servers', 'manage') && (
+          <>
+            <span className='text-5xl mb-2 border-b border-primary-400 leading-none' />
+            <Dropdown.Item name='Admin' href='/admin' className='px-2' />
+          </>)}
       </div>
     </>
   )

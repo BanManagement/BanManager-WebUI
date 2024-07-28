@@ -1,6 +1,4 @@
-const eachDayOfInterval = require('date-fns/eachDayOfInterval')
-const subDays = require('date-fns/subDays')
-const getUnixTime = require('date-fns/getUnixTime')
+const { getUnixTime, eachDayOfInterval, subDays } = require('date-fns')
 const ExposedError = require('../../../data/exposed-error')
 
 module.exports = async function serverWarningStats (obj, { id, intervalDays }, { state: { serversPool }, log }) {

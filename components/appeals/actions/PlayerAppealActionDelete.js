@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { BsTrash } from 'react-icons/bs'
-import { AiOutlineWarning } from 'react-icons/ai'
 import Button from '../../Button'
 import ErrorMessages from '../../ErrorMessages'
 import Modal from '../../Modal'
@@ -31,7 +30,6 @@ export default function PlayerAppealActionDelete ({ appeal, title, type, query, 
   return (
     <>
       <Modal
-        icon={<AiOutlineWarning className='h-6 w-6 text-red-600' aria-hidden='true' />}
         title={`Remove ${type}`}
         confirmButton={title}
         open={open}
@@ -43,7 +41,7 @@ export default function PlayerAppealActionDelete ({ appeal, title, type, query, 
         <p className='pb-1'>Are you sure you want to remove this {type}?</p>
         <p className='pb-1'>This action cannot be undone</p>
       </Modal>
-      <Button onClick={showConfirmDelete} className='bg-red-600 hover:bg-red-700'>
+      <Button onClick={showConfirmDelete} className='bg-red-800'>
         <BsTrash className='text-xl mr-2' /> {title}
       </Button>
     </>

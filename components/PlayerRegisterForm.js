@@ -1,11 +1,12 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { MdLock, MdOutlineEmail } from 'react-icons/md'
-import ErrorMessages from './ErrorMessages'
 import Input from './Input'
 import Button from './Button'
+import { useRouter } from 'next/router'
 
-export default function PlayerRegisterForm ({ onSuccess, onSkip }) {
+export default function PlayerRegisterForm () {
+  const router = useRouter()
   const [error, setError] = useState(null)
   const { handleSubmit, formState, register } = useForm()
   const { isSubmitting } = formState
@@ -30,49 +31,50 @@ export default function PlayerRegisterForm ({ onSuccess, onSkip }) {
         throw new Error(responseData.error)
       }
 
-      onSuccess()
+      router.push('/dashboard')
     } catch (e) {
       setError(e)
     }
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className='mx-auto'>
-      <div className='flex flex-col relative w-full px-4 sm:px-6 md:px-8 lg:px-10'>
-        <ErrorMessages error={error} />
+    <form onSubmit={handleSubmit(onSubmit)} className='mx-auto w-full'>
+      <div className='flex flex-col relative w-full'>
         <Input
           required
-          placeholder='Email address'
+          label='Email address'
+          minLength={6}
           type='email'
           icon={<MdOutlineEmail />}
           iconPosition='left'
           data-cy='email'
+          autoFocus
           {...register('email')}
         />
         <Input
           required
-          placeholder='Password'
+          label='Password'
+          minLength={6}
           type='password'
           icon={<MdLock />}
           iconPosition='left'
           data-cy='password'
+          description='Must be at least 6 characters long'
           {...register('password')}
         />
-        <a className='text-left text-sm ml-1 text-gray-400 -mt-3 mb-3'>Minimum of 6 characters</a>
         <Input
           required
-          placeholder='Confirm Password'
+          label='Confirm Password'
+          minLength={6}
           type='password'
           icon={<MdLock />}
           iconPosition='left'
           data-cy='password'
+          error={error?.message}
           {...register('confirmPassword')}
         />
         <Button data-cy='submit-register' disabled={isSubmitting} loading={isSubmitting}>
           Confirm
-        </Button>
-        <Button className='bg-black mt-5' data-cy='submit-register-skip' disabled={isSubmitting} onClick={onSkip}>
-          Maybe later
         </Button>
       </div>
     </form>

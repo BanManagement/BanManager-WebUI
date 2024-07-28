@@ -2,11 +2,10 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { MdLock, MdOutlineEmail } from 'react-icons/md'
 import Link from 'next/link'
-import ErrorMessages from './ErrorMessages'
 import Input from './Input'
 import Button from './Button'
 
-export default function PlayerLoginPasswordForm ({ onSuccess }) {
+export default function PlayerLoginPasswordForm ({ onSuccess, showForgotPassword }) {
   const [error, setError] = useState(null)
   const { handleSubmit, formState, register } = useForm()
   const { isSubmitting } = formState
@@ -34,12 +33,11 @@ export default function PlayerLoginPasswordForm ({ onSuccess }) {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className='mx-auto'>
-      <div className='flex flex-col relative w-full max-w-md px-4 sm:px-6 md:px-8 lg:px-10'>
-        <ErrorMessages error={error} />
+    <form onSubmit={handleSubmit(onSubmit)} className='mx-auto w-full'>
+      <div className='flex flex-col relative w-full'>
         <Input
           required
-          placeholder='Email address'
+          label='Email address'
           type='email'
           icon={<MdOutlineEmail />}
           iconPosition='left'
@@ -48,16 +46,20 @@ export default function PlayerLoginPasswordForm ({ onSuccess }) {
         />
         <Input
           required
-          placeholder='Password'
+          label='Password'
           type='password'
           icon={<MdLock />}
           iconPosition='left'
           data-cy='password'
+          minLength={6}
+          error={error?.message}
           {...register('password')}
         />
-        <Link href='/forgotten-password' passHref className='text-lg md:text-sm mb-3'>
-          Forgot password?
-        </Link>
+        {showForgotPassword && (
+          <Link href='/forgotten-password' passHref className='-mt-3 mb-3 text-gray-300'>
+            Forgot password or create account?
+          </Link>
+        )}
         <Button data-cy='submit-login-password' disabled={isSubmitting} loading={isSubmitting}>
           Login
         </Button>

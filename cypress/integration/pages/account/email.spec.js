@@ -6,7 +6,7 @@ describe('Account/Email', () => {
   })
 
   it('renders', () => {
-    cy.title().should('eq', 'Change Email')
+    cy.title().should('eq', 'Change Email | Account')
   })
 
   it('errors if incorrect current password', () => {
@@ -42,15 +42,15 @@ describe('Account/Email', () => {
 
     cy.get('[data-cy=submit-email-change]').click()
 
-    cy.get('[data-cy=success]').contains('Email updated')
+    cy.title().should('eq', 'Account')
 
     // Reset it
-    cy.get('form').then($element => $element[0].reset())
+    cy.visit('/account/email')
     cy.get('[data-cy=email]').type(Cypress.env('admin_username'))
     cy.get('[data-cy=currentPassword]').type(Cypress.env('admin_password'))
 
     cy.get('[data-cy=submit-email-change]').click()
 
-    cy.get('[data-cy=success]').contains('Email updated')
+    cy.title().should('eq', 'Account')
   })
 })

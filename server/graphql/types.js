@@ -161,7 +161,7 @@ type PlayerMute @sqlTable(name: "playerMutes") {
   created: Timestamp!
   updated: Timestamp!
   expires: Timestamp!
-  soft: Boolean!
+  soft: Boolean
   acl: EntityACL!
   server: Server!
 }
@@ -174,7 +174,7 @@ type PlayerMuteRecord @sqlTable(name: "playerMuteRecords") {
   reason: String!
   createdReason: String!
   silent: Boolean!
-  soft: Boolean!
+  soft: Boolean
   created: Timestamp!
   pastCreated: Timestamp!
   expired: Timestamp!
@@ -412,10 +412,6 @@ type AdminMenuItem {
   label: Int
 }
 
-type Navigation @cacheControl(scope: PRIVATE, maxAge: 300) {
-  left: [MenuItem!]! @cacheControl(scope: PRIVATE, maxAge: 300)
-}
-
 type AdminNavigation {
   left: [AdminMenuItem!]!
 }
@@ -508,7 +504,7 @@ type NotificationList {
 
 type NotificationComment {
   id: ID!
-  comment: String!
+  content: String
   actor: Player! @cacheControl(scope: PUBLIC, maxAge: 3600)
   created: Timestamp!
   updated: Timestamp!
@@ -572,25 +568,21 @@ type Query {
 
   playerBan(id: ID!, serverId: ID!): PlayerBan @allowIf(resource: "player.bans", permission: "view", serverVar: "serverId")
   playerBans(player: UUID!): [PlayerBan!] @allowIf(resource: "player.bans", permission: "view")
-  listPlayerBans(serverId: ID!, actor: UUID, player: UUID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerBanList! @cacheControl(scope: PRIVATE, maxAge: 300) @allowIf(resource: "player.bans", permission: "view")
 
   playerKick(id: ID!, serverId: ID!): PlayerKick @allowIf(resource: "player.kicks", permission: "view", serverVar: "serverId")
 
   playerMute(id: ID!, serverId: ID!): PlayerMute @allowIf(resource: "player.mutes", permission: "view", serverVar: "serverId")
   playerMutes(player: UUID!): [PlayerMute!] @allowIf(resource: "player.mutes", permission: "view")
-  listPlayerMutes(serverId: ID!, actor: UUID, player: UUID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerMuteList! @cacheControl(scope: PRIVATE, maxAge: 300) @allowIf(resource: "player.mutes", permission: "view")
 
   playerNote(id: ID!, serverId: ID!): PlayerNote @allowIf(resource: "player.notes", permission: "view", serverVar: "serverId")
 
   playerWarning(id: ID!, serverId: ID!): PlayerWarning @allowIf(resource: "player.warnings", permission: "view", serverVar: "serverId")
   playerWarnings(player: UUID!): [PlayerWarning!] @allowIf(resource: "player.warnings", permission: "view")
-  listPlayerWarnings(serverId: ID!, actor: UUID, player: UUID, limit: Int = 10, offset: Int = 0, order: OrderByInput): PlayerWarningList! @cacheControl(scope: PRIVATE, maxAge: 300) @allowIf(resource: "player.warnings", permission: "view")
 
-  listPlayerPunishmentRecords(serverId: ID!, actor: UUID, player: UUID!, type: RecordType!, limit: Int = 20, offset: Int = 0, order: OrderByInput): PlayerPunishmentRecords! @cacheControl(scope: PRIVATE, maxAge: 300)
+  listPlayerPunishmentRecords(serverId: ID!, actor: UUID, player: UUID!, type: RecordType!, order: OrderByInput): PlayerPunishmentRecords! @cacheControl(scope: PRIVATE, maxAge: 300)
 
   me: Me
 
-  navigation: Navigation!
   adminNavigation: AdminNavigation! @allowIf(resource: "servers", permission: "manage")
 
   roles(defaultOnly: Boolean): [Role!] @allowIf(resource: "servers", permission: "manage")

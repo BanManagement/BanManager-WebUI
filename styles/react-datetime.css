@@ -2,7 +2,7 @@
  * https://github.com/NateRadebaugh/react-datetime
  */
 .rdtPicker {
-  @apply z-40 w-72 text-sm bg-black shadow px-4 py-2 rounded;
+  @apply z-40 w-72 text-sm bg-primary-900 shadow px-4 py-2 rounded-3xl;
   min-width: 250px;
 }
 
@@ -53,12 +53,12 @@
 .rdtPicker .rdtMinute:hover,
 .rdtPicker .rdtSecond:hover,
 .rdtPicker .rdtTimeToggle:hover {
-  @apply bg-accent-600 rounded cursor-pointer text-white;
+  @apply bg-accent-700 rounded cursor-pointer text-white;
 }
 
 .rdtPicker .rdtOld,
 .rdtPicker .rdtNew {
-  @apply text-gray-500;
+  @apply text-gray-200;
 }
 
 .rdtPicker .rdtToday {
@@ -116,7 +116,7 @@
 }
 
 .rdtPicker thead tr:first-child th:hover {
-  @apply bg-accent-600;
+  @apply bg-accent-700;
 }
 
 .rdtPicker tfoot tr {
@@ -134,7 +134,7 @@
 }
 
 .rdtPicker button:hover {
-  @apply bg-accent-600;
+  @apply bg-accent-700;
 }
 
 .rdtPicker thead button {
@@ -155,15 +155,15 @@
 
 .rdtPicker .rdtMonth:hover,
 .rdtPicker .rdtYear:hover {
-  @apply bg-accent-600 text-white;
+  @apply bg-accent-700 text-gray-200;
 }
 
 .rdtPicker .rdtActive {
-  @apply bg-accent-600 rounded cursor-pointer text-white;
+  @apply bg-accent-700 rounded cursor-pointer text-gray-200;
 }
 
 .rdtPicker .rdtActive:hover {
-  @apply bg-accent-700;
+  @apply opacity-80;
 }
 
 .rdtPicker .rdtActive .rdtToday:before {
@@ -192,7 +192,7 @@
 }
 
 .rdtPicker .rdtCounter .rdtBtn:hover {
-  @apply bg-accent-600;
+  @apply bg-accent-700;
 }
 
 .rdtPicker .rdtCounter .rdtCount {

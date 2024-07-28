@@ -1,9 +1,14 @@
 import Document, { Html, Head, Main, NextScript } from 'next/document'
+import resolveConfig from 'tailwindcss/resolveConfig'
+import tailwindConfig from '../tailwind.config'
+
+const fullConfig = resolveConfig(tailwindConfig)
 
 export default class MyDocument extends Document {
   render () {
     return (
-      <Html lang='en'>
+      // Avoid FOUC by setting a background color that matches the theme
+      <Html lang='en' style={{ background: fullConfig.theme.colors.primary['500'] }}>
         <Head>
           <meta charSet='utf-8' />
           <meta name='author' content='BanManager-WebUI' />

@@ -147,7 +147,7 @@ describe('/api/register', () => {
 
     assert(nock.isDone())
     assert(body)
-    assert.strictEqual(body.error, 'Commonly used password, please choose another')
+    assert.strictEqual(body.error, 'This password isn\'t safe to use as it\'s appeared in 11,603 known data breaches')
   })
 
   test('should error if player has an account', async () => {

@@ -1,23 +1,25 @@
 import Link from 'next/link'
 import Button from '../Button'
+import PageHeader from '../PageHeader'
+import Panel from '../Panel'
+import { useUser } from '../../utils'
 
 const AppealPanel = () => {
-  return (
-    <div className='h-full p-6 flex flex-col relative text-center md:border-2 md:border-black'>
-      <h2 className='text-xs tracking-widest title-font mb-5 font-medium uppercase'>Help I&apos;ve been banned</h2>
-      <h1 className='text-5xl pb-4 mb-4 border-b border-accent-200 leading-none'>Appeal</h1>
-      <p className='flex items-center mb-6'>
-        If you believe your account has been wrongfully punished, create an appeal justifying why including any relevant evidence
-      </p>
-      <p className='text-xs mb-3'>There is no guarantee your appeal will be successful</p>
-      <Link href='/tutorial' passHref>
+  const { user } = useUser()
 
-        <Button className='max-w-md mx-auto'>
+  return (
+    <Panel>
+      <PageHeader title='Appeal' subTitle='Help I&apos;ve been banned' />
+      <p className='flex mb-6'>
+        If you believe your account has been wrongfully punished, create an appeal justifying why including any relevant evidence.
+      </p>
+      <p className='mb-3'>There is no guarantee your appeal will be successful.</p>
+      <Link href={user ? '/appeal/punishment' : '/appeal'} passHref className='mt-auto'>
+        <Button>
           Create Appeal
         </Button>
-
       </Link>
-    </div>
+    </Panel>
   )
 }
 

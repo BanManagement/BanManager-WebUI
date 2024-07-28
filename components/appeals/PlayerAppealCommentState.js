@@ -6,7 +6,7 @@ import { fromNow } from '../../utils'
 export default function PlayerAppealCommentState ({ id, actor, created, state }) {
   return (
     <div className='ml-4 pt-3 pb-3 pl-4 relative' id={`comment-${id}`}>
-      <span className='flex w-8 h-8 items-center justify-center rounded-full bg-gray-600 text-gray-300 float-left -ml-8 mr-2'>
+      <span className='flex w-8 h-8 items-center justify-center rounded-full bg-primary-900 text-gray-200 float-left -ml-8 mr-2'>
         <GoInfo className='w-6 h-6 inline-block' />
       </span>
       <Link

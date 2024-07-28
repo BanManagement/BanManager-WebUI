@@ -1,11 +1,11 @@
 import { useRouter } from 'next/router'
-import Loader from '../../../components/Loader'
 import DefaultLayout from '../../../components/DefaultLayout'
 import PageContainer from '../../../components/PageContainer'
 import PlayerNoteForm from '../../../components/PlayerNoteForm'
 import ErrorLayout from '../../../components/ErrorLayout'
 import PageHeader from '../../../components/PageHeader'
 import { fromNow, useApi } from '../../../utils'
+import Panel from '../../../components/Panel'
 
 export default function Page () {
   const router = useRouter()
@@ -31,8 +31,7 @@ export default function Page () {
     variables: { id, serverId }
   })
 
-  if (loading) return <DefaultLayout title='Loading...'><Loader /></DefaultLayout>
-  if (errors || !data) return <ErrorLayout errors={errors} />
+  if (errors) return <ErrorLayout errors={errors} />
 
   const query = `mutation updatePlayerNote($id: ID!, $serverId: ID!, $input: UpdatePlayerNoteInput!) {
     updatePlayerNote(id: $id, serverId: $serverId, input: $input) {
@@ -41,12 +40,12 @@ export default function Page () {
   }`
 
   return (
-    <DefaultLayout title={`Update ${data.playerNote.player.name} note`}>
+    <DefaultLayout title={`Edit ${data?.playerNote?.player?.name} note`} loading={loading}>
       <PageContainer>
-        <div className='mx-auto flex flex-col w-full max-w-md px-4 py-8 sm:px-6 md:px-8 lg:px-10 text-center md:border-2 md:rounded-lg md:border-black'>
-          <PageHeader title='Edit note' subTitle={`Created ${fromNow(data.playerNote.created)}`} />
+        <Panel className='mx-auto w-full max-w-md'>
+          <PageHeader title='Edit note' subTitle={fromNow(data?.playerNote?.created || 0)} />
           <PlayerNoteForm
-            defaults={data.playerNote}
+            defaults={data?.playerNote}
             query={query}
             parseVariables={(input) => ({
               id,
@@ -54,9 +53,9 @@ export default function Page () {
               input: { message: input.message }
             })}
             disableServers
-            onFinished={() => router.push(`/player/${data.playerNote.player.id}`)}
+            onFinished={() => router.push(`/player/${data?.playerNote?.player?.id}`)}
           />
-        </div>
+        </Panel>
       </PageContainer>
     </DefaultLayout>
   )

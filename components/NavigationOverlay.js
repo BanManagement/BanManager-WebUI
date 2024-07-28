@@ -23,7 +23,7 @@ const NavigationOverlay = ({ children, drawerOpen, setDrawerOpen }) => {
       </Transition>
       <RemoveScroll forwardProps enabled={drawerOpen}>
         <aside
-          className={clsx('top-0 right-0 w-72 bg-gray-800 fixed h-full overflow-auto ease-in-out transition-all duration-300 z-30', RemoveScroll.classNames.zeroRight,
+          className={clsx('top-0 right-0 w-72 bg-primary-900 fixed h-full overflow-auto ease-in-out transition-all duration-300 z-30', RemoveScroll.classNames.zeroRight,
             {
               'translate-x-0': drawerOpen,
               'translate-x-full': !drawerOpen
