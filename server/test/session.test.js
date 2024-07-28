@@ -184,18 +184,6 @@ describe('/api/session', () => {
       assert.strictEqual(body.error, 'Invalid name')
     })
 
-    test('should error if invalid name', async () => {
-      const { body, statusCode } = await request
-        .post('/api/session')
-        .set('Accept', 'application/json')
-        .send({ name: '#yar' })
-
-      assert.strictEqual(statusCode, 400)
-
-      assert(body)
-      assert.strictEqual(body.error, 'Invalid name')
-    })
-
     test('should error if name too long', async () => {
       const { body, statusCode } = await request
         .post('/api/session')

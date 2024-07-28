@@ -114,7 +114,7 @@ async function handlePasswordLogin (ctx, { limiterSlowBruteByIP, limiterConsecut
 async function handlePinLogin (ctx, { limiterSlowBruteByIP, limiterConsecutiveFailsByUsernameAndIP }) {
   const { response, throw: throwError, request, state } = ctx
 
-  if (!isLength(request.body.name, { min: 2, max: 17 })) return throwError(400, 'Invalid name')
+  if (typeof request.body.name !== 'string' || !isLength(request.body.name, { min: 2, max: 17 })) return throwError(400, 'Invalid name')
 
   if (typeof request.body.pin !== 'string') return throwError(400, 'Invalid pin type')
   if (!isLength(request.body.pin, { min: 6, max: 6 })) return throwError(400, 'Invalid pin, must be 6 characters')
