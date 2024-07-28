@@ -22,14 +22,16 @@ export default function PlayerActions ({ id }) {
           </Link>}
       </div>
       <div>
-        {canCreateMute && <Link href={`/player/${id}/mute`} passHref>
-          <Button className='btn-outline'><BsMicMute className='text-indigo-800 mr-1' /> Mute</Button>
-        </Link>}
+        {canCreateMute &&
+          <Link href={`/player/${id}/mute`} passHref>
+            <Button className='btn-outline'><BsMicMute className='text-indigo-800 mr-1' /> Mute</Button>
+          </Link>}
       </div>
       <div>
-        {canCreateWarning && <Link href={`/player/${id}/warn`} passHref>
-          <Button className='btn-outline'><AiOutlineWarning className='text-amber-800 mr-1' /> Warn</Button>
-        </Link>}
+        {canCreateWarning &&
+          <Link href={`/player/${id}/warn`} passHref>
+            <Button className='btn-outline'><AiOutlineWarning className='text-amber-800 mr-1' /> Warn</Button>
+          </Link>}
       </div>
     </div>
   )

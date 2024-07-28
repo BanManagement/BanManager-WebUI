@@ -64,9 +64,10 @@ export default function PlayerNotes ({ id }) {
       {!data?.listPlayerPunishmentRecords?.total && (
         <div className='flex items-center'>
           <div>
-            {canCreateNote && <Link href={`/player/${id}/note`} passHref>
-              <Button className='btn-outline'><BiNotepad className='text-teal-800 mr-1' />Add Note</Button>
-                              </Link>}
+            {canCreateNote &&
+              <Link href={`/player/${id}/note`} passHref>
+                <Button className='btn-outline'><BiNotepad className='text-teal-800 mr-1' />Add Note</Button>
+              </Link>}
             {!canCreateNote && 'None'}
           </div>
         </div>

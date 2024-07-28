@@ -98,18 +98,20 @@ export default function PlayerPunishment ({ punishment, server, type, onDeleted 
         <div className='flex flex-col text-left'>
           <Link href={`/player/${punishment.actor.id}`}><span>{punishment.actor.name}</span></Link>
           <span className='text-sm text-gray-400'>{formatTimestamp(punishment.created)}</span>
-          {server?.name && <div className='text-sm text-gray-400 flex items-center gap-4'>
-            <div className='flex items-center gap-1'>
-              <BiServer />
-              <span className='truncate'>{server.name}</span>
-            </div>
-          </div>}
-          {punishment.points && <div className='text-sm text-gray-400 flex items-center gap-4'>
-            <div className='flex items-center gap-1'>
-              <RiNumbersLine />
-              <span className='truncate'>{punishment.points}</span>
-            </div>
-          </div>}
+          {server?.name &&
+            <div className='text-sm text-gray-400 flex items-center gap-4'>
+              <div className='flex items-center gap-1'>
+                <BiServer />
+                <span className='truncate'>{server.name}</span>
+              </div>
+            </div>}
+          {punishment.points &&
+            <div className='text-sm text-gray-400 flex items-center gap-4'>
+              <div className='flex items-center gap-1'>
+                <RiNumbersLine />
+                <span className='truncate'>{punishment.points}</span>
+              </div>
+            </div>}
         </div>
         <div className='ml-auto self-start flex flex-col justify-center items-center gap-2'>
           {label}
