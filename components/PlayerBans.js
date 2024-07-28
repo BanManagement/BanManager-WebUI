@@ -11,7 +11,7 @@ import { useApi, useMutateApi } from '../utils'
 
 const query = `
 query listPlayerPunishmentRecords($serverId: ID!, $player: UUID!, $type: RecordType!) {
-  listPlayerPunishmentRecords(serverId: $serverId, player: $player, type: $type) {
+  listPlayerPunishmentRecords(serverId: $serverId, player: $player, type: $type, order: created_DESC) {
     total
     records {
       ... on PlayerBanRecord {

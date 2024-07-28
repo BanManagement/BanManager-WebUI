@@ -17,7 +17,7 @@ import PlayerWarnings from '../../../components/PlayerWarnings'
 import PlayerBans from '../../../components/PlayerBans'
 import PlayerMutes from '../../../components/PlayerMutes'
 import PlayerKicks from '../../../components/PlayerKicks'
-import PlayerHistoryList from '../../../components/PlayerHistoryList'
+import PlayerHistoryList from '../../../components/player/PlayerHistoryList'
 import PageContainer from '../../../components/PageContainer'
 
 const fullConfig = resolveConfig(tailwindConfig)
@@ -29,7 +29,7 @@ export async function getServerSideProps ({ req, params }) {
 
   const { parse, unparse } = require('uuid-parse')
   const id = parse(params.id, Buffer.alloc(16))
-  const data = await req.loaders.player.load({ id, fields: ['id', 'name', 'lastseen'] })
+  const data = await req.loaders.player.load({ id, fields: ['id', 'name', 'lastSeen'] })
 
   if (!data) return { notFound: true }
 
@@ -88,7 +88,7 @@ export default function Page ({ data }) {
             </div>
             <div className='hidden xl:block col-span-3 space-y-10'>
               <PlayerAvatar id={data.player.id} colourData={colourData} />
-              {hasServerPermission('player.history', 'view', null, true) && <div className='mx-6'><PlayerHistoryList id={data.player.id} color={color} /></div>}
+              {hasServerPermission('player.history', 'view', null, true) && <div className='mx-6'><PlayerHistoryList id={data.player.id} lastSeen={data.player.lastSeen} /></div>}
             </div>
           </div>
           <div className='xl:hidden col-span-12 space-y-10'>

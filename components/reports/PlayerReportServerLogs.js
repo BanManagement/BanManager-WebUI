@@ -29,7 +29,6 @@ export default function PlayerReportServerLogs ({ serverLogs }) {
         containerClassName='md:max-w-3xl'
       >
         <div className='flex flex-col overflow-auto'>
-          {/* Step 2: Render the transformed structure */}
           {Object.entries(logsGroupedByDate).map(([date, logs]) => (
             <Fragment key={date}>
               <div className='font-semibold px-2 py-2'>{date}</div>

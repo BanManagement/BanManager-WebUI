@@ -1,28 +1,23 @@
-import { usePalette } from '@universemc/react-palette'
 import { NextSeo } from 'next-seo'
 import { getApiRoot } from 'nextjs-url'
 import DefaultLayout from '../../components/DefaultLayout'
-import { fromNow, useUser } from '../../utils'
+import { useUser } from '../../utils'
 
 import PlayerAlts from '../../components/player/PlayerAlts'
 import PlayerAvatar from '../../components/player/PlayerAvatar'
 import ActivePlayerBans from '../../components/player/ActivePlayerBans'
 import ActivePlayerMutes from '../../components/player/ActivePlayerMutes'
 
-import resolveConfig from 'tailwindcss/resolveConfig'
-import tailwindConfig from '../../tailwind.config'
 import PlayerStatistics from '../../components/player/PlayerStatistics'
 import PlayerNotes from '../../components/PlayerNotes'
 import PlayerWarnings from '../../components/PlayerWarnings'
 import PlayerBans from '../../components/PlayerBans'
 import PlayerMutes from '../../components/PlayerMutes'
 import PlayerKicks from '../../components/PlayerKicks'
-import PlayerHistoryList from '../../components/PlayerHistoryList'
+import PlayerHistoryList from '../../components/player/PlayerHistoryList'
 import PageContainer from '../../components/PageContainer'
 import PlayerActions from '../../components/player/PlayerActions'
-import { TimeFromNow } from '../../components/Time'
-
-const fullConfig = resolveConfig(tailwindConfig)
+import PlayerLastSeen from '../../components/player/PlayerLastSeen'
 
 export async function getServerSideProps ({ req, params }) {
   const { isUUID } = require('validator')
@@ -53,8 +48,6 @@ export async function getServerSideProps ({ req, params }) {
 
 export default function Page ({ data }) {
   const { hasServerPermission } = useUser()
-  const { data: colourData } = usePalette(!data?.player?.id ? null : `https://crafatar.com/renders/body/${data.player.id}?scale=10&overlay=true`)
-  const color = colourData.vibrant || fullConfig.theme.colors.accent['500']
 
   return (
     <>
@@ -78,10 +71,10 @@ export default function Page ({ data }) {
         <PageContainer>
           <div className='grid md:grid-cols-12 gap-6 md:gap-12'>
             <div className='col-span-12 md:col-span-3 flex flex-col gap-4'>
-              <PlayerAvatar id={data.player.id} colourData={colourData} />
-              <div className='flex flex-col justify-start justify-items-stretch w-full py-6 border-b border-primary-900'>
+              <PlayerAvatar id={data.player.id} />
+              <div className='flex flex-col justify-start justify-items-stretch w-full border-b border-primary-900'>
                 <h1 className='text-4xl font-bold pb-2 leading-none text-center'>{data.player.name}</h1>
-                <h2 className='text-xs tracking-widest title-font text-center font-medium text-gray-400 uppercase'><TimeFromNow timestamp={data.player.lastSeen} /></h2>
+                {hasServerPermission('player.history', 'view', null, true) ? <PlayerHistoryList id={data.player.id} lastSeen={data.player.lastSeen} /> : <PlayerLastSeen lastSeen={data.player.lastSeen} />}
                 {hasServerPermission('player.alts', 'view', null, true) && <PlayerAlts id={data.player.id} />}
                 <PlayerActions id={data.player.id} />
               </div>
@@ -91,12 +84,11 @@ export default function Page ({ data }) {
             </div>
             <div className='col-span-12 md:col-span-9 md:pl-'>
               <div className='flex flex-col gap-6'>
-                {hasServerPermission('player.bans', 'view', null, true) && <PlayerBans id={data.player.id} color={color} />}
-                {hasServerPermission('player.mutes', 'view', null, true) && <PlayerMutes id={data.player.id} color={color} />}
-                {hasServerPermission('player.kicks', 'view', null, true) && <PlayerKicks id={data.player.id} color={color} />}
-                {hasServerPermission('player.notes', 'view', null, true) && <PlayerNotes id={data.player.id} color={color} />}
-                {hasServerPermission('player.warnings', 'view', null, true) && <PlayerWarnings id={data.player.id} color={color} />}
-                {hasServerPermission('player.history', 'view', null, true) && <PlayerHistoryList id={data.player.id} />}
+                {hasServerPermission('player.bans', 'view', null, true) && <PlayerBans id={data.player.id} />}
+                {/* {hasServerPermission('player.mutes', 'view', null, true) && <PlayerMutes id={data.player.id} />} */}
+                {/* {hasServerPermission('player.kicks', 'view', null, true) && <PlayerKicks id={data.player.id} />} */}
+                {/* {hasServerPermission('player.notes', 'view', null, true) && <PlayerNotes id={data.player.id} />} */}
+                {/* {hasServerPermission('player.warnings', 'view', null, true) && <PlayerWarnings id={data.player.id} />} */}
               </div>
             </div>
           </div>

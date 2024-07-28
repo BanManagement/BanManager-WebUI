@@ -9,7 +9,7 @@ export default function Modal ({ open = false, containerClassName = '', title, c
   }
 
   return (
-    <Dialog open={open} transition className='relative inset-0 overflow-y-auto' initialFocus={cancelButtonRef} onClose={onClose}>
+    <Dialog open={open} transition className='relative inset-0 overflow-y-auto z-50' initialFocus={cancelButtonRef} onClose={onClose}>
       <DialogBackdrop
         transition
         className='fixed inset-0 bg-black/50 duration-300 ease-out data-[closed]:opacity-0'
