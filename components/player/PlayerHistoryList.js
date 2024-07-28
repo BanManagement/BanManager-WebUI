@@ -7,11 +7,12 @@ import { format, fromUnixTime } from 'date-fns'
 import PlayerLastSeen from './PlayerLastSeen'
 import Modal from '../Modal'
 import Button from '../Button'
+import Link from 'next/link'
 
 const limit = 30
 
 export default function PlayerHistoryList ({ id, lastSeen }) {
-  const { hasServerPermission } = useUser()
+  const { hasPermission, hasServerPermission } = useUser()
   const [isOpen, setIsOpen] = useState(false)
   const [tableState, setTableState] = useState({ offset: 0, serverId: null })
   const [rows, setRows] = useState([])
@@ -90,7 +91,8 @@ export default function PlayerHistoryList ({ id, lastSeen }) {
         <ServerSelector onChange={serverId => {
           setRows([])
           setTableState({ ...tableState, serverId, offset: 0 })
-        }} />
+        }}
+        />
         <div className='flex flex-col overflow-auto -mb-5 mt-2'>
           {loading && <Loader />}
           {Object.entries(rowsGroupedByDate).map(([date, rows]) => (
@@ -107,7 +109,12 @@ export default function PlayerHistoryList ({ id, lastSeen }) {
               ))}
             </Fragment>
           ))}
-          <div ref={lastElementRef}></div>
+          {!loading && rows.length === 0 && (
+            <>
+              <div className='p-2 text-center text-gray-400'>No history</div>
+              {hasPermission('servers', 'manage') && <div className='p-2 text-center text-gray-400'>If you&apos;re missing data here, ensure <Link target='_blank' href='https://banmanagement.com/docs/banmanager/configuration/config-yml#logips' rel='noreferrer'><pre className='inline'>logIps</pre></Link> is enabled in the plugin&apos;s config.yml file</div>}
+            </>)}
+          <div ref={lastElementRef} />
         </div>
       </Modal>
       <Button className='bg-primary-900 text-gray-400 font-normal' onClick={() => setIsOpen(true)}><PlayerLastSeen lastSeen={lastSeen} /></Button>

@@ -218,6 +218,14 @@ export const formatTimestamp = (timestamp) => {
   return format(fromUnixTime(timestamp), 'MMM d yyyy, h:mm a')
 }
 
+export const formatTimestampAsDate = (timestamp) => {
+  return format(fromUnixTime(timestamp), 'MMM d yyyy')
+}
+
+export const formatTimestampAsTime = (timestamp) => {
+  return format(fromUnixTime(timestamp), 'h:mm a')
+}
+
 export const currentVersion = () => {
   let versionStr = 'unknown'
 

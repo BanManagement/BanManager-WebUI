@@ -1,4 +1,3 @@
-import { usePalette } from '@universemc/react-palette'
 import { NextSeo } from 'next-seo'
 import { getApiRoot } from 'nextjs-url'
 import DefaultLayout from '../../../components/DefaultLayout'
@@ -9,18 +8,16 @@ import PlayerAvatar from '../../../components/player/PlayerAvatar'
 import ActivePlayerBans from '../../../components/player/ActivePlayerBans'
 import ActivePlayerMutes from '../../../components/player/ActivePlayerMutes'
 
-import resolveConfig from 'tailwindcss/resolveConfig'
-import tailwindConfig from '../../../tailwind.config'
 import PlayerStatistics from '../../../components/player/PlayerStatistics'
-import PlayerNotes from '../../../components/PlayerNotes'
-import PlayerWarnings from '../../../components/PlayerWarnings'
-import PlayerBans from '../../../components/PlayerBans'
-import PlayerMutes from '../../../components/PlayerMutes'
+import PlayerNotes from '../../../components/player/PlayerNotes'
+import PlayerWarnings from '../../../components/player/PlayerWarnings'
+import PlayerBans from '../../../components/player/PlayerBans'
+import PlayerMutes from '../../../components/player/PlayerMutes'
 import PlayerKicks from '../../../components/PlayerKicks'
 import PlayerHistoryList from '../../../components/player/PlayerHistoryList'
 import PageContainer from '../../../components/PageContainer'
-
-const fullConfig = resolveConfig(tailwindConfig)
+import PlayerActions from '../../../components/player/PlayerActions'
+import PlayerLastSeen from '../../../components/player/PlayerLastSeen'
 
 export async function getServerSideProps ({ req, params }) {
   const { isUUID } = require('validator')
@@ -51,8 +48,6 @@ export async function getServerSideProps ({ req, params }) {
 
 export default function Page ({ data }) {
   const { hasServerPermission } = useUser()
-  const { data: colourData } = usePalette(!data?.player?.id ? null : `https://crafatar.com/renders/body/${data.player.id}?scale=10&overlay=true`)
-  const color = colourData.vibrant || fullConfig.theme.colors.accent['500']
 
   return (
     <>
@@ -74,25 +69,28 @@ export default function Page ({ data }) {
       />
       <DefaultLayout title={data.player.name}>
         <PageContainer>
-          <div className='grid grid-flow-row xl:grid-flow-col grid-cols-12'>
-            <div className='col-span-12 xl:col-span-9 space-y-10'>
-              <PlayerStatistics id={data.player.id} color={color} />
-              {hasServerPermission('player.alts', 'view', null, true) && <PlayerAlts id={data.player.id} color={color} />}
-              <ActivePlayerBans id={data.player.id} color={color} />
-              {hasServerPermission('player.bans', 'view', null, true) && <PlayerBans id={data.player.id} color={color} />}
-              <ActivePlayerMutes id={data.player.id} color={color} />
-              {hasServerPermission('player.mutes', 'view', null, true) && <PlayerMutes id={data.player.id} color={color} />}
-              {hasServerPermission('player.kicks', 'view', null, true) && <PlayerKicks id={data.player.id} color={color} />}
-              {hasServerPermission('player.notes', 'view', null, true) && <PlayerNotes id={data.player.id} color={color} />}
-              {hasServerPermission('player.warnings', 'view', null, true) && <PlayerWarnings id={data.player.id} color={color} />}
+          <div className='grid lg:grid-cols-12 gap-6 lg:gap-12'>
+            <div className='col-span-12 lg:col-span-3 flex flex-col gap-4'>
+              <PlayerAvatar id={data.player.id} />
+              <div className='flex flex-col justify-start justify-items-stretch w-full border-b border-primary-900 pb-6'>
+                <h1 className='text-4xl font-bold pb-2 leading-none text-center'>{data.player.name}</h1>
+                {hasServerPermission('player.history', 'view', null, true) ? <PlayerHistoryList id={data.player.id} lastSeen={data.player.lastSeen} /> : <PlayerLastSeen lastSeen={data.player.lastSeen} />}
+                {hasServerPermission('player.alts', 'view', null, true) && <PlayerAlts id={data.player.id} />}
+                <PlayerActions id={data.player.id} />
+              </div>
+              <PlayerStatistics id={data.player.id} />
+              <ActivePlayerBans id={data.player.id} />
+              <ActivePlayerMutes id={data.player.id} />
+              {hasServerPermission('player.notes', 'view', null, true) && <PlayerNotes id={data.player.id} />}
             </div>
-            <div className='hidden xl:block col-span-3 space-y-10'>
-              <PlayerAvatar id={data.player.id} colourData={colourData} />
-              {hasServerPermission('player.history', 'view', null, true) && <div className='mx-6'><PlayerHistoryList id={data.player.id} lastSeen={data.player.lastSeen} /></div>}
+            <div className='col-span-12 lg:col-span-9'>
+              <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
+                {hasServerPermission('player.bans', 'view', null, true) && <PlayerBans id={data.player.id} />}
+                {hasServerPermission('player.mutes', 'view', null, true) && <PlayerMutes id={data.player.id} />}
+                {hasServerPermission('player.kicks', 'view', null, true) && <PlayerKicks id={data.player.id} />}
+                {hasServerPermission('player.warnings', 'view', null, true) && <PlayerWarnings id={data.player.id} />}
+              </div>
             </div>
-          </div>
-          <div className='xl:hidden col-span-12 space-y-10'>
-            {hasServerPermission('player.history', 'view', null, true) && <PlayerHistoryList id={data.player.id} color={color} />}
           </div>
         </PageContainer>
       </DefaultLayout>

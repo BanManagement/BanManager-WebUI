@@ -20,7 +20,6 @@
     -webkit-animation: spinner 1.5s linear infinite;
     animation: spinner 1.5s linear infinite;
     position: absolute;
-    position: absolute;
     left: 0;
     right: 0;
     top: calc(50% - 0.625rem);

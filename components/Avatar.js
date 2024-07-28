@@ -26,7 +26,7 @@ const Avatar = ({ height, width, scale = '6', uuid, className = '', type = 'avat
       height={height}
       onError={setError}
       src={error ? fallbackSrc : url}
-      className={`${className} rounded-lg`}
+      className={`${className} rounded-md`}
       alt={uuid}
     />
   )

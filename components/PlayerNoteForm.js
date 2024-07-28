@@ -53,7 +53,7 @@ export default function PlayerNoteForm ({ serverFilter, onFinished, query, parse
         {...register('message')}
       />
       <InputCharCounter currentLength={watchMessage?.length} maxLength={255} />
-      <Button disabled={isSubmitting} loading={isSubmitting} className='mt-6'>
+      <Button disabled={isSubmitting || !watchMessage?.length} loading={isSubmitting} className='mt-6'>
         Save
       </Button>
     </form>

@@ -161,7 +161,7 @@ type PlayerMute @sqlTable(name: "playerMutes") {
   created: Timestamp!
   updated: Timestamp!
   expires: Timestamp!
-  soft: Boolean!
+  soft: Boolean
   acl: EntityACL!
   server: Server!
 }
@@ -174,7 +174,7 @@ type PlayerMuteRecord @sqlTable(name: "playerMuteRecords") {
   reason: String!
   createdReason: String!
   silent: Boolean!
-  soft: Boolean!
+  soft: Boolean
   created: Timestamp!
   pastCreated: Timestamp!
   expired: Timestamp!
