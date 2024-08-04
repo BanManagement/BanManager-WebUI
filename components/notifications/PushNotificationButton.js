@@ -85,15 +85,18 @@ export default function PushNotificationButton () {
 
   return (
     <>
-      {(notificationPermission === 'default' || (notificationPermission === 'granted' && !subscription)) && <Button className='bg-primary-900 text-gray-400 font-normal w-auto' onClick={onClickRegisterPushNotification}>
-        Enable push notifications
-      </Button>}
-      {notificationPermission === 'granted' && subscription && <Button className='bg-primary-900 text-gray-400 font-normal w-auto' onClick={onClickUnregisterPushNotification}>
-        Disable push notifications
-      </Button>}
-      {notificationPermission === 'denied' && <Button className='bg-primary-900 text-gray-400 font-normal w-auto' onClick={() => setOpen(true)}>
-        Enable push notifications
-      </Button>}
+      {(notificationPermission === 'default' || (notificationPermission === 'granted' && !subscription)) &&
+        <Button className='bg-primary-900 text-gray-400 font-normal w-auto' onClick={onClickRegisterPushNotification}>
+          Enable push notifications
+        </Button>}
+      {notificationPermission === 'granted' && subscription &&
+        <Button className='bg-primary-900 text-gray-400 font-normal w-auto' onClick={onClickUnregisterPushNotification}>
+          Disable push notifications
+        </Button>}
+      {notificationPermission === 'denied' &&
+        <Button className='bg-primary-900 text-gray-400 font-normal w-auto' onClick={() => setOpen(true)}>
+          Enable push notifications
+        </Button>}
       <Modal title='Enable Push Notifications' open={open} onCancel={() => setOpen(false)} cancelButton='Ok'>
         <div className='flex flex-col gap-4'>
           <p>Your browser is blocking notifications from this site</p>
