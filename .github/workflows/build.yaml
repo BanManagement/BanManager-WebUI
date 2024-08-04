@@ -76,6 +76,9 @@ jobs:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CYPRESS_PROJECT_ID: ${{ secrets.PROJECT_ID }}
+          CONTACT_EMAIL: 'admin@banmanagement.com'
+          NOTIFICATION_VAPID_PUBLIC_KEY: ${{ secrets.NOTIFICATION_VAPID_PUBLIC_KEY }}
+          NOTIFICATION_VAPID_PRIVATE_KEY: ${{ secrets.NOTIFICATION_VAPID_PRIVATE_KEY }}
         with:
           install: false
           build: npm run e2e:build
