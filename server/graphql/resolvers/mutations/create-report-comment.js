@@ -30,7 +30,7 @@ module.exports = async function createReportComment (obj, { report: reportId, se
   }, ['id'])
 
   await subscribeReport(state.dbPool, reportId, serverId, session.playerId)
-  await notifyReport(state.dbPool, getNotificationType('reportComment'), reportId, server, id, session.playerId)
+  await notifyReport(state.dbPool, getNotificationType('reportComment'), reportId, server, id, session.playerId, state)
 
   return reportComment(obj, { id, serverId }, { state }, info)
 }

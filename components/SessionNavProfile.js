@@ -9,7 +9,7 @@ import NotificationBadge from './NotificationBadge'
 import { MdOutlineNotifications, MdNotifications, MdManageAccounts, MdDashboard, MdOutlineDashboard } from 'react-icons/md'
 import { useUser } from '../utils'
 
-const buttonClassName = 'bg-primary-900 !rounded-lg p-2 transform transition duration-300 hover:scale-110 hover:bg-primary-900 w-12 h-12'
+const buttonClassName = 'bg-primary-900 !rounded-lg p-2 transform transition duration-300 hover:scale-110 hover:bg-primary-900 w-12 h-12 items-center'
 
 export default function SessionNavProfile ({ user, unreadNotificationCount }) {
   const router = useRouter()

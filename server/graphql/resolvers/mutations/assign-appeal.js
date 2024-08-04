@@ -54,7 +54,7 @@ module.exports = async function assignAppeal (obj, { player, id }, { session, st
 
     await subscribeAppeal(trx, id, session.playerId)
     await subscribeAppeal(trx, id, player)
-    await notifyAppeal(trx, getNotificationType('appealAssigned'), id, server.config.id, commentId, session.playerId)
+    await notifyAppeal(trx, getNotificationType('appealAssigned'), id, server.config.id, commentId, session.playerId, state)
   })
 
   return { appealId: id, commentId }

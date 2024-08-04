@@ -1,5 +1,5 @@
 const { unparse } = require('uuid-parse')
-const { getNotificationState, generateNotificationId } = require('./')
+const { getNotificationState, generateNotificationId, getNotificationType, getPushNotificationSubscriptions, sendPushNotifications } = require('./')
 const { hasPermission, loadPermissionValues, loadPlayerResourceValues } = require('../permissions')
 
 const subscribeReport = async (dbPool, reportId, serverId, playerId) => {
@@ -87,10 +87,13 @@ const getReportSubscription = async (dbPool, reportId, serverId, playerId) => {
   return data
 }
 
-const notifyReport = async (dbPool, type, reportId, server, commentId, actorId) => {
-  const [data] = await server.pool(server.config.tables.playerReports)
-    .select('actor_id', 'player_id', 'assignee_id')
-    .where({ id: reportId })
+const notifyReport = async (dbPool, type, reportId, server, commentId, actorId, state) => {
+  const data = await server.pool(server.config.tables.playerReports)
+    .select('actor_id', 'player_id', 'assignee_id', 'states.name AS name')
+    .leftJoin(`${server.config.tables.playerReportStates} AS states`, 'states.id', `${server.config.tables.playerReports}.state_id`)
+    .where(`${server.config.tables.playerReports}.id`, reportId)
+    .first()
+
   const permissionValues = await loadPermissionValues(dbPool)
 
   let players = await getReportWatchers(dbPool, reportId, server.config.id)
@@ -118,6 +121,8 @@ const notifyReport = async (dbPool, type, reportId, server, commentId, actorId) 
     return canView
   })
 
+  const pushSubscriptions = await getPushNotificationSubscriptions(dbPool, players)
+
   return dbPool.transaction(async trx => {
     const notification = {
       type,
@@ -130,10 +135,63 @@ const notifyReport = async (dbPool, type, reportId, server, commentId, actorId) 
       updated: trx.raw('UNIX_TIMESTAMP()')
     }
 
+    const actor = await state.loaders.player.load({ id: actorId, fields: ['name'] })
+    const assigned = data.assignee_id ? await state.loaders.player.load({ id: data.assignee_id, fields: ['name'] }) : null
+
+    const pushNotificationTileBody = generateNotificationTitleBody(type, reportId, data, actor, assigned)
+    const payload = {
+      ...pushNotificationTileBody,
+      data: {
+        type,
+        reportId,
+        serverId: server.config.id,
+        commentId,
+        actorId: unparse(actorId)
+      }
+    }
+
     for (const playerId of players) {
-      await trx('bm_web_notifications').insert({ ...notification, id: await generateNotificationId(), player_id: playerId })
+      const id = await generateNotificationId()
+
+      await trx('bm_web_notifications').insert({ ...notification, id, player_id: playerId })
+
+      try {
+        // Send push notification
+        const playerSubscriptions = pushSubscriptions[playerId]
+
+        if (!playerSubscriptions) continue
+
+        await sendPushNotifications(dbPool, playerSubscriptions, JSON.stringify({ ...payload, data: { ...payload.data, notificationId: id } }))
+      } catch (e) {
+        // Ignore errors if push notification fails
+      }
     }
   })
+}
+
+const generateNotificationTitleBody = (type, reportId, data, actor, assigned) => {
+  switch (getNotificationType(type)) {
+    case 'reportComment':
+      return {
+        title: `Report #${reportId}`,
+        body: `${actor.name} added a comment`
+      }
+
+    case 'reportAssigned':
+      return {
+        title: `Report #${reportId}`,
+        body: `${actor.name} assigned ${assigned.name}`
+      }
+
+    case 'reportState':
+      return {
+        title: `Report #${reportId}`,
+        body: `${actor.name} ${data.name.toLowerCase()} report`
+      }
+
+    default:
+      throw Error(`Unknown notification type ${type}`)
+  }
 }
 
 module.exports = {

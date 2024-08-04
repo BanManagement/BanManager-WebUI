@@ -91,7 +91,7 @@ module.exports = async function createAppeal (obj, { input: { serverId, punishme
   const [id] = await state.dbPool('bm_web_appeals').insert(appeal, ['id'])
 
   await subscribeAppeal(state.dbPool, id, session.playerId)
-  await notifyRuleGroups(state.dbPool, 'APPEAL_CREATED', id, server.config.id, null, session.playerId)
+  await notifyRuleGroups(state.dbPool, 'APPEAL_CREATED', id, server.config.id, null, session.playerId, state)
 
   return appealResolver(obj, { id }, { state }, info)
 }

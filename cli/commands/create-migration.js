@@ -3,7 +3,7 @@ const DBMigrate = require('db-migrate')
 
 class CreateMigrationCommand extends Command {
   async run () {
-    const { args } = await this.parse(CreateMigrationCommand)
+    const { argv } = await this.parse(CreateMigrationCommand)
     const dbConfig = {
       connectionLimit: 1,
       host: process.env.DB_HOST,
@@ -22,15 +22,13 @@ class CreateMigrationCommand extends Command {
       }
     })
 
-    await dbm.create(args.name)
+    await dbm.create(argv[0])
 
     this.log('Database migration schema created')
   }
 }
 
-CreateMigrationCommand.args = [
-  { name: 'name', description: 'Schema migration name', required: true }
-]
+CreateMigrationCommand.strict = false
 CreateMigrationCommand.description = 'Development only command to create a database schema changeset'
 
 module.exports = CreateMigrationCommand

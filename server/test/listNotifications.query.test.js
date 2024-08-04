@@ -6,6 +6,7 @@ const { createSetup, getAuthPassword, getAccount } = require('./lib')
 const { getNotificationType } = require('../data/notification')
 const { notifyReport, subscribeReport } = require('../data/notification/report')
 const { createPlayer, createReport, createReportComment } = require('./fixtures')
+const loaders = require('../graphql/loaders')
 
 describe('Query listNotifications', () => {
   let setup
@@ -57,7 +58,13 @@ describe('Query listNotifications', () => {
     const [commentId] = await pool('bm_player_report_comments').insert(comment, ['id'])
 
     await subscribeReport(setup.dbPool, inserted, server.id, account.id)
-    await notifyReport(setup.dbPool, getNotificationType('reportComment'), inserted, serverObj, commentId, player.id)
+    await notifyReport(setup.dbPool, getNotificationType('reportComment'), inserted, serverObj, commentId, player.id, {
+      loaders: loaders({
+        state: {
+          serversPool: setup.serversPool
+        }
+      })
+    })
 
     const { body, statusCode } = await request
       .post('/graphql')

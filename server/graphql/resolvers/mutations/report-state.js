@@ -26,10 +26,10 @@ module.exports = async function reportState (obj, { serverId, state: stateId, re
 
   if (!row) throw new ExposedError(`Report State ${stateId} does not exist`)
 
-  await subscribeReport(state.dbPool, id, serverId, session.playerId)
-  await notifyReport(state.dbPool, getNotificationType('reportState'), id, server, null, session.playerId)
-
   await server.pool(table).update({ updated: server.pool.raw('UNIX_TIMESTAMP()'), state_id: stateId }).where({ id })
+
+  await subscribeReport(state.dbPool, id, serverId, session.playerId)
+  await notifyReport(state.dbPool, getNotificationType('reportState'), id, server, null, session.playerId, state)
 
   return report(obj, { id, serverId }, { state }, info)
 }
