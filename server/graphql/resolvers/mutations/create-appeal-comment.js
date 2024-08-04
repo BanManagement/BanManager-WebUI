@@ -27,7 +27,7 @@ module.exports = async function createAppealComment (obj, { id: appealId, input 
   }, ['id'])
 
   await subscribeAppeal(state.dbPool, appealId, session.playerId)
-  await notifyAppeal(state.dbPool, getNotificationType('appealComment'), appealId, data.server_id, id, session.playerId)
+  await notifyAppeal(state.dbPool, getNotificationType('appealComment'), appealId, data.server_id, id, session.playerId, state)
 
   return appealComment(obj, { id }, { state }, info)
 }

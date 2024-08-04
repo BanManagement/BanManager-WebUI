@@ -42,7 +42,7 @@ module.exports = async function appealState (obj, { state: stateId, id }, { sess
     commentId = insertId
 
     await subscribeAppeal(trx, id, session.playerId)
-    await notifyAppeal(trx, getNotificationType('appealState'), id, data.server_id, commentId, session.playerId)
+    await notifyAppeal(trx, getNotificationType('appealState'), id, data.server_id, commentId, session.playerId, state)
   })
 
   return { appealId: id, commentId }

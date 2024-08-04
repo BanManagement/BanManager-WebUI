@@ -1,7 +1,14 @@
-const { Command } = require('@oclif/core')
+const { Args, Command } = require('@oclif/core')
 const DBMigrate = require('db-migrate')
 
 class CreateMigrationCommand extends Command {
+  static args = {
+    name: Args.string({
+      description: 'Schema migration name',
+      required: true
+    })
+  }
+
   async run () {
     const { args } = await this.parse(CreateMigrationCommand)
     const dbConfig = {
@@ -28,9 +35,6 @@ class CreateMigrationCommand extends Command {
   }
 }
 
-CreateMigrationCommand.args = [
-  { name: 'name', description: 'Schema migration name', required: true }
-]
 CreateMigrationCommand.description = 'Development only command to create a database schema changeset'
 
 module.exports = CreateMigrationCommand

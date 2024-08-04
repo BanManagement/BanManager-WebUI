@@ -1,5 +1,5 @@
 const { unparse } = require('uuid-parse')
-const { getNotificationState, generateNotificationId, getNotificationType } = require('./')
+const { getNotificationState, generateNotificationId, getNotificationType, getPushNotificationSubscriptions, sendPushNotifications } = require('./')
 const { hasPermission, loadPermissionValues, loadPlayerResourceValues } = require('../permissions')
 
 const subscribeAppeal = async (dbPool, appealId, playerId) => {
@@ -81,7 +81,7 @@ const getAppealSubscription = async (dbPool, appealId, playerId) => {
   return data
 }
 
-const notifyRuleGroups = async (dbPool, type, id, serverId, commentId, actorId) => {
+const notifyRuleGroups = async (dbPool, type, id, serverId, commentId, actorId, state) => {
   const roles = await dbPool('bm_web_notification_rules')
     .select('role_id')
     .leftJoin('bm_web_notification_rule_roles AS r', 'bm_web_notification_rules.id', 'r.notification_rule_id')
@@ -118,23 +118,29 @@ const notifyRuleGroups = async (dbPool, type, id, serverId, commentId, actorId) 
 
   switch (type) {
     case 'APPEAL_CREATED':
-      return notifyAppealPlayers(dbPool, getNotificationType('appealCreated'), id, serverId, commentId, actorId, playerIds)
+      return notifyAppealPlayers(dbPool, getNotificationType('appealCreated'), id, serverId, commentId, actorId, playerIds, state)
 
     default:
       throw Error(`Unknown notification rule type ${type}`)
   }
 }
 
-const notifyAppeal = async (dbPool, type, appealId, serverId, commentId, actorId) => {
+const notifyAppeal = async (dbPool, type, appealId, serverId, commentId, actorId, state) => {
   const players = await getAppealWatchers(dbPool, appealId)
 
-  return notifyAppealPlayers(dbPool, type, appealId, serverId, commentId, actorId, players)
+  return notifyAppealPlayers(dbPool, type, appealId, serverId, commentId, actorId, players, state)
 }
 
-const notifyAppealPlayers = async (dbPool, type, appealId, serverId, commentId, actorId, players) => {
-  const [data] = await dbPool('bm_web_appeals')
+const notifyAppealPlayers = async (dbPool, type, appealId, serverId, commentId, actorId, players, state) => {
+  const data = await dbPool('bm_web_appeals')
     .select('actor_id', 'assignee_id')
-    .where({ id: appealId })
+    .select([
+      'actor_id', 'assignee_id', 'states.name AS name'
+    ])
+    .where('bm_web_appeals.id', appealId)
+    .leftJoin('bm_web_appeal_states AS states', 'states.id', 'bm_web_appeals.state_id')
+    .first()
+
   const permissionValues = await loadPermissionValues(dbPool)
 
   if (actorId) {
@@ -159,6 +165,8 @@ const notifyAppealPlayers = async (dbPool, type, appealId, serverId, commentId, 
     return canView
   })
 
+  const pushSubscriptions = await getPushNotificationSubscriptions(dbPool, players)
+
   return dbPool.transaction(async trx => {
     const notification = {
       type,
@@ -171,10 +179,76 @@ const notifyAppealPlayers = async (dbPool, type, appealId, serverId, commentId, 
       updated: trx.raw('UNIX_TIMESTAMP()')
     }
 
+    const actor = await state.loaders.player.load({ id: actorId, fields: ['name'] })
+    const assigned = data.assignee_id ? await state.loaders.player.load({ id: data.assignee_id, fields: ['name'] }) : null
+
+    const pushNotificationTileBody = generateNotificationTitleBody(type, appealId, data, actor, assigned)
+    const payload = {
+      ...pushNotificationTileBody,
+      data: {
+        type,
+        appealId,
+        serverId,
+        commentId,
+        actorId: unparse(actorId)
+      }
+    }
+
     for (const playerId of players) {
-      await trx('bm_web_notifications').insert({ ...notification, id: await generateNotificationId(), player_id: playerId })
+      const id = await generateNotificationId()
+
+      await trx('bm_web_notifications').insert({ ...notification, id, player_id: playerId })
+
+      try {
+        // Send push notification
+        const playerSubscriptions = pushSubscriptions[playerId]
+
+        if (!playerSubscriptions) continue
+
+        await sendPushNotifications(dbPool, playerSubscriptions, JSON.stringify({ ...payload, data: { ...payload.data, notificationId: id } }))
+      } catch (e) {
+        // Ignore errors if push notification fails
+      }
     }
   })
+}
+
+const generateNotificationTitleBody = (type, appealId, data, actor, assigned) => {
+  switch (getNotificationType(type)) {
+    case 'appealComment':
+      return {
+        title: `Appeal #${appealId}`,
+        body: `${actor.name} added a comment`
+      }
+
+    case 'appealAssigned':
+      return {
+        title: `Appeal #${appealId}`,
+        body: `${actor.name} assigned ${assigned.name}`
+      }
+
+    case 'appealState':
+      return {
+        title: `Appeal #${appealId}`,
+        body: `${actor.name} ${data.name.toLowerCase()} appeal`
+      }
+
+    case 'appealDeletePunishment':
+    case 'appealEditPunishment':
+      return {
+        title: `Appeal #${appealId}`,
+        body: `Appeal ${appealId} punishment has been resolved`
+      }
+
+    case 'appealCreated':
+      return {
+        title: `Appeal #${appealId}`,
+        body: 'New appeal has been created'
+      }
+
+    default:
+      throw Error(`Unknown notification type ${type}`)
+  }
 }
 
 module.exports = {

@@ -2,8 +2,19 @@ import Head from 'next/head'
 import { DefaultSeo } from 'next-seo'
 
 import '../styles/index.css'
+import { useEffect } from 'react'
 
 function MyApp ({ Component, pageProps, graphql }) {
+  useEffect(() => {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker
+        .register('/sw.js')
+        .catch((error) => {
+          console.error('Service worker registration failed', error)
+        })
+    }
+  }, [])
+
   return (
     <>
       <Head>

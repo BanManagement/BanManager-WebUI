@@ -40,7 +40,7 @@ module.exports = async function assignReport (obj, { serverId, player, report: i
 
   await subscribeReport(state.dbPool, id, serverId, session.playerId)
   await subscribeReport(state.dbPool, id, serverId, player)
-  await notifyReport(state.dbPool, getNotificationType('reportAssigned'), id, server, null, session.playerId)
+  await notifyReport(state.dbPool, getNotificationType('reportAssigned'), id, server, null, session.playerId, state)
 
   return report(obj, { id, serverId }, { state }, info)
 }

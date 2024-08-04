@@ -7,7 +7,10 @@ requireEnv(
     'DB_HOST',
     'DB_PORT',
     'DB_USER',
-    'DB_NAME'
+    'DB_NAME',
+    'CONTACT_EMAIL',
+    'NOTIFICATION_VAPID_PUBLIC_KEY',
+    'NOTIFICATION_VAPID_PRIVATE_KEY'
   ])
 
 const logger = require('pino')(

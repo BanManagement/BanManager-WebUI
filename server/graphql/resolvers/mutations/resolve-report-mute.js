@@ -58,10 +58,9 @@ module.exports = async function resolveReportMute (obj, { report: reportId, serv
       updated: trx.raw('UNIX_TIMESTAMP()')
     })
 
+    await trx(table).update({ updated: trx.raw('UNIX_TIMESTAMP()'), state_id: 3 }).where({ id: reportId })
     await subscribeReport(trx, reportId, serverId, session.playerId)
-    await notifyReport(trx, getNotificationType('reportState'), reportId, server, null, session.playerId)
-
-    return trx(table).update({ updated: trx.raw('UNIX_TIMESTAMP()'), state_id: 3 }).where({ id: reportId })
+    await notifyReport(trx, getNotificationType('reportState'), reportId, server, null, session.playerId, state)
   })
 
   return report(obj, { id: reportId, serverId }, { state }, info)

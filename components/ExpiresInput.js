@@ -53,7 +53,7 @@ const ExpiresInput = ({ onChange, value }) => {
         </div>
         <Button
           className={clsx(
-            'transition-all duration-500 ease-in-out h-12 bg-red-700 mb-6',
+            'transition-all duration-500 ease-in-out h-12 bg-red-700 mb-6 items-center',
             { 'w-1/12 rounded-l-none !bg-red-800': isInputVisible, 'w-full': !isInputVisible }
           )}
           onClick={toggleInput}

@@ -60,7 +60,7 @@ module.exports = async function resolveAppealUpdateBan (obj, { id, input }, { se
       commentId = insertId
 
       await subscribeAppeal(trx, id, session.playerId)
-      await notifyAppeal(trx, getNotificationType('appealEditPunishment'), id, data.server_id, commentId, session.playerId)
+      await notifyAppeal(trx, getNotificationType('appealEditPunishment'), id, data.server_id, commentId, session.playerId, state)
 
       return trx('bm_web_appeals').update({ updated: trx.raw('UNIX_TIMESTAMP()'), state_id: 3 }).where({ id })
     })
