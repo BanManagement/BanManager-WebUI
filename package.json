@@ -29,7 +29,7 @@
     "@oclif/core": "3.27.0",
     "@oclif/plugin-help": "6.2.8",
     "@universemc/react-palette": "1.0.3",
-    "argon2": "0.29.1",
+    "argon2": "0.40.3",
     "autoprefixer": "10.4.20",
     "clsx": "2.1.1",
     "dataloader": "2.2.2",
