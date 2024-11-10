@@ -26,7 +26,7 @@
     "@nivo/core": "0.87.0",
     "@nivo/line": "0.87.0",
     "@nivo/pie": "0.87.0",
-    "@oclif/core": "3.27.0",
+    "@oclif/core": "4.0.0",
     "@oclif/plugin-help": "6.2.16",
     "@universemc/react-palette": "1.0.3",
     "argon2": "0.29.1",
@@ -92,7 +92,7 @@
   },
   "devDependencies": {
     "@babel/eslint-parser": "7.25.9",
-    "@next/eslint-plugin-next": "14.2.15",
+    "@next/eslint-plugin-next": "15.0.0",
     "@oclif/test": "4.1.0",
     "coveralls-next": "4.2.1",
     "cypress": "9.7.0",
