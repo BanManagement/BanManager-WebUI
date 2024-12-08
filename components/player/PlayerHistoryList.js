@@ -46,8 +46,6 @@ export default function PlayerHistoryList ({ id, lastSeen }) {
   const handleObserver = useCallback((entities) => {
     const target = entities[0]
 
-    console.log(target.isIntersecting, tableState.offset, total)
-
     if (target.isIntersecting && tableState.offset + limit < total) {
       setTableState(prev => ({ ...prev, offset: prev.offset + limit }))
     } else if (target.isIntersecting && tableState.offset + limit >= total && tableState.offset < total) {

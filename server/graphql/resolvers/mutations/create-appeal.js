@@ -1,8 +1,10 @@
 const ExposedError = require('../../../data/exposed-error')
 const appealResolver = require('../queries/appeal')
 const { notifyRuleGroups, subscribeAppeal } = require('../../../data/notification/appeal')
+const { triggerWebhook } = require('../../../data/webhook')
+const { unparse } = require('uuid-parse')
 
-module.exports = async function createAppeal (obj, { input: { serverId, punishmentId, type, reason } }, { state, session }, info) {
+module.exports = async function createAppeal (obj, { input: { serverId, punishmentId, type, reason } }, { log, state, session }, info) {
   if (!state.serversPool.has(serverId)) throw new ExposedError('Server does not exist')
 
   const exists = await state.dbPool('bm_web_appeals')
@@ -93,5 +95,16 @@ module.exports = async function createAppeal (obj, { input: { serverId, punishme
   await subscribeAppeal(state.dbPool, id, session.playerId)
   await notifyRuleGroups(state.dbPool, 'APPEAL_CREATED', id, server.config.id, null, session.playerId, state)
 
-  return appealResolver(obj, { id }, { state }, info)
+  try {
+    await triggerWebhook(log, state, 'APPEAL_CREATED', {
+      appealId: id,
+      actorId: unparse(session.playerId),
+      actorName: (await state.loaders.player.load({ id: session.playerId, fields: ['name'] })).name,
+      serverId
+    })
+  } catch (error) {
+    log.error(error)
+  }
+
+  return appealResolver(obj, { id }, { session, state }, info)
 }

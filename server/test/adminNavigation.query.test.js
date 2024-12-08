@@ -44,7 +44,8 @@ describe('Query adminNavigation', () => {
     assert.deepStrictEqual(body.data.adminNavigation.left, [
       { id: '1', name: 'Notification Rules', label: 0, href: '/admin/notification-rules' },
       { id: '2', name: 'Roles', label: 3, href: '/admin/roles' },
-      { id: '3', name: 'Servers', label: 1, href: '/admin/servers' }
+      { id: '3', name: 'Servers', label: 1, href: '/admin/servers' },
+      { id: '4', name: 'Webhooks', label: 0, href: '/admin/webhooks' }
     ])
   })
 })

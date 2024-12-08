@@ -1,0 +1,100 @@
+.discord-preview {
+  @apply p-3 rounded bg-[#2f3136];
+  font-family: 'Helvetica', 'Arial', sans-serif;
+}
+
+.d-emoji {
+  @apply inline size-[1.375em] object-contain [[data-large-emoji]_&]:size-[calc(var(--font-size)*3)];
+}
+
+.discord-message {
+  margin-bottom: 10px;
+}
+
+.discord-content {
+  @apply contents font-normal leading-[1.375] whitespace-pre-line;
+}
+
+.discord-embed {
+  @apply rounded border-l-4 bg-[#2B2D31] border-l-[#1E1F22] text-gray-100 inline-grid max-w-[520px] pt-2 pr-4 pb-4 pl-3;
+}
+
+.discord-embed-title {
+  @apply text-base leading-[1.375] font-semibold mt-2 inline-block;
+}
+
+.discord-embed-description {
+  margin-bottom: 5px;
+}
+
+.discord-embed-field {
+  @apply text-sm leading-[1.125rem] grid col-start-1 col-end-2 gap-2 mt-2 min-w-0;
+}
+
+.discord-embed a {
+  @apply [word-break:break-word] hover:underline text-[#00A8FC];
+}
+
+.discord-embed ul {
+  @apply ml-[16px] mt-[4px] list-outside list-disc;
+}
+
+.discord-embed ol {
+  @apply ml-[16px] mt-[4px] list-outside list-decimal;
+}
+
+.discord-embed li {
+  @apply mb-[4px] whitespace-break-spaces;
+}
+
+.discord-embed-field-name {
+  @apply font-semibold mb-px;
+}
+
+.discord-embed-field-value {
+ @apply font-normal whitespace-pre-line;
+}
+
+.discord-component {
+  @apply flex flex-wrap gap-x-1.5 gap-y-0 mt-1;
+}
+
+.discord-button {
+  @apply rounded font-medium text-base min-h-[36px] max-h-9 py-0 px-[14px] min-w-[60px] text-white transition disabled:opacity-40 disabled:cursor-not-allowed inline-flex shrink-0 bg-[#4e5058] hover:bg-[#6d6f78] !text-sm;
+}
+
+.discord-embed-author {
+  @apply min-w-0 flex mt-2;
+}
+
+.discord-embed-author span {
+  @apply font-medium text-sm whitespace-pre-wrap inline-block my-auto;
+}
+
+.discord-embed-author-icon {
+  @apply h-6 w-6 mr-2 object-contain rounded-full;
+}
+
+.discord-embed-image {
+  @apply block rounded-lg max-w-full max-h-[350px];
+}
+
+.discord-embed-thumbnail {
+  @apply flex mt-2 ml-4 justify-self-end h-fit;
+}
+
+.discord-embed-thumbnail-image {
+  @apply rounded max-w-[80px] max-h-20;
+}
+
+.discord-embed-footer {
+  @apply min-w-0 flex mt-2 font-medium text-xs gap-2;
+}
+
+.discord-embed-footer-icon {
+  @apply h-5 w-5 object-contain rounded-full;
+}
+
+.discord-embed-footer span {
+  @apply whitespace-pre-wrap inline-block my-auto;
+}
