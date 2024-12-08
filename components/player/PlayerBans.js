@@ -50,7 +50,7 @@ export default function PlayerBans ({ id }) {
         className='pb-4 mb-4 border-b border-red-800' id='bans'
       >
         <div className='flex items-center'>
-          <p className='mr-6 text-xl font-bold '>Past Bans</p>
+          <p className='mr-6 text-xl font-bold '>Past Bans ({total})</p>
           <div className='w-40 inline-block'>
             <ServerSelector
               onChange={serverId => setTableState({ ...tableState, serverId })}

@@ -51,7 +51,7 @@ export default function PlayerMutes ({ id }) {
         className='pb-4 mb-4 border-b border-indigo-800' id='mutes'
       >
         <div className='flex items-center'>
-          <p className='mr-6 text-xl font-bold '>Past Mutes</p>
+          <p className='mr-6 text-xl font-bold '>Past Mutes ({total})</p>
           <div className='w-40 inline-block'>
             <ServerSelector
               onChange={serverId => setTableState({ ...tableState, serverId })}

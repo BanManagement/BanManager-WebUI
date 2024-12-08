@@ -3,6 +3,7 @@ import Loader from '../Loader'
 import ServerSelector from '../admin/ServerSelector'
 import { useApi } from '../../utils'
 import PlayerPunishment from './PlayerPunishment'
+import { RiNumbersLine } from 'react-icons/ri'
 
 const query = `
 query listPlayerPunishmentRecords($serverId: ID!, $player: UUID!, $type: RecordType!) {
@@ -40,6 +41,7 @@ export default function PlayerWarnings ({ id }) {
 
     mutate({ ...data, listPlayerPunishmentRecords: { records, total: total - 1 } }, false)
   }
+  const totalPoints = rows.reduce((acc, row) => acc + row.points, 0)
 
   return (
     <div>
@@ -47,7 +49,14 @@ export default function PlayerWarnings ({ id }) {
         className='pb-4 mb-4 border-b border-amber-800' id='warnings'
       >
         <div className='flex items-center'>
-          <p className='mr-6 text-xl font-bold '>Warnings</p>
+          <p className='mr-6 text-xl font-bold '>Warnings ({total})
+            <div className='text-sm text-gray-400 flex items-center gap-4'>
+              <div className='flex items-center gap-1'>
+                <RiNumbersLine />
+                <span className='truncate'>{totalPoints}</span>
+              </div>
+            </div>
+          </p>
           <div className='w-40 inline-block'>
             <ServerSelector
               onChange={serverId => setTableState({ ...tableState, serverId })}
