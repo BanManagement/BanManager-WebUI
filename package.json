@@ -28,6 +28,7 @@
     "@nivo/pie": "0.87.0",
     "@oclif/core": "3.27.0",
     "@oclif/plugin-help": "6.2.16",
+    "@odiffey/discord-markdown": "^3.3.0",
     "@universemc/react-palette": "1.0.3",
     "argon2": "0.29.1",
     "autoprefixer": "10.4.20",

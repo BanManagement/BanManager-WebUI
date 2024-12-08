@@ -551,6 +551,50 @@ type NotificationRuleList {
   records: [NotificationRule!]!
 }
 
+enum WebhookType {
+  APPEAL_CREATED
+}
+
+enum WebhookTemplateType {
+  CUSTOM
+  DISCORD
+}
+
+enum WebhookContentType {
+  APPLICATION_JSON
+}
+
+type Webhook @sqlTable(name: "webhooks") {
+  id: ID!
+  url: String!
+  type: WebhookType!
+  templateType: WebhookTemplateType! @sqlColumn(name: "template_type")
+  contentType: String! @sqlColumn(name: "content_type")
+  contentTemplate: String! @sqlColumn(name: "content_template")
+  server: Server @sqlRelation(joinOn: "id", field: "server_id", whereKey: "server_id", table: "servers")
+  examplePayload: JSONObject!
+  created: Timestamp!
+  updated: Timestamp!
+}
+
+type WebhookDelivery @sqlTable(name: "webhookDeliveries") {
+  id: ID!
+  content: String!
+  response: JSONObject!
+  error: JSONObject
+  created: Timestamp!
+}
+
+type WebhookList {
+  total: Int!
+  records: [Webhook!]!
+}
+
+type WebhookDeliveryList {
+  total: Int!
+  records: [WebhookDelivery!]!
+}
+
 type Query {
   searchPlayers(name: String!, limit: Int = 10): [Player!]
   player(player: UUID!): Player
@@ -617,6 +661,11 @@ type Query {
 
   notificationRule(id: ID!): NotificationRule! @allowIf(resource: "servers", permission: "manage")
   listNotificationRules(limit: Int = 25, offset: Int = 0): NotificationRuleList! @allowIf(resource: "servers", permission: "manage")
+
+  listWebhooks(limit: Int = 10, offset: Int = 0): WebhookList! @allowIf(resource: "servers", permission: "manage")
+  webhook(id: ID!): Webhook! @allowIf(resource: "servers", permission: "manage")
+  listWebhookDeliveries(webhookId: ID!, limit: Int = 10, offset: Int = 0): WebhookDeliveryList! @allowIf(resource: "servers", permission: "manage")
+  webhookExamplePayload(type: WebhookType!): JSONObject! @allowIf(resource: "servers", permission: "manage")
 }
 
 input CreatePlayerNoteInput {
@@ -755,6 +804,24 @@ input NotificationRuleInput {
   serverId: ID
 }
 
+input CreateWebhookInput {
+  url: String! @constraint(maxLength: 255, format: "uri")
+  type: WebhookType!
+  templateType: WebhookTemplateType!
+  contentType: WebhookContentType!
+  contentTemplate: String!
+  serverId: ID
+}
+
+input UpdateWebhookInput {
+  url: String! @constraint(maxLength: 255, format: "uri")
+  type: WebhookType!
+  templateType: WebhookTemplateType!
+  contentType: WebhookContentType!
+  contentTemplate: String!
+  serverId: ID
+}
+
 type Mutation {
   deletePunishmentRecord(id: ID!, serverId: ID!, type: RecordType!, keepHistory: Boolean!): ID!
 
@@ -817,4 +884,11 @@ type Mutation {
   createNotificationRule(input: NotificationRuleInput!): NotificationRule! @allowIf(resource: "servers", permission: "manage")
   updateNotificationRule(id: ID!, input: NotificationRuleInput!): NotificationRule! @allowIf(resource: "servers", permission: "manage")
   deleteNotificationRule(id: ID!): NotificationRule @allowIf(resource: "servers", permission: "manage")
-}`
+
+  createWebhook(input: CreateWebhookInput!): Webhook! @allowIf(resource: "servers", permission: "manage")
+  updateWebhook(id: ID!, input: UpdateWebhookInput!): Webhook! @allowIf(resource: "servers", permission: "manage")
+  deleteWebhook(id: ID!): Webhook! @allowIf(resource: "servers", permission: "manage")
+
+  sendTestWebhook(id: ID!, variables: JSONObject!): WebhookDelivery! @allowIf(resource: "servers", permission: "manage")
+}
+`

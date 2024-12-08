@@ -43,7 +43,8 @@ const Input = forwardRef((props, ref) => {
   {
     'rounded-r-3xl': icon && iconPosition === 'left',
     'rounded-l-3xl': icon && iconPosition === 'right',
-    'rounded-3xl': !icon
+    'rounded-3xl': !icon,
+    'px-4': !icon
   }
   )
 

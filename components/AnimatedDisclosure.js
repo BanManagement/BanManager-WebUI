@@ -11,8 +11,8 @@ export default function AnimatedDisclosure ({ containerClassName = '', children,
           <DisclosureButton className='w-full'>
             {buttonContent}
           </DisclosureButton>
-          <div className='overflow-hidden' ref={panelRef} style={{ height: open ? `${panelRef?.current?.scrollHeight}px` : '0px', transition: 'height 0.2s ease-out' }}>
-            <DisclosurePanel className='origin-top'>
+          <div className='overflow-hidden' ref={panelRef}>
+            <DisclosurePanel transition className='origin-top transition duration-200 ease-out data-[closed]:-translate-y-6 data-[closed]:opacity-0'>
               {children}
             </DisclosurePanel>
           </div>
