@@ -2,7 +2,7 @@ const DataLoader = require('dataloader')
 const { unparse } = require('uuid-parse')
 const { uniq } = require('lodash')
 
-module.exports = (ctx) => {
+module.exports = (serversPool) => {
   const ids = new DataLoader(async (keys) => {
     const ids = []
     let fields = ['id']
@@ -16,7 +16,7 @@ module.exports = (ctx) => {
     fields = uniq(fields)
 
     const players = new Map()
-    for (const server of ctx.state.serversPool.values()) {
+    for (const server of serversPool.values()) {
       const table = server.config.tables.players
       const rows = await server.pool(table)
         .select(fields)

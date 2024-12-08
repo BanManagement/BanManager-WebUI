@@ -141,7 +141,8 @@
     },
     "plugins": [
       "@oclif/plugin-help"
-    ]
+    ],
+    "topicSeparator": " "
   },
   "files": [],
   "standardx": {
