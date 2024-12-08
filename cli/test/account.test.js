@@ -1,0 +1,118 @@
+const nixt = require('nixt')
+const { unparse } = require('uuid-parse')
+const { v4: generateUUID } = require('uuid')
+const { createPlayer } = require('../../server/test/fixtures')
+const { createSetup } = require('../../server/test/lib')
+
+describe('account', () => {
+  let player, setup
+
+  beforeAll(async () => {
+    setup = await createSetup()
+
+    player = createPlayer()
+
+    await setup.dbPool('bm_players').insert(player)
+  })
+
+  afterAll(async () => {
+    await setup.teardown()
+  })
+
+  describe('create', () => {
+    test('should error if email address is invalid', done => {
+      nixt()
+        .env('DB_HOST', setup.dbConfig.host)
+        .env('DB_PORT', setup.dbConfig.port)
+        .env('DB_USER', setup.dbConfig.user)
+        .env('DB_PASSWORD', setup.dbConfig.password)
+        .env('DB_NAME', setup.dbConfig.database)
+        .run('./bin/run.js account create')
+        .on(/Enter email address/).respond('test\n')
+        .on(/Invalid email address/).respond('\x03')
+        .stdout(/Invalid email address/)
+        .end(done)
+    })
+
+    test('should error if email address already in use', done => {
+      nixt()
+        .env('DB_HOST', setup.dbConfig.host)
+        .env('DB_PORT', setup.dbConfig.port)
+        .env('DB_USER', setup.dbConfig.user)
+        .env('DB_PASSWORD', setup.dbConfig.password)
+        .env('DB_NAME', setup.dbConfig.database)
+        .run('./bin/run.js account create')
+        .on(/Enter email address/).respond('admin@banmanagement.com\n')
+        .stdout(/A user with this email address already exists/)
+        .on(/A user with this email address already exists/).respond('\x03')
+        .end(done)
+    })
+
+    test('should error if password less than 6 characters', done => {
+      nixt()
+        .env('DB_HOST', setup.dbConfig.host)
+        .env('DB_PORT', setup.dbConfig.port)
+        .env('DB_USER', setup.dbConfig.user)
+        .env('DB_PASSWORD', setup.dbConfig.password)
+        .env('DB_NAME', setup.dbConfig.database)
+        .run('./bin/run.js account create')
+        .on(/email address/).respond('clitest@banmanagement.com\n')
+        .on(/Password/).respond('test\n')
+        .on(/Confirm Password/).respond('test\n')
+        .stdout(/Invalid password, minimum length 6 characters/)
+        .on(/Invalid password, minimum length 6 characters/).respond('\x03')
+        .end(done)
+    })
+
+    test('should error if player not found', done => {
+      nixt()
+        .env('DB_HOST', setup.dbConfig.host)
+        .env('DB_PORT', setup.dbConfig.port)
+        .env('DB_USER', setup.dbConfig.user)
+        .env('DB_PASSWORD', setup.dbConfig.password)
+        .env('DB_NAME', setup.dbConfig.database)
+        .run('./bin/run.js account create')
+        .on(/email address/).respond('clitest@banmanagement.com\n')
+        .on(/Password/).respond('test123\n')
+        .on(/Confirm Password/).respond('test123\n')
+        .on(/Minecraft Player UUID/).respond(generateUUID() + '\n')
+        .stdout(/Could not find Player/)
+        .on(/Could not find Player/).respond('\x03')
+        .end(done)
+    })
+
+    test('should error if player already has an account', done => {
+      nixt()
+        .env('DB_HOST', setup.dbConfig.host)
+        .env('DB_PORT', setup.dbConfig.port)
+        .env('DB_USER', setup.dbConfig.user)
+        .env('DB_PASSWORD', setup.dbConfig.password)
+        .env('DB_NAME', setup.dbConfig.database)
+        .run('./bin/run.js account create')
+        .on(/email address/).respond('clitest@banmanagement.com\n')
+        .on(/Password/).respond('test123\n')
+        .on(/Confirm Password/).respond('test123\n')
+        .on(/Minecraft Player UUID/).respond(unparse(setup.users.admin.id) + '\n')
+        .stdout(/A user with this player already exists/)
+        .on(/A user with this player already exists/).respond('\x03')
+        .end(done)
+    })
+
+    test('should create an account', done => {
+      nixt()
+        .env('DB_HOST', setup.dbConfig.host)
+        .env('DB_PORT', setup.dbConfig.port)
+        .env('DB_USER', setup.dbConfig.user)
+        .env('DB_PASSWORD', setup.dbConfig.password)
+        .env('DB_NAME', setup.dbConfig.database)
+        .run('./bin/run.js account create')
+        .on(/email address/).respond('clitest@banmanagement.com\n')
+        .on(/Password/).respond('test123\n')
+        .on(/Confirm Password/).respond('test123\n')
+        .on(/Minecraft Player UUID/).respond(unparse(player.id) + '\n')
+        .on(/Select a role/).respond('\n\n')
+        .stdout(/Account clitest@banmanagement.com created/)
+        .end(done)
+    })
+  })
+})

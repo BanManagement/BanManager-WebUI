@@ -94,11 +94,13 @@ module.exports = async (disableTestMigrations) => { // eslint-disable-line max-s
   }
 
   return {
+    dbConfig,
     dbPool,
     logger,
     serversPool,
     teardown,
     loaders: loaders({ state: { serversPool, dbPool } }),
-    server
+    server,
+    users: { guest: guestUser, loggedIn: loggedInUser, admin: adminUser }
   }
 }

@@ -2,6 +2,6 @@ const player = require('./player-loader')
 
 module.exports = (ctx) => {
   return {
-    player: player(ctx)
+    player: player(ctx.state.serversPool)
   }
 }

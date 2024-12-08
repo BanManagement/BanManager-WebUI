@@ -7,11 +7,11 @@ const { isEmail, isLength, isUUID } = require('validator')
 const { generateVAPIDKeys } = require('web-push')
 const { merge } = require('lodash')
 const { parse } = require('uuid-parse')
-const { generateServerId } = require('../../server/data/generator')
-const { hash } = require('../../server/data/hash')
-const setupPool = require('../../server/connections/pool')
-const crypto = require('../../server/data/crypto')
-const defaultTables = require('../../server/data/tables').tables
+const { generateServerId } = require('../../../server/data/generator')
+const { hash } = require('../../../server/data/hash')
+const setupPool = require('../../../server/connections/pool')
+const crypto = require('../../../server/data/crypto')
+const defaultTables = require('../../../server/data/tables').tables
 
 class SetupCommand extends Command {
   async run () {
