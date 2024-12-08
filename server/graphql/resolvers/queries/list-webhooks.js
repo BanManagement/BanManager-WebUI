@@ -20,13 +20,13 @@ module.exports = async function listWebhooks (obj, { limit, offset }, { session,
 
   return {
     total,
-    records: records.map(record => ({
+    records: Promise.all(records.map(async record => ({
       ...record,
-      examplePayload: generateExamplePayload(session, state, record.type),
+      examplePayload: await generateExamplePayload(session, state, record.type),
       contentType: record.content_type,
       contentTemplate: record.content_template,
       templateType: record.template_type,
       server: state.serversPool.get(record.server_id)?.config
-    }))
+    })))
   }
 }
