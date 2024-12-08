@@ -11,6 +11,7 @@ const { generateServerId } = require('../../../server/data/generator')
 const { hash } = require('../../../server/data/hash')
 const setupPool = require('../../../server/connections/pool')
 const crypto = require('../../../server/data/crypto')
+const chalk = require('chalk')
 const defaultTables = require('../../../server/data/tables').tables
 
 class SetupCommand extends Command {
@@ -381,6 +382,8 @@ class SetupCommand extends Command {
     } else {
       this.log(contents)
     }
+
+    this.log('Run ' + chalk.yellow('npx bmwebui setup systemd') + ' to start the WebUI as a service')
   }
 }
 
