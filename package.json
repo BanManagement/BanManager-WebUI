@@ -37,7 +37,7 @@
     "dataloader": "2.2.3",
     "date-fns": "4.1.0",
     "db-migrate": "1.0.0-beta.29",
-    "dotenv": "16.4.5",
+    "dotenv": "16.4.7",
     "edit-dotenv": "1.0.4",
     "es6-dynamic-template": "2.0.0",
     "git-revision-webpack-plugin": "5.0.0",
