@@ -79,7 +79,7 @@
     "react-hook-form": "7.54.2",
     "react-icons": "4.12.0",
     "react-remove-scroll": "2.6.2",
-    "react-select": "5.8.2",
+    "react-select": "5.9.0",
     "request-ip": "3.3.0",
     "require-environment-variables": "1.2.0",
     "semver": "7.6.3",
