@@ -92,7 +92,13 @@ class NginxCommand extends Command {
     })
 
     executeCommands.stderr.on('data', (data) => {
-      this.error(chalk.red(data.toString()))
+      const errorMessage = data.toString()
+
+      if (errorMessage.includes('signal process started')) {
+        this.log(chalk.green('Nginx reload notice: signal process started'))
+      } else {
+        this.error(chalk.red(errorMessage))
+      }
     })
 
     executeCommands.on('close', async (code) => {
