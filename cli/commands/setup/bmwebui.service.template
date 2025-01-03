@@ -10,6 +10,7 @@ User=${user}
 ExecStartPre=${npmPath} run build
 ExecStart=${nodePath} server.js
 Restart=always
+TimeoutSec=900
 
 [Install]
 WantedBy=multi-user.target
