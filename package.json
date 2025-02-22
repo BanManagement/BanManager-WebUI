@@ -94,7 +94,7 @@
     "web-push": "3.6.7"
   },
   "devDependencies": {
-    "@babel/eslint-parser": "7.25.9",
+    "@babel/eslint-parser": "7.26.8",
     "@next/eslint-plugin-next": "14.2.24",
     "@oclif/test": "4.1.10",
     "coveralls-next": "4.2.1",
