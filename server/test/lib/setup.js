@@ -27,7 +27,7 @@ module.exports = async (disableTestMigrations) => { // eslint-disable-line max-s
     })
   let dbPool = await setupPool({ ...dbConfig })
 
-  await dbPool.raw(`CREATE DATABASE ${dbName}`)
+  await dbPool.raw(`CREATE DATABASE ${dbName} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci`)
   await dbPool.destroy()
 
   dbConfig.database = dbName
