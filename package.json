@@ -42,7 +42,7 @@
     "es6-dynamic-template": "2.0.0",
     "git-revision-webpack-plugin": "5.0.0",
     "graphql": "16.10.0",
-    "graphql-constraint-directive": "5.4.3",
+    "graphql-constraint-directive": "6.0.0",
     "graphql-depth-limit": "1.1.0",
     "graphql-parse-resolve-info": "4.13.0",
     "graphql-request": "6.1.0",
