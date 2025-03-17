@@ -27,7 +27,7 @@
     "@nivo/line": "0.88.0",
     "@nivo/pie": "0.88.0",
     "@oclif/core": "4.2.10",
-    "@oclif/plugin-help": "6.2.26",
+    "@oclif/plugin-help": "6.2.27",
     "@odiffey/discord-markdown": "^3.3.0",
     "@universemc/react-palette": "1.0.3",
     "argon2": "0.29.1",
