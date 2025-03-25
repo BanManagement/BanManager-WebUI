@@ -109,7 +109,7 @@
     "nock": "^14.0.0-beta.6",
     "standard": "16.0.4",
     "standardx": "7.0.0",
-    "supertest": "7.0.0",
+    "supertest": "7.1.0",
     "uuid": "11.1.0"
   },
   "engines": {
