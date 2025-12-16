@@ -64,6 +64,7 @@ export default function PlayerAppealAssign ({ id, player, onChange }) {
     <>
       <ErrorMessages errors={errors} />
       <PlayerSelector
+        key={player?.id}
         multiple={false}
         onChange={handleChange}
         placeholder='Search by player name'
