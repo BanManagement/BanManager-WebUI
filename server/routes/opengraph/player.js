@@ -1,5 +1,5 @@
-const { isUUID } = require('validator')
 const { parse } = require('uuid-parse')
+const { isUUID } = require('../../data/uuid')
 const path = require('path')
 const sharp = require('sharp')
 const send = require('koa-send')

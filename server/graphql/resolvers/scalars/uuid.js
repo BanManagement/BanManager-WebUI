@@ -1,8 +1,8 @@
 const { parse, unparse } = require('uuid-parse')
 const { GraphQLScalarType } = require('graphql')
 const { Kind } = require('graphql/language')
-const { isUUID } = require('validator')
 const ExposedErrpr = require('../../../data/exposed-error')
+const { isUUID } = require('../../../data/uuid')
 
 module.exports = new GraphQLScalarType(
   {
