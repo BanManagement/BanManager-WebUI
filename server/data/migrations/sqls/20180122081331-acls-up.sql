@@ -61,10 +61,8 @@ CREATE TABLE `bm_web_role_resources` (
   `role_id` INT UNSIGNED NOT NULL,
   `resource_id` INT UNSIGNED NOT NULL,
   `value` int(11) UNSIGNED DEFAULT NULL,
-  KEY `bm_web_group_resources_group_id_index` (`role_id`),
-  KEY `bm_web_group_resources_resource_id_index` (`resource_id`),
+  PRIMARY KEY (`role_id`, `resource_id`),
   KEY `bm_web_group_resources_value_index` (`value`),
-  KEY `bm_web_group_resources_group_id_resource_id_index` (`role_id`,`resource_id`),
   CONSTRAINT `bm_web_role_resources_resource_id_fk` FOREIGN KEY (`resource_id`) REFERENCES `bm_web_resources` (`resource_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `bm_web_role_resources_role_id_fk` FOREIGN KEY (`role_id`) REFERENCES `bm_web_roles` (`role_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
