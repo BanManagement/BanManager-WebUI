@@ -6,7 +6,7 @@ module.exports = function (appealId, actor) {
   return {
     appeal_id: appealId,
     actor_id: actor.id ? actor.id : actor,
-    comment: lorem.sentence(),
+    content: lorem.sentence(),
     created,
     updated: created
   }
