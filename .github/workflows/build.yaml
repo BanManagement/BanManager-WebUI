@@ -6,7 +6,7 @@ on:
     branches:
       - master
   schedule:
-    - cron: '0 0 * * 0' # weekly
+    - cron: "0 0 * * 0" # weekly
 
 jobs:
   test:
@@ -46,18 +46,9 @@ jobs:
         run: |
           sudo systemctl start mysql.service
           sleep 5 && mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '';" -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
+          mysql -e "SET GLOBAL sql_require_primary_key = ON;" -uroot
       - run: npm run lint
-      # Temporary work around jest memory leaks https://github.com/facebook/jest/issues/11956
-      - run: |
-          shopt -s globstar
-          set -e
-          for x in server/test/*.test.js; do (node --expose-gc ./node_modules/.bin/jest "$x" && sh -c 'mv coverage/coverage-final.json "coverage/$(basename "$1" .js).json"' sh "$x") || exit 1; done
-          for x in cli/test/*.test.js; do (node --expose-gc ./node_modules/.bin/jest "$x" && sh -c 'mv coverage/coverage-final.json "coverage/$(basename "$1" .js).json"' sh "$x") || exit 1; done
-          npx nyc merge coverage coverage-final.json
-          rm -rf coverage
-          mkdir coverage
-          mv coverage-final.json coverage/coverage-final.json
-          npx nyc report -t coverage --reporter=lcov --report-dir=coverage
+      - run: node --expose-gc ./node_modules/.bin/jest --coverage
         env:
           DB_PASSWORD:
           LOG_LEVEL: warn
@@ -71,19 +62,19 @@ jobs:
           LOG_LEVEL: warn
           PORT: 3000
           NODE_ENV: production
-          ADMIN_USERNAME: 'admin@banmanagement.com'
-          ADMIN_PASSWORD: 'P%@#fjdVJ3Y%pdGR'
+          ADMIN_USERNAME: "admin@banmanagement.com"
+          ADMIN_PASSWORD: "P%@#fjdVJ3Y%pdGR" # Keep this as is to avoid HIBP failing checks
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CYPRESS_PROJECT_ID: ${{ secrets.PROJECT_ID }}
-          CONTACT_EMAIL: 'admin@banmanagement.com'
+          CONTACT_EMAIL: "admin@banmanagement.com"
           NOTIFICATION_VAPID_PUBLIC_KEY: ${{ secrets.NOTIFICATION_VAPID_PUBLIC_KEY }}
           NOTIFICATION_VAPID_PRIVATE_KEY: ${{ secrets.NOTIFICATION_VAPID_PRIVATE_KEY }}
         with:
           install: false
           build: npm run e2e:build
           start: npm start
-          wait-on: 'http://127.0.0.1:3000'
+          wait-on: "http://127.0.0.1:3000"
           record: true
 
       - name: Coveralls Parallel

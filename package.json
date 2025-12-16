@@ -130,7 +130,7 @@
     "seed": "node scripts/seed.js",
     "seed:reset": "node scripts/seed.js --force",
     "start": "node server.js",
-    "test": "npm run lint && jest --coverage -w 1 --no-cache",
+    "test": "npm run lint && node --expose-gc ./node_modules/.bin/jest --coverage",
     "setup": "node bin/run.js setup --writeFile .env",
     "cypress": "cypress open",
     "e2e:build": "node cypress/setup.js && npm run build"

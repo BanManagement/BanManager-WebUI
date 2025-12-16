@@ -1,5 +1,4 @@
 const { randomBytes } = require('crypto')
-const { encrypt } = require('../../data/crypto')
 const tables = JSON.stringify(
   {
     players: 'bm_players',
@@ -41,7 +40,7 @@ module.exports = async function (consoleId, database) {
   }
 
   if (process.env.DB_PASSWORD) {
-    server.password = await encrypt(process.env.ENCRYPTION_KEY, process.env.DB_PASSWORD)
+    server.password = process.env.DB_PASSWORD
   }
 
   return server

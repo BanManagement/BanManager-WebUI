@@ -137,7 +137,8 @@ describe('Mutation delete server', () => {
 
     await pool('bm_players').insert(player)
 
-    // Create temp user
+    // Create temp user (use % to allow connections from any host, needed for Docker)
+    await pool.raw('DROP USER IF EXISTS \'foobardelete\'@\'%\';')
     await pool.raw('CREATE USER \'foobardelete\'@\'%\' IDENTIFIED BY \'password\';')
     await pool.raw('GRANT ALL ON *.* TO \'foobardelete\'@\'%\';')
     await pool.raw('FLUSH PRIVILEGES;')
@@ -166,7 +167,7 @@ describe('Mutation delete server', () => {
       .send({ query: createQuery })
 
     // Delete custom user
-    await pool('mysql.user').where('user', 'foobardelete').del()
+    await pool.raw('DROP USER IF EXISTS \'foobardelete\'@\'%\';')
     await pool.raw('FLUSH PRIVILEGES;')
 
     assert.strictEqual(createStatusCode, 200)

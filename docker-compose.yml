@@ -5,6 +5,7 @@ services:
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: password
+      MYSQL_ROOT_HOST: "%"
       MYSQL_DATABASE: bm_local_dev
     ports:
       - "3306:3306"
@@ -20,6 +21,7 @@ services:
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
       - --default-authentication-plugin=mysql_native_password
+      - --sql-require-primary-key=ON
 
 volumes:
   mysql_data:
