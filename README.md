@@ -37,6 +37,7 @@
 </p>
 
 ## Overview
+
 - **Always connected.** Manage punishments from anywhere with seamless logins
 - **Cross platform.** It doesn't matter what OS you use, it just works wherever Node.js runs
 - **Responsive interface.** Manage your community from any device at any time
@@ -44,53 +45,152 @@
 To learn more about configuration, usage and features of BanManager, take a look at [the website](https://banmanagement.com/) or view [the demo](https://demo.banmanagement.com).
 
 ## Features
+
 - Appeal punishments
 - Ban, unban, mute, and warn players
 - Review and manage reports on the go
 - Custom roles and flexible permissions
 - A single interface for multiple Minecraft servers
 
-## Requirements
-- The latest [Node.js](https://nodejs.org/) LTS version (even numbered)
+## Installation (Production)
+
+For deploying BanManager WebUI on your own server, see the **[full installation guide](https://banmanagement.com/docs/webui/install)**.
+
+### Requirements
+
+- [Node.js](https://nodejs.org/) LTS (v20 or v22)
 - MySQL v5+ or MariaDB v10+
 - Minecraft server with [BanManager](https://github.com/BanManagement/BanManager) & [BanManager-WebEnhancer](https://ci.frostcast.net/job/BanManager-WebEnhancer/) plugins configured to [use MySQL or MariaDB](https://banmanagement.com/docs/banmanager/install#setup-shared-database-optional)
 
-## Installation
-See [setup instructions](https://banmanagement.com/docs/webui/install)
+### Quick Install
+
+```bash
+git clone https://github.com/BanManagement/BanManager-WebUI.git
+cd BanManager-WebUI
+npm ci --production
+npm run setup
+```
+
+The setup wizard will guide you through configuring your database connection and creating an admin account.
+
+---
 
 ## Development
-```
+
+Want to contribute or run a local development environment? This section is for you.
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) LTS (v20 or v22)
+- [Docker](https://www.docker.com/) (for local MySQL database)
+
+### Quick Start
+
+```bash
+# Clone the repository
 git clone git@github.com:BanManagement/BanManager-WebUI.git
+cd BanManager-WebUI
+
+# Install dependencies
 npm install
-npm run setup
+
+# Copy environment configuration
+cp .env.example .env
+
+# Start MySQL and seed the database (first time setup)
+npm run dev:setup
+
+# Start the development server
 npm run dev
 ```
 
+The application will be available at http://localhost:3000
+
+### Test Accounts
+
+After seeding, the following accounts are available:
+
+| Role  | Email                   | Password |
+| ----- | ----------------------- | -------- |
+| Guest | guest@banmanagement.com | testing  |
+| User  | user@banmanagement.com  | testing  |
+| Admin | admin@banmanagement.com | testing  |
+
+### Available Scripts
+
+| Script               | Description                                       |
+| -------------------- | ------------------------------------------------- |
+| `npm run dev:setup`  | Start MySQL container and seed the database       |
+| `npm run dev`        | Start development server with hot reloading       |
+| `npm run db:start`   | Start the MySQL Docker container                  |
+| `npm run db:stop`    | Stop the MySQL Docker container                   |
+| `npm run seed`       | Run migrations and seed data (fails if DB exists) |
+| `npm run seed:reset` | Drop existing database and re-seed                |
+| `npm run build`      | Build for production                              |
+| `npm run test`       | Run linting and tests                             |
+| `npm run lint`       | Run linting only                                  |
+| `npm run cypress`    | Open Cypress for E2E tests                        |
+
+### Environment Configuration
+
+Copy `.env.example` to `.env` and adjust as needed. Key variables:
+
+- `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME` - Database connection
+- `ADMIN_USERNAME`, `ADMIN_PASSWORD` - Admin account credentials (also used by Cypress)
+- `ENCRYPTION_KEY`, `SESSION_KEY` - Security keys (generate unique values for production)
+
+### Resetting the Database
+
+To reset the database with fresh seed data:
+
+```bash
+npm run seed:reset
+```
+
+### Running Tests
+
+```bash
+# Run all tests
+npm run test
+
+# Run Cypress E2E tests
+npm run cypress
+```
+
 ## Contributing
+
 If you'd like to contribute, please fork the repository and use a feature branch. Pull requests are warmly welcome.
 
 ## Help / Bug / Feature Request
+
 If you have found a bug please [open an issue](https://github.com/BanManagement/BanManager-WebUI/issues/new) with as much detail as possible, including relevant logs and screenshots where applicable
 
 Have an idea for a new feature? Feel free to [open an issue](https://github.com/BanManagement/BanManager-WebUI/issues/new) or [join us on Discord](https://discord.gg/59bsgZB) to chat
 
 ## License
+
 Free to use under the [MIT](LICENSE)
 
 ## Screenshots
+
 Click to view
 
 ### Home
+
 [![Home](https://github.com/BanManagement/BanManager-WebUI/blob/assets/welcome.png?raw=true)](welcome.png)
 
 ### Player
+
 [![Player](https://github.com/BanManagement/BanManager-WebUI/blob/assets/player.png?raw=true)](player.png)
 
 ### Dashboard
+
 [![Dashboard](https://github.com/BanManagement/BanManager-WebUI/blob/assets/dashboard.png?raw=true)](dashboard.png)
 
 ### Appeal
+
 [![Appeal](https://github.com/BanManagement/BanManager-WebUI/blob/assets/appeal.png?raw=true)](appeal.png)
 
 ### Report
+
 [![Report](https://github.com/BanManagement/BanManager-WebUI/blob/assets/report.png?raw=true)](report.png)
