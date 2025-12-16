@@ -20,7 +20,7 @@ import PlayerActions from '../../../components/player/PlayerActions'
 import PlayerLastSeen from '../../../components/player/PlayerLastSeen'
 
 export async function getServerSideProps ({ req, params }) {
-  const { isUUID } = require('validator')
+  const { isUUID } = require('../../../server/data/uuid')
 
   if (!isUUID(params.id)) return { notFound: true }
 
