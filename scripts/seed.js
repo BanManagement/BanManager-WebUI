@@ -263,10 +263,10 @@ async function seed () {
 
   // Create appeals with different states
   const appeals = [
-    createAppeal(activeBans[0], 'ban', server, players[0], null, 1), // Open
-    createAppeal(activeBans[1], 'ban', server, players[1], adminUser, 2), // Assigned
-    createAppeal(activeMutes[0], 'mute', server, players[2], null, 3), // Resolved
-    createAppeal(activeMutes[1], 'mute', server, players[3], null, 4) // Rejected
+    createAppeal(activeBans[0], 'PlayerBan', server, players[0], null, 1), // Open
+    createAppeal(activeBans[1], 'PlayerBan', server, players[1], adminUser, 2), // Assigned
+    createAppeal(activeMutes[0], 'PlayerMute', server, players[2], null, 3), // Resolved
+    createAppeal(activeMutes[1], 'PlayerMute', server, players[3], null, 4) // Rejected
   ]
   const insertedAppeals = await dbPool('bm_web_appeals').insert(appeals)
   const firstAppealId = insertedAppeals[0]
