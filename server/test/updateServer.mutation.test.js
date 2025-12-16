@@ -221,9 +221,10 @@ describe('Mutation update server', () => {
 
     await pool('bm_players').insert(player)
 
-    // Create temp user
-    await pool.raw('CREATE USER \'foobarupdate\'@\'localhost\' IDENTIFIED BY \'password\';')
-    await pool.raw('GRANT ALL ON *.* TO \'foobarupdate\'@\'localhost\';')
+    // Create temp user (use % to allow connections from any host, needed for Docker)
+    await pool.raw('DROP USER IF EXISTS \'foobarupdate\'@\'%\';')
+    await pool.raw('CREATE USER \'foobarupdate\'@\'%\' IDENTIFIED BY \'password\';')
+    await pool.raw('GRANT ALL ON *.* TO \'foobarupdate\'@\'%\';')
     await pool.raw('FLUSH PRIVILEGES;')
     const server = await createServer(unparse(player.id), setup.dbPool.client.config.connection.database)
     const serverId = config.id
@@ -250,7 +251,7 @@ describe('Mutation update server', () => {
       .send({ query })
 
     // Delete custom user
-    await pool('mysql.user').where('user', 'foobar').del()
+    await pool.raw('DROP USER IF EXISTS \'foobarupdate\'@\'%\';')
 
     assert.strictEqual(statusCode, 200)
 

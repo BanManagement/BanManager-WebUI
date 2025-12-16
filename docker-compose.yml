@@ -5,6 +5,7 @@ services:
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: password
+      MYSQL_ROOT_HOST: "%"
       MYSQL_DATABASE: bm_local_dev
     ports:
       - "3306:3306"

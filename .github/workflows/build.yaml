@@ -48,17 +48,7 @@ jobs:
           sleep 5 && mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '';" -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
           mysql -e "SET GLOBAL sql_require_primary_key = ON;" -uroot
       - run: npm run lint
-      # Temporary work around jest memory leaks https://github.com/facebook/jest/issues/11956
-      - run: |
-          shopt -s globstar
-          set -e
-          for x in server/test/*.test.js; do (node --expose-gc ./node_modules/.bin/jest "$x" && sh -c 'mv coverage/coverage-final.json "coverage/$(basename "$1" .js).json"' sh "$x") || exit 1; done
-          for x in cli/test/*.test.js; do (node --expose-gc ./node_modules/.bin/jest "$x" && sh -c 'mv coverage/coverage-final.json "coverage/$(basename "$1" .js).json"' sh "$x") || exit 1; done
-          npx nyc merge coverage coverage-final.json
-          rm -rf coverage
-          mkdir coverage
-          mv coverage-final.json coverage/coverage-final.json
-          npx nyc report -t coverage --reporter=lcov --report-dir=coverage
+      - run: node --expose-gc ./node_modules/.bin/jest --coverage
         env:
           DB_PASSWORD:
           LOG_LEVEL: warn
@@ -73,7 +63,7 @@ jobs:
           PORT: 3000
           NODE_ENV: production
           ADMIN_USERNAME: "admin@banmanagement.com"
-          ADMIN_PASSWORD: "testing"
+          ADMIN_PASSWORD: "P%@#fjdVJ3Y%pdGR" # Keep this as is to avoid HIBP failing checks
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CYPRESS_PROJECT_ID: ${{ secrets.PROJECT_ID }}

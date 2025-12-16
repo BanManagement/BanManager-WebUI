@@ -8,6 +8,7 @@ const { setupPool, setupServersPool } = require('../../connections')
 const { createServer, createPlayer } = require('../fixtures')
 const loaders = require('../../graphql/loaders')
 const { hash } = require('../../data/hash')
+const { encrypt } = require('../../data/crypto')
 
 module.exports = async (disableTestMigrations) => { // eslint-disable-line max-statements
   const dbName = 'bm_web_tests_' + randomBytes(4).toString('hex')
@@ -78,6 +79,11 @@ module.exports = async (disableTestMigrations) => { // eslint-disable-line max-s
 
   // Create a server
   const server = await createServer(playerConsole.id, dbName)
+
+  // Encrypt password before storing (setupServersPool will decrypt it when reading)
+  if (server.password) {
+    server.password = await encrypt(process.env.ENCRYPTION_KEY, server.password)
+  }
 
   await dbPool('bm_web_servers').insert(server)
 
