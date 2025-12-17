@@ -2,6 +2,7 @@ import Link from 'next/link'
 import Avatar from '../Avatar'
 import Loader from '../Loader'
 import { useApi, useUser } from '../../utils'
+import { useScrollToHash } from '../../utils/useScrollToHash'
 import PlayerReportComment from './PlayerReportComment'
 import PlayerCommentForm from '../PlayerCommentForm'
 
@@ -16,6 +17,14 @@ const createCommentQuery = `mutation createReportComment($report: ID!, $serverId
     }
     acl {
       delete
+    }
+    documents {
+      id
+      filename
+      mimeType
+      size
+      width
+      height
     }
   }
 }`
@@ -34,13 +43,24 @@ query listPlayerReportComments($report: ID!, $serverId: ID!, $actor: UUID, $orde
       acl {
         delete
       }
+      documents {
+        id
+        filename
+        mimeType
+        size
+        width
+        height
+      }
     }
   }
 }`
 
 export default function PlayerReportCommentList ({ serverId, report, showReply }) {
-  const { user } = useUser()
+  const { user, hasServerPermission } = useUser()
   const { loading, data, mutate } = useApi({ query, variables: { serverId, report, actor: null, order: 'created_ASC' } })
+  const canUpload = hasServerPermission('player.reports', 'attachment.create', serverId)
+
+  useScrollToHash(!loading && !!data)
 
   if (loading) return <Loader active />
 
@@ -76,7 +96,7 @@ export default function PlayerReportCommentList ({ serverId, report, showReply }
             <div className='-ml-12 md:pl-2 md:-ml-0.5'>
               <div className='relative bg-primary-500 top-0 bottom-0'>
                 <PlayerCommentForm
-                  parseVariables={(input) => ({ report, serverId, input: { comment: input.comment } })}
+                  parseVariables={(input, documentIds) => ({ report, serverId, input: { comment: input.comment, documents: documentIds } })}
                   onFinish={({ createReportComment }) => {
                     const records = data.listPlayerReportComments.records.slice()
 
@@ -84,6 +104,7 @@ export default function PlayerReportCommentList ({ serverId, report, showReply }
                     mutate({ listPlayerReportComments: { total: data.listPlayerReportComments.total + 1, records } }, true)
                   }}
                   query={createCommentQuery}
+                  canUpload={canUpload}
                 />
               </div>
             </div>

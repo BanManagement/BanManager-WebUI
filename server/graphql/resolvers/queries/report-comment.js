@@ -49,5 +49,9 @@ module.exports = async function reportComment (obj, { id, serverId }, { state },
     }
   }
 
+  if (data) {
+    data.serverId = serverId
+  }
+
   return data
 }

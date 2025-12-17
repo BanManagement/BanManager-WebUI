@@ -43,6 +43,9 @@ module.exports = async function report (obj, { id, serverId }, { session, state 
 
   if (!data) throw new ExposedError('Report not found')
 
+  // Add serverId to data for document resolver
+  data.serverId = serverId
+
   if (fields.fieldsByTypeName.PlayerReport.viewerSubscription && session?.playerId) {
     data.viewerSubscription = await getReportSubscription(state.dbPool, id, serverId, session.playerId)
   }

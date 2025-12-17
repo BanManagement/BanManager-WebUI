@@ -248,6 +248,7 @@ type PlayerReport @sqlTable(name: "playerReports") {
   acl: PlayerReportACL!
   serverLogs: [PlayerReportServerLog!] @sqlRelation(field: "id", table: "playerReportLogs", whereKey: "report_id") @allowIf(resource: "player.reports", permission: "view.serverlogs", serverSrc: "id")
   commands: [PlayerReportCommand!]  @sqlRelation(field: "id", table: "playerReportCommands", whereKey: "report_id") @allowIf(resource: "player.reports", permission: "view.commands", serverSrc: "id")
+  documents: [Document!]
   viewerSubscription: Subscription @allowIfLoggedIn
 }
 
@@ -283,6 +284,7 @@ type PlayerReportComment @sqlTable(name: "playerReportComments") {
   created: Timestamp!
   updated: Timestamp!
   acl: EntityACL!
+  documents: [Document!]
 }
 
 type PlayerReportServerLog @sqlTable(name: "playerReportLogs") {
@@ -318,6 +320,8 @@ type PlayerAppeal @sqlTable(name: "appeals") {
   updated: Timestamp!
   state: PlayerAppealState! @sqlRelation(joinOn: "id", field: "state_id", table: "appealStates")
   acl: PlayerAppealACL!
+  documents: [Document!]
+  initialDocuments: [Document!]
   viewerSubscription: Subscription @allowIfLoggedIn
 }
 
@@ -356,6 +360,7 @@ type PlayerAppealComment @sqlTable(name: "appealComments") {
   created: Timestamp!
   updated: Timestamp!
   acl: EntityACL!
+  documents: [Document!]
 }
 
 type EntityTypeACL {
@@ -595,6 +600,36 @@ type WebhookDeliveryList {
   records: [WebhookDelivery!]!
 }
 
+type Document @sqlTable(name: "documents") {
+  id: ID!
+  player: Player! @sqlRelation(joinOn: "id", field: "player_id", table: "players")
+  filename: String!
+  mimeType: String! @sqlColumn(name: "mime_type")
+  size: Int!
+  width: Int
+  height: Int
+  created: Timestamp!
+  usages: [DocumentUsage!]!
+  acl: DocumentACL!
+}
+
+type DocumentUsage {
+  type: String!
+  id: ID!
+  commentId: ID
+  serverId: ID
+  label: String!
+}
+
+type DocumentACL {
+  delete: Boolean!
+}
+
+type DocumentList {
+  total: Int!
+  records: [Document!]!
+}
+
 type Query {
   searchPlayers(name: String!, limit: Int = 10): [Player!]
   player(player: UUID!): Player
@@ -666,6 +701,8 @@ type Query {
   webhook(id: ID!): Webhook! @allowIf(resource: "servers", permission: "manage")
   listWebhookDeliveries(webhookId: ID!, limit: Int = 10, offset: Int = 0): WebhookDeliveryList! @allowIf(resource: "servers", permission: "manage")
   webhookExamplePayload(type: WebhookType!): JSONObject! @allowIf(resource: "servers", permission: "manage")
+
+  listDocuments(limit: Int = 25, offset: Int = 0, player: UUID, dateStart: Timestamp, dateEnd: Timestamp): DocumentList! @allowIf(resource: "servers", permission: "manage")
 }
 
 input CreatePlayerNoteInput {
@@ -770,14 +807,17 @@ input CreateAppealInput {
   reason: String! @constraint(minLength: 20, maxLength: 65535)
   soft: Boolean
   points: Float
+  documents: [ID!] @constraint(maxItems: 5)
 }
 
 input AppealCommentInput {
   content: String! @constraint(minLength: 2, maxLength: 255)
+  documents: [ID!] @constraint(maxItems: 3)
 }
 
 input ReportCommentInput {
   comment: String! @constraint(minLength: 2, maxLength: 255)
+  documents: [ID!] @constraint(maxItems: 3)
 }
 
 input RoleInput {
@@ -890,5 +930,7 @@ type Mutation {
   deleteWebhook(id: ID!): Webhook! @allowIf(resource: "servers", permission: "manage")
 
   sendTestWebhook(id: ID!, variables: JSONObject!): WebhookDelivery! @allowIf(resource: "servers", permission: "manage")
+
+  deleteDocument(id: ID!): Document! @allowIfLoggedIn
 }
 `

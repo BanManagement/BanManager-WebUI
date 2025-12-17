@@ -11,10 +11,10 @@ import Button from '../../../../../components/Button'
 
 export default function Page () {
   const router = useRouter()
-
-  useUser({ redirectIfFound: false, redirectTo: '/' })
+  const { hasServerPermission } = useUser({ redirectIfFound: false, redirectTo: '/' })
 
   const { id, serverId } = router.query
+  const canUpload = hasServerPermission('player.appeals', 'attachment.create', serverId)
   const { loading, data, errors } = useApi({
     query: !serverId || !id
       ? null
@@ -66,6 +66,7 @@ export default function Page () {
           {data?.playerWarning && <PlayerAppealForm
             {...data?.playerWarning}
             type='warning'
+            canUpload={canUpload}
             parseVariables={(input) => ({ input: { reason: input.reason, type: 'PlayerWarning', serverId, punishmentId: id } })}
             onFinished={({ createAppeal }) => {
               router.push(`/appeals/${createAppeal.id}`)

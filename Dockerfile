@@ -36,11 +36,13 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
 RUN mkdir -p /app/.next/cache/images && chown nextjs:nodejs /app/.next/cache/images
+RUN mkdir -p /app/uploads/documents && chown nextjs:nodejs /app/uploads/documents
 
 COPY --from=builder --chown=nextjs:nodejs /app ./
 
 VOLUME /app/.next/cache/images
 VOLUME /app/public/images/opengraph/cache
+VOLUME /app/uploads/documents
 
 USER nextjs
 

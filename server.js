@@ -24,6 +24,7 @@ const logger = require('pino')(
   })
 const createApp = require('./server/app')
 const { setupPool, setupServersPool } = require('./server/connections')
+const { cleanupOrphanDocuments } = require('./server/data/cleanup-documents')
 const port = process.env.PORT || 3000
 const dbConfig = {
   host: process.env.DB_HOST,
@@ -39,6 +40,10 @@ const dbConfig = {
     const dbPool = await setupPool(dbConfig, logger)
     const serversPool = await setupServersPool({ dbPool, logger })
     const app = await createApp({ dbPool, logger, serversPool, disableUI: process.env.DISABLE_UI === 'true' })
+
+    // Cleanup orphan documents on startup and every 6 hours
+    cleanupOrphanDocuments(dbPool, logger)
+    setInterval(() => cleanupOrphanDocuments(dbPool, logger), 6 * 60 * 60 * 1000)
 
     if (process.env.HOSTNAME) {
       app.listen(port, process.env.HOSTNAME, () => logger.info(`Listening on ${process.env.HOSTNAME}:${port}`))

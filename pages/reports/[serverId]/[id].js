@@ -89,6 +89,9 @@ export default function Page () {
         viewerSubscription {
           state
         }
+        documents {
+          id
+        }
       }
     }`
   })

@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { useRouter, withRouter } from 'next/router'
 import clsx from 'clsx'
 import { BiServer } from 'react-icons/bi'
-import { MdOutlineGroups, MdOutlineExitToApp, MdOutlineNotifications, MdLogout, MdSettings, MdWebhook } from 'react-icons/md'
+import { MdOutlineGroups, MdOutlineExitToApp, MdOutlineNotifications, MdLogout, MdSettings, MdWebhook, MdOutlineImage } from 'react-icons/md'
 import Avatar from './Avatar'
 import Loader from './Loader'
 import ErrorLayout from './ErrorLayout'
@@ -12,6 +12,7 @@ import SessionNavProfile from './SessionNavProfile'
 import { useApi, useUser } from '../utils'
 
 const icons = {
+  Documents: <MdOutlineImage />,
   Roles: <MdOutlineGroups />,
   Servers: <BiServer />,
   'Notification Rules': <MdOutlineNotifications />,

@@ -4,8 +4,9 @@ import ErrorMessages from '../ErrorMessages'
 import Modal from '../Modal'
 import { fromNow, useMutateApi } from '../../utils'
 import Avatar from '../Avatar'
+import DocumentGallery from '../DocumentGallery'
 
-export default function PlayerAppealComment ({ id, actor, created, content, acl, onDelete }) {
+export default function PlayerAppealComment ({ id, actor, created, content, acl, documents, onDelete, onDocumentDelete }) {
   const [open, setOpen] = useState(false)
   const { load, data, loading, errors } = useMutateApi({
     query: `mutation deleteAppealComment($id: ID!) {
@@ -36,7 +37,7 @@ export default function PlayerAppealComment ({ id, actor, created, content, acl,
   const handleDeleteCancel = () => setOpen(false)
 
   return (
-    <div className='md:ml-4 pt-3 pb-3 relative' id={`comment-${id}`}>
+    <div className='md:ml-4 pt-3 pb-3 relative scroll-mt-20' id={`comment-${id}`}>
       <Link href={`/player/${actor.id}`} className='absolute -left-20 hidden md:block'>
         <Avatar uuid={actor.id} width={40} height={40} className='mx-1 inline-block relative' />
       </Link>
@@ -72,6 +73,12 @@ export default function PlayerAppealComment ({ id, actor, created, content, acl,
         </div>
         <div className='rounded-bl rounded-br relative p-4 top-0 bottom-0'>
           <p className='break-all'>{content}</p>
+          {documents && documents.length > 0 && (
+            <DocumentGallery
+              documents={documents}
+              onDelete={onDocumentDelete}
+            />
+          )}
         </div>
       </div>
     </div>
