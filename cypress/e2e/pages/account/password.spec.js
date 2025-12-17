@@ -29,11 +29,10 @@ describe('Account/Password', () => {
   })
 
   it('successfully changes password', () => {
+    const originalPassword = Cypress.env('admin_password')
     const newPassword = 'kb^5L^$CxViyPS4G'
-    // Use another strong password for reset (admin_password 'testing' fails hibp check)
-    const resetPassword = 'xQ#9mK@2pL$7nR&5'
 
-    cy.get('[data-cy=currentPassword]').type(Cypress.env('admin_password'))
+    cy.get('[data-cy=currentPassword]').type(originalPassword)
     cy.get('[data-cy=newPassword]').type(newPassword)
     cy.get('[data-cy=confirmPassword]').type(newPassword)
 
@@ -41,11 +40,11 @@ describe('Account/Password', () => {
 
     cy.title().should('eq', 'Account')
 
-    // Reset to a different strong password (we can't use 'testing' as it fails hibp check)
+    // Reset back to original password so other tests still work
     cy.visit('/account/password')
     cy.get('[data-cy=currentPassword]').type(newPassword)
-    cy.get('[data-cy=newPassword]').type(resetPassword)
-    cy.get('[data-cy=confirmPassword]').type(resetPassword)
+    cy.get('[data-cy=newPassword]').type(originalPassword)
+    cy.get('[data-cy=confirmPassword]').type(originalPassword)
 
     cy.get('[data-cy=submit-password-change]').click()
 
