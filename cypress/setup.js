@@ -90,13 +90,22 @@ const { encrypt } = require('../server/data/crypto')
   const e2eAdminEmail = 'admin@banmanagement.com'
 
   console.log('Creating admin user with email:', e2eAdminEmail)
+  console.log('Admin password starts with:', e2eAdminPassword.substring(0, 4) + '...')
   console.log('Admin password length:', e2eAdminPassword.length)
+
+  const adminPasswordHash = await hash(e2eAdminPassword)
+  console.log('Admin password hash length:', adminPasswordHash.length)
 
   await dbPool('bm_web_users').insert([
     { player_id: guestUser.id, email: 'guest@banmanagement.com', password: await hash('testing'), updated },
     { player_id: loggedInUser.id, email: 'user@banmanagement.com', password: await hash('testing'), updated },
-    { player_id: adminUser.id, email: e2eAdminEmail, password: await hash(e2eAdminPassword), updated }
+    { player_id: adminUser.id, email: e2eAdminEmail, password: adminPasswordHash, updated }
   ])
+
+  // Verify the user was created correctly
+  const [verifyUser] = await dbPool('bm_web_users').select('email', 'password').where('email', e2eAdminEmail)
+  console.log('Verified user email:', verifyUser?.email)
+  console.log('Verified user password hash length:', verifyUser?.password?.length)
 
   // Create a server
   const server = await createServer(playerConsole.id, dbName)
