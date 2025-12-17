@@ -1,9 +1,11 @@
 const { defineConfig } = require('cypress')
 require('dotenv').config()
 
+const port = process.env.PORT || 3000
+
 module.exports = defineConfig({
   e2e: {
-    baseUrl: 'http://localhost:8001',
+    baseUrl: `http://localhost:${port}`,
     specPattern: 'cypress/e2e/**/*.{js,jsx,ts,tsx}',
     supportFile: 'cypress/support/e2e.js',
     setupNodeEvents (on, config) {
