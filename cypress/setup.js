@@ -85,8 +85,12 @@ const { encrypt } = require('../server/data/crypto')
   const updated = Math.floor(Date.now() / 1000)
 
   // E2E test admin password - must match CYPRESS_admin_password in workflow and cypress.config.js
-  const e2eAdminPassword = process.env.ADMIN_PASSWORD || 'xK9mQp2LvR7nS4jT'
-  const e2eAdminEmail = process.env.ADMIN_USERNAME || 'admin@banmanagement.com'
+  // Hardcode directly to avoid any env var issues
+  const e2eAdminPassword = 'xK9mQp2LvR7nS4jT'
+  const e2eAdminEmail = 'admin@banmanagement.com'
+
+  console.log('Creating admin user with email:', e2eAdminEmail)
+  console.log('Admin password length:', e2eAdminPassword.length)
 
   await dbPool('bm_web_users').insert([
     { player_id: guestUser.id, email: 'guest@banmanagement.com', password: await hash('testing'), updated },
