@@ -54,6 +54,21 @@ jobs:
           LOG_LEVEL: warn
           PORT: 3001
 
+      - name: Setup E2E database
+        run: node cypress/setup.js
+        env:
+          DB_PASSWORD:
+          DB_NAME: bm_e2e_tests
+          ADMIN_USERNAME: "admin@banmanagement.com"
+          ADMIN_PASSWORD: "xK9mQp2LvR7nS4jT"
+
+      - name: Build for E2E
+        run: npm run build
+        env:
+          DB_PASSWORD:
+          DB_NAME: bm_e2e_tests
+          NODE_ENV: production
+
       - name: Cypress run
         uses: cypress-io/github-action@v6
         env:
@@ -62,10 +77,6 @@ jobs:
           LOG_LEVEL: warn
           PORT: 3000
           NODE_ENV: production
-          # Used by cypress/setup.js to create the test user in the database
-          # Note: Password must not contain # as it gets interpreted as shell comment
-          ADMIN_USERNAME: "admin@banmanagement.com"
-          ADMIN_PASSWORD: "xK9mQp2LvR7nS4jT"
           # CYPRESS_ prefixed vars are automatically available to Cypress.env()
           CYPRESS_admin_username: "admin@banmanagement.com"
           CYPRESS_admin_password: "xK9mQp2LvR7nS4jT"
@@ -77,7 +88,6 @@ jobs:
           NOTIFICATION_VAPID_PRIVATE_KEY: ${{ secrets.NOTIFICATION_VAPID_PRIVATE_KEY }}
         with:
           install: false
-          build: npm run e2e:build
           start: npm start
           wait-on: "http://127.0.0.1:3000"
           record: true
