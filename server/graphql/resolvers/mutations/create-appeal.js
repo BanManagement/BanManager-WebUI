@@ -4,7 +4,7 @@ const { notifyRuleGroups, subscribeAppeal } = require('../../../data/notificatio
 const { triggerWebhook } = require('../../../data/webhook')
 const { unparse } = require('uuid-parse')
 
-module.exports = async function createAppeal (obj, { input: { serverId, punishmentId, type, reason } }, { log, state, session }, info) {
+module.exports = async function createAppeal (obj, { input: { serverId, punishmentId, type, reason, documents } }, { log, state, session }, info) {
   if (!state.serversPool.has(serverId)) throw new ExposedError('Server does not exist')
 
   const exists = await state.dbPool('bm_web_appeals')
@@ -91,6 +91,25 @@ module.exports = async function createAppeal (obj, { input: { serverId, punishme
   }
 
   const [id] = await state.dbPool('bm_web_appeals').insert(appeal, ['id'])
+
+  if (documents && documents.length > 0) {
+    const hasAttachPermission = state.acl.hasServerPermission(serverId, 'player.appeals', 'attachment.create')
+    if (hasAttachPermission) {
+      const validDocs = await state.dbPool('bm_web_documents')
+        .whereIn('id', documents)
+        .where('player_id', session.playerId)
+        .select('id')
+
+      if (validDocs.length > 0) {
+        const links = validDocs.map(doc => ({
+          appeal_id: id,
+          comment_id: 0,
+          document_id: doc.id
+        }))
+        await state.dbPool('bm_web_appeal_documents').insert(links)
+      }
+    }
+  }
 
   await subscribeAppeal(state.dbPool, id, session.playerId)
   await notifyRuleGroups(state.dbPool, 'APPEAL_CREATED', id, server.config.id, null, session.playerId, state)

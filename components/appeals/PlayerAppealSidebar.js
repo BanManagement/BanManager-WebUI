@@ -1,4 +1,5 @@
 import { useMatchMutate } from '../../utils'
+import SidebarDocuments from '../SidebarDocuments'
 import PlayerAppealActions from './PlayerAppealActions'
 import PlayerAppealAssign from './PlayerAppealAssign'
 import PlayerAppealNotifications from './PlayerAppealNotifications'
@@ -64,6 +65,10 @@ export default function PlayerAppealSidebar ({ data, canUpdateState, canAssign, 
               mutate({ ...data, appeal: { ...data.appeal, viewerSubscription: appealSubscriptionState } }, false)
             }}
           />
+        </SidebarItem>}
+      {appeal.documents?.length > 0 &&
+        <SidebarItem title='Documents'>
+          <SidebarDocuments documents={appeal.documents} />
         </SidebarItem>}
       {!!user && appeal.state.id < 3 &&
         <SidebarItem title='Actions'>

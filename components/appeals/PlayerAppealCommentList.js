@@ -2,6 +2,7 @@ import Link from 'next/link'
 import Avatar from '../Avatar'
 import Loader from '../Loader'
 import { useApi, useUser } from '../../utils'
+import { useScrollToHash } from '../../utils/useScrollToHash'
 import PlayerAppealComment from './PlayerAppealComment'
 import PlayerCommentForm from '../PlayerCommentForm'
 import PlayerAppealCommentAssigned from './PlayerAppealCommentAssigned'
@@ -20,6 +21,14 @@ const createCommentQuery = `mutation createAppealComment($id: ID!, $input: Appea
     }
     acl {
       delete
+    }
+    documents {
+      id
+      filename
+      mimeType
+      acl {
+        delete
+      }
     }
   }
 }`
@@ -55,15 +64,42 @@ query listPlayerAppealComments($id: ID!, $actor: UUID, $order: OrderByInput) {
       acl {
         delete
       }
+      documents {
+        id
+        filename
+        mimeType
+        acl {
+          delete
+        }
+      }
     }
   }
 }`
 
 export default function PlayerAppealCommentList ({ appeal, showReply }) {
-  const { user } = useUser()
+  const { user, hasServerPermission } = useUser()
   const { loading, data, mutate } = useApi({ query, variables: { id: appeal.id, actor: null, order: 'created_ASC' } })
+  const canUpload = hasServerPermission('player.appeals', 'attachment.create', appeal.server?.id)
+
+  useScrollToHash(!loading && !!data)
 
   if (loading) return <Loader active />
+
+  const handleDocumentDelete = (commentId, documentId) => {
+    const records = data.listPlayerAppealComments.records.map(c => {
+      if (c.id === commentId && c.documents) {
+        return { ...c, documents: c.documents.filter(d => d.id !== documentId) }
+      }
+      return c
+    })
+    mutate({ ...data, listPlayerAppealComments: { ...data.listPlayerAppealComments, records } }, false)
+  }
+
+  const handleInitialDocumentDelete = (documentId) => {
+    const updatedInitialDocuments = appeal.initialDocuments?.filter(d => d.id !== documentId) || []
+
+    appeal.initialDocuments = updatedInitialDocuments
+  }
 
   const items = data?.listPlayerAppealComments?.records
     ? data.listPlayerAppealComments.records.map(comment => {
@@ -78,6 +114,7 @@ export default function PlayerAppealCommentList ({ appeal, showReply }) {
 
                   mutate({ ...data, listPlayerAppealComments: { total: data.listPlayerAppealComments.total - 1, records } }, false)
                 }}
+                onDocumentDelete={(docId) => handleDocumentDelete(comment.id, docId)}
               />
             )
           case 'state':
@@ -99,7 +136,7 @@ export default function PlayerAppealCommentList ({ appeal, showReply }) {
   return (
     <>
       <div className="relative block ml-4 md:ml-11 pl-4 before:block before:absolute before:content-[''] before:mt-3 before:mb-4 before:top-0 before:bottom-0 before:left-8 before:w-0.5 before:bg-primary-900 before:z-0">
-        <PlayerAppealComment id={0} actor={appeal.actor} created={appeal.created} content={appeal.reason} />
+        <PlayerAppealComment id={0} actor={appeal.actor} created={appeal.created} content={appeal.reason} documents={appeal.initialDocuments} onDocumentDelete={handleInitialDocumentDelete} />
         {items}
         <div className='pt-3 pb-3 -ml-16 relative top-2 border-t border-primary-900' />
       </div>
@@ -120,6 +157,7 @@ export default function PlayerAppealCommentList ({ appeal, showReply }) {
                     mutate({ listPlayerAppealComments: { total: data.listPlayerAppealComments.total + 1, records } }, true)
                   }}
                   query={createCommentQuery}
+                  canUpload={canUpload}
                 />
               </div>
             </div>

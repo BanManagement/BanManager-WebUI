@@ -1,7 +1,6 @@
 describe('Account/Password', () => {
-  before(() => {
+  beforeEach(() => {
     cy.login(Cypress.env('admin_username'), Cypress.env('admin_password'))
-
     cy.visit('/account/password')
   })
 
@@ -10,9 +9,6 @@ describe('Account/Password', () => {
   })
 
   it('errors if incorrect current password', () => {
-    cy.login(Cypress.env('admin_username'), Cypress.env('admin_password'))
-    cy.get('form').then($element => $element[0].reset())
-
     cy.get('[data-cy=currentPassword]').type('aaaaaa')
     cy.get('[data-cy=newPassword]').type('aaaaaa')
     cy.get('[data-cy=confirmPassword]').type('aaaaaa')
@@ -23,9 +19,6 @@ describe('Account/Password', () => {
   })
 
   it('errors if new password weak', () => {
-    cy.login(Cypress.env('admin_username'), Cypress.env('admin_password'))
-    cy.get('form').then($element => $element[0].reset())
-
     cy.get('[data-cy=currentPassword]').type(Cypress.env('admin_password'))
     cy.get('[data-cy=newPassword]').type('aaaaaa')
     cy.get('[data-cy=confirmPassword]').type('aaaaaa')
@@ -36,12 +29,10 @@ describe('Account/Password', () => {
   })
 
   it('successfully changes password', () => {
-    cy.login(Cypress.env('admin_username'), Cypress.env('admin_password'))
-    cy.get('form').then($element => $element[0].reset())
-
+    const originalPassword = Cypress.env('admin_password')
     const newPassword = 'kb^5L^$CxViyPS4G'
 
-    cy.get('[data-cy=currentPassword]').type(Cypress.env('admin_password'))
+    cy.get('[data-cy=currentPassword]').type(originalPassword)
     cy.get('[data-cy=newPassword]').type(newPassword)
     cy.get('[data-cy=confirmPassword]').type(newPassword)
 
@@ -49,11 +40,11 @@ describe('Account/Password', () => {
 
     cy.title().should('eq', 'Account')
 
-    // Reset it
+    // Reset back to original password so other tests still work
     cy.visit('/account/password')
     cy.get('[data-cy=currentPassword]').type(newPassword)
-    cy.get('[data-cy=newPassword]').type(Cypress.env('admin_password'))
-    cy.get('[data-cy=confirmPassword]').type(Cypress.env('admin_password'))
+    cy.get('[data-cy=newPassword]').type(originalPassword)
+    cy.get('[data-cy=confirmPassword]').type(originalPassword)
 
     cy.get('[data-cy=submit-password-change]').click()
 

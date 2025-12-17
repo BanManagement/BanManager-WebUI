@@ -2,8 +2,10 @@ module.exports = async function adminNavigation (obj, info, { state }) {
   const { rolesCount } = await state.dbPool('bm_web_roles').count({ rolesCount: '*' }).first()
   const { notificationRulesCount } = await state.dbPool('bm_web_notification_rules').count({ notificationRulesCount: '*' }).first()
   const { webHooksCount } = await state.dbPool('bm_web_webhooks').count({ webHooksCount: '*' }).first()
+  const { documentsCount } = await state.dbPool('bm_web_documents').count({ documentsCount: '*' }).first()
 
   const left = [
+    { name: 'Documents', label: documentsCount, href: '/admin/documents' },
     { name: 'Roles', label: rolesCount, href: '/admin/roles' },
     { name: 'Servers', label: state.serversPool.size, href: '/admin/servers' },
     { name: 'Notification Rules', label: notificationRulesCount, href: '/admin/notification-rules' },

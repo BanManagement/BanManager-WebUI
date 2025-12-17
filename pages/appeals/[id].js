@@ -62,6 +62,17 @@ export default function Page () {
         viewerSubscription {
           state
         }
+        documents {
+          id
+        }
+        initialDocuments {
+          id
+          filename
+          mimeType
+          acl {
+            delete
+          }
+        }
       }
     }`
   })

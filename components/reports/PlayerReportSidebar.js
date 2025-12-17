@@ -1,3 +1,4 @@
+import SidebarDocuments from '../SidebarDocuments'
 import PlayerReportActions from './PlayerReportActions'
 import PlayerReportAssign from './PlayerReportAssign'
 import PlayerReportCommand from './PlayerReportCommand'
@@ -71,6 +72,10 @@ export default function PlayerReportSidebar ({ data, canUpdateState, canAssign, 
       {report.serverLogs && !!report.serverLogs.length &&
         <SidebarItem title='Server Logs'>
           <PlayerReportServerLogs serverLogs={report.serverLogs} />
+        </SidebarItem>}
+      {report.documents?.length > 0 &&
+        <SidebarItem title='Documents'>
+          <SidebarDocuments documents={report.documents} />
         </SidebarItem>}
       {((!!user && report.state.id < 3 && !report?.commands?.length) || !!report?.commands?.length) &&
         <SidebarItem title='Actions'>

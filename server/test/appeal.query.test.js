@@ -4,6 +4,7 @@ const supertest = require('supertest')
 const createApp = require('../app')
 const { createSetup, getAccount, getAuthPassword } = require('./lib')
 const { createPlayer, createBan, createAppeal } = require('./fixtures')
+const { createDocumentWithContent, insertContentIgnore } = require('./fixtures/document')
 
 describe('Query appeal', () => {
   let setup
@@ -194,5 +195,89 @@ describe('Query appeal', () => {
       actor: { id: unparse(account.id), name: account.name },
       acl: { comment: true, assign: true, state: true, delete: true }
     })
+  })
+
+  test('should return documents attached to appeal', async () => {
+    const cookie = await getAuthPassword(request, 'admin@banmanagement.com')
+    const account = await getAccount(request, cookie)
+    const { config: server, pool } = setup.serversPool.values().next().value
+
+    const player = createPlayer()
+    const actor = createPlayer()
+    const punishment = createBan(player, actor)
+
+    await pool('bm_players').insert([player, actor])
+
+    const [banId] = await pool('bm_player_bans').insert(punishment, ['id'])
+    const appealData = createAppeal({ ...punishment, id: banId }, 'PlayerBan', server, player)
+    const [appealId] = await pool('bm_web_appeals').insert(appealData, ['id'])
+
+    const { content: content1, document: doc1 } = createDocumentWithContent(account)
+    const { content: content2, document: doc2 } = createDocumentWithContent(account)
+
+    await insertContentIgnore(setup.dbPool, content1)
+    await insertContentIgnore(setup.dbPool, content2)
+    await setup.dbPool('bm_web_documents').insert([doc1, doc2])
+    await setup.dbPool('bm_web_appeal_documents').insert([
+      { appeal_id: appealId, comment_id: 0, document_id: doc1.id },
+      { appeal_id: appealId, comment_id: 0, document_id: doc2.id }
+    ])
+
+    const { body, statusCode } = await request
+      .post('/graphql')
+      .set('Cookie', cookie)
+      .set('Accept', 'application/json')
+      .send({
+        query: `query appeal {
+          appeal(id: "${appealId}") {
+            id
+            documents {
+              id
+            }
+          }
+        }`
+      })
+
+    assert.strictEqual(statusCode, 200)
+    assert(body.data)
+    assert(body.data.appeal.documents)
+    assert.strictEqual(body.data.appeal.documents.length, 2)
+    assert(body.data.appeal.documents.some(d => d.id === doc1.id))
+    assert(body.data.appeal.documents.some(d => d.id === doc2.id))
+  })
+
+  test('should return empty documents array when no documents attached', async () => {
+    const cookie = await getAuthPassword(request, 'admin@banmanagement.com')
+    const { config: server, pool } = setup.serversPool.values().next().value
+
+    const player = createPlayer()
+    const actor = createPlayer()
+    const punishment = createBan(player, actor)
+
+    await pool('bm_players').insert([player, actor])
+
+    const [banId] = await pool('bm_player_bans').insert(punishment, ['id'])
+    const appealData = createAppeal({ ...punishment, id: banId }, 'PlayerBan', server, player)
+    const [appealId] = await pool('bm_web_appeals').insert(appealData, ['id'])
+
+    const { body, statusCode } = await request
+      .post('/graphql')
+      .set('Cookie', cookie)
+      .set('Accept', 'application/json')
+      .send({
+        query: `query appeal {
+          appeal(id: "${appealId}") {
+            id
+            documents {
+              id
+            }
+          }
+        }`
+      })
+
+    assert.strictEqual(statusCode, 200)
+    assert(body.data)
+    assert(body.data.appeal.documents)
+    assert.strictEqual(body.data.appeal.documents.length, 0)
   })
 })

@@ -11,3 +11,6 @@ bundles
 .travis/*.key
 .travis/*.key.pub
 public/images/opengraph/cache
+
+uploads/**/*
+!uploads/documents/.gitkeep

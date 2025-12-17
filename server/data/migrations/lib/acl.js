@@ -12,6 +12,13 @@ module.exports = (db) => {
       let i = result.i
 
       for (const name of permissionNames) {
+        // Check if permission already exists
+        const existing = await db.runSql(
+          'SELECT 1 FROM bm_web_resource_permissions WHERE resource_id = ? AND name = ?',
+          [resourceId, name]
+        )
+        if (existing && existing.length > 0) continue
+
         const value = Math.pow(2, i++)
 
         await db.insert('bm_web_resource_permissions', ['resource_id', 'name', 'value'], [resourceId, name, value])
@@ -19,10 +26,20 @@ module.exports = (db) => {
     },
     async attachPermission (resourceName, roleId, ...permissionNames) {
       const resourceId = await getResourceId(resourceName)
-      const permissions = await db.runSql('SELECT * FROM bm_web_resource_permissions WHERE resource_id = ? AND name IN(?)', [resourceId, permissionNames])
 
+      // Build placeholders for IN clause - one ? for each permission name
+      const placeholders = permissionNames.map(() => '?').join(', ')
+      const permissions = await db.runSql(
+        `SELECT * FROM bm_web_resource_permissions WHERE resource_id = ? AND name IN(${placeholders})`,
+        [resourceId, ...permissionNames]
+      )
+
+      // Use bitwise OR to avoid issues with duplicate additions
       return Promise.all(permissions.map((permission) => {
-        return db.runSql(`UPDATE bm_web_role_resources SET value = value + ${permission.value} WHERE role_id = ? AND resource_id = ?`, [roleId, resourceId])
+        return db.runSql(
+          'UPDATE bm_web_role_resources SET value = value | ? WHERE role_id = ? AND resource_id = ?',
+          [permission.value, roleId, resourceId]
+        )
       }))
     },
     async addResource (name) {

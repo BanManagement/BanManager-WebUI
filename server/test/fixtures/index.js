@@ -10,5 +10,6 @@ module.exports = {
   createReport: require('./report'),
   createReportComment: require('./report-comment'),
   createWarning: require('./warning'),
-  createAppeal: require('./appeal')
+  createAppeal: require('./appeal'),
+  createDocument: require('./document')
 }

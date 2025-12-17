@@ -4,8 +4,9 @@ import ErrorMessages from '../ErrorMessages'
 import Modal from '../Modal'
 import { fromNow, useMutateApi } from '../../utils'
 import Avatar from '../Avatar'
+import DocumentGallery from '../DocumentGallery'
 
-export default function PlayerReportComment ({ id, actor, created, comment, acl, serverId, onFinish }) {
+export default function PlayerReportComment ({ id, actor, created, comment, acl, documents, serverId, onFinish }) {
   const [open, setOpen] = useState(false)
   const { load, data, loading, errors } = useMutateApi({
     query: `mutation deleteReportComment($id: ID!, $serverId: ID!) {
@@ -36,7 +37,7 @@ export default function PlayerReportComment ({ id, actor, created, comment, acl,
   const handleDeleteCancel = () => setOpen(false)
 
   return (
-    <div className='md:ml-4 pt-3 pb-3 relative' id={`comment-${id}`}>
+    <div className='md:ml-4 pt-3 pb-3 relative scroll-mt-20' id={`comment-${id}`}>
       <Link href={`/player/${actor.id}`} className='absolute -left-20 hidden md:block'>
         <Avatar uuid={actor.id} width={40} height={40} className='mx-1 inline-block relative' />
       </Link>
@@ -72,6 +73,9 @@ export default function PlayerReportComment ({ id, actor, created, comment, acl,
         </div>
         <div className='rounded-bl rounded-br relative p-4 top-0 bottom-0'>
           <p className='break-all'>{comment}</p>
+          {documents && documents.length > 0 && (
+            <DocumentGallery documents={documents} />
+          )}
         </div>
       </div>
     </div>

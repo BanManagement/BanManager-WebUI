@@ -1,5 +1,5 @@
 describe('Login', () => {
-  before(() => {
+  beforeEach(() => {
     cy.visit('/login')
   })
 
@@ -8,8 +8,6 @@ describe('Login', () => {
   })
 
   it('shows error for invalid passwords', () => {
-    cy.get('form').then($element => $element[0].reset())
-
     cy.get('[data-cy=email]').type('doesnotexis@banmanagement.com')
     cy.get('[data-cy=password]').type('aaa')
 
@@ -19,8 +17,6 @@ describe('Login', () => {
   })
 
   it('shows error when account does not exist', () => {
-    cy.get('form').then($element => $element[0].reset())
-
     cy.get('[data-cy=email]').type('doesnotexist@banmanagement.com')
     cy.get('[data-cy=password]').type('aaaaaa')
 
@@ -30,8 +26,6 @@ describe('Login', () => {
   })
 
   it('logs in via email', () => {
-    cy.get('form').then($element => $element[0].reset())
-
     cy.get('[data-cy=email]').type(Cypress.env('admin_username'))
     cy.get('[data-cy=password]').type(Cypress.env('admin_password'))
 

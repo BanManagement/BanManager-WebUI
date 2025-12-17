@@ -4,6 +4,7 @@ const supertest = require('supertest')
 const createApp = require('../app')
 const { createSetup, getAccount, getAuthPassword } = require('./lib')
 const { createPlayer, createReport } = require('./fixtures')
+const { createDocumentWithContent, insertContentIgnore } = require('./fixtures/document')
 
 describe('Query report', () => {
   let setup
@@ -283,5 +284,94 @@ describe('Query report', () => {
         { id: '2', log: { created: data.created, message: 'More logs' } }
       ]
     })
+  })
+
+  test('should return documents attached to report comments', async () => {
+    const cookie = await getAuthPassword(request, 'admin@banmanagement.com')
+    const account = await getAccount(request, cookie)
+    const { config: server, pool } = setup.serversPool.values().next().value
+
+    const player = createPlayer()
+    const actor = createPlayer()
+
+    await pool('bm_players').insert([player, actor])
+
+    const reportData = createReport(player, actor)
+    const [reportId] = await pool('bm_player_reports').insert(reportData, ['id'])
+
+    // Create a comment on the report
+    const [commentId] = await pool('bm_player_report_comments').insert({
+      report_id: reportId,
+      actor_id: account.id,
+      comment: 'Test comment with attachments',
+      created: Math.floor(Date.now() / 1000),
+      updated: Math.floor(Date.now() / 1000)
+    }, ['id'])
+
+    const { content: content1, document: doc1 } = createDocumentWithContent(account)
+    const { content: content2, document: doc2 } = createDocumentWithContent(account)
+
+    await insertContentIgnore(setup.dbPool, content1)
+    await insertContentIgnore(setup.dbPool, content2)
+    await setup.dbPool('bm_web_documents').insert([doc1, doc2])
+    await setup.dbPool('bm_web_report_comment_documents').insert([
+      { server_id: server.id, comment_id: commentId, document_id: doc1.id },
+      { server_id: server.id, comment_id: commentId, document_id: doc2.id }
+    ])
+
+    const { body, statusCode } = await request
+      .post('/graphql')
+      .set('Cookie', cookie)
+      .set('Accept', 'application/json')
+      .send({
+        query: `query report {
+          report(serverId: "${server.id}", id: "${reportId}") {
+            id
+            documents {
+              id
+            }
+          }
+        }`
+      })
+
+    assert.strictEqual(statusCode, 200)
+    assert(body.data)
+    assert(body.data.report.documents)
+    assert.strictEqual(body.data.report.documents.length, 2)
+    assert(body.data.report.documents.some(d => d.id === doc1.id))
+    assert(body.data.report.documents.some(d => d.id === doc2.id))
+  })
+
+  test('should return empty documents array when no documents attached', async () => {
+    const cookie = await getAuthPassword(request, 'admin@banmanagement.com')
+    const { config: server, pool } = setup.serversPool.values().next().value
+
+    const player = createPlayer()
+    const actor = createPlayer()
+
+    await pool('bm_players').insert([player, actor])
+
+    const reportData = createReport(player, actor)
+    const [reportId] = await pool('bm_player_reports').insert(reportData, ['id'])
+
+    const { body, statusCode } = await request
+      .post('/graphql')
+      .set('Cookie', cookie)
+      .set('Accept', 'application/json')
+      .send({
+        query: `query report {
+          report(serverId: "${server.id}", id: "${reportId}") {
+            id
+            documents {
+              id
+            }
+          }
+        }`
+      })
+
+    assert.strictEqual(statusCode, 200)
+    assert(body.data)
+    assert(body.data.report.documents)
+    assert.strictEqual(body.data.report.documents.length, 0)
   })
 })

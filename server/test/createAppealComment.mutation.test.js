@@ -3,6 +3,7 @@ const supertest = require('supertest')
 const createApp = require('../app')
 const { createSetup, getAuthPassword, getAccount, setTempRole } = require('./lib')
 const { createPlayer, createAppeal, createBan } = require('./fixtures')
+const { createDocumentWithContent, insertContentIgnore } = require('./fixtures/document')
 const { getUnreadNotificationsCount } = require('../data/notification')
 const { getAppealWatchers, subscribeAppeal } = require('../data/notification/appeal')
 
@@ -252,5 +253,237 @@ describe('Mutation createAppealComment', () => {
 
     assert(body)
     assert.strictEqual(body.errors[0].message, 'You cannot comment on a closed appeal')
+  })
+
+  test('should error when attaching documents without attachment.create permission', async () => {
+    const cookie = await getAuthPassword(request, 'user@banmanagement.com')
+    const account = await getAccount(request, cookie)
+    const { config: server, pool } = setup.serversPool.values().next().value
+    const player = createPlayer()
+    const actor = createPlayer()
+    const punishment = createBan(player, actor)
+
+    await pool('bm_players').insert([player, actor])
+
+    const [banId] = await pool('bm_player_bans').insert(punishment, ['id'])
+    const appeal = createAppeal({ ...punishment, id: banId }, 'PlayerBan', server, account)
+    const [appealId] = await pool('bm_web_appeals').insert(appeal, ['id'])
+
+    const { content, document } = createDocumentWithContent(account)
+    await insertContentIgnore(setup.dbPool, content)
+    await setup.dbPool('bm_web_documents').insert(document)
+
+    // Only comment.any permission, no attachment.create
+    const role = await setTempRole(setup.dbPool, account, 'player.appeals', 'comment.any', 'view.any')
+
+    const { body, statusCode } = await request
+      .post('/graphql')
+      .set('Cookie', cookie)
+      .set('Accept', 'application/json')
+      .send({
+        query: `mutation createAppealComment($documents: [ID!]) {
+          createAppealComment(id: ${appealId} input: { content: "test", documents: $documents }) {
+            content
+          }
+        }`,
+        variables: { documents: [document.id] }
+      })
+
+    await role.reset()
+
+    assert.strictEqual(statusCode, 200)
+    assert(body.errors)
+    assert.strictEqual(body.errors[0].message, 'You do not have permission to attach files')
+  })
+
+  test('should link documents when user has attachment.create permission', async () => {
+    const cookie = await getAuthPassword(request, 'user@banmanagement.com')
+    const account = await getAccount(request, cookie)
+    const { config: server, pool } = setup.serversPool.values().next().value
+    const player = createPlayer()
+    const actor = createPlayer()
+    const punishment = createBan(player, actor)
+
+    await pool('bm_players').insert([player, actor])
+
+    const [banId] = await pool('bm_player_bans').insert(punishment, ['id'])
+    const appeal = createAppeal({ ...punishment, id: banId }, 'PlayerBan', server, account)
+    const [appealId] = await pool('bm_web_appeals').insert(appeal, ['id'])
+
+    const { content, document } = createDocumentWithContent(account)
+    await insertContentIgnore(setup.dbPool, content)
+    await setup.dbPool('bm_web_documents').insert(document)
+
+    const role = await setTempRole(setup.dbPool, account, 'player.appeals', 'comment.any', 'view.any', 'attachment.create')
+
+    const { body, statusCode } = await request
+      .post('/graphql')
+      .set('Cookie', cookie)
+      .set('Accept', 'application/json')
+      .send({
+        query: `mutation createAppealComment($documents: [ID!]) {
+          createAppealComment(id: ${appealId} input: { content: "test with attachment", documents: $documents }) {
+            id
+            content
+            documents {
+              id
+            }
+          }
+        }`,
+        variables: { documents: [document.id] }
+      })
+
+    await role.reset()
+
+    assert.strictEqual(statusCode, 200)
+    assert(body.data)
+    assert.strictEqual(body.data.createAppealComment.content, 'test with attachment')
+    assert.strictEqual(body.data.createAppealComment.documents.length, 1)
+    assert.strictEqual(body.data.createAppealComment.documents[0].id, document.id)
+
+    // Verify database link was created
+    const [link] = await setup.dbPool('bm_web_appeal_documents')
+      .where({ appeal_id: appealId, comment_id: body.data.createAppealComment.id, document_id: document.id })
+    assert(link)
+  })
+
+  test('should not link documents belonging to another user', async () => {
+    const cookie = await getAuthPassword(request, 'user@banmanagement.com')
+    const account = await getAccount(request, cookie)
+    const { config: server, pool } = setup.serversPool.values().next().value
+    const player = createPlayer()
+    const actor = createPlayer()
+    const otherPlayer = createPlayer()
+    const punishment = createBan(player, actor)
+
+    await pool('bm_players').insert([player, actor, otherPlayer])
+
+    const [banId] = await pool('bm_player_bans').insert(punishment, ['id'])
+    const appeal = createAppeal({ ...punishment, id: banId }, 'PlayerBan', server, account)
+    const [appealId] = await pool('bm_web_appeals').insert(appeal, ['id'])
+
+    // Create document belonging to another player
+    const { content, document } = createDocumentWithContent(otherPlayer)
+    await insertContentIgnore(setup.dbPool, content)
+    await setup.dbPool('bm_web_documents').insert(document)
+
+    const role = await setTempRole(setup.dbPool, account, 'player.appeals', 'comment.any', 'view.any', 'attachment.create')
+
+    const { body, statusCode } = await request
+      .post('/graphql')
+      .set('Cookie', cookie)
+      .set('Accept', 'application/json')
+      .send({
+        query: `mutation createAppealComment($documents: [ID!]) {
+          createAppealComment(id: ${appealId} input: { content: "test", documents: $documents }) {
+            id
+            content
+            documents {
+              id
+            }
+          }
+        }`,
+        variables: { documents: [document.id] }
+      })
+
+    await role.reset()
+
+    assert.strictEqual(statusCode, 200)
+    assert(body.data)
+    // Comment should be created but no documents linked
+    assert.strictEqual(body.data.createAppealComment.content, 'test')
+    assert.strictEqual(body.data.createAppealComment.documents.length, 0)
+  })
+
+  test('should ignore non-existent document IDs', async () => {
+    const cookie = await getAuthPassword(request, 'user@banmanagement.com')
+    const account = await getAccount(request, cookie)
+    const { config: server, pool } = setup.serversPool.values().next().value
+    const player = createPlayer()
+    const actor = createPlayer()
+    const punishment = createBan(player, actor)
+
+    await pool('bm_players').insert([player, actor])
+
+    const [banId] = await pool('bm_player_bans').insert(punishment, ['id'])
+    const appeal = createAppeal({ ...punishment, id: banId }, 'PlayerBan', server, account)
+    const [appealId] = await pool('bm_web_appeals').insert(appeal, ['id'])
+
+    const role = await setTempRole(setup.dbPool, account, 'player.appeals', 'comment.any', 'view.any', 'attachment.create')
+
+    const { body, statusCode } = await request
+      .post('/graphql')
+      .set('Cookie', cookie)
+      .set('Accept', 'application/json')
+      .send({
+        query: `mutation createAppealComment($documents: [ID!]) {
+          createAppealComment(id: ${appealId} input: { content: "test", documents: $documents }) {
+            id
+            content
+            documents {
+              id
+            }
+          }
+        }`,
+        variables: { documents: ['nonexistent-doc-id-1', 'nonexistent-doc-id-2'] }
+      })
+
+    await role.reset()
+
+    assert.strictEqual(statusCode, 200)
+    assert(body.data)
+    // Comment should be created but no documents linked
+    assert.strictEqual(body.data.createAppealComment.content, 'test')
+    assert.strictEqual(body.data.createAppealComment.documents.length, 0)
+  })
+
+  test('should error when attaching more than 3 documents', async () => {
+    const cookie = await getAuthPassword(request, 'user@banmanagement.com')
+    const account = await getAccount(request, cookie)
+    const { config: server, pool } = setup.serversPool.values().next().value
+    const player = createPlayer()
+    const actor = createPlayer()
+    const punishment = createBan(player, actor)
+
+    await pool('bm_players').insert([player, actor])
+
+    const [banId] = await pool('bm_player_bans').insert(punishment, ['id'])
+    const appeal = createAppeal({ ...punishment, id: banId }, 'PlayerBan', server, account)
+    const [appealId] = await pool('bm_web_appeals').insert(appeal, ['id'])
+
+    // Create 4 documents
+    const docs = [
+      createDocumentWithContent(account),
+      createDocumentWithContent(account),
+      createDocumentWithContent(account),
+      createDocumentWithContent(account)
+    ]
+    for (const { content, document } of docs) {
+      await insertContentIgnore(setup.dbPool, content)
+      await setup.dbPool('bm_web_documents').insert(document)
+    }
+    const documents = docs.map(d => d.document)
+
+    const role = await setTempRole(setup.dbPool, account, 'player.appeals', 'comment.any', 'view.any', 'attachment.create')
+
+    const { body, statusCode } = await request
+      .post('/graphql')
+      .set('Cookie', cookie)
+      .set('Accept', 'application/json')
+      .send({
+        query: `mutation createAppealComment($documents: [ID!]) {
+          createAppealComment(id: ${appealId} input: { content: "test", documents: $documents }) {
+            id
+            content
+          }
+        }`,
+        variables: { documents: documents.map(d => d.id) }
+      })
+
+    await role.reset()
+
+    assert.strictEqual(statusCode, 400)
+    assert(body.errors)
+    assert(body.errors[0].message.includes('3'))
   })
 })
