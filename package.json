@@ -110,7 +110,7 @@
     "nodemon": "3.1.11",
     "standard": "16.0.4",
     "standardx": "7.0.0",
-    "supertest": "7.1.0",
+    "supertest": "7.1.4",
     "uuid": "11.1.0"
   },
   "engines": {
