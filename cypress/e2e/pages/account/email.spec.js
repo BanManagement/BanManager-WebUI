@@ -1,7 +1,6 @@
 describe('Account/Email', () => {
-  before(() => {
+  beforeEach(() => {
     cy.login(Cypress.env('admin_username'), Cypress.env('admin_password'))
-
     cy.visit('/account/email')
   })
 
@@ -10,9 +9,6 @@ describe('Account/Email', () => {
   })
 
   it('errors if incorrect current password', () => {
-    cy.login(Cypress.env('admin_username'), Cypress.env('admin_password'))
-    cy.get('form').then($element => $element[0].reset())
-
     cy.get('[data-cy=email]').type('aaa@aaa.com')
     cy.get('[data-cy=currentPassword]').type('aaaaaa')
 
@@ -22,9 +18,6 @@ describe('Account/Email', () => {
   })
 
   it('errors email used', () => {
-    cy.login(Cypress.env('admin_username'), Cypress.env('admin_password'))
-    cy.get('form').then($element => $element[0].reset())
-
     cy.get('[data-cy=email]').type(Cypress.env('admin_username'))
     cy.get('[data-cy=currentPassword]').type(Cypress.env('admin_password'))
 
@@ -34,9 +27,6 @@ describe('Account/Email', () => {
   })
 
   it('successfully changes email', () => {
-    cy.login(Cypress.env('admin_username'), Cypress.env('admin_password'))
-    cy.get('form').then($element => $element[0].reset())
-
     cy.get('[data-cy=email]').type('test@banmanagement.com')
     cy.get('[data-cy=currentPassword]').type(Cypress.env('admin_password'))
 

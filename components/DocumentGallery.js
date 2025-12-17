@@ -18,7 +18,9 @@ function DocumentItem ({ document, onDelete, canDelete }) {
     if (!data) return
     if (data?.deleteDocument?.id) {
       setConfirmDelete(false)
-      onDelete(document.id)
+      if (typeof onDelete === 'function') {
+        onDelete(document.id)
+      }
     }
   }, [data])
 
@@ -30,7 +32,7 @@ function DocumentItem ({ document, onDelete, canDelete }) {
 
   return (
     <>
-      <div className='relative group inline-block'>
+      <div data-cy='document-item' className='relative group inline-block'>
         <a
           href={imageUrl}
           target='_blank'
@@ -45,6 +47,7 @@ function DocumentItem ({ document, onDelete, canDelete }) {
         </a>
         {canDelete && (
           <button
+            data-cy='document-delete'
             className='absolute top-2 right-2 p-1.5 bg-black/60 hover:bg-red-600 rounded-md text-white opacity-0 group-hover:opacity-100 transition-opacity'
             onClick={() => setConfirmDelete(true)}
             title='Delete image'

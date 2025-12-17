@@ -95,6 +95,12 @@ export default function PlayerAppealCommentList ({ appeal, showReply }) {
     mutate({ ...data, listPlayerAppealComments: { ...data.listPlayerAppealComments, records } }, false)
   }
 
+  const handleInitialDocumentDelete = (documentId) => {
+    const updatedInitialDocuments = appeal.initialDocuments?.filter(d => d.id !== documentId) || []
+
+    appeal.initialDocuments = updatedInitialDocuments
+  }
+
   const items = data?.listPlayerAppealComments?.records
     ? data.listPlayerAppealComments.records.map(comment => {
         switch (comment.type) {
@@ -130,7 +136,7 @@ export default function PlayerAppealCommentList ({ appeal, showReply }) {
   return (
     <>
       <div className="relative block ml-4 md:ml-11 pl-4 before:block before:absolute before:content-[''] before:mt-3 before:mb-4 before:top-0 before:bottom-0 before:left-8 before:w-0.5 before:bg-primary-900 before:z-0">
-        <PlayerAppealComment id={0} actor={appeal.actor} created={appeal.created} content={appeal.reason} documents={appeal.initialDocuments} />
+        <PlayerAppealComment id={0} actor={appeal.actor} created={appeal.created} content={appeal.reason} documents={appeal.initialDocuments} onDocumentDelete={handleInitialDocumentDelete} />
         {items}
         <div className='pt-3 pb-3 -ml-16 relative top-2 border-t border-primary-900' />
       </div>

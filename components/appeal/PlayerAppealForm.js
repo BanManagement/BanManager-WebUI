@@ -88,7 +88,7 @@ export default function PlayerAppealForm ({ actor, reason, expires, created, ser
             <InputCharCounter currentLength={watchReason.length} minLength={20} maxLength={2000} />
           </>
           )}
-      <Button disabled={isSubmitting || watchReason.length < 20} loading={isSubmitting}>
+      <Button data-cy='submit-appeal' disabled={isSubmitting || watchReason.length < 20} loading={isSubmitting}>
         Appeal
       </Button>
     </form>

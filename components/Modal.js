@@ -29,6 +29,7 @@ export default function Modal ({ open = false, containerClassName = '', title, c
             <div className='px-4 py-3 sm:px-6 gap-10 flex flex-row-reverse'>
               {confirmButton &&
                 <Button
+                  data-cy='modal-confirm'
                   className='w-full'
                   onClick={onConfirm}
                   disabled={confirmDisabled}
@@ -37,6 +38,7 @@ export default function Modal ({ open = false, containerClassName = '', title, c
                   {confirmButton}
                 </Button>}
               <Button
+                data-cy='modal-cancel'
                 className='w-full bg-primary-900'
                 onClick={onCancel}
                 ref={cancelButtonRef}

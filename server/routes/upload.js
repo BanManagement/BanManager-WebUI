@@ -159,8 +159,8 @@ module.exports = function uploadRoute (dbPool) {
 
         // Insert content record (use INSERT IGNORE for race condition safety)
         await dbPool.raw(
-          `INSERT IGNORE INTO bm_web_document_contents 
-           (content_hash, path, mime_type, size, width, height) 
+          `INSERT IGNORE INTO bm_web_document_contents
+           (content_hash, path, mime_type, size, width, height)
            VALUES (?, ?, ?, ?, ?, ?)`,
           [
             contentHash,

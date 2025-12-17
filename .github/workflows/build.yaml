@@ -55,7 +55,7 @@ jobs:
           PORT: 3001
 
       - name: Cypress run
-        uses: cypress-io/github-action@v2
+        uses: cypress-io/github-action@v6
         env:
           DB_PASSWORD:
           DB_NAME: bm_e2e_tests

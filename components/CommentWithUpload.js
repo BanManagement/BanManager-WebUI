@@ -13,6 +13,7 @@ function FileChip ({ id, url, name, onRemove, progress, error }) {
 
   return (
     <div
+      data-cy='file-chip'
       className={clsx(
         'relative flex items-center gap-2 pl-1 pr-1 py-1 rounded-full',
         'bg-primary-700 border transition-colors',
@@ -41,6 +42,7 @@ function FileChip ({ id, url, name, onRemove, progress, error }) {
 
       {/* Delete button with proper touch target */}
       <button
+        data-cy='file-chip-remove'
         onClick={() => onRemove(id)}
         className={clsx(
           'flex items-center justify-center w-8 h-8 -mr-1 rounded-full transition-colors',
@@ -75,6 +77,7 @@ export function AttachButton ({ disabled }) {
   return (
     <div className='flex items-center gap-2'>
       <button
+        data-cy='attach-button'
         type='button'
         onClick={onAttach}
         disabled={!canUploadMore || disabled}
@@ -266,6 +269,7 @@ const TextAreaWithUpload = forwardRef(function TextAreaWithUpload (props, ref) {
           </label>
         )}
         <div
+          data-cy='upload-dropzone'
           onDragEnter={handleDragEnter}
           onDragLeave={handleDragLeave}
           onDragOver={handleDragOver}
@@ -326,7 +330,7 @@ const TextAreaWithUpload = forwardRef(function TextAreaWithUpload (props, ref) {
 
         {/* Error message display */}
         {Object.keys(errors).length > 0 && (
-          <div className='mt-2 px-2 text-sm text-red-400'>
+          <div data-cy='upload-error' className='mt-2 px-2 text-sm text-red-400'>
             {Object.values(errors)[0]}
           </div>
         )}

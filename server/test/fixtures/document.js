@@ -45,8 +45,8 @@ function createDocumentWithContent (player, options = {}) {
 // Helper to insert content record (uses INSERT IGNORE for MySQL compatibility)
 async function insertContentIgnore (dbPool, content) {
   await dbPool.raw(
-    `INSERT IGNORE INTO bm_web_document_contents 
-     (content_hash, path, mime_type, size, width, height) 
+    `INSERT IGNORE INTO bm_web_document_contents
+     (content_hash, path, mime_type, size, width, height)
      VALUES (?, ?, ?, ?, ?, ?)`,
     [content.content_hash, content.path, content.mime_type, content.size, content.width, content.height]
   )
