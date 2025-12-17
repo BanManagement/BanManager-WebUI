@@ -62,8 +62,12 @@ jobs:
           LOG_LEVEL: warn
           PORT: 3000
           NODE_ENV: production
+          # Used by cypress/setup.js to create the test user in the database
           ADMIN_USERNAME: "admin@banmanagement.com"
-          ADMIN_PASSWORD: "P%@#fjdVJ3Y%pdGR" # Keep this as is to avoid HIBP failing checks
+          ADMIN_PASSWORD: "P%@#fjdVJ3Y%pdGR"
+          # CYPRESS_ prefixed vars are automatically available to Cypress.env()
+          CYPRESS_admin_username: "admin@banmanagement.com"
+          CYPRESS_admin_password: "P%@#fjdVJ3Y%pdGR"
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CYPRESS_PROJECT_ID: ${{ secrets.PROJECT_ID }}
