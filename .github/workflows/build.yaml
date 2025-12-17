@@ -59,8 +59,6 @@ jobs:
         env:
           DB_PASSWORD:
           DB_NAME: bm_e2e_tests
-          ADMIN_USERNAME: "admin@banmanagement.com"
-          ADMIN_PASSWORD: "xK9mQp2LvR7nS4jT"
 
       - name: Build for E2E
         run: npm run build
@@ -77,9 +75,6 @@ jobs:
           LOG_LEVEL: warn
           PORT: 3000
           NODE_ENV: production
-          # CYPRESS_ prefixed vars are automatically available to Cypress.env()
-          CYPRESS_admin_username: "admin@banmanagement.com"
-          CYPRESS_admin_password: "xK9mQp2LvR7nS4jT"
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CYPRESS_PROJECT_ID: ${{ secrets.PROJECT_ID }}
