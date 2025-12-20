@@ -39,18 +39,17 @@ const TextArea = forwardRef((props, ref) => {
     text-gray-400
     duration-300
     transform
-    -translate-y-3
-    translate-x-1.5
+    -translate-y-5
     scale-75
-    top-2
+    top-5
     left-4
     z-10
     origin-[0]
-    start-2.5
     peer-focus:text-gray-500
     peer-placeholder-shown:scale-100
     peer-placeholder-shown:translate-y-0
     peer-focus:scale-75
+    peer-focus:-translate-y-5
     rtl:peer-focus:translate-x-1/4
     rtl:peer-focus:left-auto
     ${labelClassName}

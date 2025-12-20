@@ -54,17 +54,17 @@ const Input = forwardRef((props, ref) => {
     text-gray-400
     duration-300
     transform
-    -translate-y-3
+    -translate-y-[calc(100%+0.35rem)]
     scale-75
-    top-1/4
+    top-1/2
     z-10
     origin-[0]
     start-2.5
     peer-focus:text-gray-500
     peer-placeholder-shown:scale-100
-    peer-placeholder-shown:translate-y-0
+    peer-placeholder-shown:-translate-y-1/2
     peer-focus:scale-75
-    peer-focus:-translate-y-3
+    peer-focus:-translate-y-[calc(100%+0.35rem)]
     rtl:peer-focus:translate-x-1/4
     rtl:peer-focus:left-auto
     ${labelClassName}
@@ -110,7 +110,7 @@ const Input = forwardRef((props, ref) => {
           {...rest}
         />
         {type === 'password' &&
-          <span className='absolute right-5 top-4 text-gray-400 text-lg cursor-pointer' onClick={toggleShowInput}>
+          <span className='absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 text-lg cursor-pointer' onClick={toggleShowInput}>
             {showInput ? <FaEye /> : <FaEyeSlash />}
           </span>}
         {label &&
