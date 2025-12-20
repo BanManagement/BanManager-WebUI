@@ -1,14 +1,15 @@
 {
   "extends": [
-    "config:base"
+    "config:recommended"
   ],
-  "automergeType": "branch-push",
+  "automergeType": "branch",
   "automerge": true,
   "major": {
     "automerge": false
   },
   "timezone": "Europe/London",
   "schedule": [
-    "after 10pm and before 5am on every weekday"
+    "after 10pm every weekday",
+    "before 5am every weekday"
   ]
 }
