@@ -6,16 +6,17 @@ module.exports = async function updatePlayerBan (obj, { id, serverId, input }, {
 
   if (!server) throw new ExposedError('Server does not exist')
 
-  let data = await playerBan(obj, { id, serverId }, { state }, info)
+  const data = await playerBan(obj, { id, serverId }, { state }, info)
 
   if (!data) throw new ExposedError(`Player ban ${id} does not exist`)
 
   const table = server.config.tables.playerBans
-  const updateData = { expires: input.expires, reason: input.reason }
 
-  await server.pool(table).update(updateData).where({ id })
+  await server.pool(table).update({
+    expires: input.expires,
+    reason: input.reason,
+    updated: server.pool.raw('UNIX_TIMESTAMP()')
+  }).where({ id })
 
-  data = { ...data, ...updateData }
-
-  return data
+  return playerBan(obj, { id, serverId }, { state }, info)
 }

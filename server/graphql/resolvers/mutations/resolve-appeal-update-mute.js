@@ -33,7 +33,7 @@ module.exports = async function resolveAppealUpdateMute (obj, { id, input }, { s
   let commentId
 
   await server.pool.transaction(async trx => {
-    await trx(server.config.tables.playerMutes).update({ expires: input.expires, reason: input.reason, soft: input.soft ? 1 : 0 }).where({ id: data.punishment_id })
+    await trx(server.config.tables.playerMutes).update({ expires: input.expires, reason: input.reason, soft: input.soft ? 1 : 0, updated: trx.raw('UNIX_TIMESTAMP()') }).where({ id: data.punishment_id })
 
     return await state.dbPool.transaction(async trx => {
       const comment = {

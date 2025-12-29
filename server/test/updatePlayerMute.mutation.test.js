@@ -98,6 +98,9 @@ describe('Mutation update player mute', () => {
     await pool('bm_players').insert([player, actor])
     const [inserted] = await pool('bm_player_mutes').insert(mute, ['id'])
 
+    const [originalMute] = await pool('bm_player_mutes').where({ id: inserted })
+    const originalUpdated = originalMute.updated
+
     const { body, statusCode } = await request
       .post('/graphql')
       .set('Cookie', cookie)
@@ -142,5 +145,8 @@ describe('Mutation update player mute', () => {
     assert.strictEqual(body.data.updatePlayerMute.expires, 1000000000)
     assert.strictEqual(body.data.updatePlayerMute.soft, false)
     assert.deepStrictEqual(body.data.updatePlayerMute.acl, { delete: true, update: true, yours: false })
+
+    const [updatedMute] = await pool('bm_player_mutes').where({ id: inserted })
+    assert(updatedMute.updated >= originalUpdated, 'updated timestamp should be updated')
   })
 })

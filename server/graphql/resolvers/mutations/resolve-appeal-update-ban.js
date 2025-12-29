@@ -33,7 +33,7 @@ module.exports = async function resolveAppealUpdateBan (obj, { id, input }, { se
   let commentId
 
   await server.pool.transaction(async trx => {
-    await trx(server.config.tables.playerBans).update({ expires: input.expires, reason: input.reason }).where({ id: data.punishment_id })
+    await trx(server.config.tables.playerBans).update({ expires: input.expires, reason: input.reason, updated: trx.raw('UNIX_TIMESTAMP()') }).where({ id: data.punishment_id })
 
     return await state.dbPool.transaction(async trx => {
       const comment = {

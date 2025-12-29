@@ -98,6 +98,9 @@ describe('Mutation update player ban', () => {
     await pool('bm_players').insert([player, actor])
     const [inserted] = await pool('bm_player_bans').insert(ban, ['id'])
 
+    const [originalBan] = await pool('bm_player_bans').where({ id: inserted })
+    const originalUpdated = originalBan.updated
+
     const { body, statusCode } = await request
       .post('/graphql')
       .set('Cookie', cookie)
@@ -139,5 +142,8 @@ describe('Mutation update player ban', () => {
     assert.strictEqual(body.data.updatePlayerBan.reason, 'testing updates')
     assert.strictEqual(body.data.updatePlayerBan.expires, 1000000000)
     assert.deepStrictEqual(body.data.updatePlayerBan.acl, { delete: true, update: true, yours: false })
+
+    const [updatedBan] = await pool('bm_player_bans').where({ id: inserted })
+    assert(updatedBan.updated >= originalUpdated, 'updated timestamp should be updated')
   })
 })
