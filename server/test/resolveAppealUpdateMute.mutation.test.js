@@ -56,6 +56,9 @@ describe('Mutation resolveAppealUpdateMute', () => {
     await pool('bm_players').insert(player)
 
     const [id] = await pool('bm_player_mutes').insert(punishment, ['id'])
+    const [originalMute] = await pool('bm_player_mutes').where({ id })
+    const originalUpdated = originalMute.updated
+
     const data = createAppeal({ ...punishment, id }, 'PlayerMute', server, player)
     const [inserted] = await pool('bm_web_appeals').insert(data, ['id'])
     const appealRole = await setTempRole(setup.dbPool, account, 'player.appeals', 'update.state.any', 'view.any')
@@ -114,6 +117,9 @@ describe('Mutation resolveAppealUpdateMute', () => {
     assert.strictEqual(body.data.resolveAppealUpdateMute.comment.newExpires, 1000000000)
     assert.strictEqual(body.data.resolveAppealUpdateMute.comment.oldSoft, false)
     assert.strictEqual(body.data.resolveAppealUpdateMute.comment.newSoft, true)
+
+    const [updatedMute] = await pool('bm_player_mutes').where({ id })
+    assert(updatedMute.updated >= originalUpdated, 'updated timestamp should be updated')
   })
 
   test('should allow update.state.own', async () => {

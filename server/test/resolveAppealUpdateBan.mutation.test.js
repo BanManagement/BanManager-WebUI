@@ -56,6 +56,9 @@ describe('Mutation resolveAppealUpdateBan', () => {
     await pool('bm_players').insert(player)
 
     const [id] = await pool('bm_player_bans').insert(punishment, ['id'])
+    const [originalBan] = await pool('bm_player_bans').where({ id })
+    const originalUpdated = originalBan.updated
+
     const data = createAppeal({ ...punishment, id }, 'PlayerBan', server, player)
     const [inserted] = await pool('bm_web_appeals').insert(data, ['id'])
     const appealRole = await setTempRole(setup.dbPool, account, 'player.appeals', 'update.state.any', 'view.any')
@@ -110,6 +113,9 @@ describe('Mutation resolveAppealUpdateBan', () => {
     assert.strictEqual(body.data.resolveAppealUpdateBan.comment.newReason, 'test')
     assert.strictEqual(body.data.resolveAppealUpdateBan.comment.oldExpires, punishment.expires)
     assert.strictEqual(body.data.resolveAppealUpdateBan.comment.newExpires, 1000000000)
+
+    const [updatedBan] = await pool('bm_player_bans').where({ id })
+    assert(updatedBan.updated >= originalUpdated, 'updated timestamp should be updated')
   })
 
   test('should allow update.state.own', async () => {
