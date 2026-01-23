@@ -67,7 +67,7 @@
     "koa-pino-logger": "4.0.0",
     "koa-send": "5.0.1",
     "koa-session": "6.4.0",
-    "lodash-es": "4.17.22",
+    "lodash-es": "4.17.23",
     "memoizee": "0.4.17",
     "multer": "^2.0.2",
     "mysql2": "3.16.0",
