@@ -28,7 +28,7 @@
     "@nivo/line": "0.88.0",
     "@nivo/pie": "0.88.0",
     "@oclif/core": "4.8.0",
-    "@oclif/plugin-help": "6.2.36",
+    "@oclif/plugin-help": "6.2.37",
     "@odiffey/discord-markdown": "^3.3.0",
     "@rpldy/upload-button": "^1.13.0",
     "@rpldy/upload-drop-zone": "^1.13.0",
