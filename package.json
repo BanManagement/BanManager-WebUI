@@ -38,7 +38,7 @@
     "@universemc/react-palette": "1.0.3",
     "argon2": "0.44.0",
     "autoprefixer": "10.4.24",
-    "chalk": "4.1.2",
+    "chalk": "5.6.2",
     "clsx": "2.1.1",
     "dataloader": "2.2.3",
     "date-fns": "4.1.0",
