@@ -106,7 +106,7 @@
     "@next/eslint-plugin-next": "14.2.35",
     "@oclif/test": "4.1.16",
     "coveralls-next": "4.2.2",
-    "cypress": "15.9.0",
+    "cypress": "15.10.0",
     "eslint-plugin-cypress": "4.3.0",
     "eslint-plugin-react": "7.37.5",
     "faker": "5.5.3",
