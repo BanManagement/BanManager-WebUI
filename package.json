@@ -116,7 +116,7 @@
     "nixt": "0.5.1",
     "nock": "^14.0.0-beta.6",
     "nodemon": "3.1.11",
-    "standard": "16.0.4",
+    "standard": "17.1.2",
     "standardx": "7.0.0",
     "supertest": "7.2.2",
     "uuid": "11.1.0"
