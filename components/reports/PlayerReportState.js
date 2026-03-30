@@ -1,11 +1,10 @@
-import { useEffect } from 'react'
 import Loader from '../Loader'
 import Select from '../Select'
 import { useMutateApi } from '../../utils'
 import ErrorMessages from '../ErrorMessages'
 
 export default function PlayerReportState ({ id, currentState, states, server, onChange }) {
-  const { data, loading, load, errors } = useMutateApi({
+  const { loading, load, errors } = useMutateApi({
     query: /* GraphQL */ `
       mutation reportState($report: ID!, $serverId: ID!, $state: ID!) {
         reportState(report: $report, serverId: $serverId, state: $state) {
@@ -18,16 +17,13 @@ export default function PlayerReportState ({ id, currentState, states, server, o
       }`
   })
 
-  useEffect(() => {
-    if (!data) return
-    if (Object.keys(data).some(key => !!data[key].updated)) {
-      onChange(data)
-    }
-  }, [data])
+  const handleChange = async (state) => {
+    if (currentState?.id === state.value) return
 
-  const handleChange = (state) => {
-    if (currentState?.id !== state.value) {
-      load({ report: id, serverId: server, state: state.value })
+    const data = await load({ report: id, serverId: server, state: state.value })
+
+    if (data?.reportState?.updated) {
+      onChange(data)
     }
   }
 
@@ -37,7 +33,7 @@ export default function PlayerReportState ({ id, currentState, states, server, o
     <>
       <ErrorMessages errors={errors} />
       <Select
-        defaultValue={currentState ? ({ value: currentState.id, label: currentState.name }) : null}
+        value={currentState?.id}
         options={states}
         onChange={handleChange}
       />

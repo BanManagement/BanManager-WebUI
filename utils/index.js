@@ -70,11 +70,13 @@ export const useMutateApi = (operation) => {
       const data = await graphqlFetcher([operation.query, ...flatVars])
 
       setState({ ...state, errors: null, data })
+      setLoading(false)
+
+      return data
     } catch (error) {
       setState({ ...state, errors: error?.response?.errors })
+      setLoading(false)
     }
-
-    setLoading(false)
   }
 
   return { load, loading, ...state }
