@@ -45,7 +45,7 @@ const nextConfig = (phase) => {
       remotePatterns: [
         {
           protocol: 'https',
-          hostname: 'crafatar.com',
+          hostname: 'vzge.me',
           pathname: '**'
         }
       ]

@@ -22,6 +22,7 @@ const {
 } = require('../server/test/fixtures')
 const createAppealComment = require('../server/test/fixtures/appeal-comment')
 const { hash } = require('../server/data/hash')
+const { encrypt } = require('../server/data/crypto')
 
 const DB_NAME = process.env.DB_NAME || 'bm_local_dev'
 const FORCE = process.argv.includes('--force')
@@ -166,6 +167,11 @@ async function seed () {
 
   // Create server
   const server = await createServer(playerConsole.id, DB_NAME)
+
+  if (server.password) {
+    server.password = await encrypt(process.env.ENCRYPTION_KEY, server.password)
+  }
+
   await dbPool('bm_web_servers').insert(server)
   console.log('  - Created server connection')
 

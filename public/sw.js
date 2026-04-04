@@ -5,7 +5,7 @@ self.addEventListener('push', function (event) {
     body: data.body,
     data: data.data,
     tag: `bm-web-notification-${data.data.notificationId}`,
-    icon: `https://crafatar.com/avatars/${data.data.actorId}?size=${256}&overlay=true`
+    icon: `https://vzge.me/face/256/${data.data.actorId}.png`
   }))
 })
 
