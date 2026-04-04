@@ -90,7 +90,7 @@ module.exports = async function (ctx) {
         gravity: 'northwest'
       },
       {
-        input: avatar,
+        input: await sharp(avatar).resize(256, 416).toBuffer(),
         top: 109,
         left: 60,
         gravity: 'northwest'
@@ -103,7 +103,13 @@ module.exports = async function (ctx) {
 
 const fetchAvatar = async function (id) {
   return new Promise((resolve, reject) => {
-    const req = https.get(`https://crafatar.com/renders/body/${id}?scale=10&overlay=true&w=256`, res => {
+    const options = {
+      headers: {
+        'User-Agent': 'BanManager-WebUI/1.0 (+https://banmanagement.com)'
+      }
+    }
+
+    const req = https.get(`https://vzge.me/full/416/${id}.png`, options, res => {
       if (res.statusCode < 200 || res.statusCode >= 300) {
         return reject(new Error(`Status Code: ${res.statusCode}`))
       }

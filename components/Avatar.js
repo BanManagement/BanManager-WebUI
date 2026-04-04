@@ -1,14 +1,14 @@
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 
-const Avatar = ({ height, width, scale = '6', uuid, className = '', type = 'avatar' }) => {
+const Avatar = ({ height, width, uuid, className = '', type = 'avatar' }) => {
   const [error, setError] = useState(null)
-  let url = 'https://crafatar.com/'
+  let url = 'https://vzge.me/'
 
   if (type === 'avatar') {
-    url += `avatars/${uuid}?size=${width}&overlay=true`
+    url += `face/${width}/${uuid}.png`
   } else if (type === 'body') {
-    url += `renders/body/${uuid}?scale=${scale}&overlay=true`
+    url += `full/${height}/${uuid}.png`
   }
 
   let fallbackSrc = (process.env.BASE_PATH || '') + '/images/'
@@ -22,6 +22,7 @@ const Avatar = ({ height, width, scale = '6', uuid, className = '', type = 'avat
 
   return (
     <Image
+      unoptimized
       width={width}
       height={height}
       onError={setError}

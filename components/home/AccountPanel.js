@@ -20,7 +20,7 @@ const AccountPanel = () => {
         {user
           ? (
             <div className='flex flex-col items-center w-full gap-2'>
-              <Avatar type='body' height='148' width='66' uuid={user.id} />
+              <Avatar type='body' height='148' width='91' uuid={user.id} />
               <Link href='/dashboard' passHref>
                 <Button>My Dashboard</Button>
               </Link>
