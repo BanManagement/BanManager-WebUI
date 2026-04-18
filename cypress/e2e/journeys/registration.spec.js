@@ -7,26 +7,12 @@ describe('Registration & PIN-based account flows + global player search', () => 
     cy.clearCookies()
   })
 
-  it('logs in via PIN with no account, then registers an account end-to-end', () => {
+  it('validates password mismatch then logs in via PIN and registers an account end-to-end', () => {
     cy.loginAsPin(data.pinOnlyPlayerName, data.pinOnlyPinValue, data.serverId)
 
     cy.visit('/account/register')
 
-    cy.get('[data-cy=email]').should('be.visible').type(`pinnewbie+${Date.now()}@banmanagement.com`)
-    cy.get('[data-cy=password]').type('newAccount-Pa55!')
-    cy.get('[data-cy=confirm-password]').type('newAccount-Pa55!')
-
-    cy.get('[data-cy=submit-register]').click()
-
-    cy.url({ timeout: 10000 }).should('include', '/dashboard')
-  })
-
-  it('shows an error when register password and confirmation do not match', () => {
-    cy.loginAsPin(data.pinOnlyPlayerName, data.pinOnlyPinValue, data.serverId)
-
-    cy.visit('/account/register')
-
-    cy.get('[data-cy=email]').type(`mismatch+${Date.now()}@banmanagement.com`)
+    cy.get('[data-cy=email]').should('be.visible').type(`mismatch+${Date.now()}@banmanagement.com`)
     cy.get('[data-cy=password]').type('matchingPa55!')
     cy.get('[data-cy=confirm-password]').type('different5566')
 
@@ -34,6 +20,17 @@ describe('Registration & PIN-based account flows + global player search', () => 
 
     cy.contains('Passwords do not match').should('exist')
     cy.url().should('include', '/account/register')
+
+    cy.get('[data-cy=email]').clear()
+    cy.get('[data-cy=email]').type(`pinnewbie+${Date.now()}@banmanagement.com`)
+    cy.get('[data-cy=password]').clear()
+    cy.get('[data-cy=password]').type('newAccount-Pa55!')
+    cy.get('[data-cy=confirm-password]').clear()
+    cy.get('[data-cy=confirm-password]').type('newAccount-Pa55!')
+
+    cy.get('[data-cy=submit-register]').click()
+
+    cy.url({ timeout: 10000 }).should('include', '/dashboard')
   })
 
   it('forgotten password page renders the PIN login form', () => {
@@ -51,28 +48,16 @@ describe('Registration & PIN-based account flows + global player search', () => 
 
     cy.get('input[name=name]').type(data.pinPlayerName)
 
-    cy.get('input[type=text], input[type=tel]').each($input => {
-      const $field = Cypress.$($input)
-      if ($field.attr('inputMode') === 'numeric' || $field.attr('placeholder') === '-') {
-        cy.wrap($input).type('1', { force: true })
+    const expectedPin = data.pinValue
+
+    cy.get('input[inputmode=numeric]').should('have.length', 6).then($inputs => {
+      for (let i = 0; i < 6; i++) {
+        cy.wrap($inputs[i]).type(expectedPin[i], { force: true })
       }
     })
 
-    cy.get('body').then($body => {
-      const expectedPin = data.pinValue
-      const codeInputs = $body.find('input[inputMode="numeric"]')
-      if (codeInputs.length === 6) {
-        for (let i = 0; i < 6; i++) {
-          cy.wrap(codeInputs[i]).clear({ force: true })
-          cy.wrap(codeInputs[i]).type(expectedPin[i], { force: true })
-        }
-
-        cy.get('[data-cy=submit-login-pin]').click()
-        cy.url({ timeout: 10000 }).should('include', '/appeal/punishment')
-      } else {
-        cy.log(`Expected 6 PIN inputs, found ${codeInputs.length}; skipping submit assertion`)
-      }
-    })
+    cy.get('[data-cy=submit-login-pin]').click()
+    cy.url({ timeout: 10000 }).should('include', '/appeal/punishment')
   })
 
   it('global player search in the nav navigates to player profile pages', () => {

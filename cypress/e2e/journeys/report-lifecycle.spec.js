@@ -15,7 +15,7 @@ describe('Report lifecycle - admin walks an open report through every state', ()
 
     cy.contains(/Report/i).should('exist')
 
-    cy.get('[data-cy=report-state]').should('exist').within(() => {
+    cy.get('[data-cy=report-state]').first().should('exist').within(() => {
       cy.contains('Open').should('exist')
     })
 
@@ -24,40 +24,40 @@ describe('Report lifecycle - admin walks an open report through every state', ()
 
     cy.contains(REPORT_COMMENT, { timeout: 10000 }).should('exist')
 
-    cy.get('[data-cy=report-assignee]').within(() => {
+    cy.get('[data-cy=report-assignee]').first().within(() => {
       cy.get('.react_select__control').click()
     })
     cy.get('.react_select__input').last().type('confuser')
     cy.get('.react_select__option', { timeout: 10000 }).contains('confuser').click()
 
-    cy.get('[data-cy=report-assignee]').should('contain.text', 'confuser')
+    cy.get('[data-cy=report-assignee]').first().should('contain.text', 'confuser')
 
-    cy.get('[data-cy=report-state]').within(() => {
+    cy.get('[data-cy=report-state]').first().within(() => {
       cy.get('.react_select__control').click()
     })
     cy.get('.react_select__option').contains('Assigned').click()
 
-    cy.get('[data-cy=report-state]', { timeout: 10000 }).should('contain.text', 'Assigned')
+    cy.get('[data-cy=report-state]', { timeout: 10000 }).first().should('contain.text', 'Assigned')
 
-    cy.get('[data-cy=report-state]').within(() => {
+    cy.get('[data-cy=report-state]').first().within(() => {
       cy.get('.react_select__control').click()
     })
     cy.get('.react_select__option').contains('Resolved').click()
 
-    cy.get('[data-cy=report-state]', { timeout: 10000 }).should('contain.text', 'Resolved')
+    cy.get('[data-cy=report-state]', { timeout: 10000 }).first().should('contain.text', 'Resolved')
 
     cy.get('[data-cy=submit-report-comment-form]').should('not.exist')
 
-    cy.get('[data-cy=report-state]').within(() => {
+    cy.get('[data-cy=report-state]').first().within(() => {
       cy.get('.react_select__control').click()
     })
     cy.get('.react_select__option').contains('Closed').click()
 
-    cy.get('[data-cy=report-state]', { timeout: 10000 }).should('contain.text', 'Closed')
+    cy.get('[data-cy=report-state]', { timeout: 10000 }).first().should('contain.text', 'Closed')
   })
 
-  it('reports list page shows the seeded reports and links to detail pages', () => {
-    cy.visit(`/reports?serverId=${data.serverId}`)
+  it('reports dashboard page shows the seeded reports and links to detail pages', () => {
+    cy.visit('/dashboard/reports')
 
     cy.contains(/Reports/i).should('exist')
 

@@ -14,7 +14,7 @@ describe('Custom error pages', () => {
   })
 
   it('renders the 500 page when visited directly', () => {
-    cy.visit('/500')
+    cy.visit('/500', { failOnStatusCode: false })
 
     cy.title().should('include', 'Error')
 

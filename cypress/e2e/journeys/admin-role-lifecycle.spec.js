@@ -24,31 +24,31 @@ describe('Admin role lifecycle', () => {
     cy.get(`[data-cy=role-item][data-cy-role="${roleName}"]`).should('exist')
 
     cy.fixture('e2e-data.json').then(({ userPlayerId, secondServerId }) => {
-      cy.contains('h1, h2', 'Assign Global Player Roles')
-        .closest('div')
-        .within(() => {
-          cy.get('.react_select__control').first().click()
-          cy.get('.react_select__input').first().type('RegularUser')
-          cy.contains('.react_select__option', 'RegularUser').click()
+      cy.get('[data-cy=assign-global-role]').within(() => {
+        cy.get('.react_select__control').first().click()
+        cy.get('.react_select__input').first().type('RegularUser')
+      })
+      cy.contains('.react_select__option', 'RegularUser').click()
 
-          cy.get('.react_select__control').eq(1).click()
-          cy.contains('.react_select__option', roleName).click()
+      cy.get('[data-cy=assign-global-role]').within(() => {
+        cy.get('.react_select__control').eq(1).click()
+      })
+      cy.contains('.react_select__option', roleName).click()
 
-          cy.get('[data-cy=submit-players-role]').click()
-        })
+      cy.get('[data-cy=assign-global-role] [data-cy=submit-players-role]').click()
 
-      cy.contains('h1, h2', 'Assign Server Player Roles')
-        .closest('div')
-        .within(() => {
-          cy.get('.react_select__control').first().click()
-          cy.get('.react_select__input').first().type('GuestPlayer')
-          cy.contains('.react_select__option', 'GuestPlayer').click()
+      cy.get('[data-cy=assign-server-role]').within(() => {
+        cy.get('.react_select__control').first().click()
+        cy.get('.react_select__input').first().type('GuestPlayer')
+      })
+      cy.contains('.react_select__option', 'GuestPlayer').click()
 
-          cy.get('.react_select__control').eq(1).click()
-          cy.contains('.react_select__option', roleName).click()
+      cy.get('[data-cy=assign-server-role]').within(() => {
+        cy.get('.react_select__control').eq(1).click()
+      })
+      cy.contains('.react_select__option', roleName).click()
 
-          cy.get('[data-cy=submit-players-role]').click()
-        })
+      cy.get('[data-cy=assign-server-role] [data-cy=submit-players-role]').click()
 
       expect(userPlayerId).to.be.a('string')
       expect(secondServerId).to.be.a('string')

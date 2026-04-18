@@ -20,7 +20,7 @@ describe('Appeal lifecycle - submit, admin notify, review, resolve', () => {
 
     cy.get('[data-cy=punishment-picker-filter-warning]').should('exist')
 
-    cy.get(`[data-cy=punishment-picker-item][data-cy-punishment-type=warning][data-cy-punishment-id="${data.userWarningId}"]`)
+    cy.get(`[data-cy=punishment-picker-item][data-cy-punishment-type=warning][data-cy-punishment-id="${data.userWarningId}"][data-cy-server-id="${data.serverId}"]`)
       .should('exist')
       .within(() => {
         cy.get('button').first().click()
@@ -66,13 +66,13 @@ describe('Appeal lifecycle - submit, admin notify, review, resolve', () => {
 
     cy.contains(ADMIN_COMMENT).should('exist')
 
-    cy.get('[data-cy=appeal-assignee]').within(() => {
+    cy.get('[data-cy=appeal-assignee]').first().within(() => {
       cy.get('.react_select__control').click()
     })
     cy.get('.react_select__input').last().type('confuser')
     cy.get('.react_select__option', { timeout: 10000 }).contains('confuser').click()
 
-    cy.get('[data-cy=appeal-state]').within(() => {
+    cy.get('[data-cy=appeal-state]').first().within(() => {
       cy.get('.react_select__control').click()
     })
     cy.get('.react_select__option').contains(/Resolved|Denied/).click()
@@ -112,8 +112,8 @@ describe('Appeal lifecycle - submit, admin notify, review, resolve', () => {
 
     cy.contains(/Appeal/i).should('exist')
 
-    cy.get('[data-cy=appeal-state]').should('exist')
-    cy.get('[data-cy=appeal-assignee]').should('exist')
+    cy.get('[data-cy=appeal-state]').first().should('exist')
+    cy.get('[data-cy=appeal-assignee]').first().should('exist')
 
     cy.get('textarea').first().type('Investigating this ban appeal')
     cy.get('[data-cy=submit-report-comment-form]').first().click()
@@ -128,9 +128,9 @@ describe('Appeal lifecycle - submit, admin notify, review, resolve', () => {
 
     cy.contains(/Appeal/i).should('exist')
 
-    cy.get('[data-cy=appeal-state]').should('exist')
+    cy.get('[data-cy=appeal-state]').first().should('exist')
 
-    cy.get('[data-cy=appeal-assignee]').should('exist').within(() => {
+    cy.get('[data-cy=appeal-assignee]').first().should('exist').within(() => {
       cy.contains(/confuser/).should('exist')
     })
   })

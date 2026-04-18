@@ -1,3 +1,5 @@
+const data = require('../../fixtures/e2e-data.json')
+
 describe('Admin server lifecycle', () => {
   const newServerName = `Cypress${Math.floor(Math.random() * 1e6)}`
   const renamedServer = `${newServerName}Renamed`
@@ -16,7 +18,7 @@ describe('Admin server lifecycle', () => {
 
     cy.get('[data-cy=server-form]').should('exist')
     cy.get('[data-cy=server-name]').type(newServerName)
-    cy.get('[data-cy=server-console]').type('11111111111111111111111111111111')
+    cy.get('[data-cy=server-console]').type(data.consoleUuid)
     cy.get('[data-cy=server-host]').type(Cypress.env('DB_HOST') || '127.0.0.1')
     cy.get('[data-cy=server-port]').type(`${Cypress.env('DB_PORT') || 3306}`)
     cy.get('[data-cy=server-database]').type('bm_e2e_tests')

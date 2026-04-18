@@ -78,7 +78,8 @@ const { encrypt } = require('../server/data/crypto')
 
   await dbm.up()
 
-  const playerConsole = createPlayer({ name: 'Console' })
+  const consoleUuid = '00000000-0000-0000-0000-000000000001'
+  const playerConsole = createPlayer({ id: parse(consoleUuid, Buffer.alloc(16)), name: 'Console' })
   const guestUser = createPlayer({ name: 'GuestPlayer' })
   const loggedInUser = createPlayer({ name: 'RegularUser' })
   const adminUser = createPlayer({ id: parse('ae51c849-3f2a-4a37-986d-55ed5b02307f', Buffer.alloc(16)), name: 'confuser' })
@@ -265,6 +266,7 @@ const { encrypt } = require('../server/data/crypto')
   const fixtureData = {
     serverId: server.id,
     secondServerId: secondServer.id,
+    consoleUuid,
     banId,
     userPlayerId: unparse(loggedInUser.id),
     pinPlayerName: loggedInUser.name,

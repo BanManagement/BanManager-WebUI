@@ -70,12 +70,12 @@ export default function Page () {
             </Message.List>
           </Message>
         </div>
-        <div>
+        <div data-cy='assign-global-role'>
           <PageHeader title='Assign Global Player Roles' />
           <p className='mb-6'>Takes priority over server roles, and applies globally</p>
           <AssignPlayersRoleForm roles={data.roles} query={globalRoleMutation} />
         </div>
-        <div>
+        <div data-cy='assign-server-role'>
           <PageHeader title='Assign Server Player Roles' />
           <p className='mb-6'>Only affects certain actions where a server is applicable, e.g. bans</p>
           <AssignPlayersRoleForm roles={data.roles} servers={data.servers} query={serverRoleMutation} />

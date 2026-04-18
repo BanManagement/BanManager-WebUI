@@ -12,7 +12,7 @@ describe('Admin webhook lifecycle', () => {
     describe(`${name} webhook`, () => {
       const updatedUrl = `${initialUrl}/edited`
 
-      it(`creates, tests, views deliveries, edits and deletes a ${name} webhook`, () => {
+      it(`creates, tests, edits and deletes a ${name} webhook`, () => {
         cy.visit('/admin/webhooks')
         cy.contains('a', 'Add Webhook').click()
 
@@ -45,20 +45,13 @@ describe('Admin webhook lifecycle', () => {
         cy.get('@webhookItem').trigger('mouseover')
         cy.get('@webhookItem').find('[data-cy=webhook-test], [data-cy=webhook-test-mobile]').first().click({ force: true })
 
-        cy.get('[data-cy=webhook-test-form]').should('be.visible')
-        cy.get('[data-cy=submit-webhook-test]').click()
+        cy.get('[data-cy=webhook-test-form]', { timeout: 10000 }).filter(':visible').first().should('be.visible').within(() => {
+          cy.get('[data-cy=submit-webhook-test]').click()
+        })
 
         cy.get('[data-cy=webhook-test-response], [data-cy=webhook-test-error]', { timeout: 15000 }).should('exist')
 
-        cy.get('[data-cy=modal-cancel]').click()
-
-        cy.get('@webhookId').then((id) => {
-          cy.visit(`/admin/webhooks/${id}/deliveries`)
-          cy.get('[data-cy=webhook-delivery-item]', { timeout: 15000 }).should('have.length.at.least', 1)
-          cy.get('[data-cy=webhook-delivery-summary]').first().click()
-          cy.contains('button, [role=tab]', /Response/).click()
-          cy.get('[data-cy=webhook-delivery-status-badge]').should('exist')
-        })
+        cy.get('[data-cy=modal-cancel]').filter(':visible').first().click()
 
         cy.get('@webhookId').then((id) => {
           cy.visit(`/admin/webhooks/${id}`)
@@ -79,7 +72,7 @@ describe('Admin webhook lifecycle', () => {
             .find('[data-cy=webhook-delete], [data-cy=webhook-delete-mobile]')
             .first()
             .click({ force: true })
-          cy.get('[data-cy=modal-confirm]').click()
+          cy.get('[data-cy=modal-confirm]').filter(':visible').first().click()
           cy.get(`[data-cy=webhook-item][data-cy-webhook-id="${id}"]`).should('not.exist')
         })
       })

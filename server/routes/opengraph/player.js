@@ -10,7 +10,7 @@ const { stat } = require('fs/promises')
 const { generateText } = require('./utils')
 const playerStatistics = require('../../graphql/resolvers/queries/player-statistics')
 
-const publicDir = path.resolve('public')
+const publicDir = path.resolve(__dirname, '..', '..', '..', 'public')
 const normalFont = opentype.loadSync(path.join(publicDir, 'fonts/Inter-Regular.ttf'))
 const boldFont = opentype.loadSync(path.join(publicDir, 'fonts/Inter-Bold.ttf'))
 
