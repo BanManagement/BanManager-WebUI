@@ -76,12 +76,18 @@ const fillAdminStep = (overrides = {}) => {
 const POLL_INTERVAL_MS = 500
 const POLL_MAX_ATTEMPTS = 60
 
+// The supervisor exits the setup-mode child after finalize and respawns it
+// ~500ms later in normal mode, so polling /api/setup/state races against
+// ECONNREFUSED while the new process boots. We poll via the Node-side `fetch`
+// helper to swallow those network errors and just treat them as "not ready
+// yet" instead of failing the spec.
+const fetchSetupState = () => cy.task('fetchSetupState')
+
 const waitForState = (target) => {
   const attempt = (count) => {
     if (count > POLL_MAX_ATTEMPTS) throw new Error(`Timed out waiting for setup state to flip to ${target}`)
-    return cy.request({ url: '/api/setup/state', failOnStatusCode: false }).then((response) => {
-      const matched = response.status === 200 && response.body && response.body.status === target
-      if (matched) return undefined
+    return fetchSetupState().then((result) => {
+      if (result?.ok && result.body?.status === target) return undefined
       return cy.task('sleep', POLL_INTERVAL_MS).then(() => attempt(count + 1))
     })
   }
