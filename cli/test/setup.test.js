@@ -72,6 +72,8 @@ describe('setup', () => {
       .stdout(/Setting up database/)
       .stdout(/Done/)
       .stdout(/Add a BanManager Server/)
+      .on(/Auto-detect from your BanManager plugin folder/).respond('n\n')
+      .on(/Use the same database as the WebUI/).respond('n\n')
       .on(/Server Database Host/).respond(`${dbPool.host}\n`)
       .on(/Server Database Port/).respond(`${dbPool.port}\n`)
       .on(/Server Database User/).respond(`${dbPool.user}\n`)

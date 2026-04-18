@@ -1,29 +1,20 @@
+const chalk = require('chalk')
 const { Command } = require('@oclif/core')
-const DBMigrate = require('db-migrate')
+const { runMigrations } = require('../../server/setup/migrations')
 
 class UpdateCommand extends Command {
   async run () {
-    const dbConfig = {
-      connectionLimit: 1,
+    this.log('Updating database schema...')
+
+    await runMigrations({
       host: process.env.DB_HOST,
       port: process.env.DB_PORT,
       user: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
-      multipleStatements: true,
-      driver: { require: '@confuser/db-migrate-mysql' }
-    }
-
-    const dbm = DBMigrate.getInstance(true, {
-      config: { dev: dbConfig },
-      cmdOptions: {
-        'migrations-dir': './server/data/migrations'
-      }
+      database: process.env.DB_NAME
     })
 
-    await dbm.up()
-
-    this.log('Database updated successfully')
+    this.log(chalk.green('Done'))
   }
 }
 

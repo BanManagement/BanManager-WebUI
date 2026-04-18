@@ -1,0 +1,63 @@
+services:
+  webui:
+    image: banmanagement/webui:latest
+    container_name: banmanager-webui
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: bmwebui
+      DB_PASSWORD: ${MYSQL_PASSWORD:?MYSQL_PASSWORD is required - set it in .env or your shell (use a long random value)}
+      DB_NAME: bm_webui
+      NODE_ENV: production
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      DOTENV_CONFIG_PATH: /app/config/.env
+    ports:
+      - "${WEBUI_PORT:-3000}:3000"
+    volumes:
+      - webui_config:/app/config
+      - webui_uploads:/app/uploads/documents
+      - webui_image_cache:/app/.next/cache/images
+      - webui_opengraph_cache:/app/public/images/opengraph/cache
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3000/health >/dev/null 2>&1 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  mysql:
+    image: mysql:8.4
+    container_name: banmanager-webui-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?MYSQL_ROOT_PASSWORD is required - set it in .env or your shell (use a long random value)}
+      MYSQL_DATABASE: bm_webui
+      MYSQL_USER: bmwebui
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?MYSQL_PASSWORD is required - set it in .env or your shell (use a long random value)}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      # Read the password from MYSQL_PWD env (set inside the container) so it never
+      # appears in the container's argv (visible via `ps`). The $$ escapes the
+      # docker-compose interpolation so the variable is expanded by the shell.
+      test: ["CMD-SHELL", "MYSQL_PWD=\"$$MYSQL_ROOT_PASSWORD\" mysqladmin ping -h localhost -uroot --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --mysql-native-password=ON
+      - --sql-require-primary-key=ON
+
+volumes:
+  mysql_data:
+  webui_config:
+  webui_uploads:
+  webui_image_cache:
+  webui_opengraph_cache:

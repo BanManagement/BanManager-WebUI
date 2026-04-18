@@ -2,10 +2,48 @@
 
 require('dotenv').config()
 
+const fs = require('fs')
 const path = require('path')
 const DBMigrate = require('db-migrate')
+const editDotenv = require('edit-dotenv')
 const { parse } = require('uuid-parse')
 const { setupPool } = require('../server/connections')
+const setupLib = require('../server/setup')
+
+const ensureDevKeys = async () => {
+  const generated = {}
+
+  if (!process.env.ENCRYPTION_KEY) {
+    process.env.ENCRYPTION_KEY = await setupLib.generateEncryptionKey()
+    generated.ENCRYPTION_KEY = process.env.ENCRYPTION_KEY
+  }
+
+  if (!process.env.SESSION_KEY) {
+    process.env.SESSION_KEY = await setupLib.generateSessionKey()
+    generated.SESSION_KEY = process.env.SESSION_KEY
+  }
+
+  if (!process.env.NOTIFICATION_VAPID_PUBLIC_KEY || !process.env.NOTIFICATION_VAPID_PRIVATE_KEY) {
+    const { publicKey, privateKey } = setupLib.generateVapidKeyPair()
+    process.env.NOTIFICATION_VAPID_PUBLIC_KEY = publicKey
+    process.env.NOTIFICATION_VAPID_PRIVATE_KEY = privateKey
+    generated.NOTIFICATION_VAPID_PUBLIC_KEY = publicKey
+    generated.NOTIFICATION_VAPID_PRIVATE_KEY = privateKey
+  }
+
+  if (!Object.keys(generated).length) return
+
+  const envPath = path.resolve(process.cwd(), '.env')
+  let contents = ''
+  try { contents = fs.readFileSync(envPath, 'utf8') } catch (_) {}
+
+  try {
+    fs.writeFileSync(envPath, editDotenv(contents, generated), 'utf8')
+    console.log(`Generated and saved missing keys to ${envPath}: ${Object.keys(generated).join(', ')}`)
+  } catch (e) {
+    console.warn(`Generated missing keys but could not persist to ${envPath}: ${e.message}`)
+  }
+}
 const {
   createServer,
   createPlayer,
@@ -47,6 +85,13 @@ async function waitForMySQL (config, maxRetries = 30) {
 }
 
 async function seed () {
+  if (process.env.NODE_ENV === 'production') {
+    console.error('Refusing to run seed script with NODE_ENV=production. Unset NODE_ENV or use the installer/CLI instead.')
+    process.exit(1)
+  }
+
+  await ensureDevKeys()
+
   const dbConfig = {
     host: process.env.DB_HOST || '127.0.0.1',
     port: process.env.DB_PORT || 3306,

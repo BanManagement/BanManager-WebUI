@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en" style="background:#121212">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="robots" content="noindex,nofollow" />
+<meta name="theme-color" content="#121212" />
+<title>BanManager WebUI &mdash; Setup</title>
+<link rel="icon" type="image/png" href="{{basePath}}/setup/icon.png" />
+<link rel="stylesheet" href="{{basePath}}/setup/style.css" />
+</head>
+<body>
+<div class="app">
+<header class="site-header">
+  <div class="container">
+    <div class="brand">
+      <img class="logo" src="{{basePath}}/setup/icon.png" width="40" height="40" alt="BanManager" />
+      <span>BanManager WebUI</span>
+    </div>
+    <span class="version">{{versionLabel}}</span>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+    <div id="banners">
+      <div class="banner warn">
+        <strong>Connecting from:</strong> {{clientIp}}<br />
+        If this isn't you, stop and review your firewall before continuing.
+      </div>
+      {{insecureBanner}}
+      <div class="banner ok">
+        <strong>Setup mode active.</strong> Other routes will redirect here until installation completes.
+      </div>
+    </div>
+
+    <div id="root">
+      <div class="card">
+        <div class="page-header">
+          <div class="subtitle">First-run installation</div>
+          <h2>Set up your WebUI</h2>
+        </div>
+        <div class="progress" id="progress"></div>
+        <div id="step-content"></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <span class="brand">BanManager WebUI</span>
+    <span class="sep"></span>
+    <span>Setup mode &middot; {{versionLabel}}</span>
+  </div>
+</footer>
+</div>
+
+<script>
+window.__SETUP__ = {{setupConfig}};
+</script>
+<script src="{{basePath}}/setup/app.js"></script>
+</body>
+</html>

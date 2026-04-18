@@ -5,6 +5,8 @@ npm-debug.log
 typings*
 .sync
 .env
+.env.*
+!.env.example
 .nyc_output/
 .next
 bundles

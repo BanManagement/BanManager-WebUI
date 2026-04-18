@@ -37,12 +37,14 @@ RUN adduser --system --uid 1001 nextjs
 
 RUN mkdir -p /app/.next/cache/images && chown nextjs:nodejs /app/.next/cache/images
 RUN mkdir -p /app/uploads/documents && chown nextjs:nodejs /app/uploads/documents
+RUN mkdir -p /app/config && chown nextjs:nodejs /app/config
 
 COPY --from=builder --chown=nextjs:nodejs /app ./
 
 VOLUME /app/.next/cache/images
 VOLUME /app/public/images/opengraph/cache
 VOLUME /app/uploads/documents
+VOLUME /app/config
 
 USER nextjs
 
@@ -52,4 +54,4 @@ EXPOSE 3000
 
 ENV PORT 3000
 
-CMD ["node", "server.js"]
+CMD ["node", "docker-entrypoint.js"]

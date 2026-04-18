@@ -1,0 +1,7 @@
+${domain} {
+    handle ${subdirectoryMatch} {
+        reverse_proxy localhost:${port}
+    }
+
+    encode gzip
+}

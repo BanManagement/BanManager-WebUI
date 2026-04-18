@@ -54,24 +54,85 @@ To learn more about configuration, usage and features of BanManager, take a look
 
 ## Installation (Production)
 
-For deploying BanManager WebUI on your own server, see the **[full installation guide](https://banmanagement.com/docs/webui/install)**.
+Pick the path that matches your environment. Each one ends with a working WebUI you can sign in to.
+
+For more depth (BanManager plugin install, advanced topics), see the **[full installation guide](https://banmanagement.com/docs/webui/install)**.
 
 ### Requirements
 
-- [Node.js](https://nodejs.org/) LTS (v20 or v22)
-- MySQL v5+ or MariaDB v10+
-- Minecraft server with [BanManager](https://github.com/BanManagement/BanManager) & [BanManager-WebEnhancer](https://ci.frostcast.net/job/BanManager-WebEnhancer/) plugins configured to [use MySQL or MariaDB](https://banmanagement.com/docs/banmanager/install#setup-shared-database-optional)
+- MySQL v5+ or MariaDB v10+ (shared with the BanManager plugin)
+- A Minecraft server with [BanManager](https://github.com/BanManagement/BanManager) & [BanManager-WebEnhancer](https://ci.frostcast.net/job/BanManager-WebEnhancer/) configured to [use MySQL or MariaDB](https://banmanagement.com/docs/banmanager/install#setup-shared-database-optional)
+- For non-Docker installs: [Node.js](https://nodejs.org/) LTS (v20 or v22)
 
-### Quick Install
+### Path A — Docker Compose (recommended)
+
+Includes the WebUI and a MySQL database in one command. Already have MySQL? Use [`docker-compose.prod-no-db.yml`](docker-compose.prod-no-db.yml) instead.
+
+```bash
+curl -O https://raw.githubusercontent.com/BanManagement/BanManager-WebUI/master/docker-compose.prod.yml
+
+cat > .env <<'EOF'
+MYSQL_ROOT_PASSWORD=$(openssl rand -hex 24)
+MYSQL_PASSWORD=$(openssl rand -hex 24)
+EOF
+
+docker compose -f docker-compose.prod.yml up -d
+```
+
+The Compose file refuses to start without `MYSQL_ROOT_PASSWORD` and `MYSQL_PASSWORD` set — generate long random values (the snippet above does this for you) and keep them in a `.env` file alongside the compose file. The container generates encryption/session/VAPID keys, runs migrations, and persists state to a `webui_config` volume on first boot. Open `http://your-host:3000/setup` to finish setup in your browser, or attach a shell and run `docker compose exec webui npx bmwebui setup` for the CLI wizard.
+
+To check things look right at any time:
+
+```bash
+docker compose exec webui npx bmwebui doctor
+```
+
+### Path B — Web installer (any host)
+
+Useful if you want a one-shot install with no terminal interaction after the server is up.
 
 ```bash
 git clone https://github.com/BanManagement/BanManager-WebUI.git
 cd BanManager-WebUI
-npm ci --production
-npm run setup
+npm ci --omit=dev
+npm run build
+node server.js   # starts in setup mode if no .env exists yet
 ```
 
-The setup wizard will guide you through configuring your database connection and creating an admin account.
+Then visit `http://your-host:3000/setup` and follow the wizard. The web installer writes a `.env` file, runs migrations, and creates the first admin account. After it finishes, restart the server (`Ctrl+C`, `node server.js`).
+
+> **⚠ Security model.** The setup endpoint is open by default — whoever loads `/setup` first becomes the admin (same model as WordPress/Ghost). If your install host is reachable from the internet, set `SETUP_TOKEN=$(openssl rand -hex 24)` before starting and share that token only with the person doing the install. The setup screen will require it as the first step. Once an admin user exists the setup routes return 404.
+>
+> **Behind a reverse proxy?** Set `TRUST_PROXY=true` so the WebUI uses `X-Forwarded-For` / `X-Forwarded-Proto` to detect the real client IP and HTTPS status. Without it, every request looks like it came from `127.0.0.1` and the "you're on a secure local connection" banner can be misleading.
+
+### Path C — CLI wizard (terminal-only)
+
+Best when you have shell access and want everything done before the server starts.
+
+```bash
+git clone https://github.com/BanManagement/BanManager-WebUI.git
+cd BanManager-WebUI
+npm ci --omit=dev
+npm run setup       # interactive wizard, writes .env
+npm run build
+npm start
+```
+
+The wizard auto-detects database settings and the console UUID from your BanManager `plugins/BanManager` folder when it can.
+
+### Verify and run as a service
+
+After any path:
+
+- `npx bmwebui doctor` — runs preflight checks (env, DB, migrations, admin user, plugin tables) and tells you exactly what's wrong if anything is.
+- `npx bmwebui setup systemd` — registers the WebUI as a `systemd` service.
+- `npx bmwebui setup nginx` / `setup caddy` / `setup apache` — drops in a reverse-proxy template for your web server of choice (existing nginx setups are unchanged).
+
+Need to add another account later?
+
+```bash
+npx bmwebui account create
+```
 
 ---
 
@@ -137,7 +198,7 @@ Copy `.env.example` to `.env` and adjust as needed. Key variables:
 
 - `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME` - Database connection
 - `ADMIN_USERNAME`, `ADMIN_PASSWORD` - Admin account credentials (also used by Cypress)
-- `ENCRYPTION_KEY`, `SESSION_KEY` - Security keys (generate unique values for production)
+- `ENCRYPTION_KEY`, `SESSION_KEY` - Security keys (leave blank and `npm run dev:setup` will generate + persist them, or set your own)
 
 ### Resetting the Database
 
