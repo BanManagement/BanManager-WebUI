@@ -8,11 +8,24 @@ describe('Admin webhook lifecycle', () => {
     { name: 'discord', template: 'DISCORD', initialUrl: 'https://example.com/cypress-discord' }
   ]
 
-  variants.forEach(({ name, template, initialUrl }) => {
+  variants.forEach(({ name, template, initialUrl: baseInitialUrl }) => {
     describe(`${name} webhook`, () => {
-      const updatedUrl = `${initialUrl}/edited`
-
       it(`creates, tests, edits and deletes a ${name} webhook`, () => {
+        // Cypress retries reuse the spec context, so we mint per-attempt URLs
+        // using Date.now() to avoid clashing with rows that previous attempts
+        // left behind in the shared test database.
+        const initialUrl = `${baseInitialUrl}-${Date.now()}`
+        const updatedUrl = `${initialUrl}/edited`
+
+        cy.intercept('POST', '/graphql', (req) => {
+          if (typeof req.body?.query !== 'string') return
+          if (req.body.query.includes('mutation createWebhook')) {
+            req.alias = 'createWebhook'
+          } else if (req.body.query.includes('mutation updateWebhook')) {
+            req.alias = 'updateWebhook'
+          }
+        })
+
         cy.visit('/admin/webhooks')
         cy.contains('a', 'Add Webhook').click()
 
@@ -28,6 +41,13 @@ describe('Admin webhook lifecycle', () => {
         cy.get('[data-cy=webhook-url]').clear()
         cy.get('[data-cy=webhook-url]').type(initialUrl)
         cy.get('[data-cy=submit-webhook-form]').click()
+
+        cy.wait('@createWebhook', { timeout: 15000 }).then(({ response }) => {
+          const errors = response?.body?.errors
+          const id = response?.body?.data?.createWebhook?.id
+          expect(errors, `createWebhook errors: ${JSON.stringify(errors)}`).to.equal(undefined)
+          expect(String(id || ''), 'createWebhook returned no id').to.match(/^[\w-]+$/)
+        })
 
         cy.url().should('match', /\/admin\/webhooks\/?$/)
         cy.get(`[data-cy=webhook-item][data-cy-template=${template}]`).should('exist')
@@ -59,9 +79,22 @@ describe('Admin webhook lifecycle', () => {
         cy.get('@webhookId').then((id) => {
           cy.visit(`/admin/webhooks/${id}`)
           cy.get(`[data-cy=webhook-form][data-cy-template=${template}]`).should('exist')
+          // Wait for the form to fully hydrate the URL field before mutating it.
+          // Without this Cypress will race react-hook-form's defaultValues sync
+          // and may submit the original URL value instead of the typed one.
+          cy.get('[data-cy=webhook-url]').should('have.value', initialUrl)
           cy.get('[data-cy=webhook-url]').clear()
+          cy.get('[data-cy=webhook-url]').should('have.value', '')
           cy.get('[data-cy=webhook-url]').type(updatedUrl)
+          cy.get('[data-cy=webhook-url]').should('have.value', updatedUrl)
           cy.get('[data-cy=submit-webhook-form]').click()
+        })
+
+        cy.wait('@updateWebhook', { timeout: 15000 }).then(({ response }) => {
+          const errors = response?.body?.errors
+          const updated = response?.body?.data?.updateWebhook
+          expect(errors, `updateWebhook errors: ${JSON.stringify(errors)}`).to.equal(undefined)
+          expect(updated?.url, 'updateWebhook did not persist new URL').to.equal(updatedUrl)
         })
 
         cy.url().should('match', /\/admin\/webhooks\/?$/)

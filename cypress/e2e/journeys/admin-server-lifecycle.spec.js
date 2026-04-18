@@ -2,14 +2,17 @@ const data = require('../../fixtures/e2e-data.json')
 const { tables } = require('../../../server/data/tables')
 
 describe('Admin server lifecycle', () => {
-  const newServerName = `Cypress${Math.floor(Math.random() * 1e6)}`
-  const renamedServer = `${newServerName}Renamed`
-
   beforeEach(() => {
     cy.loginAsAdmin()
   })
 
   it('creates a new server, edits it and deletes it', () => {
+    // Cypress retries reuse the spec context, so we mint per-attempt names
+    // using Date.now() to avoid the "server with this name already exists"
+    // error if a previous attempt left rows behind in the shared test database.
+    const newServerName = `Cypress${Date.now()}`
+    const renamedServer = `${newServerName}Renamed`
+
     cy.visit('/admin/servers')
 
     cy.get('[data-cy=server-item]').should('have.length.at.least', 1)
