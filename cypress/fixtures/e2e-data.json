@@ -1,4 +1,23 @@
 {
   "serverId": "41791bb0",
-  "banId": 1
+  "secondServerId": "41791bb1",
+  "banId": 1,
+  "userPlayerId": "00000000-0000-0000-0000-000000000000",
+  "pinPlayerName": "RegularUser",
+  "pinValue": "123456",
+  "pinOnlyPlayerName": "PinNewbie",
+  "pinOnlyPlayerId": "00000000-0000-0000-0000-000000000000",
+  "pinOnlyPinValue": "654321",
+  "unbannedPlayerId": "00000000-0000-0000-0000-000000000000",
+  "bannedPlayerId": "00000000-0000-0000-0000-000000000000",
+  "bannedPlayerName": "GrieferOne",
+  "bannedPlayerBanId": 2,
+  "bannedPlayerMuteId": 1,
+  "bannedPlayerWarningId": 1,
+  "userWarningId": 2,
+  "openReportId": 1,
+  "assignedReportId": 2,
+  "openAppealId": 1,
+  "assignedAppealId": 2,
+  "notificationRuleId": 1
 }
