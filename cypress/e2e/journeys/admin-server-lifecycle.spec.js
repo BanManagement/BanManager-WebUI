@@ -35,9 +35,25 @@ describe('Admin server lifecycle', () => {
       cy.wrap($input).type(tableName)
     })
 
+    // Surface the actual createServer response so a server-side rejection
+    // (missing tables, console UUID lookup, etc.) produces an actionable
+    // assertion instead of a silent "URL didn't change" timeout.
+    cy.intercept('POST', '/graphql', (req) => {
+      if (typeof req.body?.query === 'string' && req.body.query.includes('createServer')) {
+        req.alias = 'createServer'
+      }
+    })
+
     cy.get('[data-cy=submit-server-form]').click()
 
-    cy.url().should('match', /\/admin\/servers\/?$/)
+    cy.wait('@createServer', { timeout: 15000 }).then(({ response }) => {
+      const errors = response?.body?.errors
+      const id = response?.body?.data?.createServer?.id
+      expect(errors, `createServer errors: ${JSON.stringify(errors)}`).to.equal(undefined)
+      expect(String(id || ''), 'createServer returned no id').to.match(/^[\w-]+$/)
+    })
+
+    cy.url({ timeout: 10000 }).should('match', /\/admin\/servers\/?$/)
     cy.get(`[data-cy=server-item][data-cy-server="${newServerName}"]`).should('exist')
 
     cy.get(`[data-cy=server-item][data-cy-server="${newServerName}"]`)

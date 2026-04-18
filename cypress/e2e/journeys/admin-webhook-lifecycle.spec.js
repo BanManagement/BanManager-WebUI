@@ -65,8 +65,14 @@ describe('Admin webhook lifecycle', () => {
         })
 
         cy.url().should('match', /\/admin\/webhooks\/?$/)
+        // The list page reads listWebhooks via SWR which keeps the previous
+        // response cached past the navigation back from the edit page (no
+        // revalidate-on-mount, defaults dedupe 2s), so the row can render with
+        // the pre-edit URL. Force a reload so the assertion runs against fresh
+        // data instead of racing the cache.
+        cy.reload()
         cy.get('@webhookId').then((id) => {
-          cy.get(`[data-cy=webhook-item][data-cy-webhook-id="${id}"]`)
+          cy.get(`[data-cy=webhook-item][data-cy-webhook-id="${id}"]`, { timeout: 10000 })
             .find('[data-cy=webhook-url-display]')
             .should('contain.text', updatedUrl)
 

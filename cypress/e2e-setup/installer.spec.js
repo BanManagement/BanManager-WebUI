@@ -13,7 +13,10 @@ const dotenvPath = Cypress.env('setup_dotenv_path')
 const webuiDb = Cypress.env('setup_db_name')
 const adminEmail = 'installer-admin@banmanagement.com'
 const adminPassword = 'installerPassw0rd!'
-const adminUuid = 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee'
+// validator's default isUUID() (used by the admin preflight endpoint) only
+// accepts RFC-compliant UUIDs, so the third group must start with the version
+// digit (4 here) and the fourth with the variant nibble (8/9/a/b).
+const adminUuid = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa'
 
 const setText = (selector, value, options = {}) => {
   cy.get(selector).clear()
