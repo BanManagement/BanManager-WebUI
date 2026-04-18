@@ -96,6 +96,64 @@ jobs:
           flag-name: run-${{ matrix.test_number }}
           parallel: true
 
+  setup_e2e:
+    runs-on: ubuntu-latest
+    name: Setup wizard E2E
+
+    env:
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: root
+      SETUP_PORT: 3001
+      SETUP_DOTENV_PATH: /tmp/bm-setup-test.env
+      SETUP_DB_NAME: bm_e2e_setup
+      SETUP_BM_DB_NAME: bm_e2e_setup_bm
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+      - name: Cache Node.js modules
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-setup-e2e-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-setup-e2e-
+      - run: npm ci
+      - name: Set up MySQL
+        run: |
+          sudo systemctl start mysql.service
+          sleep 5 && mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '';" -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
+          mysql -e "SET GLOBAL sql_require_primary_key = ON;" -uroot
+      - name: Cypress run (setup wizard)
+        uses: cypress-io/github-action@v6
+        env:
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_USER: root
+          DB_PASSWORD:
+          SETUP_PORT: 3001
+          SETUP_DOTENV_PATH: /tmp/bm-setup-test.env
+          SETUP_DB_NAME: bm_e2e_setup
+          SETUP_BM_DB_NAME: bm_e2e_setup_bm
+          LOG_LEVEL: warn
+          CYPRESS_setup_db_password: ''
+          CYPRESS_setup_db_host: 127.0.0.1
+          CYPRESS_setup_db_port: '3306'
+          CYPRESS_setup_db_user: root
+          CYPRESS_setup_dotenv_path: /tmp/bm-setup-test.env
+          CYPRESS_setup_db_name: bm_e2e_setup
+        with:
+          install: false
+          start: npm run e2e:setup:server
+          wait-on: "http://127.0.0.1:3001/health"
+          wait-on-timeout: 60
+          command: npm run e2e:setup:run
+
   build_docker:
     runs-on: ubuntu-latest
     steps:
