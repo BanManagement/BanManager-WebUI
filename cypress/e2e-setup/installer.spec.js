@@ -32,7 +32,12 @@ const fillDatabaseStep = (overrides = {}) => {
   if (dbPassword) setText('[data-cy=setup-db-password]', dbPassword, { log: false })
   setText('[data-cy=setup-db-name]', overrides.webuiDb || webuiDb)
 
-  if (overrides.createIfMissing) cy.get('[data-cy=setup-db-create]').check()
+  if (overrides.createIfMissing) {
+    cy.get('[data-cy=setup-db-create-details]').then(($el) => {
+      if (!$el.attr('open')) cy.wrap($el).find('summary').click()
+    })
+    cy.get('[data-cy=setup-db-create]').should('be.visible').check()
+  }
 }
 
 const fillServerStep = ({ bmDb, consoleUuid, customTable }) => {

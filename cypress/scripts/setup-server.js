@@ -53,7 +53,12 @@ const childEnv = {
   HOSTNAME: hostname,
   NODE_ENV: process.env.NODE_ENV || 'production',
   DISABLE_UI: process.env.DISABLE_UI || 'true',
-  LOG_LEVEL: process.env.LOG_LEVEL || 'warn'
+  LOG_LEVEL: process.env.LOG_LEVEL || 'warn',
+  // The default in-memory rate limit (10/60s) is fine for real installs but
+  // is easily exhausted by Cypress retrying multiple step submissions in the
+  // same minute, leading to flaky 429s that look like the wizard hanging.
+  SETUP_RATE_LIMIT_POINTS: process.env.SETUP_RATE_LIMIT_POINTS || '10000',
+  SETUP_RATE_LIMIT_DURATION: process.env.SETUP_RATE_LIMIT_DURATION || '60'
 }
 
 delete childEnv.ENCRYPTION_KEY

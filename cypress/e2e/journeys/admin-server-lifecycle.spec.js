@@ -1,4 +1,5 @@
 const data = require('../../fixtures/e2e-data.json')
+const { tables } = require('../../../server/data/tables')
 
 describe('Admin server lifecycle', () => {
   const newServerName = `Cypress${Math.floor(Math.random() * 1e6)}`
@@ -28,8 +29,10 @@ describe('Admin server lifecycle', () => {
     }
 
     cy.get('[data-cy^=server-table-]').each(($input) => {
-      const name = $input.attr('data-cy').replace('server-table-', '')
-      cy.wrap($input).type(`bm_${name}`)
+      const key = $input.attr('data-cy').replace('server-table-', '')
+      const tableName = tables[key]
+      if (!tableName) throw new Error(`No table mapping for ${key}`)
+      cy.wrap($input).type(tableName)
     })
 
     cy.get('[data-cy=submit-server-form]').click()

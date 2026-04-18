@@ -29,9 +29,28 @@ describe('Appeal lifecycle - submit, admin notify, review, resolve', () => {
 
     cy.url({ timeout: 10000 }).should('include', `/appeal/punishment/${data.serverId}/warning/${data.userWarningId}`)
 
+    // Wait for the appeal form to render before typing - the page issues a
+    // playerWarning query first and the textarea only appears once it resolves.
+    cy.get('[data-cy=submit-appeal]', { timeout: 10000 }).should('exist')
+
+    // Surface the actual GraphQL response so a server-side rejection (e.g. ACL)
+    // produces an actionable assertion instead of a silent "URL didn't change".
+    cy.intercept('POST', '/graphql', (req) => {
+      if (typeof req.body?.query === 'string' && req.body.query.includes('createAppeal')) {
+        req.alias = 'createAppeal'
+      }
+    })
+
     cy.get('textarea').first().type(APPEAL_REASON)
 
     cy.get('[data-cy=submit-appeal]').should('not.be.disabled').click()
+
+    cy.wait('@createAppeal', { timeout: 10000 }).then(({ response }) => {
+      const errors = response?.body?.errors
+      const id = response?.body?.data?.createAppeal?.id
+      expect(errors, `createAppeal errors: ${JSON.stringify(errors)}`).to.equal(undefined)
+      expect(String(id || ''), 'createAppeal returned no id').to.match(/^\d+$/)
+    })
 
     cy.url({ timeout: 10000 }).should('match', /\/appeals\/\d+$/)
 
@@ -66,15 +85,11 @@ describe('Appeal lifecycle - submit, admin notify, review, resolve', () => {
 
     cy.contains(ADMIN_COMMENT).should('exist')
 
-    cy.get('[data-cy=appeal-assignee]').first().within(() => {
-      cy.get('.react_select__control').click()
-    })
-    cy.get('.react_select__input').last().type('confuser')
+    cy.get('[data-cy=appeal-assignee]').first().find('.react_select__control').click()
+    cy.get('[data-cy=appeal-assignee]').first().find('.react_select__input').type('confuser')
     cy.get('.react_select__option', { timeout: 10000 }).contains('confuser').click()
 
-    cy.get('[data-cy=appeal-state]').first().within(() => {
-      cy.get('.react_select__control').click()
-    })
+    cy.get('[data-cy=appeal-state]').first().find('.react_select__control').click()
     cy.get('.react_select__option').contains(/Resolved|Denied/).click()
 
     cy.contains(/state changed|Resolved|Denied/i, { timeout: 10000 }).should('exist')

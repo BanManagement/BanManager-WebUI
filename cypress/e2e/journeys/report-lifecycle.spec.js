@@ -24,33 +24,30 @@ describe('Report lifecycle - admin walks an open report through every state', ()
 
     cy.contains(REPORT_COMMENT, { timeout: 10000 }).should('exist')
 
-    cy.get('[data-cy=report-assignee]').first().within(() => {
-      cy.get('.react_select__control').click()
-    })
-    cy.get('.react_select__input').last().type('confuser')
+    // The report sidebar is rendered twice (desktop + mobile); only the desktop
+    // copy is visible at the default Cypress viewport (>=md). We scope all
+    // react-select interactions to the .first() (desktop) wrapper so we don't
+    // accidentally type into the hidden mobile input. Re-queried each time
+    // because PlayerReportSidebar re-renders after each mutation.
+    cy.get('[data-cy=report-assignee]').first().find('.react_select__control').click()
+    cy.get('[data-cy=report-assignee]').first().find('.react_select__input').type('confuser')
     cy.get('.react_select__option', { timeout: 10000 }).contains('confuser').click()
 
     cy.get('[data-cy=report-assignee]').first().should('contain.text', 'confuser')
 
-    cy.get('[data-cy=report-state]').first().within(() => {
-      cy.get('.react_select__control').click()
-    })
+    cy.get('[data-cy=report-state]').first().find('.react_select__control').click()
     cy.get('.react_select__option').contains('Assigned').click()
 
     cy.get('[data-cy=report-state]', { timeout: 10000 }).first().should('contain.text', 'Assigned')
 
-    cy.get('[data-cy=report-state]').first().within(() => {
-      cy.get('.react_select__control').click()
-    })
+    cy.get('[data-cy=report-state]').first().find('.react_select__control').click()
     cy.get('.react_select__option').contains('Resolved').click()
 
     cy.get('[data-cy=report-state]', { timeout: 10000 }).first().should('contain.text', 'Resolved')
 
     cy.get('[data-cy=submit-report-comment-form]').should('not.exist')
 
-    cy.get('[data-cy=report-state]').first().within(() => {
-      cy.get('.react_select__control').click()
-    })
+    cy.get('[data-cy=report-state]').first().find('.react_select__control').click()
     cy.get('.react_select__option').contains('Closed').click()
 
     cy.get('[data-cy=report-state]', { timeout: 10000 }).first().should('contain.text', 'Closed')
