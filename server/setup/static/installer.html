@@ -24,24 +24,24 @@
 <main>
   <div class="container">
     <div id="banners">
-      <div class="banner warn">
+      <div class="banner warn" data-cy="setup-banner-warn">
         <strong>Connecting from:</strong> {{clientIp}}<br />
         If this isn't you, stop and review your firewall before continuing.
       </div>
       {{insecureBanner}}
-      <div class="banner ok">
+      <div class="banner ok" data-cy="setup-banner-active">
         <strong>Setup mode active.</strong> Other routes will redirect here until installation completes.
       </div>
     </div>
 
-    <div id="root">
+    <div id="root" data-cy="setup-root">
       <div class="card">
         <div class="page-header">
           <div class="subtitle">First-run installation</div>
           <h2>Set up your WebUI</h2>
         </div>
-        <div class="progress" id="progress"></div>
-        <div id="step-content"></div>
+        <div class="progress" id="progress" data-cy="setup-progress"></div>
+        <div id="step-content" data-cy="setup-step-content"></div>
       </div>
     </div>
   </div>
