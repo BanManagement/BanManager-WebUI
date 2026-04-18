@@ -55,7 +55,7 @@ function DefaultLayout ({ title = 'Default Title', children, description, loadin
   }, [data])
 
   const left = [
-    <div key='nav-search' className='w-2/3 md:w-full justify-center'>
+    <div key='nav-search' className='w-2/3 md:w-full justify-center' data-cy='player-search'>
       <PlayerSelector
         multiple={false}
         onChange={(id) => id ? router.push(`/player/${id}`) : undefined}

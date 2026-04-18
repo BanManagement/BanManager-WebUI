@@ -26,31 +26,35 @@ export default function PlayerReportSidebar ({ data, canUpdateState, canAssign, 
   return (
     <ul role='list' className='divide-y divide-primary-900'>
       <SidebarItem title='State'>
-        {canUpdateState
-          ? (
-            <PlayerReportState
-              id={report.id}
-              server={data.server.id}
-              currentState={report?.state}
-              states={stateOptions}
-              onChange={({ reportState: { state, updated } }) => {
-                mutate({ ...data, report: { ...data.report, state, updated } }, false)
-              }}
-            />)
-          : (<p className='text-sm'>{report?.state?.name}</p>)}
+        <div data-cy='report-state'>
+          {canUpdateState
+            ? (
+              <PlayerReportState
+                id={report.id}
+                server={data.server.id}
+                currentState={report?.state}
+                states={stateOptions}
+                onChange={({ reportState: { state, updated } }) => {
+                  mutate({ ...data, report: { ...data.report, state, updated } }, false)
+                }}
+              />)
+            : (<p className='text-sm' data-cy='report-state-display'>{report?.state?.name}</p>)}
+        </div>
       </SidebarItem>
       <SidebarItem title='Assignee'>
-        {canAssign
-          ? (
-            <PlayerReportAssign
-              id={report.id}
-              player={report.assignee}
-              server={data.server.id}
-              onChange={({ assignReport: { assignee, updated } }) => {
-                mutate({ ...data, report: { ...data.report, assignee, updated } }, false)
-              }}
-            />)
-          : (<p className='text-sm'>{report?.assignee?.name || 'Unassigned'}</p>)}
+        <div data-cy='report-assignee'>
+          {canAssign
+            ? (
+              <PlayerReportAssign
+                id={report.id}
+                player={report.assignee}
+                server={data.server.id}
+                onChange={({ assignReport: { assignee, updated } }) => {
+                  mutate({ ...data, report: { ...data.report, assignee, updated } }, false)
+                }}
+              />)
+            : (<p className='text-sm' data-cy='report-assignee-display'>{report?.assignee?.name || 'Unassigned'}</p>)}
+        </div>
       </SidebarItem>
       {!!user &&
         <SidebarItem title='Notifications'>

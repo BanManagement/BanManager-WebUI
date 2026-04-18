@@ -35,45 +35,51 @@ export default function NotificationRuleForm ({ onFinished, query, parseVariable
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className='mx-auto w-full'>
+    <form onSubmit={handleSubmit(onSubmit)} className='mx-auto w-full' data-cy='notification-rule-form'>
       <ErrorMessages ref={errorRef} errors={errors} />
       <PageHeader title='Notification Type' className='!text-xl' />
-      <Controller
-        name='type'
-        control={control}
-        rules={{ required: true }}
-        render={({ field }) => <Select
-          className='mb-6'
-          {...field}
-          onChange={(selectedOption) => {
-            field.onChange(selectedOption.value)
-          }}
-          options={notificationTypes}
-                               />}
-      />
+      <div data-cy='notification-rule-type'>
+        <Controller
+          name='type'
+          control={control}
+          rules={{ required: true }}
+          render={({ field }) => <Select
+            className='mb-6'
+            {...field}
+            onChange={(selectedOption) => {
+              field.onChange(selectedOption.value)
+            }}
+            options={notificationTypes}
+                                 />}
+        />
+      </div>
       <PageHeader title='Roles' className='!text-xl' />
-      <Controller
-        name='roles'
-        control={control}
-        rules={{ required: true }}
-        render={({ field }) => <Select
-          isMulti
-          className='mb-6'
-          {...field}
-          options={roles}
-          onChange={(selectedOption) => {
-            field.onChange(selectedOption.map(option => ({ id: option.value })))
-          }}
-                               />}
-      />
+      <div data-cy='notification-rule-roles'>
+        <Controller
+          name='roles'
+          control={control}
+          rules={{ required: true }}
+          render={({ field }) => <Select
+            isMulti
+            className='mb-6'
+            {...field}
+            options={roles}
+            onChange={(selectedOption) => {
+              field.onChange(selectedOption.map(option => ({ id: option.value })))
+            }}
+                                 />}
+        />
+      </div>
       <PageHeader title='Server (optional)' className='!text-xl' />
-      <Controller
-        name='serverId'
-        control={control}
-        defaultValue={false}
-        render={({ field }) => <ServerSelector isClearable className='mb-6' placeholder='Server' {...field} />}
-      />
-      <Button data-cy='submit-server-form' disabled={isSubmitting} loading={loading}>Save</Button>
+      <div data-cy='notification-rule-server'>
+        <Controller
+          name='serverId'
+          control={control}
+          defaultValue={false}
+          render={({ field }) => <ServerSelector isClearable className='mb-6' placeholder='Server' {...field} />}
+        />
+      </div>
+      <Button data-cy='submit-notification-rule-form' disabled={isSubmitting} loading={loading}>Save</Button>
     </form>
   )
 }
