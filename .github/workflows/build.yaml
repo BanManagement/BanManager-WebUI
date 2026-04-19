@@ -190,6 +190,10 @@ jobs:
           docker compose -f docker-compose.prod.yml up -d
 
       - name: Wait for /health to report setup_required
+        env:
+          MYSQL_ROOT_PASSWORD: rootpassword
+          MYSQL_PASSWORD: webuipassword
+          WEBUI_PORT: 3000
         run: |
           set -e
           for attempt in $(seq 1 60); do
@@ -202,8 +206,12 @@ jobs:
             sleep 2
           done
           echo "Health endpoint never responded"
-          docker compose -f docker-compose.prod.yml logs --tail 200 webui || true
-          docker compose -f docker-compose.prod.yml logs --tail 80 mysql || true
+          echo "===== docker ps ====="
+          docker ps -a
+          echo "===== webui logs ====="
+          docker logs banmanager-webui 2>&1 | tail -200 || true
+          echo "===== mysql logs ====="
+          docker logs banmanager-webui-mysql 2>&1 | tail -80 || true
           exit 1
 
       - name: Confirm setup mode signal
@@ -213,6 +221,9 @@ jobs:
 
       - name: Stop docker compose stack
         if: always()
+        env:
+          MYSQL_ROOT_PASSWORD: rootpassword
+          MYSQL_PASSWORD: webuipassword
         run: docker compose -f docker-compose.prod.yml down -v
 
   finish:
