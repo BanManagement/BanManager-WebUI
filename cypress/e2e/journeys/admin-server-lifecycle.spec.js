@@ -9,9 +9,11 @@ describe('Admin server lifecycle', () => {
   it('creates a new server, edits it and deletes it', () => {
     // Cypress retries reuse the spec context, so we mint per-attempt names
     // using Date.now() to avoid the "server with this name already exists"
-    // error if a previous attempt left rows behind in the shared test database.
-    const newServerName = `Cypress${Date.now()}`
-    const renamedServer = `${newServerName}Renamed`
+    // error if a previous attempt left rows behind in the shared test
+    // database. Stay well within the 20-char `name: @constraint(maxLength: 20)`
+    // server schema limit so the rename suffix still fits.
+    const newServerName = `Cy${Date.now()}`
+    const renamedServer = `${newServerName}R`
 
     cy.visit('/admin/servers')
 
