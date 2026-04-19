@@ -19,9 +19,12 @@ set -eu
 
 cd /app
 
-# Drop platform-specific Next.js SWC binaries we never run on Alpine arm64/musl.
+# Drop platform-specific Next.js SWC binaries we never run on Alpine.
 # npm installs every optional platform binary unless `--cpu`/`--os`/`--libc`
-# filters match. The runner image only needs the linux-arm64-musl variant.
+# filters match. Our runner image is `node:24-alpine` and the published
+# image is multi-arch (linux/amd64 + linux/arm64), so we KEEP both
+# `swc-linux-x64-musl` (CI/x86_64 servers) and `swc-linux-arm64-musl`
+# (Apple Silicon dev + arm64 servers). Everything else goes.
 rm -rf \
   node_modules/@next/swc-darwin-arm64 \
   node_modules/@next/swc-darwin-x64 \
@@ -29,22 +32,22 @@ rm -rf \
   node_modules/@next/swc-win32-ia32-msvc \
   node_modules/@next/swc-win32-x64-msvc \
   node_modules/@next/swc-linux-x64-gnu \
-  node_modules/@next/swc-linux-x64-musl \
   node_modules/@next/swc-linux-arm64-gnu
 
-# Drop sharp/libvips binaries for platforms we never run on. Keep the
-# linuxmusl-arm64 variant (Alpine on Apple Silicon / arm64 servers) and
-# the linux-arm64 variant (musl fallback may not always cover glibc
-# images that consume the same image; cheap insurance at ~16 MB).
+# Drop sharp/libvips binaries for platforms we never run on. KEEP both
+# linuxmusl-x64 + linuxmusl-arm64 (and their libvips siblings) so the
+# image works on both linux/amd64 (CI/x86_64 prod) and linux/arm64
+# (Apple Silicon dev + arm64 prod). The linux-* (glibc) variants are
+# unused since our base is Alpine.
 rm -rf \
   node_modules/@img/sharp-darwin-arm64 \
   node_modules/@img/sharp-darwin-x64 \
   node_modules/@img/sharp-libvips-darwin-arm64 \
   node_modules/@img/sharp-libvips-darwin-x64 \
   node_modules/@img/sharp-libvips-linux-x64 \
-  node_modules/@img/sharp-libvips-linuxmusl-x64 \
+  node_modules/@img/sharp-libvips-linux-arm64 \
   node_modules/@img/sharp-linux-x64 \
-  node_modules/@img/sharp-linuxmusl-x64 \
+  node_modules/@img/sharp-linux-arm64 \
   node_modules/@img/sharp-win32-arm64 \
   node_modules/@img/sharp-win32-ia32 \
   node_modules/@img/sharp-win32-x64
