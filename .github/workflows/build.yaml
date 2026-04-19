@@ -281,7 +281,14 @@ jobs:
           docker logs banmanager-webui-mysql --tail 80 || true
           exit 1
 
-      - name: Seed bm_e2e_tests from the runner
+      # MySQL's docker healthcheck (mysqladmin ping) flips the container to
+      # `healthy` while the entrypoint is still running its temporary mysqld
+      # against a unix socket. The real mysqld on TCP 3306 only comes up a few
+      # seconds later, after the temp server is shut down. If the seed script
+      # connects in that window it gets a fresh socket to the temp server and
+      # is killed mid-query with PROTOCOL_CONNECTION_LOST when it stops. Retry
+      # the seed a handful of times to ride out that transition cleanly.
+      - name: Seed bm_e2e_tests from the runner (retry through MySQL warm-up)
         env:
           DB_HOST: 127.0.0.1
           DB_PORT: 3306
@@ -289,7 +296,21 @@ jobs:
           DB_PASSWORD: rootpassword
           ENCRYPTION_KEY: b097b390a68441cc3bb151dd0171f25c3aabc688c50eeb26dc5e13254b333911
           LOG_LEVEL: warn
-        run: node cypress/setup.js
+        run: |
+          for attempt in $(seq 1 8); do
+            echo "::group::seed attempt $attempt"
+            if node cypress/setup.js; then
+              echo "::endgroup::"
+              echo "seed succeeded on attempt $attempt"
+              exit 0
+            fi
+            echo "::endgroup::"
+            echo "seed failed on attempt $attempt - waiting 5s before retry"
+            sleep 5
+          done
+          echo "seed never succeeded after 8 attempts"
+          docker logs banmanager-webui-mysql --tail 200 || true
+          exit 1
 
       - name: Start WebUI container against seeded DB
         env:

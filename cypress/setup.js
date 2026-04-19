@@ -295,4 +295,13 @@ const { encrypt } = require('../server/data/crypto')
   console.log('E2E test data:', fixtureData)
 
   await dbPool.destroy()
-})().catch(error => console.error(error))
+})().catch(error => {
+  // Fail loudly. The previous silent .catch caused the docker-compose smoke job
+  // in CI to think seeding succeeded when MySQL had killed the connection mid
+  // query, leaving the WebUI stuck in setup_mode_db_unreachable. The
+  // corresponding workflow step retries on transient PROTOCOL_CONNECTION_LOST
+  // failures (which happen during MySQL's temporary -> real server transition),
+  // so we need a non-zero exit for the retry loop to do its job.
+  console.error(error)
+  process.exitCode = 1
+})
