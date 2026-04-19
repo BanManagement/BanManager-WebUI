@@ -33,7 +33,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - name: Cache Node.js modules and Next.js build
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             ~/.npm
@@ -117,7 +117,7 @@ jobs:
         with:
           node-version: 22.x
       - name: Cache Node.js modules
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.npm
           key: ${{ runner.os }}-setup-e2e-${{ hashFiles('**/package-lock.json') }}
