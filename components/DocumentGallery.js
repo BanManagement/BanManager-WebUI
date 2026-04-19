@@ -1,10 +1,12 @@
 /* eslint-disable @next/next/no-img-element */
 import { useState, useEffect } from 'react'
 import { FiTrash2 } from 'react-icons/fi'
+import { useTranslations } from 'next-intl'
 import Modal from './Modal'
 import { useMutateApi } from '../utils'
 
 function DocumentItem ({ document, onDelete, canDelete }) {
+  const t = useTranslations()
   const [confirmDelete, setConfirmDelete] = useState(false)
   const { load, loading, data, errors } = useMutateApi({
     query: `mutation deleteDocument($id: ID!) {
@@ -50,7 +52,7 @@ function DocumentItem ({ document, onDelete, canDelete }) {
             data-cy='document-delete'
             className='absolute top-2 right-2 p-1.5 bg-black/60 hover:bg-red-600 rounded-md text-white opacity-0 group-hover:opacity-100 transition-opacity'
             onClick={() => setConfirmDelete(true)}
-            title='Delete image'
+            title={t('pages.admin.documents.deleteImage')}
           >
             <FiTrash2 className='w-4 h-4' />
           </button>
@@ -58,15 +60,15 @@ function DocumentItem ({ document, onDelete, canDelete }) {
       </div>
 
       <Modal
-        title='Delete Image'
-        confirmButton='Delete'
+        title={t('pages.admin.documents.deleteImageTitle')}
+        confirmButton={t('common.delete')}
         open={confirmDelete}
         onConfirm={handleDelete}
         onCancel={() => setConfirmDelete(false)}
         loading={loading}
       >
-        <p className='pb-1'>Are you sure you want to delete this image?</p>
-        <p className='pb-1 text-gray-400'>This action cannot be undone.</p>
+        <p className='pb-1'>{t('pages.admin.documents.deleteImageConfirm')}</p>
+        <p className='pb-1 text-gray-400'>{t('pages.punishment.actionUndoable')}</p>
         {errors && <p className='text-red-500 text-sm'>{errors[0]?.message}</p>}
       </Modal>
     </>

@@ -1,5 +1,6 @@
 import { AiOutlinePlus } from 'react-icons/ai'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 import Loader from '../../../components/Loader'
 import ErrorLayout from '../../../components/ErrorLayout'
 import AdminLayout from '../../../components/AdminLayout'
@@ -10,6 +11,7 @@ import WebhookItem from '../../../components/admin/webhooks/WebhookItem'
 import EmptyState from '../../../components/EmptyState'
 
 export default function Page () {
+  const t = useTranslations()
   const { loading, data, errors, mutate } = useApi({
     query: `query {
       listWebhooks {
@@ -35,18 +37,18 @@ export default function Page () {
     mutate({ ...data, listWebhooks: { records: rules } }, false)
   }
 
-  if (loading) return <AdminLayout title='Loading...'><Loader /></AdminLayout>
+  if (loading) return <AdminLayout title={t('pages.admin.loading')}><Loader /></AdminLayout>
   if (errors || !data) return <ErrorLayout errors={errors} />
 
   const items = data?.listWebhooks?.records?.map(row => <WebhookItem key={row.id} row={row} onDeleted={onDeleted} />)
 
   return (
-    <AdminLayout title='Webhooks'>
-      <AdminHeader title='Webhooks'>
+    <AdminLayout title={t('pages.admin.webhooks.title')}>
+      <AdminHeader title={t('pages.admin.webhooks.title')}>
         <div>
           <Link href='/admin/webhooks/add' passHref>
 
-            <Button className='bg-emerald-600 hover:bg-emerald-700 text-sm px-4 py-2'><AiOutlinePlus className='text-xl -ml-1 mr-2' /> Add Webhook</Button>
+            <Button className='bg-emerald-600 hover:bg-emerald-700 text-sm px-4 py-2'><AiOutlinePlus className='text-xl -ml-1 mr-2' /> {t('pages.admin.webhooks.addWebhook')}</Button>
 
           </Link>
         </div>
@@ -56,10 +58,10 @@ export default function Page () {
         {items.length
           ? items
           : (
-            <EmptyState title={'There\'s nothing here'} subTitle='Webhooks allow external services to be notified when an event occurs'>
+            <EmptyState title={t('pages.admin.webhooks.emptyTitle')} subTitle={t('pages.admin.webhooks.emptySubtitle')}>
               <Link href='/admin/webhooks/add' passHref>
 
-                <Button className='w-44 bg-emerald-600 hover:bg-emerald-700 text-sm px-4 py-2'><AiOutlinePlus className='text-xl -ml-1 mr-2' /> Add a webhook</Button>
+                <Button className='w-44 bg-emerald-600 hover:bg-emerald-700 text-sm px-4 py-2'><AiOutlinePlus className='text-xl -ml-1 mr-2' /> {t('pages.admin.webhooks.addAWebhook')}</Button>
 
               </Link>
             </EmptyState>

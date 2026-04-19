@@ -5,11 +5,11 @@ module.exports = async function adminNavigation (obj, info, { state }) {
   const { documentsCount } = await state.dbPool('bm_web_documents').count({ documentsCount: '*' }).first()
 
   const left = [
-    { name: 'Documents', label: documentsCount, href: '/admin/documents' },
-    { name: 'Roles', label: rolesCount, href: '/admin/roles' },
-    { name: 'Servers', label: state.serversPool.size, href: '/admin/servers' },
-    { name: 'Notification Rules', label: notificationRulesCount, href: '/admin/notification-rules' },
-    { name: 'Webhooks', label: webHooksCount, href: '/admin/webhooks' }
+    { key: 'documents', name: 'Documents', label: documentsCount, href: '/admin/documents' },
+    { key: 'roles', name: 'Roles', label: rolesCount, href: '/admin/roles' },
+    { key: 'servers', name: 'Servers', label: state.serversPool.size, href: '/admin/servers' },
+    { key: 'notificationRules', name: 'Notification Rules', label: notificationRulesCount, href: '/admin/notification-rules' },
+    { key: 'webhooks', name: 'Webhooks', label: webHooksCount, href: '/admin/webhooks' }
   ]
 
   left.sort((a, b) => a.name.localeCompare(b.name))

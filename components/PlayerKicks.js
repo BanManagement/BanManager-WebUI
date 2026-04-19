@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
 import Loader from './Loader'
 import ServerSelector from './admin/ServerSelector'
 import { useApi } from '../utils'
@@ -27,6 +28,7 @@ query listPlayerPunishmentRecords($serverId: ID!, $player: UUID!, $type: RecordT
 }`
 
 export default function PlayerKicks ({ id }) {
+  const t = useTranslations()
   const [tableState, setTableState] = useState({ type: 'PlayerKick', serverId: null })
   const { loading, data, mutate } = useApi({ query: !tableState.serverId ? null : query, variables: { ...tableState, player: id } })
 
@@ -44,7 +46,7 @@ export default function PlayerKicks ({ id }) {
         className='pb-4 mb-4 border-b border-primary-900' id='kicks'
       >
         <div className='flex items-center'>
-          <p className='mr-6 text-xl font-bold '>Kicks ({total})</p>
+          <p className='mr-6 text-xl font-bold '>{t('pages.player.kicks', { total })}</p>
           <div className='w-40 inline-block'>
             <ServerSelector
               onChange={serverId => setTableState({ ...tableState, serverId })}
@@ -59,7 +61,7 @@ export default function PlayerKicks ({ id }) {
       {!data?.listPlayerPunishmentRecords?.total && (
         <div className='flex items-center'>
           <div>
-            None
+            {t('common.none')}
           </div>
         </div>
       )}

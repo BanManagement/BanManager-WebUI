@@ -1,6 +1,7 @@
 import { Fragment, useEffect, useRef } from 'react'
 import { cloneDeep, find } from 'lodash-es'
 import { useForm, Controller } from 'react-hook-form'
+import { useTranslations } from 'next-intl'
 import Input from '../Input'
 import Checkbox from '../Checkbox'
 import Button from '../Button'
@@ -13,6 +14,7 @@ const sanitiseName = (name) => name.replace(/\./g, '_')
 const desanitiseName = (name) => name.replace(/_/g, '.')
 
 export default function RoleForm ({ onFinished, query, parseVariables, parentRoles, resources, defaults = {} }) {
+  const t = useTranslations()
   const defaultResources = {}
 
   ;(defaults.resources || resources || []).forEach(resource => {
@@ -77,11 +79,11 @@ export default function RoleForm ({ onFinished, query, parseVariables, parentRol
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className='mx-auto' data-cy='role-form'>
-      <PageHeader title='Edit Role' />
+      <PageHeader title={t('pages.admin.roles.form.edit')} />
       <ErrorMessages ref={errorRef} errors={errors} />
       <Input
         required
-        placeholder='Name'
+        placeholder={t('pages.admin.roles.form.name')}
         data-cy='role-name'
         {...register('name')}
       />
@@ -91,11 +93,11 @@ export default function RoleForm ({ onFinished, query, parseVariables, parentRol
           control={control}
           render={({ field }) => <Select className='mb-6' {...field} options={parentRoles} data-cy='role-parent' />}
         />}
-      <PageHeader title='Resources' className='!text-xl' />
+      <PageHeader title={t('pages.admin.roles.form.resources')} className='!text-xl' />
       {defaults.id === '3' &&
-        <p>{defaults.name} has access to all resources</p>}
+        <p>{t('pages.admin.roles.form.fullAccess', { name: defaults.name })}</p>}
       {(!defaults.id || defaults.id !== '3') && resourceInputs}
-      <Button data-cy='submit-role-form' disabled={isSubmitting} loading={loading}>Save</Button>
+      <Button data-cy='submit-role-form' disabled={isSubmitting} loading={loading}>{t('common.save')}</Button>
     </form>
   )
 }

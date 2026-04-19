@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { format, fromUnixTime } from 'date-fns'
+import { useTranslations } from 'next-intl'
 import Badge from '../Badge'
 import Link from 'next/link'
 import Loader from '../Loader'
@@ -92,6 +93,7 @@ const AppealRow = ({ row, dateFormat, showActor }) => {
 }
 
 export default function PlayerAppeals ({ id, title, showActor }) {
+  const t = useTranslations()
   const { hasPermission } = useUser()
   const [tableState, setTableState] = useState({ id, serverId: null, activePage: 1, limit: 10, offset: 0, assigned: null, state: null })
   const { loading, data } = useApi({ query, variables: tableState })
@@ -113,30 +115,30 @@ export default function PlayerAppeals ({ id, title, showActor }) {
           <p className='mr-6' data-cy='dashboard-widget-title'>{title}</p>
           {(hasPermission('player.appeals', 'view.any') || hasPermission('player.appeals', 'view.assigned')) &&
             <div className='ml-3 text-sm'>
-              <Link href='/dashboard/appeals' data-cy='dashboard-widget-view-all'>View All</Link>
+              <Link href='/dashboard/appeals' data-cy='dashboard-widget-view-all'>{t('pages.dashboard.viewAll')}</Link>
             </div>}
         </div>
       </h1>
       <Table>
         <Table.Header>
           <Table.Row>
-            <Table.HeaderCell>ID</Table.HeaderCell>
+            <Table.HeaderCell>{t('tables.id')}</Table.HeaderCell>
             {showActor &&
               <Table.HeaderCell>
                 <PlayerSelector
                   multiple={false}
                   onChange={(id) => setTableState({ ...tableState, id })}
-                  placeholder='By'
+                  placeholder={t('tables.by')}
                   clearable
                 />
               </Table.HeaderCell>}
-            <Table.HeaderCell>Type</Table.HeaderCell>
-            <Table.HeaderCell>At</Table.HeaderCell>
+            <Table.HeaderCell>{t('tables.type')}</Table.HeaderCell>
+            <Table.HeaderCell>{t('tables.at')}</Table.HeaderCell>
             <Table.HeaderCell>
               <Select
                 options={data?.appealStates?.map(state => ({ value: state.id, label: state.name }))}
                 onChange={(value) => setTableState({ ...tableState, state: value?.value })}
-                placeholder='State'
+                placeholder={t('tables.state')}
                 isClearable
               />
             </Table.HeaderCell>
@@ -144,11 +146,11 @@ export default function PlayerAppeals ({ id, title, showActor }) {
               <PlayerSelector
                 multiple={false}
                 onChange={(id) => setTableState({ ...tableState, assigned: id })}
-                placeholder='Assigned'
+                placeholder={t('tables.assigned')}
                 clearable
               />
             </Table.HeaderCell>
-            <Table.HeaderCell>Last Updated</Table.HeaderCell>
+            <Table.HeaderCell>{t('tables.lastUpdated')}</Table.HeaderCell>
           </Table.Row>
         </Table.Header>
         <Table.Body>

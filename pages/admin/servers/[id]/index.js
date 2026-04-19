@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 import AdminLayout from '../../../../components/AdminLayout'
 import ErrorLayout from '../../../../components/ErrorLayout'
 import Loader from '../../../../components/Loader'
@@ -13,6 +14,7 @@ import ServerWarningStats from '../../../../components/admin/servers/stats/Serve
 import PlayerActivity from '../../../../components/admin/servers/PlayerActivity'
 
 export default function Page () {
+  const t = useTranslations()
   const router = useRouter()
   const { id } = router.query
   const { loading, data, errors } = useApi({
@@ -27,16 +29,16 @@ export default function Page () {
     }`
   })
 
-  if (loading) return <AdminLayout title='Loading...'><Loader /></AdminLayout>
+  if (loading) return <AdminLayout title={t('pages.admin.loading')}><Loader /></AdminLayout>
   if (errors || !data) return <ErrorLayout errors={errors} />
 
   return (
-    <AdminLayout title={`Server ${data.server.name}`}>
+    <AdminLayout title={t('pages.admin.servers.viewDocumentTitle', { name: data.server.name })}>
       <AdminHeader title={data.server.name}>
         <div>
           <Link href={`/admin/servers/${data.server.id}/edit`} passHref>
 
-            <Button className='bg-emerald-600 hover:bg-emerald-700 text-sm px-4 py-2'>Edit Server</Button>
+            <Button className='bg-emerald-600 hover:bg-emerald-700 text-sm px-4 py-2'>{t('pages.admin.servers.editServer')}</Button>
 
           </Link>
         </div>

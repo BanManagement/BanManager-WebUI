@@ -1,7 +1,10 @@
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { format, fromUnixTime } from 'date-fns'
+import { useLocale, useTranslations } from 'next-intl'
 import { useApi, useUser } from '../../../utils'
+import { LOCALE_CONFIG, DEFAULT_LOCALE } from '../../../utils/locale'
+import { useDateFnsLocale } from '../../../utils/format-distance'
 import DefaultLayout from '../../../components/DefaultLayout'
 import ErrorLayout from '../../../components/ErrorLayout'
 import PageContainer from '../../../components/PageContainer'
@@ -10,6 +13,9 @@ import PlayerReportServerLogs from '../../../components/reports/PlayerReportServ
 import PlayerReportSidebar from '../../../components/reports/PlayerReportSidebar'
 
 export default function Page () {
+  const t = useTranslations()
+  const locale = useLocale()
+  const dateFnsLocale = useDateFnsLocale()
   const { user } = useUser()
   const router = useRouter()
   const { id, serverId } = router.query
@@ -98,16 +104,24 @@ export default function Page () {
 
   const report = data?.report
 
-  if (loading) return <DefaultLayout title='Loading...' loading />
+  if (loading) return <DefaultLayout title={t('common.loading')} loading />
   if (errors || !data) return <ErrorLayout errors={errors} />
 
   const stateOptions = data.reportStates.map(state => ({ value: state.id, label: state.name }))
   const canComment = report.state.id < 3 && report.acl.comment
   const canUpdateState = report.acl.state
   const canAssign = report.acl.assign
+  const dateFormat = LOCALE_CONFIG[locale]?.dateFormat || LOCALE_CONFIG[DEFAULT_LOCALE].dateFormat
+  const formattedDate = (() => {
+    try {
+      return format(fromUnixTime(report.created), dateFormat, dateFnsLocale ? { locale: dateFnsLocale } : undefined)
+    } catch {
+      return format(fromUnixTime(report.created), dateFormat)
+    }
+  })()
 
   return (
-    <DefaultLayout title={`#${id} | ${report.actor.name} | ${report.reason} | Report`}>
+    <DefaultLayout title={t('pages.report.documentTitle', { id, name: report.actor.name, reason: report.reason })}>
       <PageContainer>
         <div className='pb-6'>
           <h1
@@ -117,17 +131,13 @@ export default function Page () {
             <span className='block md:inline text-gray-400'>#{report.id}</span>
           </h1>
           <p className='pb-4 border-b border-accent-400 text-gray-400'>
-            <Link href={`/player/${report.actor.id}`}>
-
-              {report.actor.name}
-
-            </Link> reported&nbsp;
-            <Link href={`/player/${report.player.id}`}>
-
-              {report.player.name}
-
-            </Link>
-            &nbsp;on {format(fromUnixTime(report.created), 'dd MMM yyyy')}
+            {t.rich('pages.report.reportedSentence', {
+              actorName: report.actor.name,
+              playerName: report.player.name,
+              date: formattedDate,
+              actor: (chunks) => <Link href={`/player/${report.actor.id}`}>{chunks}</Link>,
+              player: (chunks) => <Link href={`/player/${report.player.id}`}>{chunks}</Link>
+            })}
           </p>
         </div>
         <div className='grid grid-flow-row md:grid-flow-col grid-cols-12'>

@@ -15,7 +15,16 @@
     "no": "Nein",
     "ok": "OK",
     "siteName": "Ban Management",
-    "version": "Version"
+    "version": "Version",
+    "add": "Hinzufügen",
+    "none": "Keine",
+    "all": "Alle",
+    "warning": "Warnung",
+    "test": "Testen",
+    "send": "Senden",
+    "create": "Erstellen",
+    "comment": "Kommentieren",
+    "permanent": "Dauerhaft"
   },
   "nav": {
     "login": "Anmelden",
@@ -23,12 +32,15 @@
     "language": "Sprache",
     "home": "Startseite",
     "openMenu": "Menü öffnen",
+    "closeMenu": "Menü schließen",
     "admin": "Administration",
     "dashboard": "Dashboard",
     "notifications": "Benachrichtigungen",
     "account": "Konto",
     "profile": "Profil",
-    "viewProfile": "Profil anzeigen"
+    "viewProfile": "Profil anzeigen",
+    "settings": "Einstellungen",
+    "return": "Zurück"
   },
   "footer": {
     "powered": "Bereitgestellt von"
@@ -41,7 +53,12 @@
     },
     "register": {
       "title": "Registrieren",
-      "subtitle": "Erstelle dein Konto"
+      "subtitle": "Erstelle dein Konto",
+      "documentTitle": "Registrieren | Konto",
+      "feature1": "Anmelden überall, jederzeit",
+      "feature2": "Alle Strafen einschließlich Meldungen verfolgen",
+      "feature3": "Benachrichtigungen zu Einspruchsaktualisierungen",
+      "skip": "Überspringen"
     },
     "forgottenPassword": {
       "title": "Passwort vergessen",
@@ -51,9 +68,23 @@
       "title": "Einspruch erstellen",
       "subtitle": "Reiche einen Einspruch gegen eine Strafe ein",
       "documentTitle": "Einspruch",
+      "punishmentDocumentTitle": "Strafe auswählen | Einspruch",
+      "pinLoginDocument": "Anmelden | Einspruch",
+      "accountLoginDocument": "Anmelden | Einspruch",
+      "accountLogin": "Konto-Anmeldung",
+      "appealBan": "Einspruch gegen Bann",
+      "appealMute": "Einspruch gegen Stummschaltung",
+      "appealWarning": "Einspruch gegen Verwarnung",
+      "appealBanDocument": "Einspruch gegen Bann | Einspruch",
+      "appealMuteDocument": "Einspruch gegen Stummschaltung | Einspruch",
+      "appealWarningDocument": "Einspruch gegen Verwarnung | Einspruch",
+      "punishmentNotFound": "Strafe nicht gefunden",
+      "headBack": "Gehe zurück zur vorherigen Seite",
       "stepHeader": {
         "step1": "PIN-Anmeldung",
-        "selectPunishment": "Strafe auswählen"
+        "selectPunishment": "Strafe auswählen",
+        "writeAppeal": "Einspruch verfassen",
+        "awaitReview": "Auf Überprüfung warten"
       },
       "intro": "Zuerst müssen wir wissen, wer du bist.",
       "pinHelp": "Ich habe einen 6-stelligen PIN, z.B. ",
@@ -61,14 +92,61 @@
       "pinExpiry": "Hinweis: Dieser PIN läuft nach 5 Minuten ab.",
       "or": "ODER",
       "haveAccount": "Ich habe bereits ein Konto",
-      "haveAccountDescription": "Dies ist spezifisch für diese Website und NICHT deine Microsoft/Mojang-Anmeldedaten."
+      "haveAccountDescription": "Dies ist spezifisch für diese Website und NICHT deine Microsoft/Mojang-Anmeldedaten.",
+      "noPunishments": "Keine Strafen gefunden",
+      "tryChangingFilters": "Versuche deine Filter zu ändern",
+      "clearFilters": "Filter zurücksetzen",
+      "reasonLabel": "Warum sollte diese Strafe aufgehoben werden?",
+      "reasonPlaceholder": "Erkläre, warum diese Strafe aufgehoben werden sollte..."
     },
     "account": {
       "documentTitle": "Konto",
       "subtitle": "Konto",
       "register": "Registrieren",
       "email": "E-Mail",
-      "password": "Passwort"
+      "password": "Passwort",
+      "changeEmail": "E-Mail-Adresse ändern",
+      "changePassword": "Passwort ändern",
+      "changeEmailDocumentTitle": "E-Mail-Adresse ändern | Konto",
+      "changePasswordDocumentTitle": "Passwort ändern | Konto",
+      "newEmail": "Neue E-Mail-Adresse",
+      "newPassword": "Neues Passwort",
+      "confirmNewPassword": "Neues Passwort bestätigen",
+      "passwordHint": "Muss mindestens 6 Zeichen lang sein"
+    },
+    "home": {
+      "documentTitle": "Willkommen",
+      "appeal": {
+        "subtitle": "Hilfe, ich wurde gebannt",
+        "title": "Einspruch",
+        "intro": "Wenn du glaubst, dass dein Konto zu Unrecht bestraft wurde, erstelle einen Einspruch und begründe ihn mit allen relevanten Beweisen.",
+        "warning": "Es gibt keine Garantie, dass dein Einspruch erfolgreich sein wird.",
+        "cta": "Einspruch erstellen"
+      },
+      "search": {
+        "subtitle": "Spieler suchen",
+        "title": "Suche",
+        "intro": "Sieh dir die vollständige Strafenhistorie eines Spielers an, einschließlich aktueller Banns, Stummschaltungen und mehr!",
+        "placeholder": "Spielernamen eingeben"
+      },
+      "account": {
+        "signInTitle": "Anmelden",
+        "signInSubtitle": "Hast du bereits ein Konto?",
+        "myAccountSubtitle": "Mein Konto",
+        "dashboardCta": "Mein Dashboard"
+      }
+    },
+    "dashboard": {
+      "title": "Dashboard",
+      "documentTitle": "Dashboard",
+      "appealsDocumentTitle": "Einsprüche | Dashboard",
+      "reportsDocumentTitle": "Meldungen | Dashboard",
+      "activePunishments": "Aktive Strafen",
+      "yourAppeals": "Deine Einsprüche",
+      "yourReports": "Deine Meldungen",
+      "appeals": "Einsprüche",
+      "reports": "Meldungen",
+      "viewAll": "Alle anzeigen"
     },
     "notFound": {
       "title": "Hoppla! Seite nicht gefunden",
@@ -87,21 +165,345 @@
       "intro": "Es tut uns leid, bei uns ist etwas schiefgelaufen. Bitte versuche es später erneut.",
       "documentTitle": "Serverfehler"
     },
+    "notifications": {
+      "title": "Benachrichtigungen",
+      "documentTitle": "Benachrichtigungen",
+      "empty": "Hier gibt es noch nichts zu sehen"
+    },
+    "appeals": {
+      "documentTitle": "#{id} | {name} | {reason} | Einspruch",
+      "appealingSentence": "<actor>{actorName}</actor> legt Einspruch gegen einen {kind, select, permanent {permanenten <badge></badge> ein, ausgestellt am {issuedDate} von <punisher>{punisherName}</punisher>} other {temporären <badge></badge> ein, ausgestellt am {issuedDate} von <punisher>{punisherName}</punisher> (läuft {expiresTime} ab)}}",
+      "commentedAt": "<actor>{actorName}</actor> kommentierte <time>{relative}</time>",
+      "deleteCommentTitle": "Kommentar löschen",
+      "deleteCommentConfirm": "Bist du sicher, dass du diesen Kommentar löschen möchtest?",
+      "updates": {
+        "reasonChanged": "<actor>{actorName}</actor> änderte den Grund von <old>{oldReason}</old> in <new>{newReason}</new>",
+        "expirationChanged": "<actor>{actorName}</actor> änderte das Ablaufdatum von <old>{oldExpires}</old> auf <new>{newExpires}</new>",
+        "softChanged": "<actor>{actorName}</actor> setzte <old>{oldSoft}</old> auf <new>{newSoft}</new>",
+        "stateMarked": "<actor>{actorName}</actor> markierte diesen Einspruch als {state} {time}",
+        "shadow": "Shadow",
+        "notShadow": "Nicht Shadow",
+        "permanent": "permanent"
+      },
+      "sidebar": {
+        "state": "Status",
+        "assignee": "Zuständig",
+        "unassigned": "Nicht zugewiesen",
+        "notifications": "Benachrichtigungen",
+        "documents": "Dokumente",
+        "actions": "Aktionen"
+      },
+      "actions": {
+        "editBan": "Bann bearbeiten",
+        "editMute": "Stummschaltung bearbeiten",
+        "editWarning": "Verwarnung bearbeiten",
+        "unban": "Entbannen",
+        "unmute": "Entstummen",
+        "deleteWarning": "Verwarnung löschen"
+      },
+      "editTitle": {
+        "ban": "Bann bearbeiten",
+        "mute": "Stummschaltung bearbeiten",
+        "warning": "Verwarnung bearbeiten"
+      },
+      "removeTitle": {
+        "ban": "Bann entfernen",
+        "mute": "Stummschaltung entfernen",
+        "warning": "Verwarnung entfernen"
+      },
+      "removeConfirm": {
+        "ban": "Bist du sicher, dass du diesen Bann entfernen möchtest?",
+        "mute": "Bist du sicher, dass du diese Stummschaltung entfernen möchtest?",
+        "warning": "Bist du sicher, dass du diese Verwarnung entfernen möchtest?"
+      }
+    },
+    "report": {
+      "serverLogs": "Server-Protokolle",
+      "close": "Schließen",
+      "reportRecords": "{count, plural, one {Diese Meldung hat 1 zugehörigen Eintrag} other {Diese Meldung hat # zugehörige Einträge}}",
+      "reviewLogs": "Protokolle prüfen",
+      "locations": "Standorte",
+      "documentTitle": "#{id} | {name} | {reason} | Meldung",
+      "reportedSentence": "<actor>{actorName}</actor> meldete <player>{playerName}</player> am {date}"
+    },
+    "player": {
+              "statistics": {
+                "bans": "Banns",
+                "mutes": "Stummschaltungen",
+                "warnings": "Verwarnungen"
+              },
+              "actions": {
+                "ban": "Bannen",
+                "mute": "Stummschalten",
+                "warning": "Verwarnen",
+                "note": "Notiz"
+              },
+              "activeBans": "{total, plural, one {Aktiver Bann (1)} other {Aktive Banns (#)}}",
+              "activeMutes": "{total, plural, one {Aktive Stummschaltung (1)} other {Aktive Stummschaltungen (#)}}",
+              "pastBans": "{total, plural, one {Früherer Bann (1)} other {Frühere Banns (#)}}",
+              "pastMutes": "{total, plural, one {Frühere Stummschaltung (1)} other {Frühere Stummschaltungen (#)}}",
+              "warnings": "{total, plural, one {Verwarnung (1)} other {Verwarnungen (#)}}",
+              "notes": "{total, plural, one {Notiz (1)} other {Notizen (#)}}",
+              "addNote": "Notiz hinzufügen",
+              "kicks": "{total, plural, one {Kick (1)} other {Kicks (#)}}",
+              "pastKicks": "{total, plural, one {Früherer Kick (1)} other {Frühere Kicks (#)}}",
+              "alts": "Zweitkonten",
+              "history": "Verlauf",
+              "playerHistory": "Spielerverlauf",
+              "noHistory": "Kein Verlauf",
+              "missingDataLine": "Wenn dir hier Daten fehlen, stelle sicher, dass <docs>logIps</docs> in der config.yml-Datei des Plugins aktiviert ist",
+              "close": "Schließen",
+              "lastSeen": "Zuletzt gesehen {time}",
+              "neverSeen": "Nie gesehen",
+              "actionTitles": {
+                "ban": "{name} bannen",
+                "mute": "{name} stummschalten",
+                "warn": "{name} verwarnen",
+                "note": "Notiz für {name}",
+                "addNoteHeader": "Notiz hinzufügen",
+                "addNoteDocument": "Notiz zu {name} hinzufügen",
+                "editBan": "Bann bearbeiten",
+                "editMute": "Stummschaltung bearbeiten",
+                "editWarning": "Verwarnung bearbeiten",
+                "editNote": "Notiz bearbeiten",
+                "editKick": "Kick bearbeiten",
+                "editBanDocument": "Bann von {name} bearbeiten",
+                "editMuteDocument": "Stummschaltung von {name} bearbeiten",
+                "editWarningDocument": "Verwarnung von {name} bearbeiten",
+                "editNoteDocument": "Notiz von {name} bearbeiten"
+              }
+            },
+    "punishment": {
+      "appeal": "Einspruch",
+      "read": "Gelesen",
+      "deleteTitle": {
+        "ban": "Bann löschen",
+        "mute": "Stummschaltung löschen",
+        "warning": "Verwarnung löschen",
+        "note": "Notiz löschen",
+        "kick": "Kick löschen"
+      },
+      "deleteConfirm": {
+        "ban": "Bist du sicher, dass du diesen Bann löschen möchtest?",
+        "mute": "Bist du sicher, dass du diese Stummschaltung löschen möchtest?",
+        "warning": "Bist du sicher, dass du diese Verwarnung löschen möchtest?",
+        "note": "Bist du sicher, dass du diese Notiz löschen möchtest?",
+        "kick": "Bist du sicher, dass du diesen Kick löschen möchtest?"
+      },
+      "actionUndoable": "Diese Aktion kann nicht rückgängig gemacht werden",
+      "deletionReasonUnknown": "Löschgrund unbekannt"
+    },
     "admin": {
       "title": "Administration",
+      "loading": "Wird geladen…",
       "developerMode": "Entwicklermodus",
       "developerModeMessage": "Du läufst aktuell im Entwicklungsmodus, erwarte Leistungseinbußen",
       "updateAvailable": "Update verfügbar",
       "currentVersion": "Aktuelle Version: {current}",
       "latestVersion": "Neueste: {latest}",
       "newFeatures": "Neue Funktionen",
-      "fixes": "Fehlerbehebungen"
+      "fixes": "Fehlerbehebungen",
+      "nav": {
+        "documents": "Dokumente",
+        "roles": "Rollen",
+        "servers": "Server",
+        "notificationRules": "Benachrichtigungsregeln",
+        "webhooks": "Webhooks"
+      },
+      "documents": {
+        "title": "Dokumente",
+        "uploadedCount": "{total, plural, one {# Dokument hochgeladen} other {# Dokumente hochgeladen}}",
+        "emptyTitle": "Keine Dokumente hochgeladen",
+        "emptySubtitle": "Dokumente, die an Einsprüche und Meldungen angehängt sind, erscheinen hier",
+        "document": "Dokument",
+        "uploadedBy": "Hochgeladen von",
+        "usedIn": "Verwendet in",
+        "date": "Datum",
+        "actions": "Aktionen",
+        "unknown": "Unbekannt",
+        "notAttached": "Nicht angehängt",
+        "viewFullSize": "In voller Größe anzeigen",
+        "openInNewTab": "In neuem Tab öffnen",
+        "deleteTitle": "Dokument löschen",
+        "deleteConfirm": "Möchtest du dieses Dokument wirklich löschen?",
+        "deleteWarning": "Diese Aktion kann nicht rückgängig gemacht werden und entfernt das Bild aus allen angehängten Einsprüchen.",
+        "deleteImage": "Bild löschen",
+        "deleteImageTitle": "Bild löschen",
+        "deleteImageConfirm": "Möchtest du dieses Bild wirklich löschen?"
+      },
+      "servers": {
+        "title": "Server",
+        "server": "Server",
+        "addServer": "Server hinzufügen",
+        "editServer": "Server bearbeiten",
+        "editTitle": "{name} bearbeiten",
+        "viewDocumentTitle": "{name} | Server",
+        "stats": {
+          "bans": "Banns",
+          "mutes": "Stummschaltungen",
+          "warnings": "Verwarnungen",
+          "reports": "Meldungen",
+          "total": "Gesamt",
+          "averageLength": "Ø-Dauer",
+          "averageResolution": "Ø-Lösungsdauer",
+          "lastDays": "Letzte {days} Tage"
+        },
+        "playerActivity": {
+          "title": "Spieleraktivität",
+          "newJoins": "Neuanmeldungen",
+          "uniquePlayers": "Einzigartige Spieler",
+          "summaryTitle": "Aktivitätszusammenfassung",
+          "filters": "Filter",
+          "startDate": "Startdatum",
+          "endDate": "Enddatum",
+          "actor": "Akteur",
+          "clear": "Zurücksetzen",
+          "limitWarning": "Ergebnisse sind begrenzt, verwende die Filter, um mehr zu sehen",
+          "for": "für",
+          "actions": {
+            "BAN": "Gebannt",
+            "IPBAN": "{ip} gebannt",
+            "UNBAN": "Entbannt",
+            "UNBANIP": "{ip} entbannt",
+            "IPRANGEBAN": "{fromIp} - {toIp} gebannt",
+            "IPRANGEUNBAN": "{fromIp} - {toIp} entbannt",
+            "MUTE": "Stummgeschaltet",
+            "IPMUTE": "{ip} stummgeschaltet",
+            "UNMUTE": "Entstummt",
+            "IPUNMUTE": "{ip} entstummt",
+            "WARNING": "Verwarnt",
+            "NOTE": "Hat eine Notiz erstellt für"
+          }
+        },
+        "deleteTitle": "Server löschen",
+        "deleteWarning": "Zugehörige <strong>Einsprüche und Rollen</strong> werden entfernt",
+        "deleteConfirmInstruction": "Bitte gib <strong>{name}</strong> ein, um zu bestätigen",
+        "deletePlaceholder": "Servername eingeben",
+        "form": {
+          "info": "Informationen",
+          "name": "Name",
+          "consoleUuid": "Konsolen-UUID (BanManager/console.yml)",
+          "yamlPlaceholder": "YAML BanManager/config.yml einfügen (optional)",
+          "database": "Datenbank",
+          "host": "Host",
+          "port": "Port",
+          "databaseName": "Datenbankname",
+          "user": "Benutzer",
+          "password": "Passwort",
+          "databaseTables": "Datenbanktabellen"
+        }
+      },
+      "roles": {
+        "title": "Rollen",
+        "addRole": "Rolle hinzufügen",
+        "editRole": "Rolle bearbeiten",
+        "editTitle": "{name} bearbeiten",
+        "deleteTitle": "Rolle löschen",
+        "deleteConfirm": "Bist du sicher, dass du diese Rolle löschen möchtest?",
+        "defaultUnauthenticated": "Wird standardmäßig allen nicht angemeldeten Besuchern zugewiesen",
+        "defaultAuthenticated": "Wird standardmäßig allen angemeldeten Spielern zugewiesen",
+        "superAdmin": "Super-Admin-Rolle mit allen Berechtigungen",
+        "tipsHeader": "Tipps",
+        "tip1": "Es gibt 3 Standardrollen, die automatisch zugewiesen werden. Diese Berechtigungen können geändert werden",
+        "tip2": "Erstelle und weise neue Rollen zu, um deinen Moderatoren Berechtigungen zur Verwaltung von Einsprüchen, Meldungen usw. zu erteilen.",
+        "tip3": "Ein Spieler kann mehrere Rollen haben und diese sind additiv, d.h. eine erteilte Berechtigung wird immer gewährt; Rollen können keine Berechtigung entfernen, die durch eine andere Rolle erteilt wurde",
+        "tip4": "Benutzerdefinierte Rollen müssen eine übergeordnete Rolle definieren; wenn neue Ressourcen und/oder Berechtigungen in einem Update zu den Standardrollen hinzugefügt werden, werden sie automatisch den untergeordneten Rollen gewährt",
+        "assignGlobal": "Globale Spielerrollen zuweisen",
+        "assignGlobalHint": "Hat Vorrang vor Serverrollen und gilt global",
+        "assignServer": "Server-Spielerrollen zuweisen",
+        "assignServerHint": "Betrifft nur bestimmte Aktionen, bei denen ein Server zutrifft, z.B. Banns",
+        "role": "Rolle",
+        "assign": "Zuweisen",
+        "form": {
+          "edit": "Rolle bearbeiten",
+          "name": "Name",
+          "resources": "Ressourcen",
+          "fullAccess": "{name} hat Zugriff auf alle Ressourcen"
+        }
+      },
+      "notificationRules": {
+        "title": "Benachrichtigungsregeln",
+        "addRule": "Regel hinzufügen",
+        "createRule": "Eine Regel erstellen",
+        "editTitle": "Benachrichtigungsregel #{id} bearbeiten",
+        "editTitleHeader": "Benachrichtigungsregel bearbeiten",
+        "emptyTitle": "Hier ist nichts",
+        "emptySubtitle": "Benachrichtigungsregeln werden hier erscheinen, versuche eine zu erstellen!",
+        "deleteTitle": "Benachrichtigungsregel löschen",
+        "deleteConfirm": "Bist du sicher, dass du diese Benachrichtigungsregel löschen möchtest?",
+        "form": {
+          "type": "Benachrichtigungstyp",
+          "roles": "Rollen",
+          "serverOptional": "Server (optional)",
+          "server": "Server"
+        }
+      },
+      "players": {
+        "globalRoles": "Globale Rollen",
+        "serverRoles": "Serverrollen",
+        "edit": "Bearbeiten"
+      },
+      "webhooks": {
+        "title": "Webhooks",
+        "addWebhook": "Webhook hinzufügen",
+        "addAWebhook": "Einen Webhook hinzufügen",
+        "addWebhookType": "{type}-Webhook hinzufügen",
+        "editTitle": "Webhook bearbeiten",
+        "editTitleDoc": "Webhook #{id} bearbeiten",
+        "deliveries": "Zustellungen",
+        "deliveriesTitle": "Webhook-Zustellungen",
+        "deliveriesDocumentTitle": "Webhook #{id} Zustellungen",
+        "deliveriesEmptyTitle": "Keine Webhook-Zustellungen",
+        "deliveriesEmptySubtitle": "Webhook-Zustellungen erscheinen hier, sobald der Webhook ausgelöst wurde.",
+        "delivery": {
+          "request": "Anfrage",
+          "response": "Antwort",
+          "headers": "Header",
+          "payload": "Nutzdaten",
+          "body": "Body",
+          "error": "Fehler"
+        },
+        "test": {
+          "errorPrefix": "Fehler beim Senden des Webhooks",
+          "content": "Inhalt"
+        },
+        "selectType": "Webhook-Typ auswählen",
+        "discord": "Discord",
+        "custom": "Benutzerdefiniert",
+        "invalidType": "Ungültiger Webhook-Typ",
+        "invalidJson": "Ungültiges JSON",
+        "emptyTitle": "Hier ist nichts",
+        "emptySubtitle": "Webhooks ermöglichen es externen Diensten, benachrichtigt zu werden, wenn ein Ereignis eintritt",
+        "deleteTitle": "Webhook löschen",
+        "deleteConfirm": "Bist du sicher, dass du diesen Webhook löschen möchtest?",
+        "testTitle": "Webhook testen",
+        "form": {
+          "eventType": "Ereignistyp",
+          "serverOptional": "Server (optional)",
+          "server": "Server",
+          "url": "URL",
+          "urlPlaceholderCustom": "https://example.com/webhook",
+          "urlPlaceholderDiscord": "https://discord.com/webhook",
+          "contentTemplate": "Inhaltsvorlage",
+          "contentHint": "Verwende die definierten Variablen, um den Inhalt anzupassen",
+          "contentPlaceholder": "{exampleJson}",
+          "availableVariables": "Verfügbare Variablen",
+          "preview": "Vorschau"
+        }
+      },
+      "layout": {
+        "viewProfile": "Profil anzeigen",
+        "settings": "Einstellungen",
+        "notifications": "Benachrichtigungen",
+        "return": "Zurück"
+      }
     }
   },
   "errors": {
     "header": "Fehler",
     "fetchHeader": "Abruffehler",
     "httpHeader": "HTTP-Fehler: {status}",
+    "somethingWentWrong": "Etwas ist schiefgelaufen",
     "invalidJson": "Ungültiges JSON",
     "INTERNAL": "Interner Serverfehler",
     "UNKNOWN": "Ein unbekannter Fehler ist aufgetreten",
@@ -171,12 +573,36 @@
     "name": "Name",
     "reason": "Grund",
     "message": "Nachricht",
+    "points": "Punkte",
+    "soft": "Soft",
+    "softDescription": "Verbirgt seine Nachrichten vor anderen, um Spam zu verhindern",
     "comment": "Schreibe hier deinen Kommentar…",
+    "commentPlaceholder": "Schreibe hier deinen Kommentar…",
     "playerSelectorPlaceholder": "Spieler suchen",
     "required": "Dieses Feld ist erforderlich",
     "minLength": "Muss mindestens {n} Zeichen lang sein",
     "maxLength": "Darf maximal {n} Zeichen lang sein",
     "passwordMismatch": "Passwörter stimmen nicht überein"
+  },
+  "stats": {
+    "bans": "{count, plural, one {Bann} other {Banns}}",
+    "mutes": "{count, plural, one {Stummschaltung} other {Stummschaltungen}}",
+    "players": "{count, plural, one {Spieler} other {Spieler}}",
+    "appeals": "{count, plural, one {Einspruch} other {Einsprüche}}"
+  },
+  "tables": {
+    "id": "ID",
+    "type": "Typ",
+    "reason": "Grund",
+    "by": "Von",
+    "at": "Am",
+    "length": "Dauer",
+    "state": "Status",
+    "assigned": "Zugewiesen",
+    "lastUpdated": "Zuletzt aktualisiert",
+    "player": "Spieler",
+    "name": "Name",
+    "email": "E-Mail"
   },
   "widgets": {
     "select": {
@@ -188,6 +614,50 @@
     "languageSwitcher": {
       "label": "Sprache",
       "select": "Sprache auswählen"
+    },
+    "pushNotifications": {
+      "enable": "Push-Benachrichtigungen aktivieren",
+      "disable": "Push-Benachrichtigungen deaktivieren",
+      "ok": "Ok",
+      "blockedTitle": "Push-Benachrichtigungen aktivieren",
+      "blockedIntro": "Dein Browser blockiert Benachrichtigungen von dieser Seite",
+      "blockedSteps": "Befolge diese Schritte zur Aktivierung:",
+      "chrome": "Chrome",
+      "chromeStep1": "Navigiere zu: <path>chrome://settings/content</path>",
+      "chromeStep2": "Scrolle nach unten und klicke auf die Benachrichtigungsleiste",
+      "chromeStep3": "Suche die URL dieser Seite und wähle „Zulassen“",
+      "chromeAndroid": "Chrome für Android",
+      "chromeAndroidStep1": "Wähle das Symbol mit den drei vertikalen Punkten oben rechts",
+      "chromeAndroidStep2": "Wähle „Einstellungen“ aus dem Dropdown-Menü",
+      "chromeAndroidStep3": "Wähle „Website-Einstellungen“",
+      "chromeAndroidStep4": "Wähle „Benachrichtigungen“",
+      "chromeAndroidStep5": "Hier kannst du diese Website auswählen und Benachrichtigungen aktivieren",
+      "firefox": "Firefox",
+      "firefoxStep1": "Navigiere zu: <path>about:preferences#privacy</path>",
+      "firefoxStep2": "Scrolle nach unten zum Bereich Berechtigungen",
+      "firefoxStep3": "Klicke auf die Schaltfläche „Einstellungen“ neben Benachrichtigungen",
+      "firefoxStep4": "Suche die URL dieser Seite und wähle „Zulassen“",
+      "edge": "Microsoft Edge",
+      "edgeStep1": "Wähle die Schaltfläche „...“ oben rechts im Browserfenster",
+      "edgeStep2": "Wähle „Einstellungen“ aus dem Dropdown-Menü",
+      "edgeStep3": "Wähle „Cookies und Websiteberechtigungen“",
+      "edgeStep4": "Wähle „Benachrichtigungen“",
+      "edgeStep5": "Entferne diese Seite aus dem Bereich „Blockieren“",
+      "safari": "Safari",
+      "safariStep1": "Wähle „Safari“ in der Aktionsleiste oben am Bildschirm und wähle „Einstellungen“",
+      "safariStep2": "Klicke auf den Reiter „Websites“ und wähle dann „Benachrichtigungen“ im Menü auf der linken Seite des Einstellungsfensters",
+      "safariStep3": "Suche diese Seite und aktiviere Benachrichtigungen"
+    },
+    "upload": {
+      "addFiles": "Dateien hinzufügen",
+      "addFilesLong": "Einfügen, ablegen oder klicken, um Dateien hinzuzufügen",
+      "remove": "Entfernen",
+      "failed": "Fehlgeschlagen",
+      "uploading": "Wird hochgeladen...",
+      "uploadFailed": "Upload fehlgeschlagen",
+      "imageName": "Bild {index}",
+      "dropImages": "Bilder hier ablegen",
+      "commentPlaceholder": "Füge deinen Kommentar hier hinzu..."
     }
   },
   "components": {

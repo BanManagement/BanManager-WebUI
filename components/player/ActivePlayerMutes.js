@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl'
 import Loader from '../Loader'
 import PlayerPunishment from './PlayerPunishment'
 import { useApi } from '../../utils'
@@ -28,6 +29,7 @@ query playerMutes($id: UUID!) {
 }`
 
 export default function ActivePlayerMutes ({ id }) {
+  const t = useTranslations()
   const { loading, data, errors, mutate } = useApi({ query, variables: { id } })
 
   if (loading) return <Loader />
@@ -49,7 +51,7 @@ export default function ActivePlayerMutes ({ id }) {
 
   return (
     <div>
-      <PlayerHeader title={`Active Mutes (${data.playerMutes.length})`} />
+      <PlayerHeader title={t('pages.player.activeMutes', { total: data.playerMutes.length })} />
       <div className='flex flex-col gap-6'>
         {rows}
       </div>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
+import { useTranslations } from 'next-intl'
 import Button from '../Button'
 import TextArea from '../TextArea'
 import ErrorMessages from '../ErrorMessages'
@@ -9,6 +10,7 @@ import InputCharCounter from '../InputCharCounter'
 import CommentWithUpload, { AttachButton } from '../CommentWithUpload'
 
 export default function PlayerAppealForm ({ actor, reason, expires, created, server, type, onFinished, parseVariables, canUpload = false }) {
+  const t = useTranslations()
   const { handleSubmit, formState, control, watch } = useForm({ defaultValues: { reason: '' } })
   const watchReason = watch('reason')
   const { isSubmitting } = formState
@@ -50,10 +52,10 @@ export default function PlayerAppealForm ({ actor, reason, expires, created, ser
                 {...field}
                 required
                 rows={6}
-                label='Why should this punishment be removed?'
+                label={t('pages.appeal.reasonLabel')}
                 minLength={20}
                 maxLength={2000}
-                placeholder='Explain why this punishment should be removed...'
+                placeholder={t('pages.appeal.reasonPlaceholder')}
                 documents={documentIds}
                 onDocumentsChange={setDocumentIds}
                 maxFiles={5}
@@ -78,7 +80,7 @@ export default function PlayerAppealForm ({ actor, reason, expires, created, ser
                   {...field}
                   required
                   rows={6}
-                  label='Why should this punishment be removed?'
+                  label={t('pages.appeal.reasonLabel')}
                   minLength={20}
                   maxLength={2000}
                   className='!-mb-6'
@@ -89,7 +91,7 @@ export default function PlayerAppealForm ({ actor, reason, expires, created, ser
           </>
           )}
       <Button data-cy='submit-appeal' disabled={isSubmitting || watchReason.length < 20} loading={isSubmitting}>
-        Appeal
+        {t('pages.punishment.appeal')}
       </Button>
     </form>
   )

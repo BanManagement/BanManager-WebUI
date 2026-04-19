@@ -1,30 +1,70 @@
 import Link from 'next/link'
 import { GoIssueClosed, GoPencil, GoEyeClosed, GoEye, GoClock } from 'react-icons/go'
 import { format, fromUnixTime } from 'date-fns'
+import { useLocale, useTranslations } from 'next-intl'
 import Avatar from '../Avatar'
 import { fromNow } from '../../utils'
+import { LOCALE_CONFIG, DEFAULT_LOCALE } from '../../utils/locale'
+import { useDateFnsLocale } from '../../utils/format-distance'
 
 export default function PlayerAppealCommentPunishmentUpdate ({ id, actor, created, state, oldReason, newReason, oldExpires, newExpires, oldSoft, newSoft }) {
+  const t = useTranslations('pages.appeals.updates')
+  const locale = useLocale()
+  const dateFnsLocale = useDateFnsLocale()
+  const dateFormat = `${LOCALE_CONFIG[locale]?.dateFormat || LOCALE_CONFIG[DEFAULT_LOCALE].dateFormat} HH:mm:ss`
+
+  const expiryFormat = (expiry) => {
+    if (expiry === 0) return t('permanent')
+
+    try {
+      return format(fromUnixTime(expiry), dateFormat, dateFnsLocale ? { locale: dateFnsLocale } : undefined)
+    } catch {
+      return format(fromUnixTime(expiry), dateFormat)
+    }
+  }
+
+  const softLabel = (soft) => soft ? t('shadow') : t('notShadow')
+
+  const richTags = {
+    actor: (chunks) => <Link href={`/player/${actor.id}`}>{chunks}</Link>,
+    old: (chunks) => <span className='font-bold line-through'>{chunks}</span>,
+    new: (chunks) => <span className='font-bold'>{chunks}</span>
+  }
+
   const messages = []
-  const expiryFormat = (expiry) => expiry === 0 ? 'permanent' : format(fromUnixTime(expiry), 'dd MMM yyyy HH:mm:ss')
 
   if (oldReason && newReason) {
     messages.push({
-      message: <>changed the reason from <span className='font-bold line-through'>{oldReason}</span> to <span className='font-bold'>{newReason}</span></>
+      message: t.rich('reasonChanged', {
+        ...richTags,
+        actorName: actor.name,
+        oldReason,
+        newReason
+      })
     })
   }
 
   if (typeof oldExpires === 'number' && typeof newExpires === 'number') {
     messages.push({
       icon: <GoClock className='w-6 h-6 inline-block' />,
-      message: <>modified the expiration from <span className='font-bold line-through'>{expiryFormat(oldExpires)}</span> to <span className='font-bold'>{expiryFormat(newExpires)}</span></>
+      message: t.rich('expirationChanged', {
+        ...richTags,
+        actorName: actor.name,
+        oldExpires: expiryFormat(oldExpires),
+        newExpires: expiryFormat(newExpires)
+      })
     })
   }
 
   if (typeof oldSoft === 'boolean' && typeof newSoft === 'boolean') {
     messages.push({
       icon: newSoft ? <GoEyeClosed className='w-6 h-6 inline-block' /> : <GoEye className='w-6 h-6 inline-block' />,
-      message: <>set <span className='font-bold line-through'>{oldSoft ? 'shadow' : 'not shadow'}</span> to <span className='font-bold'>{newSoft ? 'shadow' : 'not shadow'}</span></>
+      message: t.rich('softChanged', {
+        ...richTags,
+        actorName: actor.name,
+        oldSoft: softLabel(oldSoft),
+        newSoft: softLabel(newSoft)
+      })
     })
   }
 
@@ -44,13 +84,7 @@ export default function PlayerAppealCommentPunishmentUpdate ({ id, actor, create
               <Avatar uuid={actor.id} width={20} height={20} />
 
             </Link>
-            <span className='pl-1 text-sm text-gray-300'>
-              <Link href={`/player/${actor.id}`} className=''>
-
-                {actor.name}
-
-              </Link> {message}
-            </span>
+            <span className='pl-1 text-sm text-gray-300'>{message}</span>
           </div>
         ))}
       <div className='ml-4 pt-3 pb-3 pl-4 relative' id={`comment-${id}`}>
@@ -66,11 +100,12 @@ export default function PlayerAppealCommentPunishmentUpdate ({ id, actor, create
 
         </Link>
         <span className='pl-1 text-sm text-gray-300'>
-          <Link href={`/player/${actor.id}`} className=''>
-
-            {actor.name}
-
-          </Link> marked this appeal as {state.name.toLowerCase()} {fromNow(created)}
+          {t.rich('stateMarked', {
+            ...richTags,
+            actorName: actor.name,
+            state: state.name.toLowerCase(),
+            time: fromNow(created)
+          })}
         </span>
       </div>
     </>

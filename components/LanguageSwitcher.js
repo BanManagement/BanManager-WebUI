@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { useRouter } from 'next/router'
 import { useTranslations } from 'next-intl'
 import { mutate } from 'swr'
 import { MdLanguage } from 'react-icons/md'
@@ -10,8 +9,7 @@ import {
   LOCALE_CONFIG,
   SUPPORTED_LOCALES,
   isSupportedLocale,
-  useResolvedLocale,
-  writeLocaleCookie
+  useResolvedLocale
 } from '../utils/locale'
 
 const setLocaleMutation = `
@@ -25,9 +23,8 @@ const setLocaleMutation = `
 
 export default function LanguageSwitcher ({ buttonClassName = '', variant = 'icon' }) {
   const t = useTranslations('widgets.languageSwitcher')
-  const router = useRouter()
   const { user } = useUser()
-  const { locale } = useResolvedLocale()
+  const { locale, setLocale } = useResolvedLocale()
   const [updating, setUpdating] = useState(false)
 
   const persistRemoteLocale = async (next) => {
@@ -56,7 +53,7 @@ export default function LanguageSwitcher ({ buttonClassName = '', variant = 'ico
     if (!isSupportedLocale(next) || next === locale || updating) return
 
     setUpdating(true)
-    writeLocaleCookie(next)
+    setLocale(next)
 
     try {
       if (user?.id) {
@@ -66,7 +63,6 @@ export default function LanguageSwitcher ({ buttonClassName = '', variant = 'ico
     } catch (err) {
       console.error('Failed to persist locale preference', err)
     } finally {
-      router.replace(router.asPath, undefined, { scroll: false })
       setUpdating(false)
     }
   }

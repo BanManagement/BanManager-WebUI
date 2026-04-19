@@ -2,10 +2,12 @@ import { FaBan } from 'react-icons/fa'
 import { BsMicMute } from 'react-icons/bs'
 import { FiUsers } from 'react-icons/fi'
 import { MdOutlineGavel } from 'react-icons/md'
+import { useTranslations } from 'next-intl'
 import Loader from '../Loader'
 import { numberFormatter, useApi } from '../../utils'
 
 const StatisticsPanel = () => {
+  const t = useTranslations()
   const { data, loading } = useApi({
     query: `query statistics {
     statistics {
@@ -26,7 +28,7 @@ const StatisticsPanel = () => {
             <>
               <FaBan className='text-red-800 w-12 h-12 mb-3 inline-block' />
               <h2 className='title-font font-medium text-3xl'>{numberFormatter(data?.statistics?.totalActiveBans || 0)}</h2>
-              <p className='leading-relaxed text-gray-300'>Ban{data?.statistics?.totalActiveBans !== 1 && 's'}</p>
+              <p className='leading-relaxed text-gray-300'>{t('stats.bans', { count: data?.statistics?.totalActiveBans || 0 })}</p>
             </>}
         </div>
       </div>
@@ -37,7 +39,7 @@ const StatisticsPanel = () => {
             <>
               <BsMicMute className='text-indigo-800 w-12 h-12 mb-3 inline-block' />
               <h2 className='title-font font-medium text-3xl'>{numberFormatter(data?.statistics?.totalActiveMutes || 0)}</h2>
-              <p className='leading-relaxed text-gray-300'>Mute{data?.statistics?.totalActiveMutes !== 1 && 's'}</p>
+              <p className='leading-relaxed text-gray-300'>{t('stats.mutes', { count: data?.statistics?.totalActiveMutes || 0 })}</p>
             </>}
         </div>
       </div>
@@ -48,7 +50,7 @@ const StatisticsPanel = () => {
             <>
               <FiUsers className='text-pink-800 w-12 h-12 mb-3 inline-block' />
               <h2 className='title-font font-medium text-3xl'>{numberFormatter(data?.statistics?.totalPlayers || 0)}</h2>
-              <p className='leading-relaxed text-gray-300'>Player{data?.statistics?.totalPlayers !== 1 && 's'}</p>
+              <p className='leading-relaxed text-gray-300'>{t('stats.players', { count: data?.statistics?.totalPlayers || 0 })}</p>
             </>}
         </div>
       </div>
@@ -59,7 +61,7 @@ const StatisticsPanel = () => {
             <>
               <MdOutlineGavel className='text-yellow-800 w-12 h-12 mb-3 inline-block' />
               <h2 className='title-font font-medium text-3xl'>{numberFormatter(data?.statistics?.totalAppeals || 0)}</h2>
-              <p className='leading-relaxed text-gray-300'>Appeal{data?.statistics?.totalAppeals !== 1 && 's'}</p>
+              <p className='leading-relaxed text-gray-300'>{t('stats.appeals', { count: data?.statistics?.totalAppeals || 0 })}</p>
             </>}
         </div>
       </div>

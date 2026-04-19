@@ -1,11 +1,13 @@
 import { AiOutlineWarning } from 'react-icons/ai'
 import { BsMicMute } from 'react-icons/bs'
 import { FaBan, FaStickyNote } from 'react-icons/fa'
+import { useTranslations } from 'next-intl'
 import { useUser } from '../../utils'
 import Link from 'next/link'
 import Button from '../Button'
 
 export default function PlayerActions ({ id }) {
+  const t = useTranslations()
   const { hasServerPermission } = useUser()
   const canCreateBan = hasServerPermission('player.bans', 'create', null, true)
   const canCreateMute = hasServerPermission('player.mutes', 'create', null, true)
@@ -19,25 +21,25 @@ export default function PlayerActions ({ id }) {
       <div>
         {canCreateBan &&
           <Link href={`/player/${id}/ban`} passHref>
-            <Button data-cy='action-ban' className='btn-outline'><FaBan className='text-red-800 mr-1' /> Ban</Button>
+            <Button data-cy='action-ban' className='btn-outline'><FaBan className='text-red-800 mr-1' /> {t('pages.player.actions.ban')}</Button>
           </Link>}
       </div>
       <div>
         {canCreateMute &&
           <Link href={`/player/${id}/mute`} passHref>
-            <Button data-cy='action-mute' className='btn-outline'><BsMicMute className='text-indigo-800 mr-1' /> Mute</Button>
+            <Button data-cy='action-mute' className='btn-outline'><BsMicMute className='text-indigo-800 mr-1' /> {t('pages.player.actions.mute')}</Button>
           </Link>}
       </div>
       <div>
         {canCreateWarning &&
           <Link href={`/player/${id}/warn`} passHref>
-            <Button data-cy='action-warn' className='btn-outline'><AiOutlineWarning className='text-amber-800 mr-1' /> Warn</Button>
+            <Button data-cy='action-warn' className='btn-outline'><AiOutlineWarning className='text-amber-800 mr-1' /> {t('pages.player.actions.warning')}</Button>
           </Link>}
       </div>
       <div>
         {canCreateNote &&
           <Link href={`/player/${id}/note`} passHref>
-            <Button data-cy='action-note' className='btn-outline'><FaStickyNote className='text-emerald-700 mr-1' /> Note</Button>
+            <Button data-cy='action-note' className='btn-outline'><FaStickyNote className='text-emerald-700 mr-1' /> {t('pages.player.actions.note')}</Button>
           </Link>}
       </div>
     </div>

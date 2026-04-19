@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { useForm, Controller } from 'react-hook-form'
+import { useTranslations } from 'next-intl'
 import Input from './Input'
 import Button from './Button'
 import ErrorMessages from './ErrorMessages'
@@ -9,6 +10,7 @@ import { FaPencilAlt } from 'react-icons/fa'
 import ExpiresInput from './ExpiresInput'
 
 export default function PlayerBanForm ({ serverFilter, onFinished, query, parseVariables, disableServers = false, defaults = {}, submitRef = null }) {
+  const t = useTranslations()
   const { handleSubmit, formState, register, control } = useForm({ defaultValues: { ...defaults, server: defaults?.server, expires: defaults?.expires * 1000 || 0 } })
   const { isSubmitting } = formState
   const { load, data, errors } = useMutateApi({ query })
@@ -39,7 +41,7 @@ export default function PlayerBanForm ({ serverFilter, onFinished, query, parseV
       />
       <Input
         required
-        label='Reason'
+        label={t('forms.reason')}
         icon={<FaPencilAlt />}
         data-cy='reason'
         {...register('reason')}
@@ -52,7 +54,7 @@ export default function PlayerBanForm ({ serverFilter, onFinished, query, parseV
         />
       </div>
       <Button data-cy='submit-ban' ref={submitRef} disabled={isSubmitting} loading={isSubmitting} className={submitRef ? 'hidden' : ''}>
-        Save
+        {t('common.save')}
       </Button>
     </form>
   )

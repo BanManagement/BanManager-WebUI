@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl'
 import { Time } from '../../Time'
 import { TabGroup, TabList, TabPanel } from '@headlessui/react'
 import Tab from '../../Tab'
@@ -16,6 +17,7 @@ const HttpHeader = ({ name, value }) => (
 )
 
 export default function WebhookDeliveryItem ({ id, content, response, error, created }) {
+  const t = useTranslations()
   const buttonContent = (
     <div className='flex justify-between items-center' data-cy='webhook-delivery-summary' data-cy-status={response?.status || 'error'}>
       <div>
@@ -34,8 +36,8 @@ export default function WebhookDeliveryItem ({ id, content, response, error, cre
       <AnimatedDisclosure buttonContent={buttonContent} defaultOpen={false}>
         <TabGroup>
           <TabList>
-            <Tab>Request</Tab>
-            <Tab>Response {response?.status && (
+            <Tab>{t('pages.admin.webhooks.delivery.request')}</Tab>
+            <Tab>{t('pages.admin.webhooks.delivery.response')} {response?.status && (
               <Badge
                 data-cy='webhook-delivery-status-badge'
                 className={clsx({
@@ -51,14 +53,14 @@ export default function WebhookDeliveryItem ({ id, content, response, error, cre
           <TabPanels>
             <TabPanel>
               <div className='flex flex-col gap-2'>
-                <h2 className='mt-2 text-sm font-bold'>Headers</h2>
+                <h2 className='mt-2 text-sm font-bold'>{t('pages.admin.webhooks.delivery.headers')}</h2>
                 <div className='bg-gray-800 p-2 rounded-lg border-gray-700 border'>
                   <HttpHeader name='Accept' value='application/json' />
                   <HttpHeader name='Content-Type' value='application/json' />
                 </div>
                 {content && (
                   <>
-                    <h2 className='mt-2 text-sm font-bold'>Payload</h2>
+                    <h2 className='mt-2 text-sm font-bold'>{t('pages.admin.webhooks.delivery.payload')}</h2>
                     <div className='bg-gray-800 p-2 rounded-lg border-gray-700 border'>
                       <pre className='text-sm'>{JSON.stringify(JSON.parse(content), null, 2)}</pre>
                     </div>
@@ -72,7 +74,7 @@ export default function WebhookDeliveryItem ({ id, content, response, error, cre
                   <>
                     {response.headers && (
                       <>
-                        <h2 className='mt-2 text-sm font-bold'>Headers</h2>
+                        <h2 className='mt-2 text-sm font-bold'>{t('pages.admin.webhooks.delivery.headers')}</h2>
                         <div className='bg-gray-800 p-2 rounded-lg border-gray-700 border'>
                           {Object.keys(response.headers).map((name, index) => (
                             <HttpHeader key={index} name={name} value={response.headers[name]} />
@@ -82,7 +84,7 @@ export default function WebhookDeliveryItem ({ id, content, response, error, cre
                     )}
                     {response.body && (
                       <>
-                        <h2 className='mt-2 text-sm font-bold'>Body</h2>
+                        <h2 className='mt-2 text-sm font-bold'>{t('pages.admin.webhooks.delivery.body')}</h2>
                         <div className='bg-gray-800 p-2 rounded-lg border-gray-700 border'>
                           <pre className='text-sm'>{JSON.stringify(response.body, null, 2)}</pre>
                         </div>
@@ -92,7 +94,7 @@ export default function WebhookDeliveryItem ({ id, content, response, error, cre
                 )}
                 {error && (
                   <>
-                    <h2 className='mt-2 text-sm font-bold'>Error</h2>
+                    <h2 className='mt-2 text-sm font-bold'>{t('pages.admin.webhooks.delivery.error')}</h2>
                     <div className='bg-gray-800 p-2 rounded-lg border-gray-700 border'>
                       <pre className='text-sm'>{error?.cause?.message}</pre>
                     </div>

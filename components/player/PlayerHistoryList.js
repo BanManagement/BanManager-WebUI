@@ -1,6 +1,9 @@
 import { Fragment, useMemo, useState, useEffect, useRef, useCallback } from 'react'
+import { useLocale, useTranslations } from 'next-intl'
 import Loader from '../Loader'
 import { useApi, useUser } from '../../utils'
+import { LOCALE_CONFIG, DEFAULT_LOCALE } from '../../utils/locale'
+import { useDateFnsLocale } from '../../utils/format-distance'
 import ServerSelector from '../admin/ServerSelector'
 import { TimeDuration } from '../Time'
 import { format, fromUnixTime } from 'date-fns'
@@ -12,6 +15,10 @@ import Link from 'next/link'
 const limit = 30
 
 export default function PlayerHistoryList ({ id, lastSeen }) {
+  const t = useTranslations()
+  const locale = useLocale()
+  const dateFnsLocale = useDateFnsLocale()
+  const dateFormat = LOCALE_CONFIG[locale]?.dateFormat || LOCALE_CONFIG[DEFAULT_LOCALE].dateFormat
   const { hasPermission, hasServerPermission } = useUser()
   const [isOpen, setIsOpen] = useState(false)
   const [tableState, setTableState] = useState({ offset: 0, serverId: null })
@@ -69,20 +76,27 @@ export default function PlayerHistoryList ({ id, lastSeen }) {
   }, [lastElementRef.current, total, handleObserver, tableState.serverId])
 
   const rowsGroupedByDate = useMemo(() => rows?.reduce((acc, { id, ...row }) => {
-    const date = format(fromUnixTime(row.join), 'dd MMM yyyy')
+    let date
+
+    try {
+      date = format(fromUnixTime(row.join), dateFormat, dateFnsLocale ? { locale: dateFnsLocale } : undefined)
+    } catch {
+      date = format(fromUnixTime(row.join), dateFormat)
+    }
+
     if (!acc[date]) {
       acc[date] = []
     }
     acc[date].push({ id, row })
     return acc
-  }, {}), [rows])
+  }, {}), [rows, dateFormat, dateFnsLocale])
 
   return (
     <>
       <Modal
-        title='History'
+        title={t('pages.player.history')}
         open={isOpen}
-        cancelButton='Close'
+        cancelButton={t('pages.player.close')}
         onCancel={() => setIsOpen(false)}
         containerClassName='md:max-w-3xl'
       >
@@ -109,8 +123,17 @@ export default function PlayerHistoryList ({ id, lastSeen }) {
           ))}
           {!loading && rows.length === 0 && (
             <>
-              <div className='p-2 text-center text-gray-400'>No history</div>
-              {hasPermission('servers', 'manage') && <div className='p-2 text-center text-gray-400'>If you&apos;re missing data here, ensure <Link target='_blank' href='https://banmanagement.com/docs/banmanager/configuration/config-yml#logips' rel='noreferrer'><pre className='inline'>logIps</pre></Link> is enabled in the plugin&apos;s config.yml file</div>}
+              <div className='p-2 text-center text-gray-400'>{t('pages.player.noHistory')}</div>
+              {hasPermission('servers', 'manage') &&
+                <div className='p-2 text-center text-gray-400'>
+                  {t.rich('pages.player.missingDataLine', {
+                    docs: (chunks) => (
+                      <Link target='_blank' href='https://banmanagement.com/docs/banmanager/configuration/config-yml#logips' rel='noreferrer'>
+                        <pre className='inline'>{chunks}</pre>
+                      </Link>
+                    )
+                  })}
+                </div>}
             </>)}
           <div ref={lastElementRef} />
         </div>

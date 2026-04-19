@@ -1,4 +1,5 @@
 import { useRouter } from 'next/router'
+import { useTranslations } from 'next-intl'
 import DefaultLayout from '../../../components/DefaultLayout'
 import PageContainer from '../../../components/PageContainer'
 import PlayerBanForm from '../../../components/PlayerBanForm'
@@ -8,6 +9,7 @@ import { fromNow, useApi } from '../../../utils'
 import Panel from '../../../components/Panel'
 
 export default function Page () {
+  const t = useTranslations()
   const router = useRouter()
   const [serverId, id] = router.query.id?.split('-') || []
   const { loading, data, errors } = useApi({
@@ -41,10 +43,10 @@ export default function Page () {
   }`
 
   return (
-    <DefaultLayout title={`Edit ${data?.playerBan?.player?.name} ban`} loading={loading}>
+    <DefaultLayout title={t('pages.player.actionTitles.editBanDocument', { name: data?.playerBan?.player?.name ?? '' })} loading={loading}>
       <PageContainer>
         <Panel className='mx-auto w-full max-w-md'>
-          <PageHeader title='Edit ban' subTitle={fromNow(data?.playerBan?.created || 0)} />
+          <PageHeader title={t('pages.player.actionTitles.editBan')} subTitle={fromNow(data?.playerBan?.created || 0)} />
           <PlayerBanForm
             defaults={data?.playerBan}
             query={query}

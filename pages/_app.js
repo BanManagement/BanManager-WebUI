@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 
 import '../styles/index.css'
 import enMessages from '../messages/en.json'
-import { DEFAULT_LOCALE, LOCALE_CONFIG, useResolvedLocale } from '../utils/locale'
+import { DEFAULT_LOCALE, LOCALE_CONFIG, LocaleProvider, useResolvedLocale } from '../utils/locale'
 
 const PRELOADED_MESSAGES = { en: enMessages }
 const isDev = process.env.NODE_ENV !== 'production'
@@ -58,7 +58,7 @@ const intlGetMessageFallback = ({ key, namespace }) => {
   return isDev ? `[${fullKey}]` : ''
 }
 
-function MyApp ({ Component, pageProps }) {
+function I18nShell ({ Component, pageProps }) {
   const { locale } = useResolvedLocale()
   const [messages, setMessages] = useState(enMessages)
   const [activeLocale, setActiveLocale] = useState(DEFAULT_LOCALE)
@@ -137,6 +137,14 @@ function MyApp ({ Component, pageProps }) {
       />
       <Component {...pageProps} />
     </NextIntlClientProvider>
+  )
+}
+
+function MyApp (props) {
+  return (
+    <LocaleProvider>
+      <I18nShell {...props} />
+    </LocaleProvider>
   )
 }
 

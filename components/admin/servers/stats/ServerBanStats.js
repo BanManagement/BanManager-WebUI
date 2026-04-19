@@ -2,10 +2,12 @@ import { useState } from 'react'
 import { format, formatDistance, fromUnixTime } from 'date-fns'
 import resolveConfig from 'tailwindcss/resolveConfig'
 import { BsChevronDown } from 'react-icons/bs'
+import { useTranslations } from 'next-intl'
 import ResponsiveLine from '../../../charts/ResponsiveLine'
 import Dropdown from '../../../Dropdown'
 import Loader from '../../../Loader'
 import { useApi } from '../../../../utils'
+import { useDateFnsLocale } from '../../../../utils/format-distance'
 import tailwindConfig from '../../../../tailwind.config'
 
 const fullConfig = resolveConfig(tailwindConfig)
@@ -24,17 +26,27 @@ query serverBanStats($id: ID!, $intervalDays: Int!) {
 }`
 
 export default function ServerBanStats ({ server }) {
+  const t = useTranslations()
+  const dateFnsLocale = useDateFnsLocale()
   const [intervalDays, setIntervalDays] = useState(7)
   const { loading, data, errors } = useApi({ query, variables: { id: server.id, intervalDays } })
 
   if (errors) return null
+
+  const formatChartDate = (timestamp) => {
+    try {
+      return format(fromUnixTime(timestamp), 'd MMM yyyy', dateFnsLocale ? { locale: dateFnsLocale } : undefined)
+    } catch {
+      return format(fromUnixTime(timestamp), 'd MMM yyyy')
+    }
+  }
 
   const chartData = [
     {
       id: 'bans',
       color: colour,
       data: (data?.serverBanStats?.totalHistory || []).map(row => ({
-        x: format(fromUnixTime(row.date), 'd MMM yyyy'),
+        x: formatChartDate(row.date),
         y: row.value
       }))
     }
@@ -43,17 +55,17 @@ export default function ServerBanStats ({ server }) {
   return (
     <div className='pt-5 bg-black shadow-md rounded-md w-80'>
       <div className='px-5 flex justify-between items-center text-sm text-gray-500'>
-        <h5 className='uppercase'>Bans</h5>
+        <h5 className='uppercase'>{t('pages.admin.servers.stats.bans')}</h5>
         <Dropdown
           trigger={({ onClickToggle }) => (
             <>
-              <a onClick={onClickToggle} className='hover:underline cursor-pointer'>Last {intervalDays} days <BsChevronDown className='inline' /></a>
+              <a onClick={onClickToggle} className='hover:underline cursor-pointer'>{t('pages.admin.servers.stats.lastDays', { days: intervalDays })} <BsChevronDown className='inline' /></a>
             </>
           )}
         >
-          <Dropdown.Item name='Last 7 days' onClick={() => setIntervalDays(7)} />
-          <Dropdown.Item name='Last 30 days' onClick={() => setIntervalDays(30)} />
-          <Dropdown.Item name='Last 90 days' onClick={() => setIntervalDays(90)} />
+          <Dropdown.Item name={t('pages.admin.servers.stats.lastDays', { days: 7 })} onClick={() => setIntervalDays(7)} />
+          <Dropdown.Item name={t('pages.admin.servers.stats.lastDays', { days: 30 })} onClick={() => setIntervalDays(30)} />
+          <Dropdown.Item name={t('pages.admin.servers.stats.lastDays', { days: 90 })} onClick={() => setIntervalDays(90)} />
         </Dropdown>
       </div>
       <div className='mt-2 flex flex-wrap justify-around'>
@@ -62,12 +74,12 @@ export default function ServerBanStats ({ server }) {
           <>
             <div className='text-center'>
               <h2 className='title-font font-medium text-xl'>{data.serverBanStats.total}</h2>
-              <p className='leading-relaxed text-sm'>Total</p>
+              <p className='leading-relaxed text-sm'>{t('pages.admin.servers.stats.total')}</p>
             </div>
             {!!data.serverBanStats?.averageLength &&
               <div className='text-center'>
                 <h2 className='title-font font-medium text-xl'>{formatDistance(0, data.serverBanStats.averageLength * 1000, { includeSeconds: true })}</h2>
-                <p className='leading-relaxed text-sm'>avg length</p>
+                <p className='leading-relaxed text-sm'>{t('pages.admin.servers.stats.averageLength')}</p>
               </div>}
           </>}
       </div>

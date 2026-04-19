@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { useForm, Controller } from 'react-hook-form'
+import { useTranslations } from 'next-intl'
 import Button from './Button'
 import ErrorMessages from './ErrorMessages'
 import { useMutateApi } from '../utils'
@@ -8,6 +9,7 @@ import TextArea from './TextArea'
 import InputCharCounter from './InputCharCounter'
 
 export default function PlayerNoteForm ({ serverFilter, onFinished, query, parseVariables, disableServers = false, defaults = {} }) {
+  const t = useTranslations()
   const { handleSubmit, formState, register, control, watch } = useForm({
     defaultValues: {
       message: '',
@@ -46,7 +48,7 @@ export default function PlayerNoteForm ({ serverFilter, onFinished, query, parse
       />
       <TextArea
         required
-        label='Message'
+        label={t('forms.message')}
         minLength={1}
         maxLength={255}
         className='!-mb-6'
@@ -55,7 +57,7 @@ export default function PlayerNoteForm ({ serverFilter, onFinished, query, parse
       />
       <InputCharCounter currentLength={watchMessage?.length} maxLength={255} />
       <Button data-cy='submit-note' disabled={isSubmitting || !watchMessage?.length} loading={isSubmitting} className='mt-6'>
-        Save
+        {t('common.save')}
       </Button>
     </form>
   )

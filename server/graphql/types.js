@@ -414,6 +414,7 @@ type MenuItem {
 type AdminMenuItem {
   id: ID!
   name: String!
+  key: String
   href: String
   label: Int
 }

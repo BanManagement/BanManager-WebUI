@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter, withRouter } from 'next/router'
+import { useTranslations } from 'next-intl'
 import clsx from 'clsx'
 import { BiServer } from 'react-icons/bi'
 import { MdOutlineGroups, MdOutlineExitToApp, MdOutlineNotifications, MdLogout, MdSettings, MdWebhook, MdOutlineImage } from 'react-icons/md'
@@ -12,14 +13,16 @@ import SessionNavProfile from './SessionNavProfile'
 import { useApi, useUser } from '../utils'
 
 const icons = {
-  Documents: <MdOutlineImage />,
-  Roles: <MdOutlineGroups />,
-  Servers: <BiServer />,
-  'Notification Rules': <MdOutlineNotifications />,
-  Webhooks: <MdWebhook />
+  documents: <MdOutlineImage />,
+  roles: <MdOutlineGroups />,
+  servers: <BiServer />,
+  notificationRules: <MdOutlineNotifications />,
+  webhooks: <MdWebhook />
 }
 
 const AdminLayout = ({ children, title }) => {
+  const t = useTranslations()
+  const tNav = useTranslations('pages.admin.nav')
   const router = useRouter()
   const { user } = useUser({ redirectIfFound: false, redirectTo: '/login' })
   const { loading, data, errors } = useApi({
@@ -27,6 +30,7 @@ const AdminLayout = ({ children, title }) => {
       adminNavigation {
         left {
           id
+          key
           name
           href
           label
@@ -39,10 +43,13 @@ const AdminLayout = ({ children, title }) => {
   if (errors || !data) return <ErrorLayout errors={errors} />
 
   const right = [<SessionNavProfile key='session-nav-profile' user={user} />]
-  const left = data.adminNavigation.left
+  const left = data.adminNavigation.left.map(item => ({
+    ...item,
+    name: item.key ? safeTranslate(tNav, item.key, item.name) : item.name
+  }))
   const mobileItems = left.slice()
 
-  mobileItems[mobileItems.length - 1].splitBorder = true
+  if (mobileItems.length) mobileItems[mobileItems.length - 1].splitBorder = true
 
   return (
     <>
@@ -59,7 +66,7 @@ const AdminLayout = ({ children, title }) => {
                   <div className='pt-6 ml-8'>
                     <div className='font-bold text-xl flex w-full'>
                       <span className='mx-4'>
-                        <Link href='/admin'>Admin</Link>
+                        <Link href='/admin'>{t('pages.admin.title')}</Link>
                       </span>
                       <Link href='/dashboard' passHref className='m-auto flex-grow text-right'>
                         <MdOutlineExitToApp className='inline-flex mx-5 hover:text-accent-200' />
@@ -68,7 +75,7 @@ const AdminLayout = ({ children, title }) => {
                   </div>
                   <nav className='mt-6 h-screen flex flex-col justify-between'>
                     <div className='h-full'>
-                      {left.map(({ href, name, label }) => {
+                      {left.map(({ href, name, key, label }) => {
                         const className = clsx('hover:text-accent-200 flex transition-colors text-gray-100 text-xl p-2 my-4', {
                           'border-l-4 border-accent-500': router.asPath === href
                         })
@@ -76,7 +83,7 @@ const AdminLayout = ({ children, title }) => {
                           (
                             <Link key={`${href}${name}`} href={href} passHref className={className}>
 
-                              {icons[name] && <span className='text-left m-auto'>{icons[name]}</span>}
+                              {icons[key] && <span className='text-left m-auto'>{icons[key]}</span>}
                               <span className='mx-4 text-base m-auto font-normal'>
                                 {name}
                               </span>
@@ -102,24 +109,24 @@ const AdminLayout = ({ children, title }) => {
                             <Avatar width='36' height='36' uuid={user.id} />
                             <div className='ml-4 text-sm'>
                               <div>{user.name}</div>
-                              <div>View Profile</div>
+                              <div>{t('pages.admin.layout.viewProfile')}</div>
                             </div>
 
                           </Link>
                         </div>
                       </div>
                       <div className='flex justify-evenly py-3 bg-gray-800'>
-                        <Link href='/notifications' title='Notifications'>
+                        <Link href='/notifications' title={t('pages.admin.layout.notifications')}>
 
                           <MdOutlineNotifications className='w-6 h-6' />
 
                         </Link>
-                        <Link href='/account' title='Settings'>
+                        <Link href='/account' title={t('pages.admin.layout.settings')}>
 
                           <MdSettings className='w-6 h-6' />
 
                         </Link>
-                        <Link href='/dashboard' title='Return'>
+                        <Link href='/dashboard' title={t('pages.admin.layout.return')}>
 
                           <MdLogout className='w-6 h-6' />
 
@@ -141,6 +148,18 @@ const AdminLayout = ({ children, title }) => {
       </div>
     </>
   )
+}
+
+function safeTranslate (translator, key, fallback) {
+  if (typeof translator?.has === 'function' && !translator.has(key)) return fallback
+
+  try {
+    const value = translator(key)
+
+    return value === key ? fallback : value
+  } catch (_) {
+    return fallback
+  }
 }
 
 export default withRouter(AdminLayout)

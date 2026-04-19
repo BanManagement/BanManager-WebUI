@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
+import { useTranslations } from 'next-intl'
 import Button from '../../Button'
 import PageHeader from '../AdminHeader'
 import ErrorMessages from '../../ErrorMessages'
@@ -13,6 +14,7 @@ import JsonPreview from './JsonPreview'
 import { AiOutlineCopy } from 'react-icons/ai'
 
 export default function WebhookCustomForm ({ onFinished, query, parseVariables, eventTypes, defaults = {} }) {
+  const t = useTranslations()
   const errorRef = useRef(null)
   const { handleSubmit, formState, control, register, watch } = useForm({
     defaultValues: {
@@ -58,7 +60,7 @@ export default function WebhookCustomForm ({ onFinished, query, parseVariables, 
     <div className='grid grid-cols-1 md:grid-cols-12 gap-6'>
       <form onSubmit={handleSubmit(onSubmit)} className='col-span-3' data-cy='webhook-form' data-cy-template='CUSTOM'>
         <ErrorMessages ref={errorRef} errors={errors} className='shrink' />
-        <PageHeader title='Event Type' className='!text-xl' />
+        <PageHeader title={t('pages.admin.webhooks.form.eventType')} className='!text-xl' />
         <div data-cy='webhook-type'>
           <Controller
             name='type'
@@ -74,29 +76,29 @@ export default function WebhookCustomForm ({ onFinished, query, parseVariables, 
                                    />}
           />
         </div>
-        <PageHeader title='Server (optional)' className='!text-xl' />
+        <PageHeader title={t('pages.admin.webhooks.form.serverOptional')} className='!text-xl' />
         <div data-cy='webhook-server'>
           <Controller
             name='serverId'
             control={control}
             defaultValue={false}
-            render={({ field }) => <ServerSelector isClearable className='mb-6' placeholder='Server' {...field} />}
+            render={({ field }) => <ServerSelector isClearable className='mb-6' placeholder={t('pages.admin.webhooks.form.server')} {...field} />}
           />
         </div>
-        <PageHeader title='URL' className='!text-xl' />
+        <PageHeader title={t('pages.admin.webhooks.form.url')} className='!text-xl' />
         <Input
           required
-          placeholder='https://example.com/webhook'
+          placeholder={t('pages.admin.webhooks.form.urlPlaceholderCustom')}
           icon={<TbHttpPost />}
           type='url'
           data-cy='webhook-url'
           {...register('url')}
         />
-        <Button data-cy='submit-webhook-form' disabled={isSubmitting} loading={loading}>Save</Button>
+        <Button data-cy='submit-webhook-form' disabled={isSubmitting} loading={loading}>{t('common.save')}</Button>
       </form>
       <div className='col-span-5'>
-        <PageHeader title='Content Template' className='!text-xl'>
-          <p className='text-sm'>Use the variables defined to customize the content</p>
+        <PageHeader title={t('pages.admin.webhooks.form.contentTemplate')} className='!text-xl'>
+          <p className='text-sm'>{t('pages.admin.webhooks.form.contentHint')}</p>
         </PageHeader>
         <TextArea
           required
@@ -105,7 +107,7 @@ export default function WebhookCustomForm ({ onFinished, query, parseVariables, 
           data-cy='webhook-content-template'
           {...register('contentTemplate')}
         />
-        <PageHeader title='Available Variables' className='!text-xl' />
+        <PageHeader title={t('pages.admin.webhooks.form.availableVariables')} className='!text-xl' />
         {variables && (
           <div className='flex flex-col'>
             {Object.keys(variables).map(key => (
@@ -134,7 +136,7 @@ export default function WebhookCustomForm ({ onFinished, query, parseVariables, 
         )}
       </div>
       <div className='col-span-4'>
-        <PageHeader title='Preview' className='!text-xl' />
+        <PageHeader title={t('pages.admin.webhooks.form.preview')} className='!text-xl' />
         <JsonPreview json={watch('contentTemplate')} variables={variables} />
       </div>
     </div>

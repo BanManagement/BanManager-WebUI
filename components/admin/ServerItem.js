@@ -3,6 +3,7 @@ import { FaBan } from 'react-icons/fa'
 import { BsMicMute } from 'react-icons/bs'
 import { AiOutlineWarning } from 'react-icons/ai'
 import { GoReport } from 'react-icons/go'
+import { useTranslations } from 'next-intl'
 import clsx from 'clsx'
 import Link from 'next/link'
 import ResponsivePie, { PieContext } from '../charts/ResponsivePie'
@@ -26,6 +27,7 @@ const StatItem = ({ onClick, icon, value, selected }) => {
 }
 
 export default function ServerItem ({ canDelete, server, onDeleted }) {
+  const t = useTranslations()
   const [open, setOpen] = useState(false)
   const [confirmValue, setConfirmValue] = useState('')
   const { load, loading, errors, data } = useMutateApi({
@@ -86,8 +88,8 @@ export default function ServerItem ({ canDelete, server, onDeleted }) {
   return (
     <div className='bg-black shadow-md rounded-md overflow-hidden text-center w-80' data-cy='server-item' data-cy-server={server.name}>
       <Modal
-        title='Delete server'
-        confirmButton='Delete'
+        title={t('pages.admin.servers.deleteTitle')}
+        confirmButton={t('common.delete')}
         confirmDisabled={confirmValue !== server.name}
         open={open}
         onConfirm={handleConfirmDelete}
@@ -96,16 +98,16 @@ export default function ServerItem ({ canDelete, server, onDeleted }) {
       >
         <ErrorMessages errors={errors} />
         <Message warning>
-          <Message.Header>Warning</Message.Header>
+          <Message.Header>{t('common.warning')}</Message.Header>
           <Message.List>
-            <Message.Item>Related <strong>appeals and roles</strong> will be removed</Message.Item>
-            <Message.Item>This action cannot be undone</Message.Item>
+            <Message.Item><span dangerouslySetInnerHTML={{ __html: t.raw('pages.admin.servers.deleteWarning') }} /></Message.Item>
+            <Message.Item>{t('pages.punishment.actionUndoable')}</Message.Item>
           </Message.List>
         </Message>
-        <p className='mb-4'>Please type <strong>{server.name}</strong> to confirm</p>
+        <p className='mb-4'><span dangerouslySetInnerHTML={{ __html: t.raw('pages.admin.servers.deleteConfirmInstruction').replace('{name}', server.name) }} /></p>
         <Input
           onChange={(e, { value }) => setConfirmValue(value)}
-          placeholder='Type server name'
+          placeholder={t('pages.admin.servers.deletePlaceholder')}
           className='mb-0'
           inputClassName='border border-gray-900'
           required
@@ -145,7 +147,7 @@ export default function ServerItem ({ canDelete, server, onDeleted }) {
               onClick={showConfirmDelete}
               data-cy='server-delete'
             >
-              Delete
+              {t('common.delete')}
             </button>}
         </div>
       </div>

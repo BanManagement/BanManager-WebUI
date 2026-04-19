@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
 import Loader from '../Loader'
 import ServerSelector from '../admin/ServerSelector'
 import { useApi } from '../../utils'
@@ -34,6 +35,7 @@ query listPlayerPunishmentRecords($serverId: ID!, $player: UUID!, $type: RecordT
 }`
 
 export default function PlayerMutes ({ id }) {
+  const t = useTranslations()
   const [tableState, setTableState] = useState({ type: 'PlayerMuteRecord', serverId: null })
   const { loading, data, mutate } = useApi({ query: !tableState.serverId ? null : query, variables: { ...tableState, player: id } })
 
@@ -51,7 +53,7 @@ export default function PlayerMutes ({ id }) {
         className='pb-4 mb-4 border-b border-indigo-800' id='mutes'
       >
         <div className='flex items-center'>
-          <p className='mr-6 text-xl font-bold '>Past Mutes ({total})</p>
+          <p className='mr-6 text-xl font-bold '>{t('pages.player.pastMutes', { total })}</p>
           <div className='w-40 inline-block'>
             <ServerSelector
               onChange={serverId => setTableState({ ...tableState, serverId })}
@@ -66,7 +68,7 @@ export default function PlayerMutes ({ id }) {
       {!data?.listPlayerPunishmentRecords?.total && (
         <div className='flex items-center'>
           <div>
-            None
+            {t('common.none')}
           </div>
         </div>
       )}

@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { useForm, Controller } from 'react-hook-form'
+import { useTranslations } from 'next-intl'
 import Button from '../Button'
 import Select from '../Select'
 import PlayerSelector from './PlayerSelector'
@@ -8,6 +9,7 @@ import ErrorMessages from '../ErrorMessages'
 import { useMutateApi } from '../../utils'
 
 export default function AssignPlayersRoleForm ({ query, roles, servers = [] }) {
+  const t = useTranslations()
   const playersRef = useRef()
   const { handleSubmit, formState, control, setValue } = useForm({
     defaultValues: {
@@ -45,7 +47,7 @@ export default function AssignPlayersRoleForm ({ query, roles, servers = [] }) {
           name='role'
           control={control}
           rules={{ required: true }}
-          render={({ field }) => <Select className='mb-6' placeholder='Role' options={rolesDropdown} {...field} />}
+          render={({ field }) => <Select className='mb-6' placeholder={t('pages.admin.roles.role')} options={rolesDropdown} {...field} />}
         />
         {!!servers.length &&
           <Controller
@@ -53,10 +55,10 @@ export default function AssignPlayersRoleForm ({ query, roles, servers = [] }) {
             control={control}
             defaultValue={false}
             rules={{ required: true }}
-            render={({ field }) => <ServerSelector className='mb-6' placeholder='Server' {...field} />}
+            render={({ field }) => <ServerSelector className='mb-6' placeholder={t('pages.admin.servers.server')} {...field} />}
           />}
         <Button data-cy='submit-players-role' disabled={isSubmitting} loading={loading} className='w-24 mb-5'>
-          Assign
+          {t('pages.admin.roles.assign')}
         </Button>
       </div>
     </form>

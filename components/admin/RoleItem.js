@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 import Modal from '../Modal'
 import { useMutateApi } from '../../utils'
 import ErrorMessages from '../ErrorMessages'
 
 export default function RoleItem ({ role, onDeleted }) {
+  const t = useTranslations()
   const [open, setOpen] = useState(false)
   const { load, loading, errors, data } = useMutateApi({
     query: `mutation deleteRole($id: ID!) {
@@ -34,16 +36,16 @@ export default function RoleItem ({ role, onDeleted }) {
   return (
     <div className='bg-black shadow-md rounded-md overflow-hidden text-center w-80' data-cy='role-item' data-cy-role={role.name}>
       <Modal
-        title='Delete role'
-        confirmButton='Delete'
+        title={t('pages.admin.roles.deleteTitle')}
+        confirmButton={t('common.delete')}
         open={open}
         onConfirm={handleConfirmDelete}
         onCancel={handleDeleteCancel}
         loading={loading}
       >
         <ErrorMessages errors={errors} />
-        <p className='pb-1'>Are you sure you want to delete this role?</p>
-        <p className='pb-1'>This action cannot be undone</p>
+        <p className='pb-1'>{t('pages.admin.roles.deleteConfirm')}</p>
+        <p className='pb-1'>{t('pages.punishment.actionUndoable')}</p>
       </Modal>
       <Link href={`/admin/roles/${role.id}`} passHref>
 
@@ -77,20 +79,20 @@ export default function RoleItem ({ role, onDeleted }) {
               onClick={showConfirmDelete}
               data-cy='role-delete'
             >
-              Delete
+              {t('common.delete')}
             </button>
           </div>}
         {role.id === '1' &&
           <div className='py-3 px-5 bg-gray-900'>
-            Assigned by default to all non-logged in visitors
+            {t('pages.admin.roles.defaultUnauthenticated')}
           </div>}
         {role.id === '2' &&
           <div className='py-3 px-5 bg-gray-900'>
-            Assigned by default for all logged in players
+            {t('pages.admin.roles.defaultAuthenticated')}
           </div>}
         {role.id === '3' &&
           <div className='py-3 px-5 bg-gray-900'>
-            Super admin role with all permissions
+            {t('pages.admin.roles.superAdmin')}
           </div>}
 
       </Link>

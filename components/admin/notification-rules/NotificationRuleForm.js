@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { useForm, Controller } from 'react-hook-form'
+import { useTranslations } from 'next-intl'
 import Button from '../../Button'
 import PageHeader from '../AdminHeader'
 import ErrorMessages from '../../ErrorMessages'
@@ -8,6 +9,7 @@ import ServerSelector from '../ServerSelector'
 import { useMutateApi } from '../../../utils'
 
 export default function NotificationRuleForm ({ onFinished, query, parseVariables, notificationTypes, roles, defaults = {} }) {
+  const t = useTranslations()
   const errorRef = useRef(null)
   const { handleSubmit, formState, control } = useForm({
     defaultValues: {
@@ -37,7 +39,7 @@ export default function NotificationRuleForm ({ onFinished, query, parseVariable
   return (
     <form onSubmit={handleSubmit(onSubmit)} className='mx-auto w-full' data-cy='notification-rule-form'>
       <ErrorMessages ref={errorRef} errors={errors} />
-      <PageHeader title='Notification Type' className='!text-xl' />
+      <PageHeader title={t('pages.admin.notificationRules.form.type')} className='!text-xl' />
       <div data-cy='notification-rule-type'>
         <Controller
           name='type'
@@ -53,7 +55,7 @@ export default function NotificationRuleForm ({ onFinished, query, parseVariable
                                  />}
         />
       </div>
-      <PageHeader title='Roles' className='!text-xl' />
+      <PageHeader title={t('pages.admin.notificationRules.form.roles')} className='!text-xl' />
       <div data-cy='notification-rule-roles'>
         <Controller
           name='roles'
@@ -70,16 +72,16 @@ export default function NotificationRuleForm ({ onFinished, query, parseVariable
                                  />}
         />
       </div>
-      <PageHeader title='Server (optional)' className='!text-xl' />
+      <PageHeader title={t('pages.admin.notificationRules.form.serverOptional')} className='!text-xl' />
       <div data-cy='notification-rule-server'>
         <Controller
           name='serverId'
           control={control}
           defaultValue={false}
-          render={({ field }) => <ServerSelector isClearable className='mb-6' placeholder='Server' {...field} />}
+          render={({ field }) => <ServerSelector isClearable className='mb-6' placeholder={t('pages.admin.notificationRules.form.server')} {...field} />}
         />
       </div>
-      <Button data-cy='submit-notification-rule-form' disabled={isSubmitting} loading={loading}>Save</Button>
+      <Button data-cy='submit-notification-rule-form' disabled={isSubmitting} loading={loading}>{t('common.save')}</Button>
     </form>
   )
 }

@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl'
 import Loader from '../Loader'
 import PlayerHeader from './PlayerHeader'
 import PlayerPunishment from './PlayerPunishment'
@@ -28,6 +29,7 @@ query playerBans($id: UUID!) {
 }`
 
 export default function ActivePlayerBans ({ id }) {
+  const t = useTranslations()
   const { loading, data, mutate, errors } = useApi({ query, variables: { id } })
 
   if (loading) return <Loader />
@@ -49,7 +51,7 @@ export default function ActivePlayerBans ({ id }) {
 
   return (
     <div>
-      <PlayerHeader title={`Active Bans (${data.playerBans.length})`} />
+      <PlayerHeader title={t('pages.player.activeBans', { total: data.playerBans.length })} />
       <div className='flex flex-col gap-6'>
         {rows}
       </div>

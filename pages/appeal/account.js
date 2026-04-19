@@ -1,4 +1,5 @@
 import { useRouter } from 'next/router'
+import { useTranslations } from 'next-intl'
 import DefaultLayout from '../../components/DefaultLayout'
 import PageContainer from '../../components/PageContainer'
 import PlayerLoginPasswordForm from '../../components/PlayerLoginPasswordForm'
@@ -7,6 +8,7 @@ import Panel from '../../components/Panel'
 import AppealStepHeader from '../../components/appeal/AppealStepHeader'
 
 function Page () {
+  const t = useTranslations('pages.appeal')
   const router = useRouter()
   const { user } = useUser({ redirectIfFound: true, redirectTo: '/appeal/punishment' })
   const onSuccess = () => {
@@ -14,10 +16,10 @@ function Page () {
   }
 
   return (
-    <DefaultLayout title='Login | Appeal' loading={user}>
+    <DefaultLayout title={t('accountLoginDocument')} loading={user}>
       <PageContainer>
         <Panel className='mx-auto w-full max-w-md'>
-          <AppealStepHeader step={1} title='Account Login' nextStep='Select Punishment' />
+          <AppealStepHeader step={1} title={t('accountLogin')} nextStep={t('stepHeader.selectPunishment')} />
           <PlayerLoginPasswordForm onSuccess={onSuccess} />
         </Panel>
       </PageContainer>

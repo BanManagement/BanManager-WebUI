@@ -1,4 +1,5 @@
 import { useRouter } from 'next/router'
+import { useTranslations } from 'next-intl'
 import Loader from '../../../components/Loader'
 import AdminLayout from '../../../components/AdminLayout'
 import ErrorLayout from '../../../components/ErrorLayout'
@@ -7,6 +8,7 @@ import { useApi, useInvalidateApiCache } from '../../../utils'
 import ServerForm from '../../../components/admin/ServerForm'
 
 export default function Page () {
+  const t = useTranslations()
   const router = useRouter()
   const invalidate = useInvalidateApiCache()
   const { loading, data, errors } = useApi({
@@ -15,7 +17,7 @@ export default function Page () {
     }`
   })
 
-  if (loading) return <AdminLayout title='Loading...'><Loader /></AdminLayout>
+  if (loading) return <AdminLayout title={t('pages.admin.loading')}><Loader /></AdminLayout>
   if (errors || !data) return <ErrorLayout errors={errors} />
 
   const query = ` mutation createServer($input: CreateServerInput!) {
@@ -25,8 +27,8 @@ export default function Page () {
   }`
 
   return (
-    <AdminLayout title='Add Server'>
-      <PageHeader title='Add Server' />
+    <AdminLayout title={t('pages.admin.servers.addServer')}>
+      <PageHeader title={t('pages.admin.servers.addServer')} />
       <ServerForm
         query={query}
         serverTables={data.serverTables}

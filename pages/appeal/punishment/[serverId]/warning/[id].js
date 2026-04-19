@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { useRouter } from 'next/router'
+import { useTranslations } from 'next-intl'
 import DefaultLayout from '../../../../../components/DefaultLayout'
 import PageContainer from '../../../../../components/PageContainer'
 import ErrorLayout from '../../../../../components/ErrorLayout'
@@ -10,6 +11,7 @@ import AppealStepHeader from '../../../../../components/appeal/AppealStepHeader'
 import Button from '../../../../../components/Button'
 
 export default function Page () {
+  const t = useTranslations()
   const router = useRouter()
   const { hasServerPermission } = useUser({ redirectIfFound: false, redirectTo: '/' })
 
@@ -50,16 +52,16 @@ export default function Page () {
   if (errors) return <ErrorLayout errors={errors} />
 
   return (
-    <DefaultLayout title='Appeal Warning | Appeal' loading={loading}>
+    <DefaultLayout title={t('pages.appeal.appealWarningDocument')} loading={loading}>
       <PageContainer>
         <Panel className='mx-auto w-full max-w-md'>
-          <AppealStepHeader step={3} title='Appeal Warning' nextStep='Await Review' />
+          <AppealStepHeader step={3} title={t('pages.appeal.appealWarning')} nextStep={t('pages.appeal.stepHeader.awaitReview')} />
           {!loading && !data?.playerWarning && (
             <div>
-              <h2 className='text-center text-base font-semibold leading-relaxed pb-1'>Punishment not found</h2>
-              <p className='text-center text-sm font-normal leading-snug pb-4'>Head back to the previous page</p>
+              <h2 className='text-center text-base font-semibold leading-relaxed pb-1'>{t('pages.appeal.punishmentNotFound')}</h2>
+              <p className='text-center text-sm font-normal leading-snug pb-4'>{t('pages.appeal.headBack')}</p>
               <div className='flex gap-3'>
-                <Button onClick={() => router.back()}>Back</Button>
+                <Button onClick={() => router.back()}>{t('common.back')}</Button>
               </div>
             </div>
           )}

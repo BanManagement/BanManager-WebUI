@@ -1,4 +1,5 @@
 import { useRouter } from 'next/router'
+import { useTranslations } from 'next-intl'
 import Loader from '../../../../components/Loader'
 import AdminLayout from '../../../../components/AdminLayout'
 import ErrorLayout from '../../../../components/ErrorLayout'
@@ -8,6 +9,7 @@ import WebhookForm from '../../../../components/admin/webhooks/WebhookForm'
 import WebhookDiscordForm from '../../../../components/admin/webhooks/WebhookDiscordForm'
 
 export default function Page () {
+  const t = useTranslations()
   const router = useRouter()
   const invalidate = useInvalidateApiCache()
   const { type } = router.query
@@ -26,9 +28,9 @@ export default function Page () {
     }`
   })
 
-  if (loading) return <AdminLayout title='Loading...'><Loader /></AdminLayout>
+  if (loading) return <AdminLayout title={t('pages.admin.loading')}><Loader /></AdminLayout>
   if (errors || !data) return <ErrorLayout errors={errors} />
-  if (type !== 'discord' && type !== 'custom') return <ErrorLayout errors={[{ message: 'Invalid webhook type' }]} />
+  if (type !== 'discord' && type !== 'custom') return <ErrorLayout errors={[{ message: t('pages.admin.webhooks.invalidType') }]} />
 
   const query = ` mutation createWebhook($input: CreateWebhookInput!) {
     createWebhook(input: $input) {
@@ -37,11 +39,12 @@ export default function Page () {
   }`
   const webhookTypes = data.webhookTypes.enumValues.map(type => ({ value: type.name, label: type.name }))
   const webhookContentTypes = data.webhookContentTypes.enumValues.map(type => ({ value: type.name, label: type.name }))
-  const title = type.charAt(0).toUpperCase() + type.slice(1)
+  const title = t(`pages.admin.webhooks.${type}`)
+  const headerTitle = t('pages.admin.webhooks.addWebhookType', { type: title })
 
   return (
-    <AdminLayout title={`Add ${title} Webhook`}>
-      <PageHeader title={`Add ${title} Webhook`} />
+    <AdminLayout title={headerTitle}>
+      <PageHeader title={headerTitle} />
       <div className='flex flex-col'>
         {type === 'discord'
           ? (

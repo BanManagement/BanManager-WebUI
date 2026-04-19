@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { useApi } from '../../utils'
 import Loader from '../Loader'
 import NotificationReportComment from './NotificationReportComment'
@@ -11,6 +12,7 @@ import Pagination from '../Pagination'
 import NotificationAppealCreated from './NotificationAppealCreated'
 
 const NotificationList = () => {
+  const t = useTranslations()
   const [tableState, setTableState] = useState({ activePage: 1, limit: 25, offset: 0 })
   const { loading, data } = useApi({
     query: `query listNotifications($limit: Int, $offset: Int) {
@@ -82,7 +84,7 @@ const NotificationList = () => {
     <>
       <div className='grid grid-cols-1 bg-primary-900 rounded-t-3xl rounded-b-3xl py-4 divide-y-2 divide-primary-400' data-cy='notification-list'>
         {!data?.listNotifications?.total
-          ? <p className='text-center' data-cy='notification-list-empty'>Nothing to see here yet</p>
+          ? <p className='text-center' data-cy='notification-list-empty'>{t('pages.notifications.empty')}</p>
           : data?.listNotifications?.records?.map(record => {
             switch (record.type) {
               case 'reportComment':

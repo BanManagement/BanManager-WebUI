@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
+import { useTranslations } from 'next-intl'
 import { MdLock, MdOutlineEmail } from 'react-icons/md'
 import Input from './Input'
 import Button from './Button'
@@ -7,6 +8,7 @@ import { useMutateApi } from '../utils'
 import { useRouter } from 'next/router'
 
 export default function ResetEmailForm () {
+  const t = useTranslations()
   const router = useRouter()
   const { handleSubmit, formState, register } = useForm()
   const { isSubmitting } = formState
@@ -31,7 +33,7 @@ export default function ResetEmailForm () {
       <div className='flex flex-col relative w-full'>
         <Input
           required
-          label='New email address'
+          label={t('pages.account.newEmail')}
           type='email'
           icon={<MdOutlineEmail />}
           iconPosition='left'
@@ -40,7 +42,7 @@ export default function ResetEmailForm () {
         />
         <Input
           required
-          label='Current password'
+          label={t('forms.currentPassword')}
           type='password'
           icon={<MdLock />}
           iconPosition='left'
@@ -49,7 +51,7 @@ export default function ResetEmailForm () {
           {...register('currentPassword')}
         />
         <Button data-cy='submit-email-change' disabled={isSubmitting} loading={isSubmitting}>
-          Save
+          {t('common.save')}
         </Button>
       </div>
     </form>

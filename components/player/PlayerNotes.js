@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 import Loader from '../Loader'
 import ServerSelector from '../admin/ServerSelector'
 import { useApi, useUser } from '../../utils'
@@ -30,6 +31,7 @@ query listPlayerPunishmentRecords($serverId: ID!, $player: UUID!, $type: RecordT
 }`
 
 export default function PlayerNotes ({ id }) {
+  const t = useTranslations()
   const { hasServerPermission } = useUser()
   const [tableState, setTableState] = useState({ type: 'PlayerNote', player: id, serverId: null })
   const { loading, data, mutate } = useApi({ query: !tableState.serverId ? null : query, variables: { ...tableState, player: id } })
@@ -49,7 +51,7 @@ export default function PlayerNotes ({ id }) {
         className='pb-4 mb-4 border-b border-teal-800' id='notes'
       >
         <div className='flex items-center'>
-          <p className='mr-6 text-xl font-bold '>Notes ({total})</p>
+          <p className='mr-6 text-xl font-bold '>{t('pages.player.notes', { total })}</p>
           <div className='w-40 inline-block'>
             <ServerSelector
               onChange={serverId => setTableState({ ...tableState, serverId })}
@@ -66,9 +68,9 @@ export default function PlayerNotes ({ id }) {
           <div>
             {canCreateNote &&
               <Link href={`/player/${id}/note`} passHref>
-                <Button className='btn-outline'><BiNotepad className='text-teal-800 mr-1' />Add Note</Button>
+                <Button className='btn-outline'><BiNotepad className='text-teal-800 mr-1' />{t('pages.player.addNote')}</Button>
               </Link>}
-            {!canCreateNote && 'None'}
+            {!canCreateNote && t('common.none')}
           </div>
         </div>
       )}

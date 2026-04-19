@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
 import Input from '../Input'
 import Table from '../Table'
 import Pagination from '../Pagination'
@@ -37,6 +38,7 @@ query listUsers($email: String, $role: String, $serverRole: String, $limit: Int,
 }`
 
 export default function PlayersTable ({ limit = 30, roles, servers }) {
+  const t = useTranslations()
   const [tableState, setTableState] = useState({ activePage: 1, limit, offset: 0, email: '', role: '', serverRole: '' })
   const [editState, setEditState] = useState({ playerEditOpen: false, currentPlayer: null })
   const { loading, data, mutate } = useApi({ query, variables: tableState })
@@ -77,10 +79,10 @@ export default function PlayersTable ({ limit = 30, roles, servers }) {
       <Table>
         <Table.Header>
           <Table.Row>
-            <Table.HeaderCell>Name</Table.HeaderCell>
-            <Table.HeaderCell><Input className='mb-0' inputClassName='!text-sm' name='email' placeholder='Email' value={tableState.email} onChange={handleFilter} /></Table.HeaderCell>
-            <Table.HeaderCell><Input className='mb-0' inputClassName='!text-sm' name='role' placeholder='Global Roles' value={tableState.role} onChange={handleFilter} /></Table.HeaderCell>
-            <Table.HeaderCell><Input className='mb-0' inputClassName='!text-sm' name='serverRole' placeholder='Server Roles' value={tableState.serverRole} onChange={handleFilter} /></Table.HeaderCell>
+            <Table.HeaderCell>{t('tables.name')}</Table.HeaderCell>
+            <Table.HeaderCell><Input className='mb-0' inputClassName='!text-sm' name='email' placeholder={t('tables.email')} value={tableState.email} onChange={handleFilter} /></Table.HeaderCell>
+            <Table.HeaderCell><Input className='mb-0' inputClassName='!text-sm' name='role' placeholder={t('pages.admin.players.globalRoles')} value={tableState.role} onChange={handleFilter} /></Table.HeaderCell>
+            <Table.HeaderCell><Input className='mb-0' inputClassName='!text-sm' name='serverRole' placeholder={t('pages.admin.players.serverRoles')} value={tableState.serverRole} onChange={handleFilter} /></Table.HeaderCell>
             <Table.HeaderCell />
           </Table.Row>
         </Table.Header>
@@ -108,7 +110,7 @@ export default function PlayersTable ({ limit = 30, roles, servers }) {
                 <Table.Cell><p className='px-4'>{row.serverRoles.map(({ serverRole }) => serverRole.name).join(', ')}</p></Table.Cell>
                 <Table.Cell>
                   <a href='#' className='text-accent-600 hover:text-accent-100' onClick={handleOpen(row)}>
-                    Edit
+                    {t('common.edit')}
                   </a>
                 </Table.Cell>
               </Table.Row>
