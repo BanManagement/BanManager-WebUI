@@ -56,38 +56,43 @@ export default function WebhookCustomForm ({ onFinished, query, parseVariables, 
 
   return (
     <div className='grid grid-cols-1 md:grid-cols-12 gap-6'>
-      <form onSubmit={handleSubmit(onSubmit)} className='col-span-3'>
+      <form onSubmit={handleSubmit(onSubmit)} className='col-span-3' data-cy='webhook-form' data-cy-template='CUSTOM'>
         <ErrorMessages ref={errorRef} errors={errors} className='shrink' />
         <PageHeader title='Event Type' className='!text-xl' />
-        <Controller
-          name='type'
-          control={control}
-          rules={{ required: true }}
-          render={({ field }) => <Select
-            className='mb-6'
-            {...field}
-            onChange={(selectedOption) => {
-              field.onChange(selectedOption.value)
-            }}
-            options={eventTypes}
-                                 />}
-        />
+        <div data-cy='webhook-type'>
+          <Controller
+            name='type'
+            control={control}
+            rules={{ required: true }}
+            render={({ field }) => <Select
+              className='mb-6'
+              {...field}
+              onChange={(selectedOption) => {
+                field.onChange(selectedOption.value)
+              }}
+              options={eventTypes}
+                                   />}
+          />
+        </div>
         <PageHeader title='Server (optional)' className='!text-xl' />
-        <Controller
-          name='serverId'
-          control={control}
-          defaultValue={false}
-          render={({ field }) => <ServerSelector isClearable className='mb-6' placeholder='Server' {...field} />}
-        />
+        <div data-cy='webhook-server'>
+          <Controller
+            name='serverId'
+            control={control}
+            defaultValue={false}
+            render={({ field }) => <ServerSelector isClearable className='mb-6' placeholder='Server' {...field} />}
+          />
+        </div>
         <PageHeader title='URL' className='!text-xl' />
         <Input
           required
           placeholder='https://example.com/webhook'
           icon={<TbHttpPost />}
           type='url'
+          data-cy='webhook-url'
           {...register('url')}
         />
-        <Button data-cy='submit-server-form' disabled={isSubmitting} loading={loading}>Save</Button>
+        <Button data-cy='submit-webhook-form' disabled={isSubmitting} loading={loading}>Save</Button>
       </form>
       <div className='col-span-5'>
         <PageHeader title='Content Template' className='!text-xl'>
@@ -97,6 +102,7 @@ export default function WebhookCustomForm ({ onFinished, query, parseVariables, 
           required
           rows={10}
           placeholder='{"content": "Hello, world!"}'
+          data-cy='webhook-content-template'
           {...register('contentTemplate')}
         />
         <PageHeader title='Available Variables' className='!text-xl' />

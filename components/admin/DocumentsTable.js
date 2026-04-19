@@ -12,10 +12,12 @@ function ImageModal ({ document, onClose }) {
     <div
       className='fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80'
       onClick={onClose}
+      data-cy='document-image-modal'
     >
       <button
         className='absolute top-4 right-4 p-2 text-white hover:text-gray-300 transition-colors'
         onClick={onClose}
+        data-cy='document-image-modal-close'
       >
         <FiX className='w-8 h-8' />
       </button>
@@ -24,6 +26,7 @@ function ImageModal ({ document, onClose }) {
         alt={document.filename}
         className='max-w-[90vw] max-h-[90vh] object-contain'
         onClick={(e) => e.stopPropagation()}
+        data-cy='document-image-modal-img'
       />
     </div>
   )
@@ -54,7 +57,11 @@ function DocumentRow ({ document, onDelete }) {
 
   return (
     <>
-      <tr className='border-b border-primary-700 hover:bg-primary-700/30 transition-colors'>
+      <tr
+        className='border-b border-primary-700 hover:bg-primary-700/30 transition-colors'
+        data-cy='admin-document-row'
+        data-cy-document-id={document.id}
+      >
         <td className='px-4 py-3'>
           <div className='flex items-center gap-3'>
             <img
@@ -62,9 +69,10 @@ function DocumentRow ({ document, onDelete }) {
               alt={document.filename}
               className='w-12 h-12 object-cover rounded cursor-pointer hover:opacity-80 transition-opacity'
               onClick={() => setShowZoom(true)}
+              data-cy='admin-document-thumbnail'
             />
             <div>
-              <p className='font-medium text-gray-200 truncate max-w-xs' title={document.filename}>
+              <p className='font-medium text-gray-200 truncate max-w-xs' title={document.filename} data-cy='admin-document-filename'>
                 {document.filename}
               </p>
               <p className='text-xs text-gray-400'>
@@ -124,6 +132,7 @@ function DocumentRow ({ document, onDelete }) {
               className='p-2 text-gray-400 hover:text-white hover:bg-primary-600 rounded transition-colors'
               onClick={() => setShowZoom(true)}
               title='View full size'
+              data-cy='admin-document-preview'
             >
               <FiZoomIn className='w-4 h-4' />
             </button>
@@ -133,6 +142,7 @@ function DocumentRow ({ document, onDelete }) {
               rel='noopener noreferrer'
               className='p-2 text-gray-400 hover:text-white hover:bg-primary-600 rounded transition-colors'
               title='Open in new tab'
+              data-cy='admin-document-open'
             >
               <FiExternalLink className='w-4 h-4' />
             </a>
@@ -141,6 +151,7 @@ function DocumentRow ({ document, onDelete }) {
                 className='p-2 text-gray-400 hover:text-red-400 hover:bg-primary-600 rounded transition-colors'
                 onClick={() => setConfirmDelete(true)}
                 title='Delete'
+                data-cy='admin-document-delete'
               >
                 <FiTrash2 className='w-4 h-4' />
               </button>
@@ -171,7 +182,7 @@ function DocumentRow ({ document, onDelete }) {
 
 export default function DocumentsTable ({ documents, onDelete }) {
   return (
-    <div className='overflow-x-auto bg-primary-800 rounded-lg'>
+    <div className='overflow-x-auto bg-primary-800 rounded-lg' data-cy='admin-documents-table'>
       <table className='w-full'>
         <thead>
           <tr className='text-left text-gray-400 text-sm border-b border-primary-600'>

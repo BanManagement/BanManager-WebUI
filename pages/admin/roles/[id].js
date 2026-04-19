@@ -2,11 +2,12 @@ import { useRouter } from 'next/router'
 import Loader from '../../../components/Loader'
 import AdminLayout from '../../../components/AdminLayout'
 import ErrorLayout from '../../../components/ErrorLayout'
-import { useApi } from '../../../utils'
+import { useApi, useInvalidateApiCache } from '../../../utils'
 import RoleForm from '../../../components/admin/RoleForm'
 
 export default function Page () {
   const router = useRouter()
+  const invalidate = useInvalidateApiCache()
   const { id } = router.query
   const { loading, data, errors, mutate } = useApi({
     variables: { id },
@@ -65,6 +66,7 @@ export default function Page () {
         parseVariables={(input) => ({ id, input })}
         onFinished={({ updateRole }) => {
           mutate({ ...data, role: { ...updateRole } }, false)
+          invalidate('rolesAdminPage')
           router.push('/admin/roles')
         }}
       />

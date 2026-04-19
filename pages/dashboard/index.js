@@ -19,8 +19,8 @@ export default function Page () {
         <PageHeader title='Dashboard' />
         <div className='space-y-10'>
           <PlayerStatistics id={user.id} />
-          <div>
-            <h2 className='text-lg font-bold pb-4 border-b border-accent-200 leading-none'>Active Punishments</h2>
+          <div data-cy='dashboard-widget-active-punishments'>
+            <h2 className='text-lg font-bold pb-4 border-b border-accent-200 leading-none' data-cy='dashboard-widget-title'>Active Punishments</h2>
             <ActivePunishments id={user.id} />
           </div>
           <div>

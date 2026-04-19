@@ -5,6 +5,17 @@ const nock = require('nock')
 const createApp = require('../app')
 const { createSetup, getAuthPassword } = require('./lib')
 
+const parseSessionUpdated = (cookieHeader) => {
+  const sessPart = cookieHeader
+    .split(';')
+    .map((part) => part.trim())
+    .find((part) => part.startsWith('bm-webui-sess='))
+  if (!sessPart) throw new Error('bm-webui-sess cookie not found')
+  const value = sessPart.slice('bm-webui-sess='.length)
+  const decoded = JSON.parse(Buffer.from(value, 'base64').toString('utf8'))
+  return decoded.updated
+}
+
 describe('Mutation set password', () => {
   let setup
   let request
@@ -137,7 +148,14 @@ describe('Mutation set password', () => {
   test('should update password and invalidate all other sessions', async () => {
     const cookie = await getAuthPassword(request, 'admin@banmanagement.com')
 
-    MockDate.set(new Date(Date.now() - 5000))
+    // Mock relative to the cookie's session.updated (which mirrors the seeded
+    // user.updated timestamp) instead of real wall-clock time. The previous
+    // `Date.now() - 5000` flaked when total test runtime crossed the 5s window:
+    // mockedTime would land at >= T_seed, so the resolver's
+    // `session.updated = Math.floor(Date.now() / 1000)` produced no change, no
+    // koa-session commit, and no `set-cookie` header in the response.
+    const sessUpdated = parseSessionUpdated(cookie)
+    MockDate.set(new Date((sessUpdated - 5) * 1000))
     let oldCookie = await getAuthPassword(request, 'admin@banmanagement.com')
 
     assert.notStrictEqual(cookie, oldCookie)

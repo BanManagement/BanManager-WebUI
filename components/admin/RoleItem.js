@@ -32,7 +32,7 @@ export default function RoleItem ({ role, onDeleted }) {
   const handleDeleteCancel = () => setOpen(false)
 
   return (
-    <div className='bg-black shadow-md rounded-md overflow-hidden text-center w-80'>
+    <div className='bg-black shadow-md rounded-md overflow-hidden text-center w-80' data-cy='role-item' data-cy-role={role.name}>
       <Modal
         title='Delete role'
         confirmButton='Delete'
@@ -48,7 +48,7 @@ export default function RoleItem ({ role, onDeleted }) {
       <Link href={`/admin/roles/${role.id}`} passHref>
 
         <div className='p-5'>
-          <h5 className='text-xl font-semibold mb-2'>{role.name}</h5>
+          <h5 className='text-xl font-semibold mb-2' data-cy='role-name-display'>{role.name}</h5>
         </div>
         {role.id > 3 &&
           <div className='py-3 px-5 bg-gray-900'>
@@ -75,6 +75,7 @@ export default function RoleItem ({ role, onDeleted }) {
               '
               type='button'
               onClick={showConfirmDelete}
+              data-cy='role-delete'
             >
               Delete
             </button>

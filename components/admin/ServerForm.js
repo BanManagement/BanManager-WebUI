@@ -56,12 +56,13 @@ export default function ServerForm ({ onFinished, query, parseVariables, serverT
       key={'server-table-' + name}
       required
       placeholder={name}
+      data-cy={`server-table-${name}`}
       {...register(`tables.${name}`)}
     />
   ))
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className='mx-auto'>
+    <form onSubmit={handleSubmit(onSubmit)} className='mx-auto' data-cy='server-form'>
       <ErrorMessages ref={errorRef} errors={errors} />
       <div className='grid grid-flow-row md:grid-flow-col gap-6'>
         <div className='grid-flow-col'>
@@ -69,12 +70,14 @@ export default function ServerForm ({ onFinished, query, parseVariables, serverT
           <Input
             required
             placeholder='Name'
+            data-cy='server-name'
             {...register('name')}
           />
           <Input
             required
             placeholder='Console UUID (BanManager/console.yml)'
             minLength={16}
+            data-cy='server-console'
             {...register('console')}
           />
           <TextArea
@@ -82,6 +85,7 @@ export default function ServerForm ({ onFinished, query, parseVariables, serverT
             value={yamlState}
             name='yaml'
             onChange={handleYamlConfig}
+            data-cy='server-yaml'
           />
         </div>
         <div className='grid-flow-col'>
@@ -89,26 +93,31 @@ export default function ServerForm ({ onFinished, query, parseVariables, serverT
           <Input
             required
             placeholder='Host'
+            data-cy='server-host'
             {...register('host')}
           />
           <Input
             required
             placeholder='Port'
+            data-cy='server-port'
             {...register('port', { valueAsNumber: true })}
           />
           <Input
             required
             placeholder='Database Name'
+            data-cy='server-database'
             {...register('database')}
           />
           <Input
             required
             placeholder='User'
+            data-cy='server-user'
             {...register('user')}
           />
           <Input
             placeholder='Password'
             type='password'
+            data-cy='server-password'
             {...register('password')}
           />
         </div>

@@ -122,6 +122,14 @@ module.exports = async function ({ dbPool, logger, serversPool, disableUI = fals
   }, server))
   server.use(acl)
 
+  // Must be mounted before the main router below — the `router.all('(.*)')`
+  // catch-all otherwise swallows /setup and /api/setup/*, preventing the
+  // post-setup lockdown middleware (and the installer routes pre-setup) from
+  // ever running.
+  const setupRouter = buildSetupRouter({ basePath, dbPool })
+
+  server.use(setupRouter.routes())
+
   routes(router, dbPool)
   server.use(router.routes())
 
@@ -132,10 +140,6 @@ module.exports = async function ({ dbPool, logger, serversPool, disableUI = fals
       return ctx
     }
   }))
-
-  const setupRouter = buildSetupRouter({ basePath, dbPool })
-
-  server.use(setupRouter.routes())
 
   if (handle) {
     router.all('(.*)', async ctx => {

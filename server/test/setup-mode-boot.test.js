@@ -86,3 +86,77 @@ describe('setup-mode boot', () => {
     expect(res.body.ok).toBe(true)
   })
 })
+
+describe('setup-mode boot with SETUP_TOKEN', () => {
+  let request
+  let server
+  const ORIGINAL_TOKEN = process.env.SETUP_TOKEN
+  const TOKEN = 'test-setup-token-do-not-leak'
+
+  beforeAll(async () => {
+    process.env.SETUP_TOKEN = TOKEN
+    const app = await createApp({
+      dbPool: null,
+      logger: null,
+      serversPool: null,
+      disableUI: true,
+      setupMode: true,
+      setupState: SETUP_STATES.SETUP_NO_KEYS
+    })
+
+    server = app.listen()
+    request = supertest(server)
+  })
+
+  afterAll(() => {
+    if (server && server.close) server.close()
+    if (ORIGINAL_TOKEN === undefined) delete process.env.SETUP_TOKEN
+    else process.env.SETUP_TOKEN = ORIGINAL_TOKEN
+  })
+
+  test('preflight reports token_required without leaking the token value', async () => {
+    const res = await request.get('/api/setup/preflight')
+
+    expect(res.status).toBe(200)
+    expect(res.body.requireToken).toBe(true)
+    expect(res.body.state).toBe('token_required')
+    expect(JSON.stringify(res.body)).not.toContain(TOKEN)
+  })
+
+  test('POST /api/setup/admin/preflight is rejected without a token', async () => {
+    const res = await request
+      .post('/api/setup/admin/preflight')
+      .send({ email: 'admin@example.com', password: 'longenough', playerUuid: 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa' })
+
+    expect(res.status).toBe(401)
+    expect(res.body.error).toMatch(/token/i)
+  })
+
+  test('POST /api/setup/token rejects an incorrect token', async () => {
+    const res = await request
+      .post('/api/setup/token')
+      .send({ token: 'wrong' })
+
+    expect(res.status).toBe(401)
+    expect(res.body.error).toMatch(/invalid/i)
+  })
+
+  test('POST /api/setup/token accepts the correct token', async () => {
+    const res = await request
+      .post('/api/setup/token')
+      .send({ token: TOKEN })
+
+    expect(res.status).toBe(200)
+    expect(res.body.ok).toBe(true)
+  })
+
+  test('subsequent setup mutations succeed when the token header is included', async () => {
+    const res = await request
+      .post('/api/setup/admin/preflight')
+      .set('X-Setup-Token', TOKEN)
+      .send({ email: 'admin@example.com', password: 'longenough', playerUuid: 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa' })
+
+    expect(res.status).toBe(200)
+    expect(res.body.ok).toBe(true)
+  })
+})

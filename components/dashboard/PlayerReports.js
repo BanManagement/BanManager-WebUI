@@ -99,17 +99,18 @@ export default function PlayerReports ({ id, title }) {
     <>
       <h1
         className='text-lg font-bold pb-4 border-b border-accent-200 leading-none'
+        data-cy='dashboard-widget-player-reports'
       >
         <div className='flex items-center'>
-          <p className='mr-6'>{title}</p>
-          <div className='w-40 inline-block'>
+          <p className='mr-6' data-cy='dashboard-widget-title'>{title}</p>
+          <div className='w-40 inline-block' data-cy='dashboard-widget-server'>
             <ServerSelector
               onChange={serverId => setTableState({ ...tableState, serverId })}
             />
           </div>
           {(hasPermission('player.reports', 'view.any') || hasPermission('player.reports', 'view.assigned')) &&
             <div className='ml-3 text-sm'>
-              <Link href='/dashboard/reports'>View All</Link>
+              <Link href='/dashboard/reports' data-cy='dashboard-widget-view-all'>View All</Link>
             </div>}
         </div>
       </h1>

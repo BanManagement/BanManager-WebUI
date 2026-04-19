@@ -189,7 +189,7 @@ const main = async () => {
 
   log('Starting WebUI server...')
 
-  require('./server.js')
+  await require('./server.js').main()
 }
 
 main().catch((err) => {

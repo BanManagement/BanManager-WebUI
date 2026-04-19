@@ -115,4 +115,72 @@ describe('Query listWebhooks', () => {
       }
     })
   })
+
+  test('should return records ordered by updated DESC so pagination is deterministic', async () => {
+    const cookie = await getAuthPassword(request, 'admin@banmanagement.com')
+    const serverObj = setup.serversPool.values().next().value
+    const { config: server } = serverObj
+
+    await setup.dbPool('bm_web_webhook_deliveries').delete()
+    await setup.dbPool('bm_web_webhooks').delete()
+
+    const baseTimestamp = Math.floor(Date.now() / 1000)
+    await setup.dbPool('bm_web_webhooks').insert([
+      {
+        url: 'http://example.com/oldest',
+        template_type: 'CUSTOM',
+        content_type: 'APPLICATION_JSON',
+        content_template: '{}',
+        type: 'APPEAL_CREATED',
+        server_id: server.id,
+        created: baseTimestamp,
+        updated: baseTimestamp
+      },
+      {
+        url: 'http://example.com/middle',
+        template_type: 'CUSTOM',
+        content_type: 'APPLICATION_JSON',
+        content_template: '{}',
+        type: 'APPEAL_CREATED',
+        server_id: server.id,
+        created: baseTimestamp + 1,
+        updated: baseTimestamp + 1
+      },
+      {
+        url: 'http://example.com/newest',
+        template_type: 'CUSTOM',
+        content_type: 'APPLICATION_JSON',
+        content_template: '{}',
+        type: 'APPEAL_CREATED',
+        server_id: server.id,
+        created: baseTimestamp + 2,
+        updated: baseTimestamp + 2
+      }
+    ])
+
+    const { body, statusCode } = await request
+      .post('/graphql')
+      .set('Cookie', cookie)
+      .set('Accept', 'application/json')
+      .send({
+        query: `query listWebhooks {
+          listWebhooks {
+            records {
+              url
+            }
+          }
+        }`
+      })
+
+    assert.strictEqual(statusCode, 200)
+    assert.strictEqual(body.errors, undefined)
+    assert.deepStrictEqual(
+      body.data.listWebhooks.records.map(r => r.url),
+      [
+        'http://example.com/newest',
+        'http://example.com/middle',
+        'http://example.com/oldest'
+      ]
+    )
+  })
 })

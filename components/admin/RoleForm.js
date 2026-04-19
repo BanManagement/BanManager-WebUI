@@ -62,11 +62,12 @@ export default function RoleForm ({ onFinished, query, parseVariables, parentRol
   const resourceInputs = resources.map(resource => (
     <Fragment key={resource.name}>
       <PageHeader title={resource.name} className='!text-lg' />
-      <div className='grid'>
+      <div className='grid' data-cy={`role-resource-${resource.name}`}>
         {resource.permissions.map(permission => (
           <Checkbox
             key={`resource-${resource.name}-${permission.name}`}
             label={permission.name}
+            data-cy={`role-permission-${resource.name}-${permission.name}`}
             {...register(`resources.${sanitiseName(resource.name)}.${sanitiseName(permission.name)}`)}
           />
         ))}
@@ -75,25 +76,26 @@ export default function RoleForm ({ onFinished, query, parseVariables, parentRol
   ))
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className='mx-auto'>
+    <form onSubmit={handleSubmit(onSubmit)} className='mx-auto' data-cy='role-form'>
       <PageHeader title='Edit Role' />
       <ErrorMessages ref={errorRef} errors={errors} />
       <Input
         required
         placeholder='Name'
+        data-cy='role-name'
         {...register('name')}
       />
       {(!defaults.id || defaults.id > 3) &&
         <Controller
           name='parent'
           control={control}
-          render={({ field }) => <Select className='mb-6' {...field} options={parentRoles} />}
+          render={({ field }) => <Select className='mb-6' {...field} options={parentRoles} data-cy='role-parent' />}
         />}
       <PageHeader title='Resources' className='!text-xl' />
       {defaults.id === '3' &&
         <p>{defaults.name} has access to all resources</p>}
       {(!defaults.id || defaults.id !== '3') && resourceInputs}
-      <Button data-cy='submit-server-form' disabled={isSubmitting} loading={loading}>Save</Button>
+      <Button data-cy='submit-role-form' disabled={isSubmitting} loading={loading}>Save</Button>
     </form>
   )
 }

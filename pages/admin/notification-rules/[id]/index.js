@@ -2,12 +2,13 @@ import { useRouter } from 'next/router'
 import AdminLayout from '../../../../components/AdminLayout'
 import ErrorLayout from '../../../../components/ErrorLayout'
 import Loader from '../../../../components/Loader'
-import { useApi } from '../../../../utils'
+import { useApi, useInvalidateApiCache } from '../../../../utils'
 import PageHeader from '../../../../components/admin/AdminHeader'
 import NotificationRuleForm from '../../../../components/admin/notification-rules/NotificationRuleForm'
 
 export default function Page () {
   const router = useRouter()
+  const invalidate = useInvalidateApiCache()
   const { id } = router.query
   const { loading, data, errors, mutate } = useApi({
     variables: { id },
@@ -68,6 +69,7 @@ export default function Page () {
           parseVariables={(input) => ({ id, input })}
           onFinished={({ updateNotificationRule }) => {
             mutate({ ...data, notificationRule: { ...updateNotificationRule } }, false)
+            invalidate('listNotificationRules')
             router.push('/admin/notification-rules')
           }}
         />

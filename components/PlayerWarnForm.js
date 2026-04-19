@@ -42,6 +42,7 @@ export default function PlayerWarnForm ({ serverFilter, onFinished, query, parse
         required
         label='Reason'
         icon={<FaPencilAlt />}
+        data-cy='reason'
         {...register('reason')}
       />
       <Input
@@ -51,16 +52,17 @@ export default function PlayerWarnForm ({ serverFilter, onFinished, query, parse
         min='0'
         step='.01'
         icon={<RiNumbersLine />}
+        data-cy='points'
         {...register('points', { valueAsNumber: true })}
       />
-      <div>
+      <div data-cy='expires'>
         <Controller
           name='expires'
           control={control}
           render={({ field: { onChange, value } }) => <ExpiresInput onChange={onChange} value={value} />}
         />
       </div>
-      <Button ref={submitRef} disabled={isSubmitting} loading={isSubmitting} className={submitRef ? 'hidden' : ''}>
+      <Button data-cy='submit-warning' ref={submitRef} disabled={isSubmitting} loading={isSubmitting} className={submitRef ? 'hidden' : ''}>
         Save
       </Button>
     </form>

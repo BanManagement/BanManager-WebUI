@@ -6,7 +6,12 @@ const { handlers } = require('../setup/api')
 const { isSetupComplete } = require('../setup/state')
 const { getVersion } = require('./health')
 
-const SETUP_RATE_LIMIT = new RateLimiterMemory({ points: 10, duration: 60 })
+const SETUP_RATE_LIMIT_POINTS = Number(process.env.SETUP_RATE_LIMIT_POINTS) || 10
+const SETUP_RATE_LIMIT_DURATION = Number(process.env.SETUP_RATE_LIMIT_DURATION) || 60
+const SETUP_RATE_LIMIT = new RateLimiterMemory({
+  points: SETUP_RATE_LIMIT_POINTS,
+  duration: SETUP_RATE_LIMIT_DURATION
+})
 
 const isLoopback = (ip) => {
   if (!ip) return false

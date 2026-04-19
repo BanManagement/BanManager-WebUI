@@ -3,12 +3,13 @@ import Loader from '../../../../components/Loader'
 import AdminLayout from '../../../../components/AdminLayout'
 import ErrorLayout from '../../../../components/ErrorLayout'
 import PageHeader from '../../../../components/PageHeader'
-import { useApi } from '../../../../utils'
+import { useApi, useInvalidateApiCache } from '../../../../utils'
 import WebhookForm from '../../../../components/admin/webhooks/WebhookForm'
 import WebhookDiscordForm from '../../../../components/admin/webhooks/WebhookDiscordForm'
 
 export default function Page () {
   const router = useRouter()
+  const invalidate = useInvalidateApiCache()
   const { type } = router.query
   const { loading, data, errors } = useApi({
     query: `query roles {
@@ -49,7 +50,10 @@ export default function Page () {
               eventTypes={webhookTypes}
               contentTypes={webhookContentTypes}
               parseVariables={(input) => ({ input })}
-              onFinished={() => router.push('/admin/webhooks')}
+              onFinished={() => {
+                invalidate('listWebhooks')
+                router.push('/admin/webhooks')
+              }}
             />
             )
           : (
@@ -58,7 +62,10 @@ export default function Page () {
               eventTypes={webhookTypes}
               contentTypes={webhookContentTypes}
               parseVariables={(input) => ({ input })}
-              onFinished={() => router.push('/admin/webhooks')}
+              onFinished={() => {
+                invalidate('listWebhooks')
+                router.push('/admin/webhooks')
+              }}
             />
             )}
       </div>
