@@ -31,31 +31,35 @@ export default function PlayerAppealSidebar ({ data, canUpdateState, canAssign, 
   return (
     <ul role='list' className='divide-y divide-primary-900'>
       <SidebarItem title='State'>
-        {canUpdateState
-          ? (
-            <PlayerAppealState
-              id={appeal.id}
-              currentState={appeal?.state}
-              states={stateOptions}
-              onChange={({ appealState: { appeal: { state, updated }, comment } }) => {
-                mutate({ ...data, appeal: { ...data.appeal, state, updated } }, false)
-                matchMutate('listPlayerAppealComments', mutateCommentInsert(comment), { id: appeal?.id })
-              }}
-            />)
-          : (<p className='text-sm'>{appeal?.state?.name}</p>)}
+        <div data-cy='appeal-state'>
+          {canUpdateState
+            ? (
+              <PlayerAppealState
+                id={appeal.id}
+                currentState={appeal?.state}
+                states={stateOptions}
+                onChange={({ appealState: { appeal: { state, updated }, comment } }) => {
+                  mutate({ ...data, appeal: { ...data.appeal, state, updated } }, false)
+                  matchMutate('listPlayerAppealComments', mutateCommentInsert(comment), { id: appeal?.id })
+                }}
+              />)
+            : (<p className='text-sm' data-cy='appeal-state-display'>{appeal?.state?.name}</p>)}
+        </div>
       </SidebarItem>
       <SidebarItem title='Assignee'>
-        {canAssign
-          ? (
-            <PlayerAppealAssign
-              id={appeal.id}
-              player={appeal.assignee}
-              onChange={({ assignAppeal: { appeal: { assignee, updated }, comment } }) => {
-                mutate({ ...data, appeal: { ...data.appeal, assignee, updated } }, false)
-                matchMutate('listPlayerAppealComments', mutateCommentInsert(comment), { id: appeal.id })
-              }}
-            />)
-          : (<p className='text-sm'>{appeal?.assignee?.name || 'Unassigned'}</p>)}
+        <div data-cy='appeal-assignee'>
+          {canAssign
+            ? (
+              <PlayerAppealAssign
+                id={appeal.id}
+                player={appeal.assignee}
+                onChange={({ assignAppeal: { appeal: { assignee, updated }, comment } }) => {
+                  mutate({ ...data, appeal: { ...data.appeal, assignee, updated } }, false)
+                  matchMutate('listPlayerAppealComments', mutateCommentInsert(comment), { id: appeal.id })
+                }}
+              />)
+            : (<p className='text-sm' data-cy='appeal-assignee-display'>{appeal?.assignee?.name || 'Unassigned'}</p>)}
+        </div>
       </SidebarItem>
       {!!user &&
         <SidebarItem title='Notifications'>

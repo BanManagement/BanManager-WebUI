@@ -61,7 +61,7 @@ export default function WebhookItem ({ row, onDeleted }) {
   const handleTestWebhookCancel = () => setTestWebhookOpen(false)
 
   return (
-    <div className='hover:bg-gray-900 group border-b border-gray-700'>
+    <div className='hover:bg-gray-900 group border-b border-gray-700' data-cy='webhook-item' data-cy-webhook-id={row.id} data-cy-template={row?.templateType}>
       <Modal
         title='Delete webhook'
         confirmButton='Delete'
@@ -83,12 +83,12 @@ export default function WebhookItem ({ row, onDeleted }) {
       </Modal>
       <div className='flex py-2'>
         <div className='flex-auto flex-wrap space-y-2 pl-3 py-2 max-w-full'>
-          <div>
+          <div data-cy='webhook-type-display'>
             {row.type}
           </div>
           <div className='flex flex-auto flex-row space-x-2 py-2 items-center'>
             <span>{webhookTypes[row?.templateType]}</span>
-            <Link href={`/admin/webhooks/${row.id}`} className='truncate underline block'>{row?.url}</Link>
+            <Link href={`/admin/webhooks/${row.id}`} className='truncate underline block' data-cy='webhook-url-display'>{row?.url}</Link>
           </div>
           {!!row?.server?.id &&
             <div className='flex break-words justify-between text-sm'>
@@ -102,25 +102,25 @@ export default function WebhookItem ({ row, onDeleted }) {
             <TimeFromNow timestamp={Math.floor(row.updated / 1000)} />
           </div>
           <div className='hidden group-hover:flex group-hover:gap-5'>
-            <Button className='bg-accent-600 hover:bg-accent-700 text-sm px-4 py-2' onClick={showTestWebhook}><BsFillSendFill /></Button>
+            <Button data-cy='webhook-test' className='bg-accent-600 hover:bg-accent-700 text-sm px-4 py-2' onClick={showTestWebhook}><BsFillSendFill /></Button>
             <Link href={`/admin/webhooks/${row.id}`} passHref>
-              <Button className='bg-emerald-600 hover:bg-emerald-700 text-sm px-4 py-2'><FaPencilAlt /></Button>
+              <Button data-cy='webhook-edit' className='bg-emerald-600 hover:bg-emerald-700 text-sm px-4 py-2'><FaPencilAlt /></Button>
             </Link>
-            <Button className='bg-red-600 hover:bg-red-700 text-sm px-4 py-2' onClick={showConfirmDelete}><BsTrash /></Button>
+            <Button data-cy='webhook-delete' className='bg-red-600 hover:bg-red-700 text-sm px-4 py-2' onClick={showConfirmDelete}><BsTrash /></Button>
           </div>
         </div>
       </div>
       <div className='flex flex-row gap-6 md:hidden mb-2'>
         <div>
-          <Button className='bg-accent-600 hover:bg-accent-700 text-sm px-4 py-2' onClick={showTestWebhook}><BsFillSendFill /> Test</Button>
+          <Button data-cy='webhook-test-mobile' className='bg-accent-600 hover:bg-accent-700 text-sm px-4 py-2' onClick={showTestWebhook}><BsFillSendFill /> Test</Button>
         </div>
         <div>
           <Link href={`/admin/webhooks/${row.id}`} passHref>
-            <Button className='bg-emerald-600 hover:bg-emerald-700 text-sm px-4 py-2'><FaPencilAlt /> Edit</Button>
+            <Button data-cy='webhook-edit-mobile' className='bg-emerald-600 hover:bg-emerald-700 text-sm px-4 py-2'><FaPencilAlt /> Edit</Button>
           </Link>
         </div>
         <div>
-          <Button className='bg-red-600 hover:bg-red-700 text-sm px-4 py-2' onClick={showConfirmDelete}><BsTrash /> Delete</Button>
+          <Button data-cy='webhook-delete-mobile' className='bg-red-600 hover:bg-red-700 text-sm px-4 py-2' onClick={showConfirmDelete}><BsTrash /> Delete</Button>
         </div>
       </div>
     </div>

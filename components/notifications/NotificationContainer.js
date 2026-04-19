@@ -16,7 +16,13 @@ export default function NotificationContainer ({ id, actor, created, children, s
     'border-accent-600': state === 'unread'
   })
   return (
-    <Link href={`/api/notifications/${id}`} prefetch={false}>
+    <Link
+      href={`/api/notifications/${id}`}
+      prefetch={false}
+      data-cy='notification-link'
+      data-cy-notification-id={id}
+      data-cy-notification-state={state}
+    >
       <div className={className}>
         <div className='w-24 flex items-start'>
           <div className='flex gap-3'>

@@ -41,16 +41,17 @@ export default function PlayerBanForm ({ serverFilter, onFinished, query, parseV
         required
         label='Reason'
         icon={<FaPencilAlt />}
+        data-cy='reason'
         {...register('reason')}
       />
-      <div>
+      <div data-cy='expires'>
         <Controller
           name='expires'
           control={control}
           render={({ field: { onChange, value } }) => <ExpiresInput onChange={onChange} value={value} />}
         />
       </div>
-      <Button ref={submitRef} disabled={isSubmitting} loading={isSubmitting} className={submitRef ? 'hidden' : ''}>
+      <Button data-cy='submit-ban' ref={submitRef} disabled={isSubmitting} loading={isSubmitting} className={submitRef ? 'hidden' : ''}>
         Save
       </Button>
     </form>

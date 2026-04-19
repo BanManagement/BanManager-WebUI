@@ -82,6 +82,22 @@ export const useMutateApi = (operation) => {
   return { load, loading, ...state }
 }
 
+// Force a refetch of any cached `useApi` query whose query string includes
+// the given substring. Used by admin add/edit flows so the list page rendered
+// after a router.push() doesn't briefly show data that pre-dates the mutation.
+// The cache key produced by useApi is [queryString, ...flatVars]; passing
+// `undefined` data + `{ revalidate: true }` is SWR's documented "refetch
+// matches" pattern.
+export const useInvalidateApiCache = () => {
+  const { mutate } = useSWRConfig()
+
+  return (operationSubstring) => mutate(
+    (key) => Array.isArray(key) && typeof key[0] === 'string' && key[0].includes(operationSubstring),
+    undefined,
+    { revalidate: true }
+  )
+}
+
 export const useMatchMutate = () => {
   const { cache, mutate } = useSWRConfig()
 

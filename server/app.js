@@ -1,7 +1,5 @@
-// Next.js
 const next = require('next')
 
-/// Koa
 const Koa = require('koa')
 const Router = require('@koa/router')
 const reqLogger = require('koa-pino-logger')
@@ -9,7 +7,6 @@ const session = require('koa-session')
 const cors = require('@koa/cors')
 const bodyParser = require('koa-bodyparser')
 
-// GraphQL/Apollo
 const { ApolloServer } = require('@apollo/server')
 const { koaMiddleware } = require('@as-integrations/koa')
 const schema = require('./graphql/schema')
@@ -17,10 +14,34 @@ const loaders = require('./graphql/loaders')
 const acl = require('./middleware/acl')
 
 const routes = require('./routes')
+const buildHealthRouter = require('./routes/health')
+const buildSetupRouter = require('./routes/setup')
 
 const { valid } = require('./data/session')
+const { isSetupComplete } = require('./setup/state')
 
-module.exports = async function ({ dbPool, logger, serversPool, disableUI = false }) {
+const stripBasePath = (path, basePath) => {
+  if (!basePath) return path
+  if (path === basePath) return '/'
+  if (path.startsWith(basePath + '/')) return path.slice(basePath.length)
+  return path
+}
+
+const isAllowedSetupPath = (relativePath) =>
+  relativePath === '/health' ||
+  relativePath === '/setup' ||
+  relativePath.startsWith('/setup/') ||
+  relativePath.startsWith('/api/setup') ||
+  relativePath.startsWith('/_next/') ||
+  relativePath.startsWith('/static/')
+
+module.exports = async function ({ dbPool, logger, serversPool, disableUI = false, setupMode = false, setupState = null }) {
+  const basePath = process.env.BASE_PATH || undefined
+
+  if (setupMode || !dbPool) {
+    return buildSetupModeApp({ logger, basePath, setupState })
+  }
+
   let handle
 
   if (!disableUI) {
@@ -31,10 +52,14 @@ module.exports = async function ({ dbPool, logger, serversPool, disableUI = fals
   }
 
   const server = new Koa()
-  const router = new Router({ prefix: process.env.BASE_PATH || undefined })
+  const router = new Router({ prefix: basePath })
   const apolloServer = new ApolloServer(schema({ dbPool, logger, serversPool }))
+  const healthRouter = buildHealthRouter({ dbPool, setupMode: false })
 
   server.keys = [process.env.SESSION_KEY]
+  if (process.env.TRUST_PROXY === 'true' || process.env.TRUST_PROXY === '1') {
+    server.proxy = true
+  }
 
   server.use(cors())
   server.use(bodyParser())
@@ -59,10 +84,27 @@ module.exports = async function ({ dbPool, logger, serversPool, disableUI = fals
     return next()
   })
   server.use(reqLogger({ logger }))
+
+  server.use(healthRouter.routes())
+
+  let setupCompleted = await safeIsSetupComplete(dbPool, logger)
+
+  server.use(async (ctx, next) => {
+    if (setupCompleted) return next()
+
+    setupCompleted = await safeIsSetupComplete(dbPool, logger)
+    if (setupCompleted) return next()
+
+    if (isAllowedSetupPath(stripBasePath(ctx.path, basePath))) return next()
+
+    ctx.status = 302
+    ctx.redirect((basePath || '') + '/setup')
+  })
+
   server.use(session({
     key: process.env.SESSION_NAME || 'bm-webui-sess',
     renew: true,
-    maxAge: (24 * 60 * 60 * 1000) * 3, // Valid for 3 days
+    maxAge: (24 * 60 * 60 * 1000) * 3,
     autoCommit: false,
     httpOnly: true,
     decode (str) {
@@ -79,6 +121,14 @@ module.exports = async function ({ dbPool, logger, serversPool, disableUI = fals
     }
   }, server))
   server.use(acl)
+
+  // Must be mounted before the main router below — the `router.all('(.*)')`
+  // catch-all otherwise swallows /setup and /api/setup/*, preventing the
+  // post-setup lockdown middleware (and the installer routes pre-setup) from
+  // ever running.
+  const setupRouter = buildSetupRouter({ basePath, dbPool })
+
+  server.use(setupRouter.routes())
 
   routes(router, dbPool)
   server.use(router.routes())
@@ -117,4 +167,72 @@ module.exports = async function ({ dbPool, logger, serversPool, disableUI = fals
   })
 
   return server
+}
+
+async function safeIsSetupComplete (dbPool, logger) {
+  try {
+    return await isSetupComplete(dbPool)
+  } catch (err) {
+    if (logger) logger.warn({ err }, 'isSetupComplete check failed; assuming setup not complete')
+    return false
+  }
+}
+
+function buildSetupModeApp ({ logger, basePath, setupState }) {
+  const server = new Koa()
+  const router = new Router({ prefix: basePath })
+  const healthRouter = buildHealthRouter({ dbPool: null, setupMode: true, setupState })
+  const setupRouter = buildSetupRouter({ basePath, dbPool: null, allowAfterComplete: true })
+
+  if (process.env.TRUST_PROXY === 'true' || process.env.TRUST_PROXY === '1') {
+    server.proxy = true
+  }
+
+  server.use(cors())
+  server.use(bodyParser())
+  server.use(async (ctx, next) => {
+    try {
+      await next()
+    } catch (err) {
+      if (ctx.log && ctx.log.error) ctx.log.error(err)
+      else if (logger) logger.error(err)
+
+      ctx.status = err.status || 500
+      ctx.body = { error: (err.exposed || err.expose) ? err.message : 'Internal Server Error' }
+      ctx.app.emit('error', err, ctx)
+    }
+  })
+  if (logger) server.use(reqLogger({ logger }))
+
+  server.use(healthRouter.routes())
+  server.use(setupRouter.routes())
+
+  server.use(async (ctx, next) => {
+    if (isAllowedSetupPath(stripBasePath(ctx.path, basePath))) return next()
+
+    ctx.status = 302
+    ctx.redirect((basePath || '') + '/setup')
+  })
+
+  server.use(router.routes())
+  server.use(router.allowedMethods())
+
+  if (logger) {
+    logger.warn({ setupState }, 'Server started in setup mode. Visit /setup to complete installation.')
+    if (!process.env.SETUP_TOKEN && !isLoopbackBind()) {
+      logger.warn(
+        'SETUP_TOKEN is not set and the server appears to listen on a non-loopback interface. ' +
+        'Anyone able to reach /setup before you do can take over the WebUI. ' +
+        'Set SETUP_TOKEN=$(openssl rand -hex 24) before starting if your install host is reachable from the network.'
+      )
+    }
+  }
+
+  return server
+}
+
+const isLoopbackBind = () => {
+  const host = process.env.HOSTNAME || process.env.HOST
+  if (!host) return false
+  return host === '127.0.0.1' || host === '::1' || host === 'localhost'
 }

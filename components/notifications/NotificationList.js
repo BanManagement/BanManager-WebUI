@@ -80,9 +80,9 @@ const NotificationList = () => {
 
   return (
     <>
-      <div className='grid grid-cols-1 bg-primary-900 rounded-t-3xl rounded-b-3xl py-4 divide-y-2 divide-primary-400'>
+      <div className='grid grid-cols-1 bg-primary-900 rounded-t-3xl rounded-b-3xl py-4 divide-y-2 divide-primary-400' data-cy='notification-list'>
         {!data?.listNotifications?.total
-          ? <p className='text-center'>Nothing to see here yet</p>
+          ? <p className='text-center' data-cy='notification-list-empty'>Nothing to see here yet</p>
           : data?.listNotifications?.records?.map(record => {
             switch (record.type) {
               case 'reportComment':

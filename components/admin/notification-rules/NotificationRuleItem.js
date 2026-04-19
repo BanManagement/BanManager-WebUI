@@ -38,7 +38,7 @@ export default function NotificationRuleItem ({ row, onDeleted }) {
   const handleDeleteCancel = () => setOpen(false)
 
   return (
-    <div className='hover:bg-gray-900 group border-b border-gray-700'>
+    <div className='hover:bg-gray-900 group border-b border-gray-700' data-cy='notification-rule-item' data-cy-rule-id={row.id}>
       <Modal
         title='Delete notification rule'
         confirmButton='Delete'
@@ -53,7 +53,7 @@ export default function NotificationRuleItem ({ row, onDeleted }) {
       </Modal>
       <div className='flex py-2'>
         <div className='flex-auto flex-wrap space-y-2 pl-3 py-2'>
-          <div>
+          <div data-cy='notification-rule-type-display'>
             {row.type}
           </div>
           <div className='flex flex-auto flex-row space-x-2 py-2'>
@@ -78,10 +78,10 @@ export default function NotificationRuleItem ({ row, onDeleted }) {
           <div className='hidden group-hover:flex group-hover:gap-5'>
             <Link href={`/admin/notification-rules/${row.id}`} passHref>
 
-              <Button className='bg-emerald-600 hover:bg-emerald-700 text-sm px-4 py-2'><FaPencilAlt /></Button>
+              <Button data-cy='notification-rule-edit' className='bg-emerald-600 hover:bg-emerald-700 text-sm px-4 py-2'><FaPencilAlt /></Button>
 
             </Link>
-            <Button className='bg-red-600 hover:bg-red-700 text-sm px-4 py-2' onClick={showConfirmDelete}><BsTrash /></Button>
+            <Button data-cy='notification-rule-delete' className='bg-red-600 hover:bg-red-700 text-sm px-4 py-2' onClick={showConfirmDelete}><BsTrash /></Button>
           </div>
         </div>
       </div>
@@ -89,12 +89,12 @@ export default function NotificationRuleItem ({ row, onDeleted }) {
         <div>
           <Link href={`/admin/notification-rules/${row.id}`} passHref>
 
-            <Button className='bg-emerald-600 hover:bg-emerald-700 text-sm px-4 py-2'><FaPencilAlt /> Edit</Button>
+            <Button data-cy='notification-rule-edit-mobile' className='bg-emerald-600 hover:bg-emerald-700 text-sm px-4 py-2'><FaPencilAlt /> Edit</Button>
 
           </Link>
         </div>
         <div>
-          <Button className='bg-red-600 hover:bg-red-700 text-sm px-4 py-2' onClick={showConfirmDelete}><BsTrash /> Delete</Button>
+          <Button data-cy='notification-rule-delete-mobile' className='bg-red-600 hover:bg-red-700 text-sm px-4 py-2' onClick={showConfirmDelete}><BsTrash /> Delete</Button>
         </div>
       </div>
     </div>

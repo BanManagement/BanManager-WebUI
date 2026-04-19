@@ -91,13 +91,22 @@ export default function PunishmentPicker () {
   }
 
   const items = rows.map((row) => (
-    <AppealPunishment key={row.server.id + row.id + row.type} punishment={row} appealable />
+    <div
+      key={row.server.id + row.id + row.type}
+      data-cy='punishment-picker-item'
+      data-cy-punishment-type={row.type}
+      data-cy-punishment-id={row.id}
+      data-cy-server-id={row.server.id}
+    >
+      <AppealPunishment punishment={row} appealable />
+    </div>
   ))
   const filters = useMemo(() => types.map(({ type, label, colours }) => (
     <Button
       key={type}
       className={clsx(colours, { 'border-opacity-0 opacity-50': !activeFilter.includes(type) })}
       onClick={() => toggleFilter(type)}
+      data-cy={`punishment-picker-filter-${type}`}
     >
       {label}
     </Button>
@@ -106,18 +115,18 @@ export default function PunishmentPicker () {
   if (loading) return <Loader className='relative h-9 w-9 mb-2' />
 
   return (
-    <div>
+    <div data-cy='punishment-picker'>
       <div className='flex flex-row gap-4 mb-4'>
         {filters}
       </div>
       <div className='flex flex-col gap-4 pt-4'>
         {(!data || !rows.length)
           ? (
-            <div>
+            <div data-cy='punishment-picker-empty'>
               <h2 className='text-center text-base font-semibold leading-relaxed pb-1'>No punishments founds</h2>
               <p className='text-center text-sm font-normal leading-snug pb-4'>Try changing your filters</p>
               <div className='flex gap-3'>
-                <Button onClick={() => setActiveFilter(['ban', 'mute', 'warning'])}>Clear filters</Button>
+                <Button onClick={() => setActiveFilter(['ban', 'mute', 'warning'])} data-cy='punishment-picker-clear-filters'>Clear filters</Button>
               </div>
             </div>
             )

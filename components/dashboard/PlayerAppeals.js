@@ -107,12 +107,13 @@ export default function PlayerAppeals ({ id, title, showActor }) {
     <>
       <h1
         className='text-lg font-bold pb-4 border-b border-accent-200 leading-none'
+        data-cy='dashboard-widget-player-appeals'
       >
         <div className='flex items-center'>
-          <p className='mr-6'>{title}</p>
+          <p className='mr-6' data-cy='dashboard-widget-title'>{title}</p>
           {(hasPermission('player.appeals', 'view.any') || hasPermission('player.appeals', 'view.assigned')) &&
             <div className='ml-3 text-sm'>
-              <Link href='/dashboard/appeals'>View All</Link>
+              <Link href='/dashboard/appeals' data-cy='dashboard-widget-view-all'>View All</Link>
             </div>}
         </div>
       </h1>

@@ -17,7 +17,7 @@ const HttpHeader = ({ name, value }) => (
 
 export default function WebhookDeliveryItem ({ id, content, response, error, created }) {
   const buttonContent = (
-    <div className='flex justify-between items-center'>
+    <div className='flex justify-between items-center' data-cy='webhook-delivery-summary' data-cy-status={response?.status || 'error'}>
       <div>
         <div className='text-sm font-bold flex items-center gap-1'>
           {error ? <MdOutlineErrorOutline className='text-red-500' /> : <TiTick className='text-green-500' />}
@@ -30,16 +30,18 @@ export default function WebhookDeliveryItem ({ id, content, response, error, cre
     </div>
   )
   return (
-    <div className='hover:bg-gray-900 group border-b border-gray-700 py-4'>
+    <div className='hover:bg-gray-900 group border-b border-gray-700 py-4' data-cy='webhook-delivery-item' data-cy-delivery-id={id}>
       <AnimatedDisclosure buttonContent={buttonContent} defaultOpen={false}>
         <TabGroup>
           <TabList>
             <Tab>Request</Tab>
             <Tab>Response {response?.status && (
-              <Badge className={clsx({
-                'bg-green-500': response.status >= 200 && response.status < 300,
-                'bg-red-500': response.status > 299
-              })}
+              <Badge
+                data-cy='webhook-delivery-status-badge'
+                className={clsx({
+                  'bg-green-500': response.status >= 200 && response.status < 300,
+                  'bg-red-500': response.status > 299
+                })}
               >
                 {response.status}
               </Badge>

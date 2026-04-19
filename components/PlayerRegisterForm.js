@@ -69,7 +69,7 @@ export default function PlayerRegisterForm () {
           type='password'
           icon={<MdLock />}
           iconPosition='left'
-          data-cy='password'
+          data-cy='confirm-password'
           error={error?.message}
           {...register('confirmPassword')}
         />

@@ -2,7 +2,7 @@ import { useRouter } from 'next/router'
 import AdminLayout from '../../../../components/AdminLayout'
 import ErrorLayout from '../../../../components/ErrorLayout'
 import Loader from '../../../../components/Loader'
-import { useApi } from '../../../../utils'
+import { useApi, useInvalidateApiCache } from '../../../../utils'
 import AdminHeader from '../../../../components/admin/AdminHeader'
 import WebhookForm from '../../../../components/admin/webhooks/WebhookForm'
 import WebhookDiscordForm from '../../../../components/admin/webhooks/WebhookDiscordForm'
@@ -11,6 +11,7 @@ import Link from 'next/link'
 
 export default function Page () {
   const router = useRouter()
+  const invalidate = useInvalidateApiCache()
   const { id } = router.query
   const { loading, data, errors, mutate } = useApi({
     variables: { id },
@@ -81,6 +82,7 @@ export default function Page () {
               parseVariables={(input) => ({ id, input })}
               onFinished={({ updateWebhook }) => {
                 mutate({ ...data, webhook: { ...updateWebhook } }, false)
+                invalidate('listWebhooks')
                 router.push('/admin/webhooks')
               }}
             />
@@ -95,6 +97,7 @@ export default function Page () {
               parseVariables={(input) => ({ id, input })}
               onFinished={({ updateWebhook }) => {
                 mutate({ ...data, webhook: { ...updateWebhook } }, false)
+                invalidate('listWebhooks')
                 router.push('/admin/webhooks')
               }}
             />

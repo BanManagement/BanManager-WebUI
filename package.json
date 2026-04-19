@@ -141,7 +141,10 @@
     "test": "npm run lint && node --expose-gc ./node_modules/.bin/jest --coverage",
     "setup": "node bin/run.js setup --writeFile .env",
     "cypress": "cypress open",
-    "e2e:build": "node cypress/setup.js && npm run build"
+    "e2e:build": "node cypress/setup.js && npm run build",
+    "e2e:setup:server": "node cypress/scripts/setup-server.js",
+    "e2e:setup:run": "cypress run --config-file cypress.setup.config.js",
+    "e2e:setup:open": "cypress open --config-file cypress.setup.config.js"
   },
   "oclif": {
     "commands": "./cli/commands",

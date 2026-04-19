@@ -49,9 +49,10 @@ export default function PlayerMuteForm ({ serverFilter, onFinished, query, parse
         required
         label='Reason'
         icon={<FaPencilAlt />}
+        data-cy='reason'
         {...register('reason')}
       />
-      <div>
+      <div data-cy='expires'>
         <Controller
           name='expires'
           control={control}
@@ -67,10 +68,11 @@ export default function PlayerMuteForm ({ serverFilter, onFinished, query, parse
             description='Hides their messages to others to prevent spam'
             onChange={onChange}
             checked={value}
+            data-cy='mute-soft'
           />
         )}
       />
-      <Button ref={submitRef} disabled={isSubmitting} loading={isSubmitting} className={submitRef ? 'hidden' : ''}>
+      <Button data-cy='submit-mute' ref={submitRef} disabled={isSubmitting} loading={isSubmitting} className={submitRef ? 'hidden' : ''}>
         Save
       </Button>
     </form>

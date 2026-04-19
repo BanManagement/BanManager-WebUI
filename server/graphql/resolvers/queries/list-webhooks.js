@@ -12,7 +12,11 @@ module.exports = async function listWebhooks (obj, { limit, offset }, { session,
         webhooks: 'bm_web_webhooks'
       }
     }
-  }, fields, 'webhooks').limit(limit).offset(offset)
+  }, fields, 'webhooks')
+    .orderBy('updated', 'DESC')
+    .orderBy('id', 'DESC')
+    .limit(limit)
+    .offset(offset)
   const { total } = await state.dbPool('bm_web_webhooks')
     .select(state.dbPool.raw('COUNT(*) as total'))
     .first()

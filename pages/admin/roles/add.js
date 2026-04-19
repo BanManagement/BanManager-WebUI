@@ -2,11 +2,12 @@ import { useRouter } from 'next/router'
 import Loader from '../../../components/Loader'
 import AdminLayout from '../../../components/AdminLayout'
 import ErrorLayout from '../../../components/ErrorLayout'
-import { useApi } from '../../../utils'
+import { useApi, useInvalidateApiCache } from '../../../utils'
 import RoleForm from '../../../components/admin/RoleForm'
 
 export default function Page () {
   const router = useRouter()
+  const invalidate = useInvalidateApiCache()
   const { loading, data, errors } = useApi({
     query: `query parentRoles {
       roles(defaultOnly: true) {
@@ -42,7 +43,10 @@ export default function Page () {
         parentRoles={parentRoles}
         resources={data.resources}
         parseVariables={(input) => ({ input })}
-        onFinished={() => router.push('/admin/roles')}
+        onFinished={() => {
+          invalidate('rolesAdminPage')
+          router.push('/admin/roles')
+        }}
       />
     </AdminLayout>
   )

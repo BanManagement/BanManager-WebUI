@@ -84,7 +84,7 @@ export default function ServerItem ({ canDelete, server, onDeleted }) {
   ]
 
   return (
-    <div className='bg-black shadow-md rounded-md overflow-hidden text-center w-80'>
+    <div className='bg-black shadow-md rounded-md overflow-hidden text-center w-80' data-cy='server-item' data-cy-server={server.name}>
       <Modal
         title='Delete server'
         confirmButton='Delete'
@@ -109,11 +109,12 @@ export default function ServerItem ({ canDelete, server, onDeleted }) {
           className='mb-0'
           inputClassName='border border-gray-900'
           required
+          data-cy='server-delete-confirm-name'
         />
       </Modal>
       <div className='pt-5 px-5 flex justify-between items-center'>
         <h5 className='text-xl font-semibold mb-2 underline'>
-          <Link href={`/admin/servers/${server.id}`} legacyBehavior>
+          <Link href={`/admin/servers/${server.id}`} legacyBehavior data-cy='server-edit-link'>
             {server.name}
           </Link>
         </h5>
@@ -142,6 +143,7 @@ export default function ServerItem ({ canDelete, server, onDeleted }) {
               '
               type='button'
               onClick={showConfirmDelete}
+              data-cy='server-delete'
             >
               Delete
             </button>}

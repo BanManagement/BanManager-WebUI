@@ -96,11 +96,135 @@ jobs:
           flag-name: run-${{ matrix.test_number }}
           parallel: true
 
+  setup_e2e:
+    runs-on: ubuntu-latest
+    name: Setup wizard E2E
+
+    env:
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: root
+      SETUP_PORT: 3001
+      SETUP_DOTENV_PATH: /tmp/bm-setup-test.env
+      SETUP_DB_NAME: bm_e2e_setup
+      SETUP_BM_DB_NAME: bm_e2e_setup_bm
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+      - name: Cache Node.js modules
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-setup-e2e-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-setup-e2e-
+      - run: npm ci
+      - name: Set up MySQL
+        run: |
+          sudo systemctl start mysql.service
+          sleep 5 && mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '';" -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
+          mysql -e "SET GLOBAL sql_require_primary_key = ON;" -uroot
+      - name: Cypress run (setup wizard)
+        uses: cypress-io/github-action@v6
+        env:
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_USER: root
+          DB_PASSWORD:
+          SETUP_PORT: 3001
+          SETUP_DOTENV_PATH: /tmp/bm-setup-test.env
+          SETUP_DB_NAME: bm_e2e_setup
+          SETUP_BM_DB_NAME: bm_e2e_setup_bm
+          LOG_LEVEL: warn
+          CYPRESS_setup_db_password: ''
+          CYPRESS_setup_db_host: 127.0.0.1
+          CYPRESS_setup_db_port: '3306'
+          CYPRESS_setup_db_user: root
+          CYPRESS_setup_dotenv_path: /tmp/bm-setup-test.env
+          CYPRESS_setup_db_name: bm_e2e_setup
+        with:
+          install: false
+          start: npm run e2e:setup:server
+          wait-on: "http://127.0.0.1:3001/health"
+          wait-on-timeout: 60
+          command: npm run e2e:setup:run
+
   build_docker:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - run: docker build . # TODO cache
+
+  smoke_docker:
+    name: Docker compose smoke test
+    runs-on: ubuntu-latest
+    needs: build_docker
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build webui image (load locally)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          load: true
+          tags: banmanagement/webui:smoke
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Start docker compose stack
+        env:
+          MYSQL_ROOT_PASSWORD: rootpassword
+          MYSQL_PASSWORD: webuipassword
+          WEBUI_PORT: 3000
+        run: |
+          # Use the locally built image instead of pulling
+          sed -i 's|image: banmanagement/webui:latest|image: banmanagement/webui:smoke|' docker-compose.prod.yml
+          docker compose -f docker-compose.prod.yml up -d
+
+      - name: Wait for /health to report setup_required
+        env:
+          MYSQL_ROOT_PASSWORD: rootpassword
+          MYSQL_PASSWORD: webuipassword
+          WEBUI_PORT: 3000
+        run: |
+          set -e
+          for attempt in $(seq 1 60); do
+            response=$(curl -fsS http://127.0.0.1:3000/health || true)
+            echo "attempt $attempt: $response"
+            if echo "$response" | grep -q '"status":"setup_required"' || echo "$response" | grep -q '"status":"ok"'; then
+              echo "Health endpoint is responding"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "Health endpoint never responded"
+          echo "===== docker ps ====="
+          docker ps -a
+          echo "===== webui logs ====="
+          docker logs banmanager-webui 2>&1 | tail -200 || true
+          echo "===== mysql logs ====="
+          docker logs banmanager-webui-mysql 2>&1 | tail -80 || true
+          exit 1
+
+      - name: Confirm setup mode signal
+        run: |
+          curl -fsS http://127.0.0.1:3000/health | tee /tmp/health.json
+          grep -q 'setup_required\|"status":"ok"' /tmp/health.json
+
+      - name: Stop docker compose stack
+        if: always()
+        env:
+          MYSQL_ROOT_PASSWORD: rootpassword
+          MYSQL_PASSWORD: webuipassword
+        run: docker compose -f docker-compose.prod.yml down -v
 
   finish:
     needs: test

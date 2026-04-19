@@ -1,0 +1,33 @@
+services:
+  webui:
+    image: banmanagement/webui:latest
+    container_name: banmanager-webui
+    restart: unless-stopped
+    environment:
+      DB_HOST: ${DB_HOST:?DB_HOST is required when bringing your own MySQL/MariaDB}
+      DB_PORT: ${DB_PORT:-3306}
+      DB_USER: ${DB_USER:?DB_USER is required when bringing your own MySQL/MariaDB}
+      DB_PASSWORD: ${DB_PASSWORD:-}
+      DB_NAME: ${DB_NAME:?DB_NAME is required when bringing your own MySQL/MariaDB}
+      NODE_ENV: production
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      DOTENV_CONFIG_PATH: /app/config/.env
+    ports:
+      - "${WEBUI_PORT:-3000}:3000"
+    volumes:
+      - webui_config:/app/config
+      - webui_uploads:/app/uploads/documents
+      - webui_image_cache:/app/.next/cache/images
+      - webui_opengraph_cache:/app/public/images/opengraph/cache
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3000/health >/dev/null 2>&1 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+volumes:
+  webui_config:
+  webui_uploads:
+  webui_image_cache:
+  webui_opengraph_cache:

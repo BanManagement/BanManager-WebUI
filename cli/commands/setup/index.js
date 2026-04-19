@@ -1,22 +1,29 @@
 const fs = require('fs').promises
+const path = require('path')
 const inquirer = require('inquirer')
 const editDotenv = require('edit-dotenv')
-const DBMigrate = require('db-migrate')
 const { Command, Flags } = require('@oclif/core')
 const { isEmail, isLength, isUUID } = require('validator')
-const { generateVAPIDKeys } = require('web-push')
 const { merge } = require('lodash')
-const { parse } = require('uuid-parse')
+const { parse, unparse } = require('uuid-parse')
 const { generateServerId } = require('../../../server/data/generator')
 const { hash } = require('../../../server/data/hash')
 const setupPool = require('../../../server/connections/pool')
 const crypto = require('../../../server/data/crypto')
 const chalk = require('chalk')
 const defaultTables = require('../../../server/data/tables').tables
+const setupLib = require('../../../server/setup')
 
 class SetupCommand extends Command {
   async run () {
     const { flags } = await this.parse(SetupCommand)
+
+    if (flags.writeFile) {
+      this.log(chalk.dim(`Setup is resumable — already-set values in ${flags.writeFile} will be reused, re-run anytime.`))
+    } else {
+      this.log(chalk.dim('Setup is resumable — already-set environment variables will be reused, re-run anytime.'))
+    }
+
     let contents = ''
     const save = async (changes = {}) => {
       if (flags.writeFile) {
@@ -39,7 +46,6 @@ class SetupCommand extends Command {
 
       return contents
     }
-    // Env variables
     let SERVER_FOOTER_NAME = process.env.SERVER_FOOTER_NAME
     let CONTACT_EMAIL = process.env.CONTACT_EMAIL
     let ENCRYPTION_KEY = process.env.ENCRYPTION_KEY
@@ -91,21 +97,21 @@ class SetupCommand extends Command {
     if (ENCRYPTION_KEY) {
       this.log('ENCRYPTION_KEY detected, skipping')
     } else {
-      ENCRYPTION_KEY = (await crypto.createKey()).toString('hex')
+      ENCRYPTION_KEY = await setupLib.generateEncryptionKey()
       await save({ ENCRYPTION_KEY })
     }
 
     if (SESSION_KEY) {
       this.log('SESSION_KEY detected, skipping')
     } else {
-      SESSION_KEY = (await crypto.createKey()).toString('hex')
+      SESSION_KEY = await setupLib.generateSessionKey()
       await save({ SESSION_KEY })
     }
 
     if (NOTIFICATION_VAPID_PUBLIC_KEY && NOTIFICATION_VAPID_PRIVATE_KEY) {
       this.log('NOTIFICATION keys detected, skipping')
     } else {
-      const { publicKey, privateKey } = generateVAPIDKeys()
+      const { publicKey, privateKey } = setupLib.generateVapidKeyPair()
       NOTIFICATION_VAPID_PUBLIC_KEY = publicKey
       NOTIFICATION_VAPID_PRIVATE_KEY = privateKey
 
@@ -113,26 +119,23 @@ class SetupCommand extends Command {
     }
 
     const connectToDb = async (config) => {
-      try {
-        const pool = setupPool(config, undefined, { min: 1, max: 5 })
+      const result = await setupLib.validateDbConnection(config, { destroy: false })
 
-        await pool.raw('SELECT 1+1 AS result')
-
-        return pool
-      } catch (e) {
-        console.error(e)
+      if (!result.ok) {
+        console.error(result.error)
         return null
       }
+
+      return result.conn
     }
-    const askDb = async (setEnv) => {
-      // Check DB connection details to web setup tables
+    const askDb = async (setEnv, defaults = {}) => {
       const messagePrefix = !setEnv ? 'Server ' : ''
       const dbQuestions = [
-        { type: 'input', name: 'host', message: `${messagePrefix}Database Host`, default: DB_HOST || '127.0.0.1' },
-        { type: 'input', name: 'port', message: `${messagePrefix}Database Port`, default: DB_PORT || 3306 },
-        { type: 'input', name: 'user', message: `${messagePrefix}Database User`, default: DB_USER },
-        { type: 'password', name: 'password', message: `${messagePrefix}Database Password`, default: DB_PASSWORD },
-        { type: 'input', name: 'database', message: `${messagePrefix}Database Name`, default: DB_NAME }
+        { type: 'input', name: 'host', message: `${messagePrefix}Database Host`, default: defaults.host || DB_HOST || '127.0.0.1' },
+        { type: 'input', name: 'port', message: `${messagePrefix}Database Port`, default: defaults.port || DB_PORT || 3306 },
+        { type: 'input', name: 'user', message: `${messagePrefix}Database User`, default: defaults.user || DB_USER },
+        { type: 'password', name: 'password', message: `${messagePrefix}Database Password`, default: defaults.password || DB_PASSWORD },
+        { type: 'input', name: 'database', message: `${messagePrefix}Database Name`, default: defaults.database || DB_NAME }
       ]
       const dbAnswers = await inquirer.prompt(dbQuestions)
       this.log('Attempting to connect to database')
@@ -149,12 +152,28 @@ class SetupCommand extends Command {
 
       if (!conn) {
         this.log('Failed to connect to database, please re-enter details')
-        return askDb(setEnv)
+        return askDb(setEnv, defaults)
       }
 
       this.log(`Connected to ${dbAnswers.user}@${dbAnswers.host}:${dbAnswers.port}/${dbAnswers.database} successfully`)
 
       return conn
+    }
+    let bmConfig = null
+
+    const tryParseBmConfig = async (configPath) => {
+      try {
+        return await setupLib.parseBanManagerConfig(configPath)
+      } catch (e) {
+        if (e.code === 'PARSE_BANMANAGER_CONFIG_NOT_FOUND') {
+          this.log(chalk.yellow(`No config found at ${configPath}`))
+        } else if (e.code === 'PARSE_BANMANAGER_CONFIG_INVALID_YAML') {
+          this.log(chalk.yellow(`Could not parse YAML at ${configPath}: ${e.message}`))
+        } else {
+          this.log(chalk.yellow(`Could not read ${configPath}: ${e.message}`))
+        }
+        return null
+      }
     }
 
     let conn
@@ -176,20 +195,15 @@ class SetupCommand extends Command {
 
     this.log('Setting up database...')
 
-    const dbConfig = {
+    await setupLib.runMigrations({
       host: DB_HOST,
       port: DB_PORT,
       user: DB_USER,
       password: DB_PASSWORD,
-      database: DB_NAME,
-      driver: { require: '@confuser/db-migrate-mysql' },
-      connectionLimit: 1,
-      multipleStatements: true
-    }
-    const dbmOpts = { config: { dev: dbConfig }, cmdOptions: { 'migrations-dir': './server/data/migrations' } }
-    const dbm = DBMigrate.getInstance(true, dbmOpts)
+      database: DB_NAME
+    })
 
-    await dbm.up()
+    this.log(chalk.green('Done'))
 
     const results = await conn('bm_web_servers').limit(1)
     let serverConn
@@ -219,9 +233,53 @@ class SetupCommand extends Command {
     if (!serverConn) {
       this.log('Add a BanManager Server by specifying the databases.local connection details from your BanManager/config.yml file')
 
-      serverConn = await askDb()
+      const { autoDetect } = await inquirer.prompt([{
+        type: 'confirm',
+        name: 'autoDetect',
+        message: 'Auto-detect from your BanManager plugin folder (config.yml + console.yml)?',
+        default: true
+      }])
 
-      const { serverName } = await inquirer.prompt([{ name: 'serverName', message: 'Server Name', default: server ? server.name : undefined }])
+      let serverDefaults = {}
+
+      if (autoDetect) {
+        const { configPath } = await inquirer.prompt([{
+          type: 'input',
+          name: 'configPath',
+          message: 'Path to BanManager plugin folder (or config.yml)',
+          default: process.env.BM_CONFIG_PATH || './plugins/BanManager'
+        }])
+
+        const parsed = await tryParseBmConfig(path.resolve(configPath))
+
+        if (parsed) {
+          bmConfig = parsed
+          if (parsed.databaseConfig) {
+            this.log(chalk.green(`Detected BanManager database: ${parsed.databaseConfig.user || ''}@${parsed.databaseConfig.host}:${parsed.databaseConfig.port || 3306}/${parsed.databaseConfig.database}`))
+            serverDefaults = parsed.databaseConfig
+          }
+          if (parsed.consoleUuid) {
+            this.log(chalk.green(`Detected console UUID: ${parsed.consoleUuid}`))
+          }
+        }
+      }
+      const sameAsWebui = !autoDetect && DB_HOST && await (async () => {
+        const { same } = await inquirer.prompt([{
+          type: 'confirm',
+          name: 'same',
+          message: `Use the same database as the WebUI? (${DB_USER}@${DB_HOST}:${DB_PORT}/${DB_NAME})`,
+          default: false
+        }])
+        return same
+      })()
+
+      if (sameAsWebui) {
+        serverDefaults = { host: DB_HOST, port: DB_PORT, user: DB_USER, password: DB_PASSWORD, database: DB_NAME }
+      }
+
+      serverConn = await askDb(false, serverDefaults)
+
+      const { serverName } = await inquirer.prompt([{ name: 'serverName', message: 'Server Name', default: server ? server.name : 'Server 1' }])
       const { host, port, user, password, database } = serverConn.client.config.connection
 
       server = { ...server, host, port, user, password, database, name: serverName }
@@ -247,7 +305,6 @@ class SetupCommand extends Command {
       try {
         tables = JSON.parse(server.tables)
 
-        // Merge in case there are new tables
         tables = merge({}, defaultTables, tables)
       } catch (e) {
         tables = defaultTables
@@ -262,6 +319,17 @@ class SetupCommand extends Command {
       }
 
       server.tables = tables
+    } else if (bmConfig && bmConfig.tables) {
+      this.log(`Using table names detected from config.yml for ${server.name}`)
+
+      server.tables = { ...bmConfig.tables }
+
+      for (const [key, value] of Object.entries(server.tables)) {
+        if (await checkTable(serverConn, value)) continue
+
+        this.log(chalk.yellow(`Detected table "${value}" for ${key} not found in database`))
+        server.tables[key] = await promptTable(serverConn, [key, value])
+      }
     } else {
       this.log('Please enter table names from config.yml')
 
@@ -273,8 +341,8 @@ class SetupCommand extends Command {
     }
 
     const playerExists = async (conn, table, id) => conn(table).select('name').where('id', id).first()
-    const askPlayer = async (question, conn, table) => {
-      const questions = [{ name: 'id', message: question }]
+    const askPlayer = async (question, conn, table, defaultId) => {
+      const questions = [{ name: 'id', message: question, default: defaultId }]
       const { id } = await inquirer.prompt(questions)
 
       if (!isUUID(id)) {
@@ -294,14 +362,15 @@ class SetupCommand extends Command {
 
       return parsedId
     }
+    const consoleDefault = bmConfig && bmConfig.consoleUuid ? bmConfig.consoleUuid : undefined
 
     if (server.console) {
       if (!(await playerExists(serverConn, server.tables.players, server.console))) {
         this.log('Console player not found, please update')
-        server.console = await askPlayer('Console UUID (paste "uuid" value from BanManager/console.yml)', serverConn, server.tables.players)
+        server.console = await askPlayer('Console UUID (paste "uuid" value from BanManager/console.yml)', serverConn, server.tables.players, consoleDefault)
       }
     } else {
-      server.console = await askPlayer('Console UUID (paste "uuid" value from BanManager/console.yml)', serverConn, server.tables.players)
+      server.console = await askPlayer('Console UUID (paste "uuid" value from BanManager/console.yml)', serverConn, server.tables.players, consoleDefault)
     }
 
     this.log(`Saving server ${server.name}`)
@@ -324,6 +393,7 @@ class SetupCommand extends Command {
 
     if (roleResults.length) {
       this.log('Admin user detected, skipping')
+      this.log(`To create an additional account later, run ${chalk.yellow('npx bmwebui account create')}`)
     } else {
       this.log('Setup your admin user')
 
@@ -359,14 +429,19 @@ class SetupCommand extends Command {
       }
 
       const { email } = await inquirer.prompt([{ name: 'email', message: 'Your email address' }])
-      const password = await askPassword()
+      const hashedPassword = await askPassword()
       const playerId = await askPlayerAccount('Your Minecraft Player UUID', conn, serverConn, server.tables.players)
-      const user = {
-        email, password, player_id: playerId, updated: Math.floor(Date.now() / 1000)
-      }
+      const playerUuid = unparse(playerId)
 
-      await conn('bm_web_users').insert(user)
-      await conn('bm_web_player_roles').insert({ player_id: playerId, role_id: 3 })
+      // Use the shared, transactional helper so a failure between user-insert
+      // and role-insert can never leave a half-created admin account.
+      await setupLib.createAdminUser({
+        email,
+        password: hashedPassword,
+        hashedPassword,
+        playerUuid,
+        dbPool: conn
+      })
     }
 
     this.log('Cleaning up...')
@@ -383,7 +458,13 @@ class SetupCommand extends Command {
       this.log(contents)
     }
 
-    this.log('Run ' + chalk.yellow('npx bmwebui setup systemd') + ' to start the WebUI as a service')
+    this.log('')
+    this.log(chalk.green('Next steps:'))
+    this.log('  - Verify your installation: ' + chalk.yellow('npx bmwebui doctor'))
+    this.log('  - Start the WebUI as a systemd service: ' + chalk.yellow('npx bmwebui setup systemd'))
+    this.log('  - Create additional accounts later: ' + chalk.yellow('npx bmwebui account create'))
+    this.log('')
+    this.log(chalk.dim('Tip: re-running `bmwebui setup` is safe — it skips steps that are already done.'))
   }
 }
 
