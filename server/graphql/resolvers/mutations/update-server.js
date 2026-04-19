@@ -1,10 +1,11 @@
 const { createConnection } = require('mysql2/promise')
 const { pick } = require('lodash')
 const { encrypt } = require('../../../data/crypto')
+const { setupPool } = require('../../../connections')
 const ExposedError = require('../../../data/exposed-error')
 const { tables } = require('../../../data/tables')
 
-module.exports = async function updateServer (obj, { id, input }, { state }) {
+module.exports = async function updateServer (obj, { id, input }, { log, state }) {
   if (!state.serversPool.has(id)) throw new ExposedError('Server not found')
 
   const serverExists = await state.dbPool('bm_web_servers')
@@ -51,16 +52,60 @@ module.exports = async function updateServer (obj, { id, input }, { state }) {
     throw new ExposedError(`Console UUID not found in ${input.tables.players} table`)
   }
 
-  if (input.password) {
-    input.password = await encrypt(process.env.ENCRYPTION_KEY, input.password)
+  const rawPassword = input.password
+  const parsedTables = input.tables
+
+  if (rawPassword) {
+    input.password = await encrypt(process.env.ENCRYPTION_KEY, rawPassword)
   } else {
     input.password = ''
   }
 
-  // Clean up
-  input.tables = JSON.stringify(input.tables)
+  input.tables = JSON.stringify(parsedTables)
 
   await state.dbPool('bm_web_servers').update(input).where({ id })
+
+  // Refresh the in-memory serversPool entry so subsequent queries (e.g. the
+  // /admin/servers list, scoped resolvers) see the new name and connection
+  // details immediately, instead of waiting for the 3-second background
+  // sync in connections/servers-pool.js. createServer/deleteServer already
+  // mutate serversPool inline; the previous version of this resolver was
+  // the odd one out and let the cache go stale until the interval fired.
+  const existingEntry = state.serversPool.get(id)
+  const oldConfig = existingEntry.config
+  const connectionChanged =
+    oldConfig.host !== input.host ||
+    oldConfig.port !== input.port ||
+    oldConfig.user !== input.user ||
+    oldConfig.database !== input.database ||
+    Boolean(rawPassword)
+
+  let pool = existingEntry.pool
+
+  if (connectionChanged) {
+    existingEntry.pool.destroy().catch((error) => log?.error?.(error, 'updateServer'))
+    pool = setupPool({
+      host: input.host,
+      port: input.port,
+      user: input.user,
+      password: rawPassword,
+      database: input.database
+    }, log)
+  }
+
+  state.serversPool.set(id, {
+    config: {
+      id,
+      name: input.name,
+      host: input.host,
+      port: input.port,
+      user: input.user,
+      database: input.database,
+      tables: parsedTables,
+      console: input.console
+    },
+    pool
+  })
 
   return { id }
 }

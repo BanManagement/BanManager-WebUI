@@ -250,17 +250,70 @@ describe('Mutation update server', () => {
       .set('Accept', 'application/json')
       .send({ query })
 
-    // Delete custom user
-    await pool.raw('DROP USER IF EXISTS \'foobarupdate\'@\'%\';')
+    // updateServer rebuilds the server pool when connection details change,
+    // so the original `pool` reference has been destroyed by this point.
+    // Use the admin-credentialed setup pool for cleanup + verification —
+    // it points at the same MySQL server in tests.
+    await setup.dbPool.raw('DROP USER IF EXISTS \'foobarupdate\'@\'%\';')
 
     assert.strictEqual(statusCode, 200)
 
     assert(body)
     assert(body.data.updateServer.id)
 
-    const result = await pool('bm_web_servers').select('*').where('id', body.data.updateServer.id).first()
+    const result = await setup.dbPool('bm_web_servers').select('*').where('id', body.data.updateServer.id).first()
     const decrypted = await decrypt(process.env.ENCRYPTION_KEY, result.password)
 
     assert.strictEqual(decrypted, 'password')
+  })
+
+  test('should refresh the in-memory serversPool entry so subsequent reads see the new name', async () => {
+    const { config } = setup.serversPool.values().next().value
+    const cookie = await getAuthPassword(request, 'admin@banmanagement.com')
+    const serverId = config.id
+    const newName = `Renamed-${Date.now().toString(36).slice(-6)}`
+    // The previous test left the server pointing at the now-deleted
+    // `foobarupdate` MySQL user, so reuse the original setup DB credentials
+    // (admin) for the connection check rather than whatever happens to be in
+    // the cached config — otherwise updateServer's pre-flight createConnection
+    // call would fail before it ever touched the serversPool refresh logic.
+    const input = {
+      name: newName,
+      host: setup.dbConfig.host,
+      port: Number.parseInt(setup.dbConfig.port, 10),
+      database: config.database,
+      user: setup.dbConfig.user,
+      password: setup.dbConfig.password,
+      console: unparse(config.console),
+      tables: config.tables
+    }
+
+    const query = jsonToGraphQLQuery({
+      mutation: {
+        updateServer:
+          {
+            __args: { id: serverId, input },
+            id: true
+          }
+      }
+    })
+    const { body, statusCode } = await request
+      .post('/graphql')
+      .set('Cookie', cookie)
+      .set('Accept', 'application/json')
+      .send({ query })
+
+    assert.strictEqual(statusCode, 200)
+    assert.strictEqual(body.errors, undefined)
+    assert.strictEqual(body.data.updateServer.id, serverId)
+
+    // The serversPool cache must reflect the new name immediately, otherwise
+    // the /admin/servers list (and every per-server scoped resolver) keeps
+    // serving the old name until the 3-second background sync catches up.
+    const refreshed = setup.serversPool.get(serverId)
+
+    assert(refreshed, 'updateServer must keep the serversPool entry')
+    assert.strictEqual(refreshed.config.name, newName)
+    assert.strictEqual(refreshed.config.id, serverId)
   })
 })

@@ -87,13 +87,7 @@ describe('Admin server lifecycle', () => {
     })
 
     cy.url({ timeout: 10000 }).should('match', /\/admin\/servers\/[^/]+$/)
-    // The list page reads servers via SWR and keeps the previous response
-    // cached past the navigation back from the edit page (no
-    // revalidate-on-mount, defaults dedupe 2s), so the row can render under
-    // its pre-rename label. Force a reload so the assertion runs against the
-    // fresh row instead of racing the cache.
     cy.visit('/admin/servers')
-    cy.reload()
     cy.get(`[data-cy=server-item][data-cy-server="${renamedServer}"]`, { timeout: 10000 }).should('exist')
 
     cy.get(`[data-cy=server-item][data-cy-server="${renamedServer}"]`)
