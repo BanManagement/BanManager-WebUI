@@ -1,12 +1,14 @@
 import { FaBan } from 'react-icons/fa'
 import { BsMicMute } from 'react-icons/bs'
 import { AiOutlineWarning } from 'react-icons/ai'
+import { useTranslations } from 'next-intl'
 import ErrorMessages from '../ErrorMessages'
 import Loader from '../Loader'
 import { useApi } from '../../utils'
 import Link from 'next/link'
 
 const PlayerStatistics = ({ id }) => {
+  const t = useTranslations()
   const { loading, data, errors } = useApi({
     variables: { id }, query: `query playerStatistics($id: UUID!) {
       playerStatistics(player: $id) {
@@ -30,7 +32,7 @@ const PlayerStatistics = ({ id }) => {
           <div className='py-4 transform transition duration-500 hover:scale-110 justify-center items-center flex flex-col gap-1'>
             <FaBan className='w-8 h-8 inline-block text-red-800' />
             <h2 className='title-font font-medium'>{data.playerStatistics.totalBans + data.playerStatistics.totalActiveBans}</h2>
-            <p className='text-sm text-gray-400'>Bans</p>
+            <p className='text-sm text-gray-400'>{t('pages.player.statistics.bans')}</p>
           </div>
         </Link>
       </div>
@@ -39,7 +41,7 @@ const PlayerStatistics = ({ id }) => {
           <div className='py-4 transform transition duration-500 hover:scale-110 justify-center items-center flex flex-col gap-1'>
             <BsMicMute className='w-8 h-8 inline-block text-indigo-800' />
             <h2 className='title-font font-medium'>{data.playerStatistics.totalMutes + data.playerStatistics.totalActiveMutes}</h2>
-            <p className='text-sm text-gray-400'>Mutes</p>
+            <p className='text-sm text-gray-400'>{t('pages.player.statistics.mutes')}</p>
           </div>
         </Link>
       </div>
@@ -48,7 +50,7 @@ const PlayerStatistics = ({ id }) => {
           <div className='py-4 transform transition duration-500 hover:scale-110 justify-center items-center flex flex-col gap-1'>
             <AiOutlineWarning className='w-8 h-8 inline-block text-amber-800' />
             <h2 className='title-font font-medium'>{data.playerStatistics.totalWarnings}</h2>
-            <p className='text-sm text-gray-400'>Warnings</p>
+            <p className='text-sm text-gray-400'>{t('pages.player.statistics.warnings')}</p>
           </div>
         </Link>
       </div>

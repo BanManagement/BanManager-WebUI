@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 import { BiServer } from 'react-icons/bi'
 import { MdOutlineGroups } from 'react-icons/md'
 import { FaPencilAlt } from 'react-icons/fa'
@@ -11,6 +12,7 @@ import { useMutateApi } from '../../../utils'
 import ErrorMessages from '../../ErrorMessages'
 
 export default function NotificationRuleItem ({ row, onDeleted }) {
+  const t = useTranslations()
   const [open, setOpen] = useState(false)
   const { load, loading, errors, data } = useMutateApi({
     query: `mutation deleteNotificationRule($id: ID!) {
@@ -40,16 +42,16 @@ export default function NotificationRuleItem ({ row, onDeleted }) {
   return (
     <div className='hover:bg-gray-900 group border-b border-gray-700' data-cy='notification-rule-item' data-cy-rule-id={row.id}>
       <Modal
-        title='Delete notification rule'
-        confirmButton='Delete'
+        title={t('pages.admin.notificationRules.deleteTitle')}
+        confirmButton={t('common.delete')}
         open={open}
         onConfirm={handleConfirmDelete}
         onCancel={handleDeleteCancel}
         loading={loading}
       >
         <ErrorMessages errors={errors} />
-        <p className='pb-1'>Are you sure you want to delete this notification rule?</p>
-        <p className='pb-1'>This action cannot be undone</p>
+        <p className='pb-1'>{t('pages.admin.notificationRules.deleteConfirm')}</p>
+        <p className='pb-1'>{t('pages.punishment.actionUndoable')}</p>
       </Modal>
       <div className='flex py-2'>
         <div className='flex-auto flex-wrap space-y-2 pl-3 py-2'>
@@ -89,12 +91,12 @@ export default function NotificationRuleItem ({ row, onDeleted }) {
         <div>
           <Link href={`/admin/notification-rules/${row.id}`} passHref>
 
-            <Button data-cy='notification-rule-edit-mobile' className='bg-emerald-600 hover:bg-emerald-700 text-sm px-4 py-2'><FaPencilAlt /> Edit</Button>
+            <Button data-cy='notification-rule-edit-mobile' className='bg-emerald-600 hover:bg-emerald-700 text-sm px-4 py-2'><FaPencilAlt /> {t('common.edit')}</Button>
 
           </Link>
         </div>
         <div>
-          <Button data-cy='notification-rule-delete-mobile' className='bg-red-600 hover:bg-red-700 text-sm px-4 py-2' onClick={showConfirmDelete}><BsTrash /> Delete</Button>
+          <Button data-cy='notification-rule-delete-mobile' className='bg-red-600 hover:bg-red-700 text-sm px-4 py-2' onClick={showConfirmDelete}><BsTrash /> {t('common.delete')}</Button>
         </div>
       </div>
     </div>

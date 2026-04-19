@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useUser } from './index'
 import {
   SUPPORTED_LOCALES,
@@ -59,32 +59,6 @@ const negotiateFromNavigator = () => {
   return null
 }
 
-export const useResolvedLocale = () => {
-  const { user } = useUser()
-  const [locale, setLocale] = useState(DEFAULT_LOCALE)
-  const [ready, setReady] = useState(false)
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return
-
-    const cookieLocale = readClientCookie(LOCALE_COOKIE)
-
-    if (isSupportedLocale(user?.locale)) {
-      setLocale(user.locale)
-    } else if (isSupportedLocale(cookieLocale)) {
-      setLocale(cookieLocale)
-    } else {
-      const navLocale = negotiateFromNavigator()
-
-      if (navLocale) setLocale(navLocale)
-    }
-
-    setReady(true)
-  }, [user?.locale])
-
-  return { locale, ready }
-}
-
 export const getCookiePath = () => {
   const basePath = process.env.BASE_PATH || ''
 
@@ -99,3 +73,72 @@ export const writeLocaleCookie = (locale) => {
 
   document.cookie = `${LOCALE_COOKIE}=${encodeURIComponent(locale)}; Path=${path}; Max-Age=${maxAge}; SameSite=Lax`
 }
+
+const LocaleContext = createContext({
+  locale: DEFAULT_LOCALE,
+  ready: false,
+  setLocale: () => {}
+})
+
+export const LocaleProvider = ({ children }) => {
+  const { user } = useUser()
+  const [locale, setLocaleState] = useState(DEFAULT_LOCALE)
+  const [ready, setReady] = useState(false)
+  const [explicit, setExplicit] = useState(false)
+  const previousUserId = useRef(null)
+
+  useEffect(() => {
+    if (previousUserId.current !== null && previousUserId.current !== (user?.id ?? null)) {
+      setExplicit(false)
+    }
+
+    previousUserId.current = user?.id ?? null
+  }, [user?.id])
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    if (isSupportedLocale(user?.locale) && !explicit) {
+      setLocaleState(user.locale)
+      setReady(true)
+
+      return
+    }
+
+    if (explicit) {
+      setReady(true)
+
+      return
+    }
+
+    const cookieLocale = readClientCookie(LOCALE_COOKIE)
+
+    if (isSupportedLocale(cookieLocale)) {
+      setLocaleState(cookieLocale)
+    } else {
+      const navLocale = negotiateFromNavigator()
+
+      if (navLocale) setLocaleState(navLocale)
+    }
+
+    setReady(true)
+  }, [user?.locale, explicit])
+
+  const setLocale = useCallback((next) => {
+    if (!isSupportedLocale(next)) return
+
+    writeLocaleCookie(next)
+    setExplicit(true)
+    setLocaleState(next)
+  }, [])
+
+  const value = useMemo(() => ({ locale, ready, setLocale }), [locale, ready, setLocale])
+
+  return (
+    <LocaleContext.Provider value={value}>
+      {children}
+    </LocaleContext.Provider>
+  )
+}
+
+export const useResolvedLocale = () => useContext(LocaleContext)

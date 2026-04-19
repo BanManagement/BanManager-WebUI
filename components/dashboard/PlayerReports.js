@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { format, fromUnixTime } from 'date-fns'
+import { useTranslations } from 'next-intl'
 import Badge from '../Badge'
 import Link from 'next/link'
 import Loader from '../Loader'
@@ -84,6 +85,7 @@ const ReportRow = ({ serverId, row, dateFormat }) => {
 }
 
 export default function PlayerReports ({ id, title }) {
+  const t = useTranslations()
   const { hasPermission } = useUser()
   const [tableState, setTableState] = useState({ id, serverId: null, activePage: 1, limit: 10, offset: 0, actor: null, assigned: null, state: null })
   const { loading, data } = useApi({ query: !tableState.serverId ? null : query, variables: tableState })
@@ -110,19 +112,19 @@ export default function PlayerReports ({ id, title }) {
           </div>
           {(hasPermission('player.reports', 'view.any') || hasPermission('player.reports', 'view.assigned')) &&
             <div className='ml-3 text-sm'>
-              <Link href='/dashboard/reports' data-cy='dashboard-widget-view-all'>View All</Link>
+              <Link href='/dashboard/reports' data-cy='dashboard-widget-view-all'>{t('pages.dashboard.viewAll')}</Link>
             </div>}
         </div>
       </h1>
       <Table>
         <Table.Header>
           <Table.Row>
-            <Table.HeaderCell>ID</Table.HeaderCell>
-            <Table.HeaderCell>Player</Table.HeaderCell>
-            <Table.HeaderCell>At</Table.HeaderCell>
-            <Table.HeaderCell>State</Table.HeaderCell>
-            <Table.HeaderCell>Assigned</Table.HeaderCell>
-            <Table.HeaderCell>Last Updated</Table.HeaderCell>
+            <Table.HeaderCell>{t('tables.id')}</Table.HeaderCell>
+            <Table.HeaderCell>{t('tables.player')}</Table.HeaderCell>
+            <Table.HeaderCell>{t('tables.at')}</Table.HeaderCell>
+            <Table.HeaderCell>{t('tables.state')}</Table.HeaderCell>
+            <Table.HeaderCell>{t('tables.assigned')}</Table.HeaderCell>
+            <Table.HeaderCell>{t('tables.lastUpdated')}</Table.HeaderCell>
           </Table.Row>
         </Table.Header>
         <Table.Body>

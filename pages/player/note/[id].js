@@ -1,4 +1,5 @@
 import { useRouter } from 'next/router'
+import { useTranslations } from 'next-intl'
 import DefaultLayout from '../../../components/DefaultLayout'
 import PageContainer from '../../../components/PageContainer'
 import PlayerNoteForm from '../../../components/PlayerNoteForm'
@@ -8,6 +9,7 @@ import { fromNow, useApi } from '../../../utils'
 import Panel from '../../../components/Panel'
 
 export default function Page () {
+  const t = useTranslations()
   const router = useRouter()
   const [serverId, id] = router.query.id?.split('-') || []
   const { loading, data, errors } = useApi({
@@ -40,10 +42,10 @@ export default function Page () {
   }`
 
   return (
-    <DefaultLayout title={`Edit ${data?.playerNote?.player?.name} note`} loading={loading}>
+    <DefaultLayout title={t('pages.player.actionTitles.editNoteDocument', { name: data?.playerNote?.player?.name ?? '' })} loading={loading}>
       <PageContainer>
         <Panel className='mx-auto w-full max-w-md'>
-          <PageHeader title='Edit note' subTitle={fromNow(data?.playerNote?.created || 0)} />
+          <PageHeader title={t('pages.player.actionTitles.editNote')} subTitle={fromNow(data?.playerNote?.created || 0)} />
           <PlayerNoteForm
             defaults={data?.playerNote}
             query={query}

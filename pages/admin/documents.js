@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
 import Loader from '../../components/Loader'
 import ErrorLayout from '../../components/ErrorLayout'
 import AdminLayout from '../../components/AdminLayout'
@@ -12,6 +13,7 @@ import { FiImage } from 'react-icons/fi'
 const LIMIT = 25
 
 export default function Page () {
+  const t = useTranslations()
   const [tableState, setTableState] = useState({ offset: 0, player: null, dateStart: null, dateEnd: null })
   const { loading, data, errors, mutate } = useApi({
     query: `query listDocuments($limit: Int, $offset: Int, $player: UUID, $dateStart: Timestamp, $dateEnd: Timestamp) {
@@ -54,7 +56,7 @@ export default function Page () {
     mutate({ ...data, listDocuments: { ...data.listDocuments, total: data.listDocuments.total - 1, records } }, false)
   }
 
-  if (loading) return <AdminLayout title='Loading...'><Loader /></AdminLayout>
+  if (loading) return <AdminLayout title={t('pages.admin.loading')}><Loader /></AdminLayout>
   if (errors || !data) return <ErrorLayout errors={errors} />
 
   const total = data?.listDocuments?.total || 0
@@ -63,10 +65,10 @@ export default function Page () {
   const currentPage = Math.floor(tableState.offset / LIMIT) + 1
 
   return (
-    <AdminLayout title='Documents'>
-      <AdminHeader title='Documents'>
+    <AdminLayout title={t('pages.admin.documents.title')}>
+      <AdminHeader title={t('pages.admin.documents.title')}>
         <div className='text-gray-400 text-sm'>
-          {total} document{total === 1 ? '' : 's'} uploaded
+          {t('pages.admin.documents.uploadedCount', { total })}
         </div>
       </AdminHeader>
       <div className='lg:col-span-3'>
@@ -87,8 +89,8 @@ export default function Page () {
             )
           : (
             <EmptyState
-              title='No documents uploaded'
-              subTitle='Documents attached to appeals and reports will appear here'
+              title={t('pages.admin.documents.emptyTitle')}
+              subTitle={t('pages.admin.documents.emptySubtitle')}
             >
               <FiImage className='w-12 h-12 text-gray-500 mx-auto' />
             </EmptyState>

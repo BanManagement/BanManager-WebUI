@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { useTranslations } from 'next-intl'
 import { MdLock } from 'react-icons/md'
 import Input from './Input'
 import Button from './Button'
@@ -7,6 +8,7 @@ import { useMutateApi, useUser } from '../utils'
 import { useRouter } from 'next/router'
 
 export default function ResetPasswordForm () {
+  const t = useTranslations()
   const router = useRouter()
   const { user } = useUser()
   const [error, setError] = useState(null)
@@ -31,7 +33,7 @@ export default function ResetPasswordForm () {
 
   const onSubmit = async (data) => {
     if (data.confirmPassword !== data.newPassword) {
-      setError(new Error('Passwords do not match'))
+      setError(new Error(t('forms.passwordMismatch')))
     } else {
       setError(null)
       return load(data)
@@ -44,7 +46,7 @@ export default function ResetPasswordForm () {
         {user?.session?.type === 'password' &&
           <Input
             required
-            label='Current password'
+            label={t('forms.currentPassword')}
             minLength={6}
             type='password'
             icon={<MdLock />}
@@ -54,18 +56,18 @@ export default function ResetPasswordForm () {
           />}
         <Input
           required
-          label='New password'
+          label={t('pages.account.newPassword')}
           minLength={6}
           type='password'
           icon={<MdLock />}
           iconPosition='left'
           data-cy='newPassword'
-          description='Must be at least 6 characters long'
+          description={t('pages.account.passwordHint')}
           {...register('newPassword')}
         />
         <Input
           required
-          label='Confirm new password'
+          label={t('pages.account.confirmNewPassword')}
           type='password'
           minLength={6}
           icon={<MdLock />}
@@ -75,7 +77,7 @@ export default function ResetPasswordForm () {
           {...register('confirmPassword')}
         />
         <Button data-cy='submit-password-change' disabled={isSubmitting} loading={isSubmitting}>
-          Save
+          {t('common.save')}
         </Button>
       </div>
     </form>

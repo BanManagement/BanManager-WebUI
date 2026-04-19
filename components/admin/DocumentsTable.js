@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 import { FiTrash2, FiExternalLink, FiZoomIn, FiX } from 'react-icons/fi'
 import Modal from '../Modal'
 import { formatBytes, fromNow, useMutateApi } from '../../utils'
@@ -33,6 +34,7 @@ function ImageModal ({ document, onClose }) {
 }
 
 function DocumentRow ({ document, onDelete }) {
+  const t = useTranslations()
   const [showZoom, setShowZoom] = useState(false)
   const [confirmDelete, setConfirmDelete] = useState(false)
   const { load, loading, data, errors } = useMutateApi({
@@ -90,7 +92,7 @@ function DocumentRow ({ document, onDelete }) {
               </Link>
               )
             : (
-              <span className='text-gray-500'>Unknown</span>
+              <span className='text-gray-500'>{t('pages.admin.documents.unknown')}</span>
               )}
         </td>
         <td className='px-4 py-3'>
@@ -120,7 +122,7 @@ function DocumentRow ({ document, onDelete }) {
               </div>
               )
             : (
-              <span className='text-gray-500 text-sm'>Not attached</span>
+              <span className='text-gray-500 text-sm'>{t('pages.admin.documents.notAttached')}</span>
               )}
         </td>
         <td className='px-4 py-3 text-gray-400'>
@@ -131,7 +133,7 @@ function DocumentRow ({ document, onDelete }) {
             <button
               className='p-2 text-gray-400 hover:text-white hover:bg-primary-600 rounded transition-colors'
               onClick={() => setShowZoom(true)}
-              title='View full size'
+              title={t('pages.admin.documents.viewFullSize')}
               data-cy='admin-document-preview'
             >
               <FiZoomIn className='w-4 h-4' />
@@ -141,7 +143,7 @@ function DocumentRow ({ document, onDelete }) {
               target='_blank'
               rel='noopener noreferrer'
               className='p-2 text-gray-400 hover:text-white hover:bg-primary-600 rounded transition-colors'
-              title='Open in new tab'
+              title={t('pages.admin.documents.openInNewTab')}
               data-cy='admin-document-open'
             >
               <FiExternalLink className='w-4 h-4' />
@@ -150,7 +152,7 @@ function DocumentRow ({ document, onDelete }) {
               <button
                 className='p-2 text-gray-400 hover:text-red-400 hover:bg-primary-600 rounded transition-colors'
                 onClick={() => setConfirmDelete(true)}
-                title='Delete'
+                title={t('common.delete')}
                 data-cy='admin-document-delete'
               >
                 <FiTrash2 className='w-4 h-4' />
@@ -165,15 +167,15 @@ function DocumentRow ({ document, onDelete }) {
       )}
 
       <Modal
-        title='Delete Document'
-        confirmButton='Delete'
+        title={t('pages.admin.documents.deleteTitle')}
+        confirmButton={t('common.delete')}
         open={confirmDelete}
         onConfirm={handleDelete}
         onCancel={() => setConfirmDelete(false)}
         loading={loading}
       >
-        <p className='pb-1'>Are you sure you want to delete this document?</p>
-        <p className='pb-1 text-gray-400'>This action cannot be undone and will remove the image from any appeals it was attached to.</p>
+        <p className='pb-1'>{t('pages.admin.documents.deleteConfirm')}</p>
+        <p className='pb-1 text-gray-400'>{t('pages.admin.documents.deleteWarning')}</p>
         {errors && errors.length > 0 && <p className='text-red-500 text-sm'>{errors[0]?.message}</p>}
       </Modal>
     </>
@@ -181,16 +183,18 @@ function DocumentRow ({ document, onDelete }) {
 }
 
 export default function DocumentsTable ({ documents, onDelete }) {
+  const t = useTranslations('pages.admin.documents')
+
   return (
     <div className='overflow-x-auto bg-primary-800 rounded-lg' data-cy='admin-documents-table'>
       <table className='w-full'>
         <thead>
           <tr className='text-left text-gray-400 text-sm border-b border-primary-600'>
-            <th className='px-4 py-3 font-medium'>Document</th>
-            <th className='px-4 py-3 font-medium'>Uploaded By</th>
-            <th className='px-4 py-3 font-medium'>Used In</th>
-            <th className='px-4 py-3 font-medium'>Date</th>
-            <th className='px-4 py-3 font-medium'>Actions</th>
+            <th className='px-4 py-3 font-medium'>{t('document')}</th>
+            <th className='px-4 py-3 font-medium'>{t('uploadedBy')}</th>
+            <th className='px-4 py-3 font-medium'>{t('usedIn')}</th>
+            <th className='px-4 py-3 font-medium'>{t('date')}</th>
+            <th className='px-4 py-3 font-medium'>{t('actions')}</th>
           </tr>
         </thead>
         <tbody>

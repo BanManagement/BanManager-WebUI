@@ -1,5 +1,6 @@
 import { Fragment, useEffect } from 'react'
 import { useForm, Controller } from 'react-hook-form'
+import { useTranslations } from 'next-intl'
 import Avatar from '../Avatar'
 import Input from '../Input'
 import Modal from '../Modal'
@@ -9,6 +10,8 @@ import { useMutateApi } from '../../utils'
 import PageHeader from '../PageHeader'
 
 export default function PlayerEditForm ({ open, onFinished, onCancel, player, roles, servers }) {
+  const t = useTranslations()
+
   if (!player) return null
 
   const { handleSubmit, register, control } = useForm({
@@ -77,7 +80,7 @@ export default function PlayerEditForm ({ open, onFinished, onCancel, player, ro
       open={open}
       onCancel={onCancel}
       onConfirm={handleSubmit(onSubmit)}
-      confirmButton='Save'
+      confirmButton={t('common.save')}
       title={
         <div className='flex items-center'>
           <span className='flex-shrink-0'>
@@ -91,11 +94,11 @@ export default function PlayerEditForm ({ open, onFinished, onCancel, player, ro
         <ErrorMessages errors={errors} />
         {player.email &&
           <Input
-            placeholder='Email'
+            placeholder={t('tables.email')}
             readOnly
             {...register('email')}
           />}
-        <PageHeader title='Global Roles' className='!text-xl' />
+        <PageHeader title={t('pages.admin.players.globalRoles')} className='!text-xl' />
         <Controller
           name='roles'
           control={control}
@@ -103,7 +106,7 @@ export default function PlayerEditForm ({ open, onFinished, onCancel, player, ro
           render={({ field }) => <Select
             className='mb-6'
             options={rolesDropdown}
-            placeholder='Role'
+            placeholder={t('pages.admin.roles.role')}
             isMulti
             {...field}
             onChange={(selectedOption) => {
@@ -121,7 +124,7 @@ export default function PlayerEditForm ({ open, onFinished, onCancel, player, ro
                 render={({ field }) => <Select
                   className='mb-6'
                   options={rolesDropdown}
-                  placeholder='Role'
+                  placeholder={t('pages.admin.roles.role')}
                   isMulti
                   {...field}
                   onChange={(selectedOption) => {

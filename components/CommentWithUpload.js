@@ -3,11 +3,13 @@ import { useState, useRef, useCallback, forwardRef, createContext, useContext, u
 import Uploady, { useUploady, useBatchAddListener, useItemProgressListener, useItemFinishListener, useItemErrorListener } from '@rpldy/uploady'
 import { usePasteUpload } from '@rpldy/upload-paste'
 import { FiPaperclip, FiX } from 'react-icons/fi'
+import { useTranslations } from 'next-intl'
 import clsx from 'clsx'
 
 const UploadContext = createContext(null)
 
 function FileChip ({ id, url, name, onRemove, progress, error }) {
+  const t = useTranslations('widgets.upload')
   const isUploading = progress !== undefined && progress < 100
   const displayName = name.length > 20 ? name.slice(0, 17) + '...' : name
 
@@ -37,7 +39,7 @@ function FileChip ({ id, url, name, onRemove, progress, error }) {
           error ? 'text-red-400' : 'text-gray-300'
         )}
       >
-        {error ? 'Failed' : isUploading ? 'Uploading...' : displayName}
+        {error ? t('failed') : isUploading ? t('uploading') : displayName}
       </span>
 
       {/* Delete button with proper touch target */}
@@ -49,7 +51,7 @@ function FileChip ({ id, url, name, onRemove, progress, error }) {
           'text-gray-400 hover:text-white hover:bg-red-500/80'
         )}
         type='button'
-        title='Remove'
+        title={t('remove')}
       >
         <FiX className='w-4 h-4' />
       </button>
@@ -68,6 +70,7 @@ function FileChip ({ id, url, name, onRemove, progress, error }) {
 }
 
 export function AttachButton ({ disabled }) {
+  const t = useTranslations('widgets.upload')
   const ctx = useContext(UploadContext)
   if (!ctx) return null
 
@@ -89,8 +92,8 @@ export function AttachButton ({ disabled }) {
         )}
       >
         <FiPaperclip className='w-4 h-4 flex-shrink-0' />
-        <span className='lg:hidden'>Add files</span>
-        <span className='hidden lg:inline'>Paste, drop, or click to add files</span>
+        <span className='lg:hidden'>{t('addFiles')}</span>
+        <span className='hidden lg:inline'>{t('addFilesLong')}</span>
       </button>
       {maxFiles > 0 && totalFiles > 0 && (
         <span className='text-xs text-gray-500'>
@@ -102,11 +105,12 @@ export function AttachButton ({ disabled }) {
 }
 
 const TextAreaWithUpload = forwardRef(function TextAreaWithUpload (props, ref) {
+  const t = useTranslations('widgets.upload')
   const {
     onDocumentsChange,
     documents = [],
     maxFiles = 3,
-    placeholder = 'Add your comment here...',
+    placeholder,
     maxLength = 250,
     minLength,
     required = false,
@@ -119,6 +123,7 @@ const TextAreaWithUpload = forwardRef(function TextAreaWithUpload (props, ref) {
     children,
     ...rest
   } = props
+  const resolvedPlaceholder = placeholder ?? t('commentPlaceholder')
 
   const containerRef = useRef(null)
   const uploady = useUploady()
@@ -175,7 +180,7 @@ const TextAreaWithUpload = forwardRef(function TextAreaWithUpload (props, ref) {
   })
 
   useItemErrorListener((item) => {
-    let errorMessage = 'Upload failed'
+    let errorMessage = t('uploadFailed')
     try {
       const response = item.uploadResponse?.data
       if (response?.error) {
@@ -283,7 +288,7 @@ const TextAreaWithUpload = forwardRef(function TextAreaWithUpload (props, ref) {
             ref={ref}
             value={value}
             onChange={onChange}
-            placeholder={placeholder}
+            placeholder={resolvedPlaceholder}
             maxLength={maxLength}
             minLength={minLength}
             required={required}
@@ -305,7 +310,7 @@ const TextAreaWithUpload = forwardRef(function TextAreaWithUpload (props, ref) {
                   key={docId}
                   id={docId}
                   url={`${process.env.BASE_PATH || ''}/api/documents/${docId}`}
-                  name={`Image ${idx + 1}`}
+                  name={t('imageName', { index: idx + 1 })}
                   onRemove={handleRemoveUploaded}
                 />
               ))}
@@ -323,7 +328,7 @@ const TextAreaWithUpload = forwardRef(function TextAreaWithUpload (props, ref) {
 
           {isDragging && (
             <div className='absolute inset-0 flex items-center justify-center bg-accent-500/20 rounded-3xl pointer-events-none'>
-              <span className='text-accent-400 font-medium'>Drop images here</span>
+              <span className='text-accent-400 font-medium'>{t('dropImages')}</span>
             </div>
           )}
         </div>

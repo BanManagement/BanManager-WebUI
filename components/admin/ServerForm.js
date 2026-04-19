@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { load as safeLoad } from 'js-yaml'
 import { useForm } from 'react-hook-form'
+import { useTranslations } from 'next-intl'
 import Input from '../Input'
 import TextArea from '../TextArea'
 import Button from '../Button'
@@ -9,6 +10,7 @@ import PageHeader from '../PageHeader'
 import { useMutateApi } from '../../utils'
 
 export default function ServerForm ({ onFinished, query, parseVariables, serverTables, defaults = {} }) {
+  const t = useTranslations()
   const errorRef = useRef(null)
   const [yamlState, setYamlState] = useState('')
   const { handleSubmit, formState, register, setValue } = useForm({ defaultValues: { ...defaults, console: defaults?.console?.id } })
@@ -66,22 +68,22 @@ export default function ServerForm ({ onFinished, query, parseVariables, serverT
       <ErrorMessages ref={errorRef} errors={errors} />
       <div className='grid grid-flow-row md:grid-flow-col gap-6'>
         <div className='grid-flow-col'>
-          <PageHeader title='Info' />
+          <PageHeader title={t('pages.admin.servers.form.info')} />
           <Input
             required
-            placeholder='Name'
+            placeholder={t('pages.admin.servers.form.name')}
             data-cy='server-name'
             {...register('name')}
           />
           <Input
             required
-            placeholder='Console UUID (BanManager/console.yml)'
+            placeholder={t('pages.admin.servers.form.consoleUuid')}
             minLength={16}
             data-cy='server-console'
             {...register('console')}
           />
           <TextArea
-            placeholder='Paste YAML BanManager/config.yml (Optional)'
+            placeholder={t('pages.admin.servers.form.yamlPlaceholder')}
             value={yamlState}
             name='yaml'
             onChange={handleYamlConfig}
@@ -89,42 +91,42 @@ export default function ServerForm ({ onFinished, query, parseVariables, serverT
           />
         </div>
         <div className='grid-flow-col'>
-          <PageHeader title='Database' />
+          <PageHeader title={t('pages.admin.servers.form.database')} />
           <Input
             required
-            placeholder='Host'
+            placeholder={t('pages.admin.servers.form.host')}
             data-cy='server-host'
             {...register('host')}
           />
           <Input
             required
-            placeholder='Port'
+            placeholder={t('pages.admin.servers.form.port')}
             data-cy='server-port'
             {...register('port', { valueAsNumber: true })}
           />
           <Input
             required
-            placeholder='Database Name'
+            placeholder={t('pages.admin.servers.form.databaseName')}
             data-cy='server-database'
             {...register('database')}
           />
           <Input
             required
-            placeholder='User'
+            placeholder={t('pages.admin.servers.form.user')}
             data-cy='server-user'
             {...register('user')}
           />
           <Input
-            placeholder='Password'
+            placeholder={t('pages.admin.servers.form.password')}
             type='password'
             data-cy='server-password'
             {...register('password')}
           />
         </div>
       </div>
-      <PageHeader title='Database Tables' />
+      <PageHeader title={t('pages.admin.servers.form.databaseTables')} />
       {tableInputs}
-      <Button data-cy='submit-server-form' disabled={isSubmitting} loading={loading}>Save</Button>
+      <Button data-cy='submit-server-form' disabled={isSubmitting} loading={loading}>{t('common.save')}</Button>
     </form>
   )
 }

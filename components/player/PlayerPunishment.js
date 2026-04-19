@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 import { FaPencilAlt } from 'react-icons/fa'
 import { GoReport } from 'react-icons/go'
 import { BsTrash } from 'react-icons/bs'
@@ -63,6 +64,7 @@ const metaMap = {
 }
 
 export default function PlayerPunishment ({ punishment, server, type, onDeleted }) {
+  const t = useTranslations()
   const meta = metaMap[type]
   const [open, setOpen] = useState(false)
 
@@ -115,7 +117,7 @@ export default function PlayerPunishment ({ punishment, server, type, onDeleted 
         </div>
         <div className='ml-auto self-start flex flex-col justify-center items-center gap-2'>
           {label}
-          {punishment.read && <TiTick className='text-green-500' title='Read' />}
+          {punishment.read && <TiTick className='text-green-500' title={t('pages.punishment.read')} />}
         </div>
       </div>
       <div className='flex flex-col'>
@@ -127,16 +129,16 @@ export default function PlayerPunishment ({ punishment, server, type, onDeleted 
           {punishment.acl.delete &&
             <>
               <Modal
-                title={`Delete ${type}`}
-                confirmButton='Delete'
+                title={t(`pages.punishment.deleteTitle.${type}`)}
+                confirmButton={t('common.delete')}
                 open={open}
                 onConfirm={handleConfirmDelete}
                 onCancel={handleDeleteCancel}
                 loading={loading}
               >
                 <ErrorMessages errors={errors} />
-                <p className='pb-1'>Are you sure you want to delete this {type}?</p>
-                <p className='pb-1'>This action cannot be undone</p>
+                <p className='pb-1'>{t(`pages.punishment.deleteConfirm.${type}`)}</p>
+                <p className='pb-1'>{t('pages.punishment.actionUndoable')}</p>
               </Modal>
               <div>
                 <Button className='mt-4 bg-red-800' onClick={showConfirmDelete}>
@@ -145,7 +147,7 @@ export default function PlayerPunishment ({ punishment, server, type, onDeleted 
               </div>
             </>}
           {punishment.acl.yours &&
-            <Link href={`/appeal/punishment/${punishment.server.id}/${type}/${punishment.id}/`} className='ml-auto' title='Appeal'>
+            <Link href={`/appeal/punishment/${punishment.server.id}/${type}/${punishment.id}/`} className='ml-auto' title={t('pages.punishment.appeal')}>
               <Button className='bg-emerald-800 mt-4'><GoReport className='text-sm' /></Button>
             </Link>}
         </div>

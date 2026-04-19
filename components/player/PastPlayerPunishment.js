@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 import { BsTrash } from 'react-icons/bs'
 import Badge from '../Badge'
 import PermanentBadge from './PermanentBadge'
@@ -47,6 +48,7 @@ const metaMap = {
 }
 
 export default function PastPlayerPunishment ({ punishment, serverId, type, onDeleted }) {
+  const t = useTranslations()
   const meta = metaMap[type]
   const [open, setOpen] = useState(false)
 
@@ -120,22 +122,22 @@ export default function PastPlayerPunishment ({ punishment, serverId, type, onDe
           </div>
           {punishment.createdReason
             ? <div className='break-words whitespace-normal mt-2'>{punishment.createdReason}</div>
-            : <div className='mt-2 text-gray-400'>Deletion reason unknown</div>}
+            : <div className='mt-2 text-gray-400'>{t('pages.punishment.deletionReasonUnknown')}</div>}
         </div>
       </div>
       {punishment.acl.delete &&
         <>
           <Modal
-            title={`Delete ${type}`}
-            confirmButton='Delete'
+            title={t(`pages.punishment.deleteTitle.${type}`)}
+            confirmButton={t('common.delete')}
             open={open}
             onConfirm={handleConfirmDelete}
             onCancel={handleDeleteCancel}
             loading={loading}
           >
             <ErrorMessages errors={errors} />
-            <p className='pb-1'>Are you sure you want to delete this {type}?</p>
-            <p className='pb-1'>This action cannot be undone</p>
+            <p className='pb-1'>{t(`pages.punishment.deleteConfirm.${type}`)}</p>
+            <p className='pb-1'>{t('pages.punishment.actionUndoable')}</p>
           </Modal>
           <div className='hidden lg:flex justify-end'>
             <Button className='mt-4 bg-red-800 w-auto' onClick={showConfirmDelete}>

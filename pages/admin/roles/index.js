@@ -1,5 +1,6 @@
 import { AiOutlinePlus } from 'react-icons/ai'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 import Loader from '../../../components/Loader'
 import ErrorLayout from '../../../components/ErrorLayout'
 import AdminLayout from '../../../components/AdminLayout'
@@ -12,6 +13,7 @@ import { useApi } from '../../../utils'
 import Message from '../../../components/Message'
 
 export default function Page () {
+  const t = useTranslations()
   const { loading, data, errors, mutate } = useApi({
     query: `query rolesAdminPage {
       roles {
@@ -30,7 +32,7 @@ export default function Page () {
     mutate({ ...data, roles }, false)
   }
 
-  if (loading) return <AdminLayout title='Loading...'><Loader /></AdminLayout>
+  if (loading) return <AdminLayout title={t('pages.admin.loading')}><Loader /></AdminLayout>
   if (errors || !data) return <ErrorLayout errors={errors} />
 
   const items = data.roles.map(role => <RoleItem key={role.id} role={role} onDeleted={onDeleted} />)
@@ -46,12 +48,12 @@ export default function Page () {
   }`
 
   return (
-    <AdminLayout title='Roles'>
-      <PageHeader title='Roles' />
+    <AdminLayout title={t('pages.admin.roles.title')}>
+      <PageHeader title={t('pages.admin.roles.title')} />
       <div className='w-24 mb-5'>
         <Link href='/admin/roles/add' passHref>
 
-          <Button className='bg-emerald-600 hover:bg-emerald-700'><AiOutlinePlus className='text-xl' /> Add</Button>
+          <Button className='bg-emerald-600 hover:bg-emerald-700'><AiOutlinePlus className='text-xl' /> {t('common.add')}</Button>
 
         </Link>
       </div>
@@ -61,23 +63,23 @@ export default function Page () {
       <div className='grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 justify-items-center'>
         <div>
           <Message info>
-            <Message.Header>Tips</Message.Header>
+            <Message.Header>{t('pages.admin.roles.tipsHeader')}</Message.Header>
             <Message.List>
-              <Message.Item>There are 3 default roles which are automatically assigned, these permissions can be modified</Message.Item>
-              <Message.Item>Create and assign new roles to grant your moderators permissions to manage appeals, reports etc.</Message.Item>
-              <Message.Item>A player can have multiple roles and these are additive, i.e. a permission granted is always given, roles cannot remove a permission granted by another role</Message.Item>
-              <Message.Item>Custom roles must define a parent role; when new resources and/or permissions are added to the default roles in an update, they are automatically granted to children roles</Message.Item>
+              <Message.Item>{t('pages.admin.roles.tip1')}</Message.Item>
+              <Message.Item>{t('pages.admin.roles.tip2')}</Message.Item>
+              <Message.Item>{t('pages.admin.roles.tip3')}</Message.Item>
+              <Message.Item>{t('pages.admin.roles.tip4')}</Message.Item>
             </Message.List>
           </Message>
         </div>
         <div data-cy='assign-global-role'>
-          <PageHeader title='Assign Global Player Roles' />
-          <p className='mb-6'>Takes priority over server roles, and applies globally</p>
+          <PageHeader title={t('pages.admin.roles.assignGlobal')} />
+          <p className='mb-6'>{t('pages.admin.roles.assignGlobalHint')}</p>
           <AssignPlayersRoleForm roles={data.roles} query={globalRoleMutation} />
         </div>
         <div data-cy='assign-server-role'>
-          <PageHeader title='Assign Server Player Roles' />
-          <p className='mb-6'>Only affects certain actions where a server is applicable, e.g. bans</p>
+          <PageHeader title={t('pages.admin.roles.assignServer')} />
+          <p className='mb-6'>{t('pages.admin.roles.assignServerHint')}</p>
           <AssignPlayersRoleForm roles={data.roles} servers={data.servers} query={serverRoleMutation} />
         </div>
       </div>

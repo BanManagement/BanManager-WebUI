@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl'
 import SidebarDocuments from '../SidebarDocuments'
 import PlayerReportActions from './PlayerReportActions'
 import PlayerReportAssign from './PlayerReportAssign'
@@ -21,11 +22,13 @@ const SidebarItem = ({ title, children }) => (
 )
 
 export default function PlayerReportSidebar ({ data, canUpdateState, canAssign, stateOptions, mutate, user }) {
+  const t = useTranslations('pages.appeals.sidebar')
+  const tReport = useTranslations('pages.report')
   const report = data?.report
 
   return (
     <ul role='list' className='divide-y divide-primary-900'>
-      <SidebarItem title='State'>
+      <SidebarItem title={t('state')}>
         <div data-cy='report-state'>
           {canUpdateState
             ? (
@@ -41,7 +44,7 @@ export default function PlayerReportSidebar ({ data, canUpdateState, canAssign, 
             : (<p className='text-sm' data-cy='report-state-display'>{report?.state?.name}</p>)}
         </div>
       </SidebarItem>
-      <SidebarItem title='Assignee'>
+      <SidebarItem title={t('assignee')}>
         <div data-cy='report-assignee'>
           {canAssign
             ? (
@@ -53,11 +56,11 @@ export default function PlayerReportSidebar ({ data, canUpdateState, canAssign, 
                   mutate({ ...data, report: { ...data.report, assignee, updated } }, false)
                 }}
               />)
-            : (<p className='text-sm' data-cy='report-assignee-display'>{report?.assignee?.name || 'Unassigned'}</p>)}
+            : (<p className='text-sm' data-cy='report-assignee-display'>{report?.assignee?.name || t('unassigned')}</p>)}
         </div>
       </SidebarItem>
       {!!user &&
-        <SidebarItem title='Notifications'>
+        <SidebarItem title={t('notifications')}>
           <PlayerReportNotifications
             report={report}
             server={data.server}
@@ -67,22 +70,22 @@ export default function PlayerReportSidebar ({ data, canUpdateState, canAssign, 
           />
         </SidebarItem>}
       {(report.playerLocation || report.actorLocation) &&
-        <SidebarItem title='Locations'>
+        <SidebarItem title={tReport('locations')}>
           <ul className='space-y-4'>
             {report.playerLocation && <PlayerReportLocation location={report.playerLocation} player={report.player} />}
             {report.actorLocation && <PlayerReportLocation location={report.actorLocation} player={report.actor} />}
           </ul>
         </SidebarItem>}
       {report.serverLogs && !!report.serverLogs.length &&
-        <SidebarItem title='Server Logs'>
+        <SidebarItem title={tReport('serverLogs')}>
           <PlayerReportServerLogs serverLogs={report.serverLogs} />
         </SidebarItem>}
       {report.documents?.length > 0 &&
-        <SidebarItem title='Documents'>
+        <SidebarItem title={t('documents')}>
           <SidebarDocuments documents={report.documents} />
         </SidebarItem>}
       {((!!user && report.state.id < 3 && !report?.commands?.length) || !!report?.commands?.length) &&
-        <SidebarItem title='Actions'>
+        <SidebarItem title={t('actions')}>
           {!!report?.commands?.length &&
             <ul role='list' className='divide-y divide-primary-900'>
               {report.commands.map(cmd => (

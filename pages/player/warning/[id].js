@@ -1,4 +1,5 @@
 import { useRouter } from 'next/router'
+import { useTranslations } from 'next-intl'
 import DefaultLayout from '../../../components/DefaultLayout'
 import PageContainer from '../../../components/PageContainer'
 import PlayerWarnForm from '../../../components/PlayerWarnForm'
@@ -8,6 +9,7 @@ import { fromNow, useApi } from '../../../utils'
 import Panel from '../../../components/Panel'
 
 export default function Page () {
+  const t = useTranslations()
   const router = useRouter()
   const [serverId, id] = router.query.id?.split('-') || []
   const { loading, data, errors } = useApi({
@@ -42,10 +44,10 @@ export default function Page () {
   }`
 
   return (
-    <DefaultLayout title={`Edit ${data?.playerWarning?.player?.name} warning`} loading={loading}>
+    <DefaultLayout title={t('pages.player.actionTitles.editWarningDocument', { name: data?.playerWarning?.player?.name ?? '' })} loading={loading}>
       <PageContainer>
         <Panel className='mx-auto w-full max-w-md'>
-          <PageHeader title='Edit warning' subTitle={fromNow(data?.playerWarning?.created || 0)} />
+          <PageHeader title={t('pages.player.actionTitles.editWarning')} subTitle={fromNow(data?.playerWarning?.created || 0)} />
           <PlayerWarnForm
             defaults={data?.playerWarning}
             query={query}

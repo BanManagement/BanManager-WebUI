@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl'
 import DefaultLayout from '../../../components/DefaultLayout'
 import PageContainer from '../../../components/PageContainer'
 import { useUser } from '../../../utils'
@@ -6,13 +7,14 @@ import AppealStepHeader from '../../../components/appeal/AppealStepHeader'
 import PunishmentPicker from '../../../components/appeal/PunishmentPicker'
 
 function Page () {
+  const t = useTranslations('pages.appeal')
   const { user } = useUser({ redirectIfFound: false, redirectTo: '/appeal' })
 
   return (
-    <DefaultLayout title='Select Punishment | Appeal' loading={!user}>
+    <DefaultLayout title={t('punishmentDocumentTitle')} loading={!user}>
       <PageContainer>
         <Panel className='mx-auto w-full max-w-md'>
-          <AppealStepHeader step={2} title='Select Punishment' nextStep='Write Appeal' />
+          <AppealStepHeader step={2} title={t('stepHeader.selectPunishment')} nextStep={t('stepHeader.writeAppeal')} />
           <PunishmentPicker />
         </Panel>
       </PageContainer>

@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { useForm, Controller } from 'react-hook-form'
+import { useTranslations } from 'next-intl'
 import Input from './Input'
 import Button from './Button'
 import ErrorMessages from './ErrorMessages'
@@ -10,6 +11,7 @@ import ExpiresInput from './ExpiresInput'
 import Switch from './Switch'
 
 export default function PlayerMuteForm ({ serverFilter, onFinished, query, parseVariables, disableServers = false, defaults = {}, submitRef = null }) {
+  const t = useTranslations()
   const { handleSubmit, formState, register, control } = useForm({
     defaultValues: {
       ...defaults,
@@ -47,7 +49,7 @@ export default function PlayerMuteForm ({ serverFilter, onFinished, query, parse
       />
       <Input
         required
-        label='Reason'
+        label={t('forms.reason')}
         icon={<FaPencilAlt />}
         data-cy='reason'
         {...register('reason')}
@@ -64,8 +66,8 @@ export default function PlayerMuteForm ({ serverFilter, onFinished, query, parse
         control={control}
         render={({ field: { onChange, value } }) => (
           <Switch
-            label='Soft'
-            description='Hides their messages to others to prevent spam'
+            label={t('forms.soft')}
+            description={t('forms.softDescription')}
             onChange={onChange}
             checked={value}
             data-cy='mute-soft'
@@ -73,7 +75,7 @@ export default function PlayerMuteForm ({ serverFilter, onFinished, query, parse
         )}
       />
       <Button data-cy='submit-mute' ref={submitRef} disabled={isSubmitting} loading={isSubmitting} className={submitRef ? 'hidden' : ''}>
-        Save
+        {t('common.save')}
       </Button>
     </form>
   )

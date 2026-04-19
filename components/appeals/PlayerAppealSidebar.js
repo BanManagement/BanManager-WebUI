@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl'
 import { useMatchMutate } from '../../utils'
 import SidebarDocuments from '../SidebarDocuments'
 import PlayerAppealActions from './PlayerAppealActions'
@@ -19,6 +20,7 @@ const SidebarItem = ({ title, children }) => (
 )
 
 export default function PlayerAppealSidebar ({ data, canUpdateState, canAssign, stateOptions, mutate, user }) {
+  const t = useTranslations('pages.appeals.sidebar')
   const matchMutate = useMatchMutate()
   const mutateCommentInsert = (comment) => ({ data }, mutate) => {
     const records = data.listPlayerAppealComments.records.slice()
@@ -30,7 +32,7 @@ export default function PlayerAppealSidebar ({ data, canUpdateState, canAssign, 
 
   return (
     <ul role='list' className='divide-y divide-primary-900'>
-      <SidebarItem title='State'>
+      <SidebarItem title={t('state')}>
         <div data-cy='appeal-state'>
           {canUpdateState
             ? (
@@ -46,7 +48,7 @@ export default function PlayerAppealSidebar ({ data, canUpdateState, canAssign, 
             : (<p className='text-sm' data-cy='appeal-state-display'>{appeal?.state?.name}</p>)}
         </div>
       </SidebarItem>
-      <SidebarItem title='Assignee'>
+      <SidebarItem title={t('assignee')}>
         <div data-cy='appeal-assignee'>
           {canAssign
             ? (
@@ -58,11 +60,11 @@ export default function PlayerAppealSidebar ({ data, canUpdateState, canAssign, 
                   matchMutate('listPlayerAppealComments', mutateCommentInsert(comment), { id: appeal.id })
                 }}
               />)
-            : (<p className='text-sm' data-cy='appeal-assignee-display'>{appeal?.assignee?.name || 'Unassigned'}</p>)}
+            : (<p className='text-sm' data-cy='appeal-assignee-display'>{appeal?.assignee?.name || t('unassigned')}</p>)}
         </div>
       </SidebarItem>
       {!!user &&
-        <SidebarItem title='Notifications'>
+        <SidebarItem title={t('notifications')}>
           <PlayerAppealNotifications
             appeal={appeal}
             onChange={({ appealSubscriptionState }) => {
@@ -71,11 +73,11 @@ export default function PlayerAppealSidebar ({ data, canUpdateState, canAssign, 
           />
         </SidebarItem>}
       {appeal.documents?.length > 0 &&
-        <SidebarItem title='Documents'>
+        <SidebarItem title={t('documents')}>
           <SidebarDocuments documents={appeal.documents} />
         </SidebarItem>}
       {!!user && appeal.state.id < 3 &&
-        <SidebarItem title='Actions'>
+        <SidebarItem title={t('actions')}>
           <PlayerAppealActions
             appeal={appeal}
             server={appeal.server}

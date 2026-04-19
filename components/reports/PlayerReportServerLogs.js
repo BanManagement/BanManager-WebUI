@@ -1,9 +1,16 @@
 import { useState, Fragment, useMemo } from 'react'
+import { useLocale, useTranslations } from 'next-intl'
 import Modal from '../Modal'
 import { format, fromUnixTime } from 'date-fns'
 import Button from '../Button'
+import { LOCALE_CONFIG, DEFAULT_LOCALE } from '../../utils/locale'
+import { useDateFnsLocale } from '../../utils/format-distance'
 
 export default function PlayerReportServerLogs ({ serverLogs }) {
+  const t = useTranslations('pages.report')
+  const locale = useLocale()
+  const dateFnsLocale = useDateFnsLocale()
+  const dateFormat = LOCALE_CONFIG[locale]?.dateFormat || LOCALE_CONFIG[DEFAULT_LOCALE].dateFormat
   const [isOpen, setIsOpen] = useState(false)
 
   if (!serverLogs?.length) {
@@ -11,20 +18,27 @@ export default function PlayerReportServerLogs ({ serverLogs }) {
   }
 
   const logsGroupedByDate = useMemo(() => serverLogs?.reduce((acc, { id, log }) => {
-    const date = format(fromUnixTime(log.created), 'dd MMM yyyy')
+    let date
+
+    try {
+      date = format(fromUnixTime(log.created), dateFormat, dateFnsLocale ? { locale: dateFnsLocale } : undefined)
+    } catch {
+      date = format(fromUnixTime(log.created), dateFormat)
+    }
+
     if (!acc[date]) {
       acc[date] = []
     }
     acc[date].push({ id, log })
     return acc
-  }, {}), [serverLogs])
+  }, {}), [serverLogs, dateFormat, dateFnsLocale])
 
   return (
     <>
       <Modal
-        title='Server Logs'
+        title={t('serverLogs')}
         open={isOpen}
-        cancelButton='Close'
+        cancelButton={t('close')}
         onCancel={() => setIsOpen(false)}
         containerClassName='md:max-w-3xl'
       >
@@ -44,8 +58,8 @@ export default function PlayerReportServerLogs ({ serverLogs }) {
           ))}
         </div>
       </Modal>
-      <p className='text-sm text-gray-400 pb-3'>This report has {serverLogs?.length} records associated with it</p>
-      <Button className='bg-primary-900 text-gray-400 font-normal' onClick={() => setIsOpen(true)}>Review Logs</Button>
+      <p className='text-sm text-gray-400 pb-3'>{t('reportRecords', { count: serverLogs?.length })}</p>
+      <Button className='bg-primary-900 text-gray-400 font-normal' onClick={() => setIsOpen(true)}>{t('reviewLogs')}</Button>
     </>
   )
 }

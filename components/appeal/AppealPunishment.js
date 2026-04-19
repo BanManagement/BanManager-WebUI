@@ -2,11 +2,13 @@ import ActivityBadge from '../admin/servers/ActivityBadge'
 import Avatar from '../Avatar'
 import Link from 'next/link'
 import { BiServer } from 'react-icons/bi'
+import { useTranslations } from 'next-intl'
 import { formatTimestamp } from '../../utils'
 import Button from '../Button'
-import AnimatedDisclosure from '../AnimatedDisclosure' // Adjust the import path as necessary
+import AnimatedDisclosure from '../AnimatedDisclosure'
 
 export default function AppealPunishment ({ punishment, appealable, open }) {
+  const t = useTranslations()
   const buttonContent = (
     <div className='w-full flex flex-row items-center gap-4'>
       <Avatar uuid={punishment.actor.id} height='54' width='54' />
@@ -30,7 +32,7 @@ export default function AppealPunishment ({ punishment, appealable, open }) {
       {appealable && (
         <Link href={`/appeal/punishment/${punishment.server.id}/${punishment.type}/${punishment.id}/`} passHref>
           <Button className='mt-4'>
-            Appeal
+            {t('pages.punishment.appeal')}
           </Button>
         </Link>
       )}

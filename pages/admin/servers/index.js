@@ -1,5 +1,6 @@
 import { AiOutlinePlus } from 'react-icons/ai'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 import Loader from '../../../components/Loader'
 import ErrorLayout from '../../../components/ErrorLayout'
 import AdminLayout from '../../../components/AdminLayout'
@@ -9,6 +10,7 @@ import { useApi } from '../../../utils'
 import AdminHeader from '../../../components/admin/AdminHeader'
 
 export default function Page () {
+  const t = useTranslations()
   const { loading, data, errors, mutate } = useApi({
     query: `query servers {
       servers {
@@ -29,19 +31,19 @@ export default function Page () {
     mutate({ ...data, servers }, false)
   }
 
-  if (loading) return <AdminLayout title='Loading...'><Loader /></AdminLayout>
+  if (loading) return <AdminLayout title={t('pages.admin.loading')}><Loader /></AdminLayout>
   if (errors || !data) return <ErrorLayout errors={errors} />
 
   const canDelete = data.servers.length !== 1
   const items = data.servers.map(server => <ServerItem key={server.id} server={server} canDelete={canDelete} onDeleted={onDeleted} />)
 
   return (
-    <AdminLayout title='Servers'>
-      <AdminHeader title='Servers'>
+    <AdminLayout title={t('pages.admin.servers.title')}>
+      <AdminHeader title={t('pages.admin.servers.title')}>
         <div>
           <Link href='/admin/servers/add' passHref>
 
-            <Button className='bg-emerald-600 hover:bg-emerald-700 text-sm px-4 py-2'><AiOutlinePlus className='text-xl -ml-1 mr-2' /> Add Server</Button>
+            <Button className='bg-emerald-600 hover:bg-emerald-700 text-sm px-4 py-2'><AiOutlinePlus className='text-xl -ml-1 mr-2' /> {t('pages.admin.servers.addServer')}</Button>
 
           </Link>
         </div>

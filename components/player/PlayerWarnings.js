@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
 import Loader from '../Loader'
 import ServerSelector from '../admin/ServerSelector'
 import { useApi } from '../../utils'
@@ -31,6 +32,7 @@ query listPlayerPunishmentRecords($serverId: ID!, $player: UUID!, $type: RecordT
 }`
 
 export default function PlayerWarnings ({ id }) {
+  const t = useTranslations()
   const [tableState, setTableState] = useState({ player: id, serverId: null, type: 'PlayerWarning' })
   const { loading, data, mutate } = useApi({ query: !tableState.serverId ? null : query, variables: { ...tableState, player: id } })
 
@@ -49,7 +51,7 @@ export default function PlayerWarnings ({ id }) {
         className='pb-4 mb-4 border-b border-amber-800' id='warnings'
       >
         <div className='flex items-center'>
-          <p className='mr-6 text-xl font-bold '>Warnings ({total})
+          <p className='mr-6 text-xl font-bold '>{t('pages.player.warnings', { total })}
             <div className='text-sm text-gray-400 flex items-center gap-4'>
               <div className='flex items-center gap-1'>
                 <RiNumbersLine />
@@ -71,7 +73,7 @@ export default function PlayerWarnings ({ id }) {
       {!data?.listPlayerPunishmentRecords?.total && (
         <div className='flex items-center'>
           <div>
-            None
+            {t('common.none')}
           </div>
         </div>
       )}

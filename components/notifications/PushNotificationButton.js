@@ -1,10 +1,12 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
+import { useTranslations } from 'next-intl'
 import Button from '../Button'
 import Modal from '../Modal'
 
 export default function PushNotificationButton () {
+  const t = useTranslations('widgets.pushNotifications')
   const [open, setOpen] = useState(false)
   const [subscription, setSubscription] = useState(null)
   const [notificationPermission, setNotificationPermission] = useState(Notification.permission)
@@ -87,68 +89,68 @@ export default function PushNotificationButton () {
     <>
       {(notificationPermission === 'default' || (notificationPermission === 'granted' && !subscription)) &&
         <Button className='bg-primary-900 text-gray-400 font-normal w-auto' onClick={onClickRegisterPushNotification}>
-          Enable push notifications
+          {t('enable')}
         </Button>}
       {notificationPermission === 'granted' && subscription &&
         <Button className='bg-primary-900 text-gray-400 font-normal w-auto' onClick={onClickUnregisterPushNotification}>
-          Disable push notifications
+          {t('disable')}
         </Button>}
       {notificationPermission === 'denied' &&
         <Button className='bg-primary-900 text-gray-400 font-normal w-auto' onClick={() => setOpen(true)}>
-          Enable push notifications
+          {t('enable')}
         </Button>}
-      <Modal title='Enable Push Notifications' open={open} onCancel={() => setOpen(false)} cancelButton='Ok'>
+      <Modal title={t('blockedTitle')} open={open} onCancel={() => setOpen(false)} cancelButton={t('ok')}>
         <div className='flex flex-col gap-4'>
-          <p>Your browser is blocking notifications from this site</p>
-          <p>Follow these steps to enable:</p>
+          <p>{t('blockedIntro')}</p>
+          <p>{t('blockedSteps')}</p>
 
           <div>
-            <h3 className='font-semibold'>Chrome</h3>
+            <h3 className='font-semibold'>{t('chrome')}</h3>
             <ol className='list-decimal pl-4'>
-              <li>Navigate to: <pre className='inline'>chrome://settings/content</pre></li>
-              <li>Scroll down and click on the Notifications bar</li>
-              <li>Find the URL of this site select allow</li>
+              <li>{t.rich('chromeStep1', { path: (chunks) => <pre className='inline'>{chunks}</pre> })}</li>
+              <li>{t('chromeStep2')}</li>
+              <li>{t('chromeStep3')}</li>
             </ol>
           </div>
 
           <div>
-            <h3 className='font-semibold'>Chrome for Android</h3>
+            <h3 className='font-semibold'>{t('chromeAndroid')}</h3>
             <ol className='list-decimal pl-4'>
-              <li>Select the vertical elipses icon in the top-right corner of the screen</li>
-              <li>Select the “Settings” option from the dropdown menu</li>
-              <li>Select the “Site settings” option</li>
-              <li>Select the “Notifications” option</li>
-              <li>Here you can select this website and enable notifications</li>
+              <li>{t('chromeAndroidStep1')}</li>
+              <li>{t('chromeAndroidStep2')}</li>
+              <li>{t('chromeAndroidStep3')}</li>
+              <li>{t('chromeAndroidStep4')}</li>
+              <li>{t('chromeAndroidStep5')}</li>
             </ol>
           </div>
 
           <div>
-            <h3 className='font-semibold'>Firefox</h3>
+            <h3 className='font-semibold'>{t('firefox')}</h3>
             <ol className='list-decimal pl-4'>
-              <li>Navigate to: <pre className='inline'>about:preferences#privacy</pre></li>
-              <li>Scroll down to the Permissions section</li>
-              <li>Click the Settings button next to Notifications</li>
-              <li>Find the URL of this site and select Allow</li>
+              <li>{t.rich('firefoxStep1', { path: (chunks) => <pre className='inline'>{chunks}</pre> })}</li>
+              <li>{t('firefoxStep2')}</li>
+              <li>{t('firefoxStep3')}</li>
+              <li>{t('firefoxStep4')}</li>
             </ol>
           </div>
 
           <div>
-            <h3 className='font-semibold'>Microsoft Edge</h3>
+            <h3 className='font-semibold'>{t('edge')}</h3>
             <ol className='list-decimal pl-4'>
-              <li>Select the “...” button in the top-right corner of the browser window</li>
-              <li>Select the “Settings” option from the dropdown menu</li>
-              <li>Select the “Cookies and site permissions” option</li>
-              <li>Select the “Notifications” option</li>
-              <li>Remove this site from the “Block“ section</li>
+              <li>{t('edgeStep1')}</li>
+              <li>{t('edgeStep2')}</li>
+              <li>{t('edgeStep3')}</li>
+              <li>{t('edgeStep4')}</li>
+              <li>{t('edgeStep5')}</li>
             </ol>
           </div>
 
           <div>
-            <h3 className='font-semibold'>Safari</h3>
+            <h3 className='font-semibold'>{t('safari')}</h3>
             <ol className='list-decimal pl-4'>
-              <li>Select “Safari” in the action bar at the top of the screen and select “Preferences”</li>
-              <li>Click on the “Websites” tab and then select “Notifications” in the menu on the left-side of the preferences window</li>
-              <li>Find this site and enable notifications</li>
+              <li>{t('safariStep1')}</li>
+              <li>{t('safariStep2')}</li>
+              <li>{t('safariStep3')}</li>
             </ol>
           </div>
         </div>

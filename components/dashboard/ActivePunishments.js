@@ -1,5 +1,6 @@
 import { format, fromUnixTime } from 'date-fns'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 import Loader from '../Loader'
 import Avatar from '../Avatar'
 import Badge from '../Badge'
@@ -39,6 +40,7 @@ query playerBans($id: UUID!) {
 }`
 
 const PunishmentRow = ({ row, dateFormat }) => {
+  const t = useTranslations()
   return (
     <Table.Row>
       <Table.Cell>{row.typeLabel}</Table.Cell>
@@ -60,11 +62,11 @@ const PunishmentRow = ({ row, dateFormat }) => {
         </Link>
       </Table.Cell>
       <Table.Cell>{format(fromUnixTime(row.created), dateFormat)}</Table.Cell>
-      <Table.Cell>{row.expires === 0 ? <Badge className='bg-red-500 sm:mx-auto'>Permanent</Badge> : fromNow(row.expires)}</Table.Cell>
+      <Table.Cell>{row.expires === 0 ? <Badge className='bg-red-500 sm:mx-auto'>{t('common.permanent')}</Badge> : fromNow(row.expires)}</Table.Cell>
       <Table.Cell>
         <Link href={`/appeal/punishment/${row.server.id}/${row.type}/${row.id}`} passHref>
           <Badge className='bg-blue-600 hover:bg-blue-900 mt-4'>
-            Appeal
+            {t('pages.punishment.appeal')}
           </Badge>
         </Link>
       </Table.Cell>
@@ -73,6 +75,7 @@ const PunishmentRow = ({ row, dateFormat }) => {
 }
 
 export default function ActivePunishments ({ id }) {
+  const t = useTranslations()
   const { loading, data, errors } = useApi({ query, variables: { id } })
 
   if (loading) return <Loader />
@@ -82,11 +85,11 @@ export default function ActivePunishments ({ id }) {
   let rows = []
 
   if (data?.playerBans?.length) {
-    rows = rows.concat(data.playerBans.map(data => ({ type: 'ban', typeLabel: <Badge className='bg-red-500 sm:mx-auto'>Ban</Badge>, ...data })))
+    rows = rows.concat(data.playerBans.map(data => ({ type: 'ban', typeLabel: <Badge className='bg-red-500 sm:mx-auto'>{t('pages.player.actions.ban')}</Badge>, ...data })))
   }
 
   if (data?.playerMutes?.length) {
-    rows = rows.concat(data.playerMutes.map(data => ({ type: 'mute', typeLabel: <Badge className='bg-indigo-500 sm:mx-auto'>Mute</Badge>, ...data })))
+    rows = rows.concat(data.playerMutes.map(data => ({ type: 'mute', typeLabel: <Badge className='bg-indigo-500 sm:mx-auto'>{t('pages.player.actions.mute')}</Badge>, ...data })))
   }
 
   rows.sort((a, b) => b.created - a.created)
@@ -95,11 +98,11 @@ export default function ActivePunishments ({ id }) {
     <Table>
       <Table.Header>
         <Table.Row>
-          <Table.HeaderCell>Type</Table.HeaderCell>
-          <Table.HeaderCell>Reason</Table.HeaderCell>
-          <Table.HeaderCell>By</Table.HeaderCell>
-          <Table.HeaderCell>At</Table.HeaderCell>
-          <Table.HeaderCell>Length</Table.HeaderCell>
+          <Table.HeaderCell>{t('tables.type')}</Table.HeaderCell>
+          <Table.HeaderCell>{t('tables.reason')}</Table.HeaderCell>
+          <Table.HeaderCell>{t('tables.by')}</Table.HeaderCell>
+          <Table.HeaderCell>{t('tables.at')}</Table.HeaderCell>
+          <Table.HeaderCell>{t('tables.length')}</Table.HeaderCell>
           <Table.HeaderCell />
         </Table.Row>
       </Table.Header>

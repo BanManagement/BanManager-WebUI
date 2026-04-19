@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl'
 import { useUser } from '../../utils'
 import PlayerAppealActionDelete from './actions/PlayerAppealActionDelete'
 import PlayerAppealActionUpdate from './actions/PlayerAppealActionUpdate'
@@ -72,6 +73,7 @@ const createUpdateQuery = (mutation, input) => `mutation ${mutation}($id: ID!, $
 }`
 
 export default function PlayerAppealActions ({ appeal, server, onAction }) {
+  const t = useTranslations('pages.appeals.actions')
   const { user, hasServerPermission } = useUser()
 
   switch (appeal.punishmentType) {
@@ -86,7 +88,7 @@ export default function PlayerAppealActions ({ appeal, server, onAction }) {
           {canUpdate &&
             <PlayerAppealActionUpdate
               appeal={appeal}
-              title='Edit Ban'
+              title={t('editBan')}
               type='ban'
               query={createUpdateQuery('resolveAppealUpdateBan', 'UpdatePlayerBanInput')}
               onUpdated={onAction}
@@ -94,7 +96,7 @@ export default function PlayerAppealActions ({ appeal, server, onAction }) {
           {canDelete &&
             <PlayerAppealActionDelete
               appeal={appeal}
-              title='Unban'
+              title={t('unban')}
               type='ban'
               query={createDeleteQuery('resolveAppealDeleteBan')}
               onDeleted={data => onAction(data.resolveAppealDeleteBan)}
@@ -113,7 +115,7 @@ export default function PlayerAppealActions ({ appeal, server, onAction }) {
           {canUpdate &&
             <PlayerAppealActionUpdate
               appeal={appeal}
-              title='Edit Mute'
+              title={t('editMute')}
               type='mute'
               query={createUpdateQuery('resolveAppealUpdateMute', 'UpdatePlayerMuteInput')}
               onUpdated={onAction}
@@ -121,7 +123,7 @@ export default function PlayerAppealActions ({ appeal, server, onAction }) {
           {canDelete &&
             <PlayerAppealActionDelete
               appeal={appeal}
-              title='Unmute'
+              title={t('unmute')}
               type='mute'
               query={createDeleteQuery('resolveAppealDeleteMute')}
               onDeleted={data => onAction(data.resolveAppealDeleteMute)}
@@ -140,7 +142,7 @@ export default function PlayerAppealActions ({ appeal, server, onAction }) {
           {canUpdate &&
             <PlayerAppealActionUpdate
               appeal={appeal}
-              title='Edit Warning'
+              title={t('editWarning')}
               type='warning'
               query={createUpdateQuery('resolveAppealUpdateWarning', 'UpdatePlayerWarningInput')}
               onUpdated={onAction}
@@ -148,7 +150,7 @@ export default function PlayerAppealActions ({ appeal, server, onAction }) {
           {canDelete &&
             <PlayerAppealActionDelete
               appeal={appeal}
-              title='Delete warning'
+              title={t('deleteWarning')}
               type='warning'
               query={createDeleteQuery('resolveAppealDeleteWarning')}
               onDeleted={data => onAction(data.resolveAppealDeleteWarning)}

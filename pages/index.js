@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl'
 import DefaultLayout from '../components/DefaultLayout'
 import AppealPanel from '../components/home/AppealPanel'
 import SearchPanel from '../components/home/SearchPanel'
@@ -6,8 +7,10 @@ import StatisticsPanel from '../components/home/StatisticsPanel'
 import PageContainer from '../components/PageContainer'
 
 export default function Page () {
+  const t = useTranslations()
+
   return (
-    <DefaultLayout title='Welcome'>
+    <DefaultLayout title={t('pages.home.documentTitle')}>
       <PageContainer>
         <div className='flex flex-wrap -m-4'>
           <div className='p-4 lg:w-1/3'>

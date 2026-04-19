@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { FaPencilAlt } from 'react-icons/fa'
 import Button from '../../Button'
 import Modal from '../../Modal'
@@ -7,6 +8,7 @@ import PlayerMuteForm from '../../PlayerMuteForm'
 import PlayerWarnForm from '../../PlayerWarnForm'
 
 export default function PlayerAppealActionUpdate ({ appeal, title, type, query, onUpdated }) {
+  const t = useTranslations('pages.appeals.editTitle')
   const [open, setOpen] = useState(false)
   const submitRef = useRef(null)
 
@@ -23,7 +25,7 @@ export default function PlayerAppealActionUpdate ({ appeal, title, type, query, 
   return (
     <>
       <Modal
-        title={`Edit ${type}`}
+        title={t(type)}
         confirmButton={title}
         open={open}
         onConfirm={handleConfirm}

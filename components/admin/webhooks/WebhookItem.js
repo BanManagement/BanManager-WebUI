@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 import { BiServer } from 'react-icons/bi'
 import { MdSettings } from 'react-icons/md'
 import { FaPencilAlt, FaDiscord } from 'react-icons/fa'
@@ -26,6 +27,7 @@ const query = `mutation sendTestWebhook($id: ID!, $variables: JSONObject!) {
 }`
 
 export default function WebhookItem ({ row, onDeleted }) {
+  const t = useTranslations()
   const [open, setOpen] = useState(false)
   const [testWebhookOpen, setTestWebhookOpen] = useState(false)
   const { load, loading, errors, data } = useMutateApi({
@@ -63,19 +65,19 @@ export default function WebhookItem ({ row, onDeleted }) {
   return (
     <div className='hover:bg-gray-900 group border-b border-gray-700' data-cy='webhook-item' data-cy-webhook-id={row.id} data-cy-template={row?.templateType}>
       <Modal
-        title='Delete webhook'
-        confirmButton='Delete'
+        title={t('pages.admin.webhooks.deleteTitle')}
+        confirmButton={t('common.delete')}
         open={open}
         onConfirm={handleConfirmDelete}
         onCancel={handleDeleteCancel}
         loading={loading}
       >
         <ErrorMessages errors={errors} />
-        <p className='pb-1'>Are you sure you want to delete this webhook?</p>
-        <p className='pb-1'>This action cannot be undone</p>
+        <p className='pb-1'>{t('pages.admin.webhooks.deleteConfirm')}</p>
+        <p className='pb-1'>{t('pages.punishment.actionUndoable')}</p>
       </Modal>
       <Modal
-        title='Test webhook'
+        title={t('pages.admin.webhooks.testTitle')}
         open={testWebhookOpen}
         onCancel={handleTestWebhookCancel}
       >
@@ -112,15 +114,15 @@ export default function WebhookItem ({ row, onDeleted }) {
       </div>
       <div className='flex flex-row gap-6 md:hidden mb-2'>
         <div>
-          <Button data-cy='webhook-test-mobile' className='bg-accent-600 hover:bg-accent-700 text-sm px-4 py-2' onClick={showTestWebhook}><BsFillSendFill /> Test</Button>
+          <Button data-cy='webhook-test-mobile' className='bg-accent-600 hover:bg-accent-700 text-sm px-4 py-2' onClick={showTestWebhook}><BsFillSendFill /> {t('common.test')}</Button>
         </div>
         <div>
           <Link href={`/admin/webhooks/${row.id}`} passHref>
-            <Button data-cy='webhook-edit-mobile' className='bg-emerald-600 hover:bg-emerald-700 text-sm px-4 py-2'><FaPencilAlt /> Edit</Button>
+            <Button data-cy='webhook-edit-mobile' className='bg-emerald-600 hover:bg-emerald-700 text-sm px-4 py-2'><FaPencilAlt /> {t('common.edit')}</Button>
           </Link>
         </div>
         <div>
-          <Button data-cy='webhook-delete-mobile' className='bg-red-600 hover:bg-red-700 text-sm px-4 py-2' onClick={showConfirmDelete}><BsTrash /> Delete</Button>
+          <Button data-cy='webhook-delete-mobile' className='bg-red-600 hover:bg-red-700 text-sm px-4 py-2' onClick={showConfirmDelete}><BsTrash /> {t('common.delete')}</Button>
         </div>
       </div>
     </div>

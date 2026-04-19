@@ -1,4 +1,5 @@
 import { useRouter } from 'next/router'
+import { useTranslations } from 'next-intl'
 import Loader from '../../../components/Loader'
 import AdminLayout from '../../../components/AdminLayout'
 import ErrorLayout from '../../../components/ErrorLayout'
@@ -7,6 +8,7 @@ import { useApi, useInvalidateApiCache } from '../../../utils'
 import NotificationRuleForm from '../../../components/admin/notification-rules/NotificationRuleForm'
 
 export default function Page () {
+  const t = useTranslations()
   const router = useRouter()
   const invalidate = useInvalidateApiCache()
   const { loading, data, errors } = useApi({
@@ -23,7 +25,7 @@ export default function Page () {
     }`
   })
 
-  if (loading) return <AdminLayout title='Loading...'><Loader /></AdminLayout>
+  if (loading) return <AdminLayout title={t('pages.admin.loading')}><Loader /></AdminLayout>
   if (errors || !data) return <ErrorLayout errors={errors} />
 
   const query = ` mutation createNotificationRule($input: NotificationRuleInput!) {
@@ -35,8 +37,8 @@ export default function Page () {
   const notificationTypes = data.__type.enumValues.map(type => ({ value: type.name, label: type.name }))
 
   return (
-    <AdminLayout title='Add Notification Rule'>
-      <PageHeader title='Add Notification Rule' />
+    <AdminLayout title={t('pages.admin.notificationRules.addRule')}>
+      <PageHeader title={t('pages.admin.notificationRules.addRule')} />
       <div className='mx-auto flex flex-col max-w-md'>
         <NotificationRuleForm
           query={query}

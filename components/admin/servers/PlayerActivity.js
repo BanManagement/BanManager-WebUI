@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { fromUnixTime, getUnixTime } from 'date-fns'
 import { capitalize } from 'lodash-es'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 import { AiOutlinePlus, AiOutlineMinus } from 'react-icons/ai'
 import { BiTime } from 'react-icons/bi'
 import { MdClear, MdFilterAlt } from 'react-icons/md'
@@ -56,44 +57,45 @@ const types = [
 ]
 
 const ActivityRow = ({ row, index }) => {
+  const t = useTranslations()
   const message = []
 
   switch (row.type) {
     case 'BAN':
-      message.push('Banned')
+      message.push(t('pages.admin.servers.playerActivity.actions.BAN'))
       break
     case 'IPBAN':
-      message.push(`Banned ${row.fromIp}`)
+      message.push(t('pages.admin.servers.playerActivity.actions.IPBAN', { ip: row.fromIp }))
       break
     case 'UNBAN':
-      message.push('Unbanned')
+      message.push(t('pages.admin.servers.playerActivity.actions.UNBAN'))
       break
     case 'UNBANIP':
-      message.push(`Unbanned ${row.fromIp}`)
+      message.push(t('pages.admin.servers.playerActivity.actions.UNBANIP', { ip: row.fromIp }))
       break
     case 'IPRANGEBAN':
-      message.push(`Banned ${row.fromIp} - ${row.toIp}`)
+      message.push(t('pages.admin.servers.playerActivity.actions.IPRANGEBAN', { fromIp: row.fromIp, toIp: row.toIp }))
       break
     case 'IPRANGEUNBAN':
-      message.push(`Unbanned ${row.fromIp} - ${row.toIp}`)
+      message.push(t('pages.admin.servers.playerActivity.actions.IPRANGEUNBAN', { fromIp: row.fromIp, toIp: row.toIp }))
       break
     case 'MUTE':
-      message.push('Muted')
+      message.push(t('pages.admin.servers.playerActivity.actions.MUTE'))
       break
     case 'IPMUTE':
-      message.push(`Muted ${row.fromIp}`)
+      message.push(t('pages.admin.servers.playerActivity.actions.IPMUTE', { ip: row.fromIp }))
       break
     case 'UNMUTE':
-      message.push('Unmuted')
+      message.push(t('pages.admin.servers.playerActivity.actions.UNMUTE'))
       break
     case 'IPUNMUTE':
-      message.push(`Unmuted ${row.fromIp}`)
+      message.push(t('pages.admin.servers.playerActivity.actions.IPUNMUTE', { ip: row.fromIp }))
       break
     case 'WARNING':
-      message.push('Warned')
+      message.push(t('pages.admin.servers.playerActivity.actions.WARNING'))
       break
     case 'NOTE':
-      message.push('Created a note for')
+      message.push(t('pages.admin.servers.playerActivity.actions.NOTE'))
       break
   }
 
@@ -102,7 +104,7 @@ const ActivityRow = ({ row, index }) => {
   }
 
   if (row?.expired && row?.expired !== 0 && !row?.type?.startsWith('UN')) {
-    message.push(<span key={'expired' + index + row.type + row.created}>for <span className='text-gray-400'><TimeDuration startTimestamp={row.created} endTimestamp={row.expired} /></span></span>)
+    message.push(<span key={'expired' + index + row.type + row.created}>{t('pages.admin.servers.playerActivity.for')} <span className='text-gray-400'><TimeDuration startTimestamp={row.created} endTimestamp={row.expired} /></span></span>)
   }
 
   if (row?.reason) {
@@ -156,6 +158,7 @@ const ActivityFilterTypes = ({ stateTypes, handleTypeChange }) => {
 }
 
 export default function PlayerActivity ({ server }) {
+  const t = useTranslations()
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [tableState, setTableState] = useState({ serverId: server.id, limit: 100, actor: null, createdStart: null, createdEnd: null, types })
   const { errors, loading, data } = useApi({ query: !tableState.serverId ? null : query, variables: tableState })
@@ -180,7 +183,7 @@ export default function PlayerActivity ({ server }) {
     <>
       <NavigationOverlay drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen}>
         <NavigationOverlay.Header>
-          <h2 className='text-lg font-medium'>Filters</h2>
+          <h2 className='text-lg font-medium'>{t('pages.admin.servers.playerActivity.filters')}</h2>
         </NavigationOverlay.Header>
         <hr className='border-accent-200 w-full' />
         <NavigationOverlay.Body>
@@ -191,7 +194,7 @@ export default function PlayerActivity ({ server }) {
                   <h3 className='-mx-2 -my-3 flow-root'>
                     <Disclosure.Button className='px-2 py-3 w-full'>
                       <div className='flex items-center justify-between'>
-                        <span className='font-medium'>Start Date</span>
+                        <span className='font-medium'>{t('pages.admin.servers.playerActivity.startDate')}</span>
                         <span className='ml-6 flex items-center'>
                           {open
                             ? (
@@ -229,7 +232,7 @@ export default function PlayerActivity ({ server }) {
                   <h3 className='-mx-2 -my-3 flow-root'>
                     <Disclosure.Button className='px-2 py-3 w-full'>
                       <div className='flex items-center justify-between'>
-                        <span className='font-medium'>End Date</span>
+                        <span className='font-medium'>{t('pages.admin.servers.playerActivity.endDate')}</span>
                         <span className='ml-6 flex items-center'>
                           {open
                             ? (
@@ -270,12 +273,12 @@ export default function PlayerActivity ({ server }) {
               <PlayerSelector
                 multiple={false}
                 onChange={(actor) => setTableState({ ...tableState, actor })}
-                placeholder='Actor'
+                placeholder={t('pages.admin.servers.playerActivity.actor')}
                 value={tableState.actor}
               />
             </div>
             <div>
-              <Button className='px-4 py-2' disabled={!tableState.actor} onClick={() => setTableState({ ...tableState, actor: null })}>Clear</Button>
+              <Button className='px-4 py-2' disabled={!tableState.actor} onClick={() => setTableState({ ...tableState, actor: null })}>{t('pages.admin.servers.playerActivity.clear')}</Button>
             </div>
           </div>
         </NavigationOverlay.Body>
@@ -289,14 +292,14 @@ export default function PlayerActivity ({ server }) {
         </NavigationOverlay.Body>
       </NavigationOverlay>
       <div className='relative flex justify-between items-center pb-6 border-b border-gray-200'>
-        <h2 className='text-xl font-bold leading-none'>Activity Summary</h2>
+        <h2 className='text-xl font-bold leading-none'>{t('pages.admin.servers.playerActivity.summaryTitle')}</h2>
         <div className='flex items-center'>
           <button
             type='button'
             className='text-gray-400 hover:text-gray-500 lg:hidden'
             onClick={() => setDrawerOpen(true)}
           >
-            <span className='sr-only'>Filters</span>
+            <span className='sr-only'>{t('pages.admin.servers.playerActivity.filters')}</span>
             <MdFilterAlt className='w-6 h-6' />
           </button>
         </div>
@@ -307,9 +310,9 @@ export default function PlayerActivity ({ server }) {
           {data?.playerActivity?.records?.length === tableState.limit &&
             <div className='text-sm font-medium'>
               <Message warning>
-                <Message.Header>Warning</Message.Header>
+                <Message.Header>{t('common.warning')}</Message.Header>
                 <Message.List>
-                  <Message.Item>Results are limited, use the filters to see more</Message.Item>
+                  <Message.Item>{t('pages.admin.servers.playerActivity.limitWarning')}</Message.Item>
                 </Message.List>
               </Message>
             </div>}
@@ -325,7 +328,7 @@ export default function PlayerActivity ({ server }) {
             <PlayerSelector
               multiple={false}
               onChange={(actor) => setTableState({ ...tableState, actor })}
-              placeholder='Actor'
+              placeholder={t('pages.admin.servers.playerActivity.actor')}
               value={tableState.actor}
               clearable
             />

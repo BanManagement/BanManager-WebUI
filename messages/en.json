@@ -15,7 +15,16 @@
     "no": "No",
     "ok": "OK",
     "siteName": "Ban Management",
-    "version": "Version"
+    "version": "Version",
+    "add": "Add",
+    "none": "None",
+    "all": "All",
+    "warning": "Warning",
+    "test": "Test",
+    "send": "Send",
+    "create": "Create",
+    "comment": "Comment",
+    "permanent": "Permanent"
   },
   "nav": {
     "login": "Login",
@@ -23,12 +32,15 @@
     "language": "Language",
     "home": "Home",
     "openMenu": "Open menu",
+    "closeMenu": "Close menu",
     "admin": "Admin",
     "dashboard": "Dashboard",
     "notifications": "Notifications",
     "account": "Account",
     "profile": "Profile",
-    "viewProfile": "View profile"
+    "viewProfile": "View profile",
+    "settings": "Settings",
+    "return": "Return"
   },
   "footer": {
     "powered": "Powered by"
@@ -41,7 +53,12 @@
     },
     "register": {
       "title": "Register",
-      "subtitle": "Create your account"
+      "subtitle": "Create your account",
+      "documentTitle": "Register | Account",
+      "feature1": "Login anyplace, anywhere, anytime",
+      "feature2": "Track all punishments including reports",
+      "feature3": "Notifications on appeal updates",
+      "skip": "Skip"
     },
     "forgottenPassword": {
       "title": "Forgotten Password",
@@ -51,9 +68,23 @@
       "title": "Create Appeal",
       "subtitle": "Submit a punishment appeal",
       "documentTitle": "Appeal",
+      "punishmentDocumentTitle": "Select Punishment | Appeal",
+      "pinLoginDocument": "Login | Appeal",
+      "accountLoginDocument": "Login | Appeal",
+      "accountLogin": "Account Login",
+      "appealBan": "Appeal Ban",
+      "appealMute": "Appeal Mute",
+      "appealWarning": "Appeal Warning",
+      "appealBanDocument": "Appeal Ban | Appeal",
+      "appealMuteDocument": "Appeal Mute | Appeal",
+      "appealWarningDocument": "Appeal Warning | Appeal",
+      "punishmentNotFound": "Punishment not found",
+      "headBack": "Head back to the previous page",
       "stepHeader": {
         "step1": "Pin Login",
-        "selectPunishment": "Select Punishment"
+        "selectPunishment": "Select Punishment",
+        "writeAppeal": "Write Appeal",
+        "awaitReview": "Await Review"
       },
       "intro": "First, we need to know who you are.",
       "pinHelp": "I have a 6 digit pin, e.g. ",
@@ -61,14 +92,61 @@
       "pinExpiry": "Note: this pin expires after 5 minutes.",
       "or": "OR",
       "haveAccount": "I already have an account",
-      "haveAccountDescription": "This is specific for this website and NOT your Microsoft/Mojang credentials."
+      "haveAccountDescription": "This is specific for this website and NOT your Microsoft/Mojang credentials.",
+      "noPunishments": "No punishments founds",
+      "tryChangingFilters": "Try changing your filters",
+      "clearFilters": "Clear filters",
+      "reasonLabel": "Why should this punishment be removed?",
+      "reasonPlaceholder": "Explain why this punishment should be removed..."
     },
     "account": {
       "documentTitle": "Account",
       "subtitle": "Account",
       "register": "Register",
       "email": "Email",
-      "password": "Password"
+      "password": "Password",
+      "changeEmail": "Change Email",
+      "changePassword": "Change Password",
+      "changeEmailDocumentTitle": "Change Email | Account",
+      "changePasswordDocumentTitle": "Change Password | Account",
+      "newEmail": "New email address",
+      "newPassword": "New password",
+      "confirmNewPassword": "Confirm new password",
+      "passwordHint": "Must be at least 6 characters long"
+    },
+    "home": {
+      "documentTitle": "Welcome",
+      "appeal": {
+        "subtitle": "Help I've been banned",
+        "title": "Appeal",
+        "intro": "If you believe your account has been wrongfully punished, create an appeal justifying why including any relevant evidence.",
+        "warning": "There is no guarantee your appeal will be successful.",
+        "cta": "Create Appeal"
+      },
+      "search": {
+        "subtitle": "Find a player",
+        "title": "Search",
+        "intro": "Check the full punishment history of a player, including current bans, mutes and more!",
+        "placeholder": "Enter player name"
+      },
+      "account": {
+        "signInTitle": "Sign In",
+        "signInSubtitle": "Already have an account?",
+        "myAccountSubtitle": "My Account",
+        "dashboardCta": "My Dashboard"
+      }
+    },
+    "dashboard": {
+      "title": "Dashboard",
+      "documentTitle": "Dashboard",
+      "appealsDocumentTitle": "Appeals | Dashboard",
+      "reportsDocumentTitle": "Reports | Dashboard",
+      "activePunishments": "Active Punishments",
+      "yourAppeals": "Your appeals",
+      "yourReports": "Your reports",
+      "appeals": "Appeals",
+      "reports": "Reports",
+      "viewAll": "View All"
     },
     "notFound": {
       "title": "Oops! Page Not Found",
@@ -87,15 +165,338 @@
       "intro": "We're sorry, something went wrong on our end. Please try again later.",
       "documentTitle": "Server Error"
     },
+    "notifications": {
+      "title": "Notifications",
+      "documentTitle": "Notifications",
+      "empty": "Nothing to see here yet"
+    },
+    "appeals": {
+      "documentTitle": "#{id} | {name} | {reason} | Appeal",
+      "appealingSentence": "<actor>{actorName}</actor> is appealing a {kind, select, permanent {permanent <badge></badge> issued on {issuedDate} by <punisher>{punisherName}</punisher>} other {temporary <badge></badge> issued on {issuedDate} by <punisher>{punisherName}</punisher> which expires {expiresTime}}}",
+      "commentedAt": "<actor>{actorName}</actor> commented <time>{relative}</time>",
+      "deleteCommentTitle": "Delete comment",
+      "deleteCommentConfirm": "Are you sure you want to delete this comment?",
+      "updates": {
+        "reasonChanged": "<actor>{actorName}</actor> changed the reason from <old>{oldReason}</old> to <new>{newReason}</new>",
+        "expirationChanged": "<actor>{actorName}</actor> modified the expiration from <old>{oldExpires}</old> to <new>{newExpires}</new>",
+        "softChanged": "<actor>{actorName}</actor> set <old>{oldSoft}</old> to <new>{newSoft}</new>",
+        "stateMarked": "<actor>{actorName}</actor> marked this appeal as {state} {time}",
+        "shadow": "shadow",
+        "notShadow": "not shadow",
+        "permanent": "permanent"
+      },
+      "sidebar": {
+        "state": "State",
+        "assignee": "Assignee",
+        "unassigned": "Unassigned",
+        "notifications": "Notifications",
+        "documents": "Documents",
+        "actions": "Actions"
+      },
+      "actions": {
+        "editBan": "Edit Ban",
+        "editMute": "Edit Mute",
+        "editWarning": "Edit Warning",
+        "unban": "Unban",
+        "unmute": "Unmute",
+        "deleteWarning": "Delete warning"
+      },
+      "editTitle": {
+        "ban": "Edit ban",
+        "mute": "Edit mute",
+        "warning": "Edit warning"
+      },
+      "removeTitle": {
+        "ban": "Remove ban",
+        "mute": "Remove mute",
+        "warning": "Remove warning"
+      },
+      "removeConfirm": {
+        "ban": "Are you sure you want to remove this ban?",
+        "mute": "Are you sure you want to remove this mute?",
+        "warning": "Are you sure you want to remove this warning?"
+      }
+    },
+    "report": {
+      "serverLogs": "Server Logs",
+      "close": "Close",
+      "reportRecords": "{count, plural, one {This report has 1 record associated with it} other {This report has # records associated with it}}",
+      "reviewLogs": "Review Logs",
+      "locations": "Locations",
+      "documentTitle": "#{id} | {name} | {reason} | Report",
+      "reportedSentence": "<actor>{actorName}</actor> reported <player>{playerName}</player> on {date}"
+    },
+      "player": {
+            "statistics": {
+                "bans": "Bans",
+                "mutes": "Mutes",
+                "warnings": "Warnings"
+            },
+            "actions": {
+                "ban": "Ban",
+                "mute": "Mute",
+                "warning": "Warn",
+                "note": "Note"
+            },
+            "activeBans": "{total, plural, one {Active Ban (1)} other {Active Bans (#)}}",
+            "activeMutes": "{total, plural, one {Active Mute (1)} other {Active Mutes (#)}}",
+            "pastBans": "{total, plural, one {Past Ban (1)} other {Past Bans (#)}}",
+            "pastMutes": "{total, plural, one {Past Mute (1)} other {Past Mutes (#)}}",
+            "warnings": "{total, plural, one {Warning (1)} other {Warnings (#)}}",
+            "notes": "{total, plural, one {Note (1)} other {Notes (#)}}",
+            "addNote": "Add Note",
+            "kicks": "{total, plural, one {Kick (1)} other {Kicks (#)}}",
+            "pastKicks": "{total, plural, one {Past Kick (1)} other {Past Kicks (#)}}",
+            "alts": "Alts",
+            "history": "History",
+            "playerHistory": "Player History",
+            "noHistory": "No history",
+            "missingDataLine": "If you're missing data here, ensure <docs>logIps</docs> is enabled in the plugin's config.yml file",
+            "close": "Close",
+            "lastSeen": "Last seen {time}",
+            "neverSeen": "Never seen",
+            "actionTitles": {
+              "ban": "Ban {name}",
+              "mute": "Mute {name}",
+              "warn": "Warn {name}",
+              "note": "Note for {name}",
+              "addNoteHeader": "Add note",
+              "addNoteDocument": "Add note to {name}",
+              "editBan": "Edit ban",
+              "editMute": "Edit mute",
+              "editWarning": "Edit warning",
+              "editNote": "Edit note",
+              "editKick": "Edit kick",
+              "editBanDocument": "Edit {name} ban",
+              "editMuteDocument": "Edit {name} mute",
+              "editWarningDocument": "Edit {name} warning",
+              "editNoteDocument": "Edit {name} note"
+            }
+      },
+    "punishment": {
+      "appeal": "Appeal",
+      "read": "Read",
+      "deleteTitle": {
+        "ban": "Delete ban",
+        "mute": "Delete mute",
+        "warning": "Delete warning",
+        "note": "Delete note",
+        "kick": "Delete kick"
+      },
+      "deleteConfirm": {
+        "ban": "Are you sure you want to delete this ban?",
+        "mute": "Are you sure you want to delete this mute?",
+        "warning": "Are you sure you want to delete this warning?",
+        "note": "Are you sure you want to delete this note?",
+        "kick": "Are you sure you want to delete this kick?"
+      },
+      "actionUndoable": "This action cannot be undone",
+      "deletionReasonUnknown": "Deletion reason unknown"
+    },
     "admin": {
       "title": "Admin",
+      "loading": "Loading…",
       "developerMode": "Developer Mode",
       "developerModeMessage": "You are currently running in development mode, expect performance degradation",
       "updateAvailable": "Update Available",
       "currentVersion": "Current version: {current}",
       "latestVersion": "Latest: {latest}",
       "newFeatures": "New Features",
-      "fixes": "Fixes"
+      "fixes": "Fixes",
+      "nav": {
+        "documents": "Documents",
+        "roles": "Roles",
+        "servers": "Servers",
+        "notificationRules": "Notification Rules",
+        "webhooks": "Webhooks"
+      },
+      "documents": {
+        "title": "Documents",
+        "uploadedCount": "{total, plural, one {# document uploaded} other {# documents uploaded}}",
+        "emptyTitle": "No documents uploaded",
+        "emptySubtitle": "Documents attached to appeals and reports will appear here",
+        "document": "Document",
+        "uploadedBy": "Uploaded By",
+        "usedIn": "Used In",
+        "date": "Date",
+        "actions": "Actions",
+        "unknown": "Unknown",
+        "notAttached": "Not attached",
+        "viewFullSize": "View full size",
+        "openInNewTab": "Open in new tab",
+        "deleteTitle": "Delete Document",
+        "deleteConfirm": "Are you sure you want to delete this document?",
+        "deleteWarning": "This action cannot be undone and will remove the image from any appeals it was attached to.",
+        "deleteImage": "Delete image",
+        "deleteImageTitle": "Delete Image",
+        "deleteImageConfirm": "Are you sure you want to delete this image?"
+      },
+      "servers": {
+        "title": "Servers",
+        "server": "Server",
+        "addServer": "Add Server",
+        "editServer": "Edit Server",
+        "editTitle": "Edit {name}",
+        "viewDocumentTitle": "{name} | Server",
+        "stats": {
+          "bans": "Bans",
+          "mutes": "Mutes",
+          "warnings": "Warnings",
+          "reports": "Reports",
+          "total": "Total",
+          "averageLength": "avg length",
+          "averageResolution": "avg resolution",
+          "lastDays": "Last {days} days"
+        },
+        "playerActivity": {
+          "title": "Player Activity",
+          "newJoins": "New Joins",
+          "uniquePlayers": "Unique Players",
+          "summaryTitle": "Activity Summary",
+          "filters": "Filters",
+          "startDate": "Start Date",
+          "endDate": "End Date",
+          "actor": "Actor",
+          "clear": "Clear",
+          "limitWarning": "Results are limited, use the filters to see more",
+          "for": "for",
+          "actions": {
+            "BAN": "Banned",
+            "IPBAN": "Banned {ip}",
+            "UNBAN": "Unbanned",
+            "UNBANIP": "Unbanned {ip}",
+            "IPRANGEBAN": "Banned {fromIp} - {toIp}",
+            "IPRANGEUNBAN": "Unbanned {fromIp} - {toIp}",
+            "MUTE": "Muted",
+            "IPMUTE": "Muted {ip}",
+            "UNMUTE": "Unmuted",
+            "IPUNMUTE": "Unmuted {ip}",
+            "WARNING": "Warned",
+            "NOTE": "Created a note for"
+          }
+        },
+        "deleteTitle": "Delete server",
+        "deleteWarning": "Related <strong>appeals and roles</strong> will be removed",
+        "deleteConfirmInstruction": "Please type <strong>{name}</strong> to confirm",
+        "deletePlaceholder": "Type server name",
+        "form": {
+          "info": "Info",
+          "name": "Name",
+          "consoleUuid": "Console UUID (BanManager/console.yml)",
+          "yamlPlaceholder": "Paste YAML BanManager/config.yml (Optional)",
+          "database": "Database",
+          "host": "Host",
+          "port": "Port",
+          "databaseName": "Database Name",
+          "user": "User",
+          "password": "Password",
+          "databaseTables": "Database Tables"
+        }
+      },
+      "roles": {
+        "title": "Roles",
+        "addRole": "Add Role",
+        "editRole": "Edit Role",
+        "editTitle": "Edit {name}",
+        "deleteTitle": "Delete role",
+        "deleteConfirm": "Are you sure you want to delete this role?",
+        "defaultUnauthenticated": "Assigned by default to all non-logged in visitors",
+        "defaultAuthenticated": "Assigned by default for all logged in players",
+        "superAdmin": "Super admin role with all permissions",
+        "tipsHeader": "Tips",
+        "tip1": "There are 3 default roles which are automatically assigned, these permissions can be modified",
+        "tip2": "Create and assign new roles to grant your moderators permissions to manage appeals, reports etc.",
+        "tip3": "A player can have multiple roles and these are additive, i.e. a permission granted is always given, roles cannot remove a permission granted by another role",
+        "tip4": "Custom roles must define a parent role; when new resources and/or permissions are added to the default roles in an update, they are automatically granted to children roles",
+        "assignGlobal": "Assign Global Player Roles",
+        "assignGlobalHint": "Takes priority over server roles, and applies globally",
+        "assignServer": "Assign Server Player Roles",
+        "assignServerHint": "Only affects certain actions where a server is applicable, e.g. bans",
+        "role": "Role",
+        "assign": "Assign",
+        "form": {
+          "edit": "Edit Role",
+          "name": "Name",
+          "resources": "Resources",
+          "fullAccess": "{name} has access to all resources"
+        }
+      },
+      "notificationRules": {
+        "title": "Notification Rules",
+        "addRule": "Add Rule",
+        "createRule": "Create a rule",
+        "editTitle": "Edit notification rule #{id}",
+        "editTitleHeader": "Edit Notification Rule",
+        "emptyTitle": "There's nothing here",
+        "emptySubtitle": "Notification rules will appear here, try creating one!",
+        "deleteTitle": "Delete notification rule",
+        "deleteConfirm": "Are you sure you want to delete this notification rule?",
+        "form": {
+          "type": "Notification Type",
+          "roles": "Roles",
+          "serverOptional": "Server (optional)",
+          "server": "Server"
+        }
+      },
+      "players": {
+        "globalRoles": "Global Roles",
+        "serverRoles": "Server Roles",
+        "edit": "Edit"
+      },
+      "webhooks": {
+        "title": "Webhooks",
+        "addWebhook": "Add Webhook",
+        "addAWebhook": "Add a webhook",
+        "addWebhookType": "Add {type} Webhook",
+        "editTitle": "Edit Webhook",
+        "editTitleDoc": "Edit Webhook #{id}",
+        "deliveries": "Deliveries",
+        "deliveriesTitle": "Webhook Deliveries",
+        "deliveriesDocumentTitle": "Webhook #{id} Deliveries",
+        "deliveriesEmptyTitle": "No webhook deliveries",
+        "deliveriesEmptySubtitle": "Webhook deliveries will appear here once the webhook has been triggered.",
+        "delivery": {
+          "request": "Request",
+          "response": "Response",
+          "headers": "Headers",
+          "payload": "Payload",
+          "body": "Body",
+          "error": "Error"
+        },
+        "test": {
+          "errorPrefix": "Error sending webhook",
+          "content": "Content"
+        },
+        "selectType": "Select webhook type",
+        "discord": "Discord",
+        "custom": "Custom",
+        "invalidType": "Invalid webhook type",
+        "invalidJson": "Invalid JSON",
+        "emptyTitle": "There's nothing here",
+        "emptySubtitle": "Webhooks allow external services to be notified when an event occurs",
+        "deleteTitle": "Delete webhook",
+        "deleteConfirm": "Are you sure you want to delete this webhook?",
+        "testTitle": "Test webhook",
+        "form": {
+          "eventType": "Event Type",
+          "serverOptional": "Server (optional)",
+          "server": "Server",
+          "url": "URL",
+          "urlPlaceholderCustom": "https://example.com/webhook",
+          "urlPlaceholderDiscord": "https://discord.com/webhook",
+          "contentTemplate": "Content Template",
+          "contentHint": "Use the variables defined to customize the content",
+          "contentPlaceholder": "{exampleJson}",
+          "availableVariables": "Available Variables",
+          "preview": "Preview"
+        }
+      },
+      "layout": {
+        "viewProfile": "View Profile",
+        "settings": "Settings",
+        "notifications": "Notifications",
+        "return": "Return"
+      }
     }
   },
   "errors": {
@@ -103,6 +504,7 @@
     "fetchHeader": "Fetch Error",
     "httpHeader": "HTTP error: {status}",
     "invalidJson": "Invalid JSON",
+    "somethingWentWrong": "Something went wrong",
     "INTERNAL": "Internal Server Error",
     "UNKNOWN": "An unknown error occurred",
     "NO_PERMISSION": "You do not have permission to perform this action",
@@ -171,12 +573,36 @@
     "name": "Name",
     "reason": "Reason",
     "message": "Message",
+    "points": "Points",
+    "soft": "Soft",
+    "softDescription": "Hides their messages to others to prevent spam",
     "comment": "Add your comment here...",
+    "commentPlaceholder": "Add your comment here...",
     "playerSelectorPlaceholder": "Search player",
     "required": "This field is required",
     "minLength": "Must be at least {n} characters",
     "maxLength": "Must be at most {n} characters",
     "passwordMismatch": "Passwords do not match"
+  },
+  "stats": {
+    "bans": "{count, plural, one {Ban} other {Bans}}",
+    "mutes": "{count, plural, one {Mute} other {Mutes}}",
+    "players": "{count, plural, one {Player} other {Players}}",
+    "appeals": "{count, plural, one {Appeal} other {Appeals}}"
+  },
+  "tables": {
+    "id": "ID",
+    "type": "Type",
+    "reason": "Reason",
+    "by": "By",
+    "at": "At",
+    "length": "Length",
+    "state": "State",
+    "assigned": "Assigned",
+    "lastUpdated": "Last Updated",
+    "player": "Player",
+    "name": "Name",
+    "email": "Email"
   },
   "widgets": {
     "select": {
@@ -188,6 +614,50 @@
     "languageSwitcher": {
       "label": "Language",
       "select": "Select language"
+    },
+    "pushNotifications": {
+      "enable": "Enable push notifications",
+      "disable": "Disable push notifications",
+      "ok": "Ok",
+      "blockedTitle": "Enable Push Notifications",
+      "blockedIntro": "Your browser is blocking notifications from this site",
+      "blockedSteps": "Follow these steps to enable:",
+      "chrome": "Chrome",
+      "chromeStep1": "Navigate to: <path>chrome://settings/content</path>",
+      "chromeStep2": "Scroll down and click on the Notifications bar",
+      "chromeStep3": "Find the URL of this site select allow",
+      "chromeAndroid": "Chrome for Android",
+      "chromeAndroidStep1": "Select the vertical elipses icon in the top-right corner of the screen",
+      "chromeAndroidStep2": "Select the “Settings” option from the dropdown menu",
+      "chromeAndroidStep3": "Select the “Site settings” option",
+      "chromeAndroidStep4": "Select the “Notifications” option",
+      "chromeAndroidStep5": "Here you can select this website and enable notifications",
+      "firefox": "Firefox",
+      "firefoxStep1": "Navigate to: <path>about:preferences#privacy</path>",
+      "firefoxStep2": "Scroll down to the Permissions section",
+      "firefoxStep3": "Click the Settings button next to Notifications",
+      "firefoxStep4": "Find the URL of this site and select Allow",
+      "edge": "Microsoft Edge",
+      "edgeStep1": "Select the “...” button in the top-right corner of the browser window",
+      "edgeStep2": "Select the “Settings” option from the dropdown menu",
+      "edgeStep3": "Select the “Cookies and site permissions” option",
+      "edgeStep4": "Select the “Notifications” option",
+      "edgeStep5": "Remove this site from the “Block“ section",
+      "safari": "Safari",
+      "safariStep1": "Select “Safari” in the action bar at the top of the screen and select “Preferences”",
+      "safariStep2": "Click on the “Websites” tab and then select “Notifications” in the menu on the left-side of the preferences window",
+      "safariStep3": "Find this site and enable notifications"
+    },
+    "upload": {
+      "addFiles": "Add files",
+      "addFilesLong": "Paste, drop, or click to add files",
+      "remove": "Remove",
+      "failed": "Failed",
+      "uploading": "Uploading...",
+      "uploadFailed": "Upload failed",
+      "imageName": "Image {index}",
+      "dropImages": "Drop images here",
+      "commentPlaceholder": "Add your comment here..."
     }
   },
   "components": {

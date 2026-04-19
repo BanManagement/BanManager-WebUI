@@ -1,4 +1,5 @@
 import { useRouter } from 'next/router'
+import { useTranslations } from 'next-intl'
 import AdminLayout from '../../../../components/AdminLayout'
 import ErrorLayout from '../../../../components/ErrorLayout'
 import Loader from '../../../../components/Loader'
@@ -7,6 +8,7 @@ import PageHeader from '../../../../components/admin/AdminHeader'
 import NotificationRuleForm from '../../../../components/admin/notification-rules/NotificationRuleForm'
 
 export default function Page () {
+  const t = useTranslations()
   const router = useRouter()
   const invalidate = useInvalidateApiCache()
   const { id } = router.query
@@ -39,7 +41,7 @@ export default function Page () {
     }`
   })
 
-  if (loading) return <AdminLayout title='Loading...'><Loader /></AdminLayout>
+  if (loading) return <AdminLayout title={t('pages.admin.loading')}><Loader /></AdminLayout>
   if (errors || !data) return <ErrorLayout errors={errors} />
 
   const query = `mutation updateNotificationRule($id: ID!, $input: NotificationRuleInput!) {
@@ -58,8 +60,8 @@ export default function Page () {
   const notificationTypes = data.__type.enumValues.map(type => ({ value: type.name, label: type.name }))
 
   return (
-    <AdminLayout title={`Edit notification rule #${data.notificationRule.id}`}>
-      <PageHeader title='Edit Notification Rule' />
+    <AdminLayout title={t('pages.admin.notificationRules.editTitle', { id: data.notificationRule.id })}>
+      <PageHeader title={t('pages.admin.notificationRules.editTitleHeader')} />
       <div className='mx-auto flex flex-col max-w-md'>
         <NotificationRuleForm
           defaults={data.notificationRule}

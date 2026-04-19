@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
+import { useTranslations } from 'next-intl'
 import Button from './Button'
 import TextArea from './TextArea'
 import ErrorMessages from './ErrorMessages'
@@ -7,6 +8,7 @@ import CommentWithUpload, { AttachButton } from './CommentWithUpload'
 import { useMutateApi } from '../utils'
 
 export default function PlayerCommentForm ({ onFinish, parseVariables, query, canUpload = false }) {
+  const t = useTranslations()
   const { handleSubmit, formState, control, watch, reset } = useForm({ defaultValues: { comment: '' } })
   const { isSubmitting } = formState
   const { load, loading, data, errors } = useMutateApi({ query })
@@ -44,13 +46,12 @@ export default function PlayerCommentForm ({ onFinish, parseVariables, query, ca
                 {...field}
                 required
                 maxLength={250}
-                placeholder='Add your comment here...'
+                placeholder={t('forms.commentPlaceholder')}
                 documents={documentIds}
                 onDocumentsChange={setDocumentIds}
                 maxFiles={3}
                 disabled={loading}
               >
-                {/* Single action row with attach button and comment button */}
                 <div className='flex items-center justify-end gap-4 mt-2 px-2'>
                   <AttachButton disabled={loading} />
                   <Button
@@ -59,7 +60,7 @@ export default function PlayerCommentForm ({ onFinish, parseVariables, query, ca
                     loading={loading}
                     style={{ width: 'auto' }}
                   >
-                    Comment
+                    {t('common.comment')}
                   </Button>
                 </div>
               </CommentWithUpload>
@@ -78,12 +79,12 @@ export default function PlayerCommentForm ({ onFinish, parseVariables, query, ca
                   required
                   className='!-mb-2'
                   maxLength={250}
-                  placeholder='Add your comment here...'
+                  placeholder={t('forms.commentPlaceholder')}
                 />
               )}
             />
             <div className='flex justify-end mt-2'>
-              <Button data-cy='submit-report-comment-form' disabled={isSubmitting || !watchComment.length} loading={loading} style={{ width: 'auto' }}>Comment</Button>
+              <Button data-cy='submit-report-comment-form' disabled={isSubmitting || !watchComment.length} loading={loading} style={{ width: 'auto' }}>{t('common.comment')}</Button>
             </div>
           </>
           )}

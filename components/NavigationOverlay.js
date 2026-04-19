@@ -1,6 +1,7 @@
 import { createContext } from 'react'
 import { Transition } from '@headlessui/react'
 import { RemoveScroll } from 'react-remove-scroll'
+import { useTranslations } from 'next-intl'
 import clsx from 'clsx'
 
 const NavigationOverlayContext = createContext()
@@ -37,6 +38,8 @@ const NavigationOverlay = ({ children, drawerOpen, setDrawerOpen }) => {
 }
 
 const Header = ({ children }) => {
+  const t = useTranslations('nav')
+
   return (
     <NavigationOverlayContext.Consumer>
       {({ setDrawerOpen }) => (
@@ -47,7 +50,7 @@ const Header = ({ children }) => {
             </div>
             <div className='-mr-2'>
               <button type='button' className='rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none' onClick={() => setDrawerOpen(false)}>
-                <span className='sr-only'>Close menu</span>
+                <span className='sr-only'>{t('closeMenu')}</span>
                 <svg className='h-6 w-6' xmlns='http:www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor' aria-hidden='true'>
                   <path strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M6 18L18 6M6 6l12 12' />
                 </svg>

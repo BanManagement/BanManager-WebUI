@@ -1,22 +1,24 @@
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 import Button from '../Button'
 import PageHeader from '../PageHeader'
 import Panel from '../Panel'
 import { useUser } from '../../utils'
 
 const AppealPanel = () => {
+  const t = useTranslations()
   const { user } = useUser()
 
   return (
     <Panel>
-      <PageHeader title='Appeal' subTitle='Help I&apos;ve been banned' />
+      <PageHeader title={t('pages.home.appeal.title')} subTitle={t('pages.home.appeal.subtitle')} />
       <p className='flex mb-6'>
-        If you believe your account has been wrongfully punished, create an appeal justifying why including any relevant evidence.
+        {t('pages.home.appeal.intro')}
       </p>
-      <p className='mb-3'>There is no guarantee your appeal will be successful.</p>
+      <p className='mb-3'>{t('pages.home.appeal.warning')}</p>
       <Link href={user ? '/appeal/punishment' : '/appeal'} passHref className='mt-auto'>
         <Button>
-          Create Appeal
+          {t('pages.home.appeal.cta')}
         </Button>
       </Link>
     </Panel>

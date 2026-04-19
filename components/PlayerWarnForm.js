@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { useForm, Controller } from 'react-hook-form'
+import { useTranslations } from 'next-intl'
 import Input from './Input'
 import Button from './Button'
 import ErrorMessages from './ErrorMessages'
@@ -10,6 +11,7 @@ import { RiNumbersLine } from 'react-icons/ri'
 import ExpiresInput from './ExpiresInput'
 
 export default function PlayerWarnForm ({ serverFilter, onFinished, query, parseVariables, disableServers = false, defaults = {}, submitRef = null }) {
+  const t = useTranslations()
   const { handleSubmit, formState, register, control } = useForm({ defaultValues: { ...defaults, server: defaults?.server, expires: defaults?.expires * 1000 || 0, points: defaults?.points || 1 } })
   const { isSubmitting } = formState
   const { load, data, errors } = useMutateApi({ query })
@@ -40,14 +42,14 @@ export default function PlayerWarnForm ({ serverFilter, onFinished, query, parse
       />
       <Input
         required
-        label='Reason'
+        label={t('forms.reason')}
         icon={<FaPencilAlt />}
         data-cy='reason'
         {...register('reason')}
       />
       <Input
         required
-        label='Points'
+        label={t('forms.points')}
         type='number'
         min='0'
         step='.01'
@@ -63,7 +65,7 @@ export default function PlayerWarnForm ({ serverFilter, onFinished, query, parse
         />
       </div>
       <Button data-cy='submit-warning' ref={submitRef} disabled={isSubmitting} loading={isSubmitting} className={submitRef ? 'hidden' : ''}>
-        Save
+        {t('common.save')}
       </Button>
     </form>
   )

@@ -1,4 +1,5 @@
 import { useRouter } from 'next/router'
+import { useTranslations } from 'next-intl'
 import DefaultLayout from '../../../components/DefaultLayout'
 import PageContainer from '../../../components/PageContainer'
 import PlayerNoteForm from '../../../components/PlayerNoteForm'
@@ -8,6 +9,7 @@ import { useApi, useUser } from '../../../utils'
 import Panel from '../../../components/Panel'
 
 export default function Page () {
+  const t = useTranslations()
   const router = useRouter()
   const { id } = router.query
   const { loading, data, errors } = useApi({
@@ -36,10 +38,10 @@ export default function Page () {
   }`
 
   return (
-    <DefaultLayout title={`Add note to ${data?.player?.name}`} loading={loading}>
+    <DefaultLayout title={t('pages.player.actionTitles.addNoteDocument', { name: data?.player?.name ?? '' })} loading={loading}>
       <PageContainer>
         <Panel className='mx-auto w-full max-w-md'>
-          <PageHeader title='Add note' subTitle={data?.player?.name} />
+          <PageHeader title={t('pages.player.actionTitles.addNoteHeader')} subTitle={data?.player?.name} />
           <PlayerNoteForm
             serverFilter={server => hasServerPermission('player.notes', 'create', server.id)}
             query={query}

@@ -3,6 +3,7 @@ import { useApi, useUser } from '../../utils'
 import Button from '../Button'
 import { useMemo, useState } from 'react'
 import clsx from 'clsx'
+import { useTranslations } from 'next-intl'
 import AppealPunishment from './AppealPunishment'
 
 const query = `
@@ -57,13 +58,14 @@ query playerBans($id: UUID!) {
   }
 }`
 
-const types = [
-  { type: 'ban', label: 'Ban', colours: 'bg-red-800 hover:bg-red-900' },
-  { type: 'mute', label: 'Mute', colours: 'bg-indigo-800 hover:bg-indigo-900' },
-  { type: 'warning', label: 'Warning', colours: 'bg-amber-800 hover:bg-amber-900' }
+const typesConfig = [
+  { type: 'ban', colours: 'bg-red-800 hover:bg-red-900' },
+  { type: 'mute', colours: 'bg-indigo-800 hover:bg-indigo-900' },
+  { type: 'warning', colours: 'bg-amber-800 hover:bg-amber-900' }
 ]
 
 export default function PunishmentPicker () {
+  const t = useTranslations()
   const { user } = useUser()
   const { loading, data } = useApi({ query, variables: { id: user?.id } })
   const [activeFilter, setActiveFilter] = useState(['ban', 'mute', 'warning'])
@@ -101,14 +103,14 @@ export default function PunishmentPicker () {
       <AppealPunishment punishment={row} appealable />
     </div>
   ))
-  const filters = useMemo(() => types.map(({ type, label, colours }) => (
+  const filters = useMemo(() => typesConfig.map(({ type, colours }) => (
     <Button
       key={type}
       className={clsx(colours, { 'border-opacity-0 opacity-50': !activeFilter.includes(type) })}
       onClick={() => toggleFilter(type)}
       data-cy={`punishment-picker-filter-${type}`}
     >
-      {label}
+      {t(`pages.player.actions.${type}`)}
     </Button>
   )), [activeFilter])
 
@@ -123,10 +125,10 @@ export default function PunishmentPicker () {
         {(!data || !rows.length)
           ? (
             <div data-cy='punishment-picker-empty'>
-              <h2 className='text-center text-base font-semibold leading-relaxed pb-1'>No punishments founds</h2>
-              <p className='text-center text-sm font-normal leading-snug pb-4'>Try changing your filters</p>
+              <h2 className='text-center text-base font-semibold leading-relaxed pb-1'>{t('pages.appeal.noPunishments')}</h2>
+              <p className='text-center text-sm font-normal leading-snug pb-4'>{t('pages.appeal.tryChangingFilters')}</p>
               <div className='flex gap-3'>
-                <Button onClick={() => setActiveFilter(['ban', 'mute', 'warning'])} data-cy='punishment-picker-clear-filters'>Clear filters</Button>
+                <Button onClick={() => setActiveFilter(['ban', 'mute', 'warning'])} data-cy='punishment-picker-clear-filters'>{t('pages.appeal.clearFilters')}</Button>
               </div>
             </div>
             )
