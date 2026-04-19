@@ -70,7 +70,7 @@ jobs:
           NODE_ENV: production
 
       - name: Cypress run
-        uses: cypress-io/github-action@v6
+        uses: cypress-io/github-action@f790eee7a50d9505912f50c2095510be7de06aa7 # v6.10.9
         env:
           DB_PASSWORD:
           DB_NAME: bm_e2e_tests
@@ -130,7 +130,7 @@ jobs:
           sleep 5 && mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '';" -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
           mysql -e "SET GLOBAL sql_require_primary_key = ON;" -uroot
       - name: Cypress run (setup wizard)
-        uses: cypress-io/github-action@v6
+        uses: cypress-io/github-action@f790eee7a50d9505912f50c2095510be7de06aa7 # v6.10.9
         env:
           DB_HOST: 127.0.0.1
           DB_PORT: 3306
@@ -313,7 +313,7 @@ jobs:
           exit 1
 
       - name: Cypress (against dockerised webui)
-        uses: cypress-io/github-action@v6
+        uses: cypress-io/github-action@f790eee7a50d9505912f50c2095510be7de06aa7 # v6.10.9
         env:
           PORT: 3000
           CONTACT_EMAIL: admin@banmanagement.com

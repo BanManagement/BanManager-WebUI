@@ -48,16 +48,20 @@ RUN addgroup --system --gid 1001 nodejs \
  && mkdir -p /app/.next/cache/images /app/uploads/documents /app/config /app/public/images/opengraph/cache \
  && chown -R nextjs:nodejs /app
 
-COPY --from=prod-deps --chown=nextjs:nodejs /app/node_modules ./node_modules
-COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
-COPY --from=builder --chown=nextjs:nodejs /app/public ./public
-COPY --from=builder --chown=nextjs:nodejs /app/server ./server
-COPY --from=builder --chown=nextjs:nodejs /app/cli ./cli
-COPY --from=builder --chown=nextjs:nodejs /app/bin ./bin
-COPY --from=builder --chown=nextjs:nodejs /app/server.js ./server.js
-COPY --from=builder --chown=nextjs:nodejs /app/docker-entrypoint.js ./docker-entrypoint.js
-COPY --from=builder --chown=nextjs:nodejs /app/next.config.js ./next.config.js
-COPY --from=builder --chown=nextjs:nodejs /app/package.json ./package.json
+# All runtime artefacts are copied read-only (0555 = r-xr-xr-x). The
+# `nextjs` user only needs to read/load these and execute traversal +
+# the .bin shims and .node binaries inside node_modules. Writable state
+# (cache, uploads, config) lives on the VOLUMEs declared below.
+COPY --from=prod-deps --chown=nextjs:nodejs --chmod=0555 /app/node_modules ./node_modules
+COPY --from=builder --chown=nextjs:nodejs --chmod=0555 /app/.next ./.next
+COPY --from=builder --chown=nextjs:nodejs --chmod=0555 /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs --chmod=0555 /app/server ./server
+COPY --from=builder --chown=nextjs:nodejs --chmod=0555 /app/cli ./cli
+COPY --from=builder --chown=nextjs:nodejs --chmod=0555 /app/bin ./bin
+COPY --from=builder --chown=nextjs:nodejs --chmod=0555 /app/server.js ./server.js
+COPY --from=builder --chown=nextjs:nodejs --chmod=0555 /app/docker-entrypoint.js ./docker-entrypoint.js
+COPY --from=builder --chown=nextjs:nodejs --chmod=0555 /app/next.config.js ./next.config.js
+COPY --from=builder --chown=nextjs:nodejs --chmod=0555 /app/package.json ./package.json
 
 VOLUME /app/.next/cache/images
 VOLUME /app/public/images/opengraph/cache
