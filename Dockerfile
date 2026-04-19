@@ -44,24 +44,44 @@ ENV NEXT_TELEMETRY_DISABLED=1
 ENV PORT=3000
 
 RUN addgroup --system --gid 1001 nodejs \
- && adduser --system --uid 1001 nextjs \
- && mkdir -p /app/.next/cache/images /app/uploads/documents /app/config /app/public/images/opengraph/cache \
- && chown -R nextjs:nodejs /app
+ && adduser --system --uid 1001 nextjs
 
-# All runtime artefacts are copied read-only (0555 = r-xr-xr-x). The
-# `nextjs` user only needs to read/load these and execute traversal +
-# the .bin shims and .node binaries inside node_modules. Writable state
-# (cache, uploads, config) lives on the VOLUMEs declared below.
-COPY --from=prod-deps --chown=nextjs:nodejs --chmod=0555 /app/node_modules ./node_modules
-COPY --from=builder --chown=nextjs:nodejs --chmod=0555 /app/.next ./.next
-COPY --from=builder --chown=nextjs:nodejs --chmod=0555 /app/public ./public
-COPY --from=builder --chown=nextjs:nodejs --chmod=0555 /app/server ./server
-COPY --from=builder --chown=nextjs:nodejs --chmod=0555 /app/cli ./cli
-COPY --from=builder --chown=nextjs:nodejs --chmod=0555 /app/bin ./bin
-COPY --from=builder --chown=nextjs:nodejs --chmod=0555 /app/server.js ./server.js
-COPY --from=builder --chown=nextjs:nodejs --chmod=0555 /app/docker-entrypoint.js ./docker-entrypoint.js
-COPY --from=builder --chown=nextjs:nodejs --chmod=0555 /app/next.config.js ./next.config.js
-COPY --from=builder --chown=nextjs:nodejs --chmod=0555 /app/package.json ./package.json
+# All runtime artefacts are copied owned by root with read-only perms
+# (0555 = r-xr-xr-x). The `nextjs` user only needs to read/load these
+# and traverse directories - they should not be able to mutate the
+# image FS, and they should not own the resources (a non-root owner can
+# always chmod themselves write back). Writable runtime state (cache,
+# uploads, config) is re-prepared in the RUN layer below.
+COPY --from=prod-deps --chown=root:root --chmod=0555 /app/node_modules ./node_modules
+COPY --from=builder --chown=root:root --chmod=0555 /app/.next ./.next
+COPY --from=builder --chown=root:root --chmod=0555 /app/public ./public
+COPY --from=builder --chown=root:root --chmod=0555 /app/server ./server
+COPY --from=builder --chown=root:root --chmod=0555 /app/cli ./cli
+COPY --from=builder --chown=root:root --chmod=0555 /app/bin ./bin
+COPY --from=builder --chown=root:root --chmod=0555 /app/server.js ./server.js
+COPY --from=builder --chown=root:root --chmod=0555 /app/docker-entrypoint.js ./docker-entrypoint.js
+COPY --from=builder --chown=root:root --chmod=0555 /app/next.config.js ./next.config.js
+COPY --from=builder --chown=root:root --chmod=0555 /app/package.json ./package.json
+
+# Writable runtime state. Created AFTER the COPYs above so this layer
+# wins over any same-named directories the COPY may have brought in
+# (e.g. `public/images/opengraph/cache` is tracked in the repo).
+# Docker mounts VOLUME contents on top of these dirs at container
+# start; the perms here only matter for the brief window before any
+# named/anonymous volume is mounted, and as the seed permissions of
+# anonymous volumes Docker creates from these paths.
+RUN mkdir -p /app/.next/cache/images \
+             /app/uploads/documents \
+             /app/config \
+             /app/public/images/opengraph/cache \
+ && chown -R nextjs:nodejs /app/.next/cache \
+                           /app/uploads \
+                           /app/config \
+                           /app/public/images/opengraph/cache \
+ && chmod -R u+w /app/.next/cache \
+                 /app/uploads \
+                 /app/config \
+                 /app/public/images/opengraph/cache
 
 VOLUME /app/.next/cache/images
 VOLUME /app/public/images/opengraph/cache
