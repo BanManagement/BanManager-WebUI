@@ -38,12 +38,17 @@ describe('Admin server lifecycle', () => {
       cy.wrap($input).type(tableName)
     })
 
-    // Surface the actual createServer response so a server-side rejection
-    // (missing tables, console UUID lookup, etc.) produces an actionable
-    // assertion instead of a silent "URL didn't change" timeout.
+    // Surface the actual create/updateServer responses so a server-side
+    // rejection (missing tables, console UUID lookup, encryption mismatch,
+    // etc.) produces an actionable assertion instead of a silent "URL didn't
+    // change" timeout. Both mutations share the same form component so they
+    // can fail silently in the same way.
     cy.intercept('POST', '/graphql', (req) => {
-      if (typeof req.body?.query === 'string' && req.body.query.includes('createServer')) {
+      if (typeof req.body?.query !== 'string') return
+      if (req.body.query.includes('createServer')) {
         req.alias = 'createServer'
+      } else if (req.body.query.includes('updateServer')) {
+        req.alias = 'updateServer'
       }
     })
 
@@ -72,7 +77,14 @@ describe('Admin server lifecycle', () => {
     cy.get('[data-cy=server-name]').type(renamedServer)
     cy.get('[data-cy=submit-server-form]').click()
 
-    cy.url().should('match', /\/admin\/servers\/[^/]+$/)
+    cy.wait('@updateServer', { timeout: 15000 }).then(({ response }) => {
+      const errors = response?.body?.errors
+      const id = response?.body?.data?.updateServer?.id
+      expect(errors, `updateServer errors: ${JSON.stringify(errors)}`).to.equal(undefined)
+      expect(String(id || ''), 'updateServer returned no id').to.match(/^[\w-]+$/)
+    })
+
+    cy.url({ timeout: 10000 }).should('match', /\/admin\/servers\/[^/]+$/)
     cy.visit('/admin/servers')
     cy.get(`[data-cy=server-item][data-cy-server="${renamedServer}"]`).should('exist')
 

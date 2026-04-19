@@ -47,18 +47,25 @@ describe('Admin webhook lifecycle', () => {
           const id = response?.body?.data?.createWebhook?.id
           expect(errors, `createWebhook errors: ${JSON.stringify(errors)}`).to.equal(undefined)
           expect(String(id || ''), 'createWebhook returned no id').to.match(/^[\w-]+$/)
+          // Capture the new id directly from the mutation response so we
+          // never have to disambiguate via `.last()` on the list page (which
+          // is unreliable: listWebhooks has no ORDER BY, retries can leave
+          // older rows behind, and the mobile/desktop variants render twice).
+          cy.wrap(id).as('webhookId')
         })
 
+        // After the mutation we land on /admin/webhooks. The list page reads
+        // listWebhooks via SWR, which keeps the previous response cached past
+        // the navigation back from the add page (no revalidate-on-mount,
+        // defaults dedupe 2s), so the brand-new row may not appear. Force a
+        // reload so the assertions run against fresh data.
         cy.url().should('match', /\/admin\/webhooks\/?$/)
-        cy.get(`[data-cy=webhook-item][data-cy-template=${template}]`).should('exist')
+        cy.reload()
 
-        cy.get(`[data-cy=webhook-item][data-cy-template=${template}]`)
-          .last()
-          .as('webhookItem')
-
-        cy.get('@webhookItem')
-          .invoke('attr', 'data-cy-webhook-id')
-          .as('webhookId')
+        cy.get('@webhookId').then((id) => {
+          cy.get(`[data-cy=webhook-item][data-cy-webhook-id="${id}"]`, { timeout: 10000 })
+            .as('webhookItem')
+        })
 
         cy.get('@webhookItem').find('[data-cy=webhook-url-display]').should('contain.text', initialUrl)
 
