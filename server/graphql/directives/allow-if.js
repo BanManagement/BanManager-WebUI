@@ -39,7 +39,8 @@ function allowIfDirective () {
               !isNullableType(info.returnType) // Cover non-nullable fields
             ) {
               throw new ExposedError(
-                'You do not have permission to perform this action, please contact your server administrator')
+                'You do not have permission to perform this action, please contact your server administrator',
+                'NO_PERMISSION')
             }
 
             // @TODO Test more

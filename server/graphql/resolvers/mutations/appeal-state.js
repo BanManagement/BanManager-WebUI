@@ -6,19 +6,19 @@ const { subscribeAppeal, notifyAppeal } = require('../../../data/notification/ap
 module.exports = async function appealState (obj, { state: stateId, id }, { session, state }, info) {
   const [data] = await state.dbPool('bm_web_appeals').where({ id })
 
-  if (!data) throw new ExposedError(`Appeal ${id} does not exist`)
+  if (!data) throw new ExposedError(`Appeal ${id} does not exist`, 'APPEAL_NOT_FOUND')
 
   const canUpdate = state.acl.hasServerPermission(data.server_id, 'player.appeals', 'update.state.any') ||
     (state.acl.hasServerPermission(data.server_id, 'player.appeals', 'update.state.own') && state.acl.owns(data.actor_id)) ||
     (state.acl.hasServerPermission(data.server_id, 'player.appeals', 'update.state.assigned') && state.acl.owns(data.assignee_id))
 
   if (!canUpdate) {
-    throw new ExposedError('You do not have permission to perform this action, please contact your server administrator')
+    throw new ExposedError('You do not have permission to perform this action, please contact your server administrator', 'NO_PERMISSION')
   }
 
   const row = await state.dbPool('bm_web_appeal_states').where('id', stateId).first()
 
-  if (!row) throw new ExposedError(`Appeal State ${stateId} does not exist`)
+  if (!row) throw new ExposedError(`Appeal State ${stateId} does not exist`, 'APPEAL_STATE_NOT_FOUND')
 
   let commentId
 

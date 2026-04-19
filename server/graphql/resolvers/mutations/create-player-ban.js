@@ -21,7 +21,7 @@ module.exports = async function createPlayerBan (obj, { input }, { session, stat
     id = insertId
   } catch (e) {
     if (e.code === 'ER_DUP_ENTRY') {
-      throw new ExposedError('Player already banned on selected server, please unban first')
+      throw new ExposedError('Player already banned on selected server, please unban first', 'ALREADY_EXISTS')
     }
 
     throw e

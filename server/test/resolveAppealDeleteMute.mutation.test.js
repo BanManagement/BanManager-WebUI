@@ -40,8 +40,8 @@ describe('Mutation resolveAppealDeleteMute', () => {
     assert.strictEqual(statusCode, 200)
 
     assert(body)
-    assert.strictEqual(body.errors[0].message,
-      'You do not have permission to perform this action, please contact your server administrator')
+    assert.strictEqual(body.errors[0].message, 'You are not logged in')
+    assert.strictEqual(body.errors[0].extensions.appCode, 'NOT_LOGGED_IN')
   })
 
   test('should allow update.state.any', async () => {

@@ -8,21 +8,21 @@ module.exports = async function createAppealComment (obj, { id: appealId, input 
   const [appeal] = await state.dbPool('bm_web_appeals')
     .where({ id: appealId })
 
-  if (!appeal) throw new ExposedError(`Appeal ${appealId} does not exist`)
+  if (!appeal) throw new ExposedError(`Appeal ${appealId} does not exist`, 'APPEAL_NOT_FOUND')
 
   const hasPermission = state.acl.hasServerPermission(appeal.server_id, 'player.appeals', 'comment.any') ||
     (state.acl.hasServerPermission(appeal.server_id, 'player.appeals', 'comment.own') && state.acl.owns(appeal.actor_id)) ||
     (state.acl.hasServerPermission(appeal.server_id, 'player.appeals', 'comment.assigned') && state.acl.owns(appeal.assignee_id))
 
-  if (!hasPermission) throw new ExposedError('You do not have permission to perform this action, please contact your server administrator')
-  if (appeal.state_id > 2) throw new ExposedError('You cannot comment on a closed appeal')
+  if (!hasPermission) throw new ExposedError('You do not have permission to perform this action, please contact your server administrator', 'NO_PERMISSION')
+  if (appeal.state_id > 2) throw new ExposedError('You cannot comment on a closed appeal', 'INVALID_STATE')
 
   const hasDocuments = input.documents && input.documents.length > 0
 
   if (hasDocuments) {
     const hasAttachPermission = state.acl.hasServerPermission(appeal.server_id, 'player.appeals', 'attachment.create')
     if (!hasAttachPermission) {
-      throw new ExposedError('You do not have permission to attach files')
+      throw new ExposedError('You do not have permission to attach files', 'NO_PERMISSION')
     }
   }
 

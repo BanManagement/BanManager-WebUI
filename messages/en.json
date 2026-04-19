@@ -1,0 +1,221 @@
+{
+  "common": {
+    "login": "Login",
+    "logout": "Logout",
+    "cancel": "Cancel",
+    "save": "Save",
+    "submit": "Submit",
+    "delete": "Delete",
+    "edit": "Edit",
+    "back": "Back",
+    "continue": "Continue",
+    "loading": "Loading…",
+    "search": "Search",
+    "yes": "Yes",
+    "no": "No",
+    "ok": "OK",
+    "siteName": "Ban Management",
+    "version": "Version"
+  },
+  "nav": {
+    "login": "Login",
+    "createAppeal": "Create Appeal",
+    "language": "Language",
+    "home": "Home",
+    "openMenu": "Open menu",
+    "admin": "Admin",
+    "dashboard": "Dashboard",
+    "notifications": "Notifications",
+    "account": "Account",
+    "profile": "Profile",
+    "viewProfile": "View profile"
+  },
+  "footer": {
+    "powered": "Powered by"
+  },
+  "pages": {
+    "login": {
+      "title": "Login",
+      "subtitle": "Welcome back",
+      "forgotPassword": "Forgot password or create account?"
+    },
+    "register": {
+      "title": "Register",
+      "subtitle": "Create your account"
+    },
+    "forgottenPassword": {
+      "title": "Forgotten Password",
+      "subtitle": "We'll email you a reset link"
+    },
+    "appeal": {
+      "title": "Create Appeal",
+      "subtitle": "Submit a punishment appeal",
+      "documentTitle": "Appeal",
+      "stepHeader": {
+        "step1": "Pin Login",
+        "selectPunishment": "Select Punishment"
+      },
+      "intro": "First, we need to know who you are.",
+      "pinHelp": "I have a 6 digit pin, e.g. ",
+      "pinDescription": "This can be found when you join the Minecraft server, either on the ban screen or by using the {command} command.",
+      "pinExpiry": "Note: this pin expires after 5 minutes.",
+      "or": "OR",
+      "haveAccount": "I already have an account",
+      "haveAccountDescription": "This is specific for this website and NOT your Microsoft/Mojang credentials."
+    },
+    "account": {
+      "documentTitle": "Account",
+      "subtitle": "Account",
+      "register": "Register",
+      "email": "Email",
+      "password": "Password"
+    },
+    "notFound": {
+      "title": "Oops! Page Not Found",
+      "subtitle": "An error occurred",
+      "documentTitle": "Not Found",
+      "intro": "Looks like you've taken a wrong turn! This page must be hiding.",
+      "directions": "Let's find our way back together:",
+      "homepage": "Head to the Homepage",
+      "homepageHint": " - start a new adventure!",
+      "search": "Use the search bar above to find what you're looking for.",
+      "back": "Try going back to the previous page."
+    },
+    "serverError": {
+      "title": "Server Error",
+      "subtitle": "Something went wrong",
+      "intro": "We're sorry, something went wrong on our end. Please try again later.",
+      "documentTitle": "Server Error"
+    },
+    "admin": {
+      "title": "Admin",
+      "developerMode": "Developer Mode",
+      "developerModeMessage": "You are currently running in development mode, expect performance degradation",
+      "updateAvailable": "Update Available",
+      "currentVersion": "Current version: {current}",
+      "latestVersion": "Latest: {latest}",
+      "newFeatures": "New Features",
+      "fixes": "Fixes"
+    }
+  },
+  "errors": {
+    "header": "Error",
+    "fetchHeader": "Fetch Error",
+    "httpHeader": "HTTP error: {status}",
+    "invalidJson": "Invalid JSON",
+    "INTERNAL": "Internal Server Error",
+    "UNKNOWN": "An unknown error occurred",
+    "NO_PERMISSION": "You do not have permission to perform this action",
+    "NOT_LOGGED_IN": "You are not logged in",
+    "SERVER_NOT_FOUND": "Server not found",
+    "PLAYER_NOT_FOUND": "Player not found",
+    "ROLE_NOT_FOUND": "Role not found",
+    "REPORT_NOT_FOUND": "Report not found",
+    "APPEAL_NOT_FOUND": "Appeal not found",
+    "BAN_NOT_FOUND": "Ban not found",
+    "MUTE_NOT_FOUND": "Mute not found",
+    "WARNING_NOT_FOUND": "Warning not found",
+    "NOTE_NOT_FOUND": "Note not found",
+    "WEBHOOK_NOT_FOUND": "Webhook not found",
+    "RULE_NOT_FOUND": "Rule not found",
+    "DOCUMENT_NOT_FOUND": "Document not found",
+    "INVALID_INPUT": "Invalid input",
+    "INVALID_EMAIL": "Email address is invalid",
+    "INVALID_PASSWORD": "Password is invalid",
+    "INVALID_LOCALE": "Locale is not supported",
+    "EMAIL_IN_USE": "Email already in use",
+    "PASSWORD_BREACHED": "This password isn't safe to use as it's appeared in {count, plural, one {# known data breach} other {# known data breaches}}",
+    "PASSWORD_COMPROMISED": "This password isn't safe to use as it's appeared in {count, plural, one {# known data breach} other {# known data breaches}}",
+    "RATE_LIMIT": "Too many attempts. Please try again later.",
+    "DUPLICATE_APPEAL": "You already have an open appeal for this punishment",
+    "ALREADY_RESOLVED": "This has already been resolved",
+    "ALREADY_EXISTS": "This already exists",
+    "INVALID_NAME": "Name is invalid",
+    "INVALID_PIN": "Pin is invalid",
+    "INVALID_TARGET": "You cannot perform this action on yourself",
+    "INVALID_STATE": "Invalid state transition",
+    "INCORRECT_LOGIN": "Incorrect login details",
+    "REPORT_COMMENT_NOT_FOUND": "Report comment not found",
+    "APPEAL_COMMENT_NOT_FOUND": "Appeal comment not found",
+    "USER_NOT_FOUND": "User not found",
+    "NOTIFICATION_NOT_FOUND": "Notification not found",
+    "PUNISHMENT_NOT_FOUND": "Punishment not found",
+    "PUNISHMENT_NOT_ACTIVE": "This punishment is no longer active",
+    "REPORT_STATE_NOT_FOUND": "Report state not found",
+    "APPEAL_STATE_NOT_FOUND": "Appeal state not found",
+    "MUTE_RECORD_NOT_FOUND": "Mute record not found",
+    "BAN_RECORD_NOT_FOUND": "Ban record not found",
+    "KICK_NOT_FOUND": "Kick not found",
+    "INTERVAL_TOO_LARGE": "The requested interval is too large",
+    "LIMIT_TOO_LARGE": "The requested limit is too large",
+    "OFFSET_OUT_OF_RANGE": "Offset is greater than the available data",
+    "DB_CONNECTION_ERROR": "Could not connect to the database",
+    "MISSING_DATABASE_TABLES": "Required database tables are missing",
+    "CONSOLE_UUID_NOT_FOUND": "Console player not found",
+    "EXAMPLE_PAYLOAD_NOT_FOUND": "Example payload not found",
+    "CANNOT_DELETE_LAST_SERVER": "You cannot delete the last server",
+    "DEFAULT_ROLE_PROTECTED": "The default role cannot be modified",
+    "DEFAULT_ROLE_PARENT_FORBIDDEN": "The default role cannot be a parent",
+    "NO_ACCOUNT": "No account is associated with this email",
+    "SUBSCRIPTION_EXISTS": "Subscription already exists",
+    "SERVER_PERMISSION_DENIED": "You do not have access to this server"
+  },
+  "forms": {
+    "email": "Email address",
+    "password": "Password",
+    "currentPassword": "Current password",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm Password",
+    "username": "Username",
+    "name": "Name",
+    "reason": "Reason",
+    "message": "Message",
+    "comment": "Add your comment here...",
+    "playerSelectorPlaceholder": "Search player",
+    "required": "This field is required",
+    "minLength": "Must be at least {n} characters",
+    "maxLength": "Must be at most {n} characters",
+    "passwordMismatch": "Passwords do not match"
+  },
+  "widgets": {
+    "select": {
+      "noOptions": "No options",
+      "noPlayersFound": "No players found",
+      "selectPlaceholder": "Select…",
+      "loading": "Loading…"
+    },
+    "languageSwitcher": {
+      "label": "Language",
+      "select": "Select language"
+    }
+  },
+  "components": {
+    "appealStep": {
+      "progress": "{step} of {total}",
+      "next": "Next: {next}"
+    }
+  },
+  "notifications": {
+    "appealCreated": "<b>{name}</b> created an appeal",
+    "appealCommentOwn": "<b>{name}</b> commented on your appeal",
+    "appealCommentOther": "<b>{name}</b> added a comment",
+    "appealAssignedOwn": "{actor} assigned <b>{assignee}</b> to review your appeal",
+    "appealAssignedOther": "<b>{actor}</b> assigned <b>{assignee}</b> to review appeal",
+    "appealStateOwn": "{actor} <b>{state}</b> your appeal",
+    "appealStateOther": "{actor} <b>{state}</b> appeal",
+    "reportCommentOwn": "{name} commented on your report",
+    "reportCommentOther": "<b>{name}</b> added a comment",
+    "reportAssignedOwn": "{actor} assigned <b>{assignee}</b> to review your report against {player}",
+    "reportAssignedOther": "<b>{actor}</b> assigned <b>{assignee}</b> to review report",
+    "reportStateOwn": "{actor} <b>{state}</b> your report",
+    "reportStateOther": "{actor} <b>{state}</b> report",
+    "stateLabels": {
+      "open": "opened",
+      "closed": "closed",
+      "approved": "approved",
+      "denied": "denied",
+      "resolved": "resolved",
+      "unresolved": "unresolved"
+    }
+  }
+}

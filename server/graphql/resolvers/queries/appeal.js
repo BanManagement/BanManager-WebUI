@@ -14,7 +14,7 @@ module.exports = async function appeal (obj, { id }, { session, state }, info) {
     .leftJoin('bm_web_appeal_states AS states', 'states.id', `${table}.state_id`)
     .first()
 
-  if (!data) throw new ExposedError(`Appeal ${id} does not exist`)
+  if (!data) throw new ExposedError(`Appeal ${id} does not exist`, 'APPEAL_NOT_FOUND')
 
   if (!state.acl.hasServerPermission(data.server_id, 'player.appeals', 'view.any')) {
     const canView = (state.acl.hasServerPermission(data.server_id, 'player.appeals', 'view.own') && state.acl.owns(data.actor_id)) ||
@@ -22,7 +22,7 @@ module.exports = async function appeal (obj, { id }, { session, state }, info) {
 
     if (!canView) {
       throw new ExposedError(
-        'You do not have permission to perform this action, please contact your server administrator')
+        'You do not have permission to perform this action, please contact your server administrator', 'NO_PERMISSION')
     }
   }
 

@@ -5,7 +5,7 @@ const { getReportSubscription } = require('../../../data/notification/report')
 
 // eslint-disable-next-line complexity
 module.exports = async function report (obj, { id, serverId }, { session, state }, info) {
-  if (!state.serversPool.has(serverId)) throw new ExposedError('Server not found')
+  if (!state.serversPool.has(serverId)) throw new ExposedError('Server not found', 'SERVER_NOT_FOUND')
 
   const server = state.serversPool.get(serverId)
   const table = server.config.tables.playerReports
@@ -16,7 +16,7 @@ module.exports = async function report (obj, { id, serverId }, { session, state 
       .select('actor_id', 'player_id', 'assignee_id')
       .where({ id })
 
-    if (!aclCheck) throw new ExposedError('Report not found')
+    if (!aclCheck) throw new ExposedError('Report not found', 'REPORT_NOT_FOUND')
 
     const canView = (state.acl.hasServerPermission(serverId, 'player.reports', 'view.own') && state.acl.owns(aclCheck.actor_id)) ||
       (state.acl.hasServerPermission(serverId, 'player.reports', 'view.assigned') && state.acl.owns(aclCheck.assignee_id)) ||
@@ -24,7 +24,7 @@ module.exports = async function report (obj, { id, serverId }, { session, state 
 
     if (!canView) {
       throw new ExposedError(
-        'You do not have permission to perform this action, please contact your server administrator')
+        'You do not have permission to perform this action, please contact your server administrator', 'NO_PERMISSION')
     }
   }
 
@@ -41,7 +41,7 @@ module.exports = async function report (obj, { id, serverId }, { session, state 
 
   const [data] = await query.exec()
 
-  if (!data) throw new ExposedError('Report not found')
+  if (!data) throw new ExposedError('Report not found', 'REPORT_NOT_FOUND')
 
   // Add serverId to data for document resolver
   data.serverId = serverId

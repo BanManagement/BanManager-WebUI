@@ -2,8 +2,12 @@
 import { toHTML } from '@odiffey/discord-markdown'
 import fillTemplate from 'es6-dynamic-template'
 import Image from 'next/image'
+import { useFormatter, useTranslations } from 'next-intl'
 
 export default function DiscordPreview ({ json, variables }) {
+  const format = useFormatter()
+  const t = useTranslations('errors')
+
   if (!json) return null
 
   let content = json
@@ -15,8 +19,10 @@ export default function DiscordPreview ({ json, variables }) {
   try {
     content = JSON.parse(content)
   } catch (e) {
-    return <div className='text-red-500'>Invalid JSON</div>
+    return <div className='text-red-500'>{t('invalidJson')}</div>
   }
+
+  const formatTimestamp = (value) => format.dateTime(new Date(value), { dateStyle: 'medium', timeStyle: 'short' })
 
   return (
     <div className='discord-preview shrink'>
@@ -27,7 +33,7 @@ export default function DiscordPreview ({ json, variables }) {
         <div className='grow'>
           <p className='leading-none h-5'>
             <span className='hover:underline cursor-pointer underline-offset-1 decoration-1 font-medium text-[#f2f3f5] text-base'>BanManager</span>
-            <span className='font-medium ml-1 cursor-default text-xs align-baseline text-[#949BA4]'>{new Date(content.timestamp || Date.now()).toLocaleString()}</span>
+            <span className='font-medium ml-1 cursor-default text-xs align-baseline text-[#949BA4]'>{formatTimestamp(content.timestamp || Date.now())}</span>
           </p>
           {content.content && <div className='discord-content' dangerouslySetInnerHTML={{ __html: toHTML(content.content) }} />}
           {content.embeds && (
@@ -53,7 +59,7 @@ export default function DiscordPreview ({ json, variables }) {
                   <div className='discord-embed-footer'>
                     {embed.footer.icon_url && <img src={embed.footer.icon_url} alt='footer icon' className='discord-embed-footer-icon' />}
                     <span>{embed.footer.text}</span>
-                    {embed.timestamp && <span>{new Date(embed.timestamp).toLocaleString()}</span>}
+                    {embed.timestamp && <span>{formatTimestamp(embed.timestamp)}</span>}
                   </div>
                 )}
               </div>))}

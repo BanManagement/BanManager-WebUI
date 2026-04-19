@@ -3,7 +3,7 @@ const ExposedError = require('../../../data/exposed-error')
 const { getNotificationType, getNotificationState } = require('../../../data/notification')
 
 module.exports = async function listNotifications (obj, { limit, offset }, { session, state }, info) {
-  if (limit > 50) throw new ExposedError('Limit too large')
+  if (limit > 50) throw new ExposedError('Limit too large', 'LIMIT_TOO_LARGE')
 
   const data = {}
   const filter = state.dbPool('bm_web_notifications AS n1')

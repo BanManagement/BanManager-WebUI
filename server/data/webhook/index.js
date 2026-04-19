@@ -76,7 +76,7 @@ const generateExamplePayload = async (session, state, type) => {
   const examplePayload = examplePayloads[type]
 
   if (!examplePayload) {
-    throw new ExposedError(`No example payload found for type ${type}`)
+    throw new ExposedError(`No example payload found for type ${type}`, 'EXAMPLE_PAYLOAD_NOT_FOUND')
   }
 
   if (examplePayload.actorId) {

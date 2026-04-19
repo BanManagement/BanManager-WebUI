@@ -1,19 +1,22 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { useTranslations } from 'next-intl'
 import { MdLock, MdOutlineEmail } from 'react-icons/md'
 import Input from './Input'
 import Button from './Button'
 import { useRouter } from 'next/router'
+import { translateRestError } from '../utils/locale'
 
 export default function PlayerRegisterForm () {
   const router = useRouter()
+  const t = useTranslations()
   const [error, setError] = useState(null)
   const { handleSubmit, formState, register } = useForm()
   const { isSubmitting } = formState
 
   const onSubmit = async (data) => {
     if (data.password !== data.confirmPassword) {
-      return setError(new Error('Passwords do not match'))
+      return setError(new Error(t('forms.passwordMismatch')))
     }
 
     try {
@@ -28,7 +31,7 @@ export default function PlayerRegisterForm () {
       if (response.status !== 204) {
         const responseData = await response.json()
 
-        throw new Error(responseData.error)
+        throw translateRestError(t, responseData)
       }
 
       router.push('/dashboard')
@@ -42,7 +45,7 @@ export default function PlayerRegisterForm () {
       <div className='flex flex-col relative w-full'>
         <Input
           required
-          label='Email address'
+          label={t('forms.email')}
           minLength={6}
           type='email'
           icon={<MdOutlineEmail />}
@@ -53,18 +56,18 @@ export default function PlayerRegisterForm () {
         />
         <Input
           required
-          label='Password'
+          label={t('forms.password')}
           minLength={6}
           type='password'
           icon={<MdLock />}
           iconPosition='left'
           data-cy='password'
-          description='Must be at least 6 characters long'
+          description={t('forms.minLength', { n: 6 })}
           {...register('password')}
         />
         <Input
           required
-          label='Confirm Password'
+          label={t('forms.confirmPassword')}
           minLength={6}
           type='password'
           icon={<MdLock />}
@@ -74,7 +77,7 @@ export default function PlayerRegisterForm () {
           {...register('confirmPassword')}
         />
         <Button data-cy='submit-register' disabled={isSubmitting} loading={isSubmitting}>
-          Confirm
+          {t('common.continue')}
         </Button>
       </div>
     </form>

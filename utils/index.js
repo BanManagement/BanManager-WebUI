@@ -141,6 +141,7 @@ const userFetcher = () =>
     id
     name
     email
+    locale
     hasAccount
     session {
       type

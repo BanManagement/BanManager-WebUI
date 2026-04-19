@@ -10,11 +10,11 @@ module.exports = async function setRoles (obj, { player, input: { roles, serverR
   const dataRoles = await state.dbPool('bm_web_roles').whereIn('role_id', roleIds)
 
   if (dataRoles.filter(Boolean).length !== roleIds.length) {
-    throw new ExposedError('Invalid role provided')
+    throw new ExposedError('Invalid role provided', 'INVALID_INPUT')
   }
 
   serverRoles.forEach(role => {
-    if (!state.serversPool.get(role.server.id)) throw new ExposedError(`Server ${role.server.id} does not exist`)
+    if (!state.serversPool.get(role.server.id)) throw new ExposedError(`Server ${role.server.id} does not exist`, 'SERVER_NOT_FOUND')
   })
 
   const globalRoles = roles.map(role => ({ role_id: role.id, player_id: player }))

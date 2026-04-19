@@ -6,27 +6,27 @@ const reportComment = require('../queries/report-comment')
 module.exports = async function createReportComment (obj, { report: reportId, serverId, input }, { session, state }, info) {
   const server = state.serversPool.get(serverId)
 
-  if (!server) throw new ExposedError(`Server ${serverId} does not exist`)
+  if (!server) throw new ExposedError(`Server ${serverId} does not exist`, 'SERVER_NOT_FOUND')
 
   const [data] = await server.pool(server.config.tables.playerReports)
     .where({ id: reportId })
 
-  if (!data) throw new ExposedError(`Report ${reportId} does not exist`)
+  if (!data) throw new ExposedError(`Report ${reportId} does not exist`, 'REPORT_NOT_FOUND')
 
   const hasPermission = state.acl.hasServerPermission(serverId, 'player.reports', 'comment.any') ||
     (state.acl.hasServerPermission(serverId, 'player.reports', 'comment.own') && state.acl.owns(data.actor_id)) ||
     (state.acl.hasServerPermission(serverId, 'player.reports', 'comment.assigned') && state.acl.owns(data.assignee_id)) ||
     (state.acl.hasServerPermission(serverId, 'player.reports', 'comment.reported') && state.acl.owns(data.player_id))
 
-  if (!hasPermission) throw new ExposedError('You do not have permission to perform this action, please contact your server administrator')
-  if (data.state_id > 2) throw new ExposedError('You cannot comment on a closed report')
+  if (!hasPermission) throw new ExposedError('You do not have permission to perform this action, please contact your server administrator', 'NO_PERMISSION')
+  if (data.state_id > 2) throw new ExposedError('You cannot comment on a closed report', 'INVALID_STATE')
 
   const hasDocuments = input.documents && input.documents.length > 0
 
   if (hasDocuments) {
     const hasAttachPermission = state.acl.hasServerPermission(serverId, 'player.reports', 'attachment.create')
     if (!hasAttachPermission) {
-      throw new ExposedError('You do not have permission to attach files')
+      throw new ExposedError('You do not have permission to attach files', 'NO_PERMISSION')
     }
   }
 

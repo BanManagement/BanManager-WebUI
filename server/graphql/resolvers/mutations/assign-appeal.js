@@ -9,25 +9,25 @@ module.exports = async function assignAppeal (obj, { player, id }, { session, st
     .where({ id })
     .first()
 
-  if (!data) throw new ExposedError(`Appeal ${id} does not exist`)
+  if (!data) throw new ExposedError(`Appeal ${id} does not exist`, 'APPEAL_NOT_FOUND')
 
   const hasPermission = state.acl.hasServerPermission(data.server_id, 'player.appeals', 'update.assign.any') ||
       (state.acl.hasServerPermission(data.server_id, 'player.appeals', 'update.assign.own') && state.acl.owns(data.actor_id)) ||
       (state.acl.hasServerPermission(data.server_id, 'player.appeals', 'update.assign.assigned') && state.acl.owns(data.assignee_id))
 
-  if (!hasPermission) throw new ExposedError('You do not have permission to perform this action, please contact your server administrator')
-  if (data.actor_id.equals(player)) throw new ExposedError('You cannot assign an appeal to the player which created it')
+  if (!hasPermission) throw new ExposedError('You do not have permission to perform this action, please contact your server administrator', 'NO_PERMISSION')
+  if (data.actor_id.equals(player)) throw new ExposedError('You cannot assign an appeal to the player which created it', 'INVALID_TARGET')
 
   const server = state.serversPool.get(data.server_id)
 
-  if (!server) throw new ExposedError(`Server ${data.server_id} does not exist`)
+  if (!server) throw new ExposedError(`Server ${data.server_id} does not exist`, 'SERVER_NOT_FOUND')
 
   const playerData = await server.pool(server.config.tables.players)
     .select('id')
     .where('id', player)
     .first()
 
-  if (!playerData) throw new ExposedError(`Player ${unparse(player)} does not exist`)
+  if (!playerData) throw new ExposedError(`Player ${unparse(player)} does not exist`, 'PLAYER_NOT_FOUND')
 
   let commentId
 

@@ -23,7 +23,7 @@ module.exports = async function createPlayerMute (obj, { input }, { session, sta
     id = insertId
   } catch (e) {
     if (e.code === 'ER_DUP_ENTRY') {
-      throw new ExposedError('Player already muted on selected server, please unmute first')
+      throw new ExposedError('Player already muted on selected server, please unmute first', 'ALREADY_EXISTS')
     }
 
     throw e

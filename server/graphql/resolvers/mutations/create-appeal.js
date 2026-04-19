@@ -5,7 +5,7 @@ const { triggerWebhook } = require('../../../data/webhook')
 const { unparse } = require('uuid-parse')
 
 module.exports = async function createAppeal (obj, { input: { serverId, punishmentId, type, reason, documents } }, { log, state, session }, info) {
-  if (!state.serversPool.has(serverId)) throw new ExposedError('Server does not exist')
+  if (!state.serversPool.has(serverId)) throw new ExposedError('Server does not exist', 'SERVER_NOT_FOUND')
 
   const exists = await state.dbPool('bm_web_appeals')
     .where({ server_id: serverId, punishment_id: punishmentId, punishment_type: type })
@@ -13,7 +13,7 @@ module.exports = async function createAppeal (obj, { input: { serverId, punishme
     .first()
 
   if (exists) {
-    throw new ExposedError('An appeal already exists for this punishment')
+    throw new ExposedError('An appeal already exists for this punishment', 'ALREADY_EXISTS')
   }
 
   const server = state.serversPool.get(serverId)
@@ -25,7 +25,7 @@ module.exports = async function createAppeal (obj, { input: { serverId, punishme
     case 'PlayerBan':
       if (!canAny && !state.acl.hasServerPermission(serverId, 'player.appeals', 'create.ban')) {
         throw new ExposedError(
-          'You do not have permission to perform this action, please contact your server administrator')
+          'You do not have permission to perform this action, please contact your server administrator', 'NO_PERMISSION')
       }
 
       data = await server.pool(server.config.tables.playerBans).where({ id: punishmentId }).first()
@@ -34,7 +34,7 @@ module.exports = async function createAppeal (obj, { input: { serverId, punishme
     case 'PlayerKick':
       if (!canAny && !state.acl.hasServerPermission(serverId, 'player.appeals', 'create.kick')) {
         throw new ExposedError(
-          'You do not have permission to perform this action, please contact your server administrator')
+          'You do not have permission to perform this action, please contact your server administrator', 'NO_PERMISSION')
       }
 
       data = await server.pool(server.config.tables.playerKicks).where({ id: punishmentId }).first()
@@ -43,7 +43,7 @@ module.exports = async function createAppeal (obj, { input: { serverId, punishme
     case 'PlayerMute':
       if (!canAny && !state.acl.hasServerPermission(serverId, 'player.appeals', 'create.mute')) {
         throw new ExposedError(
-          'You do not have permission to perform this action, please contact your server administrator')
+          'You do not have permission to perform this action, please contact your server administrator', 'NO_PERMISSION')
       }
 
       data = await server.pool(server.config.tables.playerMutes).where({ id: punishmentId }).first()
@@ -52,19 +52,19 @@ module.exports = async function createAppeal (obj, { input: { serverId, punishme
     case 'PlayerWarning':
       if (!canAny && !state.acl.hasServerPermission(serverId, 'player.appeals', 'create.warning')) {
         throw new ExposedError(
-          'You do not have permission to perform this action, please contact your server administrator')
+          'You do not have permission to perform this action, please contact your server administrator', 'NO_PERMISSION')
       }
 
       data = await server.pool(server.config.tables.playerWarnings).where({ id: punishmentId }).first()
 
       break
     default:
-      throw new ExposedError(`Invalid ${type} as punishment type`)
+      throw new ExposedError(`Invalid ${type} as punishment type`, 'INVALID_INPUT')
   }
 
-  if (!data) throw new ExposedError(`Could not find ${type} of id ${punishmentId}`)
+  if (!data) throw new ExposedError(`Could not find ${type} of id ${punishmentId}`, 'PUNISHMENT_NOT_FOUND')
 
-  if (!state.acl.owns(data.player_id)) throw new ExposedError('You cannot appeal a punishment you do not own')
+  if (!state.acl.owns(data.player_id)) throw new ExposedError('You cannot appeal a punishment you do not own', 'INVALID_TARGET')
 
   const appeal = {
     server_id: serverId,

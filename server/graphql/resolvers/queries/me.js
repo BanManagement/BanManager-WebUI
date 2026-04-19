@@ -17,7 +17,7 @@ module.exports = async function me (obj, info, { session, state, log }) {
     }
   }
 
-  const [checkResult] = await state.dbPool('bm_web_users').select('email').where('player_id', session.playerId)
+  const [checkResult] = await state.dbPool('bm_web_users').select('email', 'locale').where('player_id', session.playerId)
   let playerData = {}
 
   try {
@@ -32,6 +32,7 @@ module.exports = async function me (obj, info, { session, state, log }) {
     ...playerData,
     hasAccount: Boolean(checkResult?.email),
     email: checkResult ? checkResult.email : null,
+    locale: checkResult ? checkResult.locale : null,
     session: {
       type: session.type
     },

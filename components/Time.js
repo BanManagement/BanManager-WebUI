@@ -1,22 +1,45 @@
-import { format, formatDistance, formatDuration, formatISODuration, fromUnixTime, intervalToDuration } from 'date-fns'
-import { fromNow } from '../utils'
-import { formatDistanceLocale } from '../utils/format-distance'
+import { format, formatDistance, formatDistanceStrict, formatDuration, formatISODuration, fromUnixTime, intervalToDuration } from 'date-fns'
+import { formatDistanceLocale, useDateFnsLocale } from '../utils/format-distance'
+
+const safeFormat = (date, pattern, locale) => {
+  try {
+    return format(date, pattern, locale ? { locale } : undefined)
+  } catch (e) {
+    if (process.env.NODE_ENV !== 'production') {
+      // eslint-disable-next-line no-console
+      console.warn('[i18n] date-fns format failed, falling back to default locale:', { pattern, localeCode: locale?.code, error: e?.message })
+    }
+
+    return format(date, pattern)
+  }
+}
 
 export function TimeFromNow ({ timestamp }) {
-  const formatted = format(fromUnixTime(timestamp), 'd MMM yyyy, H:mm z')
+  const dateFnsLocale = useDateFnsLocale()
+  const date = fromUnixTime(timestamp)
+  const formatted = safeFormat(date, 'd MMM yyyy, H:mm z', dateFnsLocale)
+
+  let relative
+
+  try {
+    relative = formatDistanceStrict(date, new Date(), { addSuffix: true, locale: dateFnsLocale || undefined })
+  } catch (e) {
+    relative = timestamp
+  }
 
   return (
     <time
-      dateTime={fromUnixTime(timestamp).toISOString()}
+      dateTime={date.toISOString()}
       title={formatted}
     >
-      {fromNow(timestamp)}
+      {relative}
     </time>
   )
 }
 
 export function Time ({ timestamp }) {
-  const formatted = format(fromUnixTime(timestamp), 'd MMM yyyy, H:mm z')
+  const dateFnsLocale = useDateFnsLocale()
+  const formatted = safeFormat(fromUnixTime(timestamp), 'd MMM yyyy, H:mm z', dateFnsLocale)
 
   return (
     <time
@@ -29,12 +52,13 @@ export function Time ({ timestamp }) {
 }
 
 export function TimeDuration ({ startTimestamp, endTimestamp }) {
+  const dateFnsLocale = useDateFnsLocale()
   const duration = intervalToDuration({
     start: fromUnixTime(startTimestamp),
     end: fromUnixTime(endTimestamp)
   })
-  const exactFormatted = formatDuration(duration)
-  const formatted = formatDistance(fromUnixTime(startTimestamp), fromUnixTime(endTimestamp))
+  const exactFormatted = formatDuration(duration, dateFnsLocale ? { locale: dateFnsLocale } : undefined)
+  const formatted = formatDistance(fromUnixTime(startTimestamp), fromUnixTime(endTimestamp), dateFnsLocale ? { locale: dateFnsLocale } : undefined)
 
   return (
     <time
@@ -47,11 +71,12 @@ export function TimeDuration ({ startTimestamp, endTimestamp }) {
 }
 
 export function TimeDurationAbbreviated ({ startTimestamp, endTimestamp }) {
+  const dateFnsLocale = useDateFnsLocale()
   const duration = intervalToDuration({
     start: fromUnixTime(startTimestamp),
     end: fromUnixTime(endTimestamp)
   })
-  const exactFormatted = formatDuration(duration)
+  const exactFormatted = formatDuration(duration, dateFnsLocale ? { locale: dateFnsLocale } : undefined)
   const formatted = formatDistance(fromUnixTime(startTimestamp), fromUnixTime(endTimestamp), { locale: { formatDistance: formatDistanceLocale } })
 
   return (

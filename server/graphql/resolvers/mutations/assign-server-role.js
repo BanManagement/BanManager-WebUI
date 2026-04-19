@@ -4,7 +4,7 @@ const { getSql } = require('../../utils')
 const ExposedError = require('../../../data/exposed-error')
 
 module.exports = async function assignServerRole (obj, { players, role: id, serverId }, { state }, info) {
-  if (!state.serversPool.get(serverId)) throw new ExposedError(`Server ${serverId} does not exist`)
+  if (!state.serversPool.get(serverId)) throw new ExposedError(`Server ${serverId} does not exist`, 'SERVER_NOT_FOUND')
 
   const fields = parseResolveInfo(info)
   const query = getSql(info.schema, {
@@ -17,7 +17,7 @@ module.exports = async function assignServerRole (obj, { players, role: id, serv
   }, fields, 'roles').where('role_id', id)
   const [role] = await query.exec()
 
-  if (!role) throw new ExposedError(`Role ${id} does not exist`)
+  if (!role) throw new ExposedError(`Role ${id} does not exist`, 'ROLE_NOT_FOUND')
 
   // Ensure they exist in bm_web_users
   await state.dbPool('bm_web_users')

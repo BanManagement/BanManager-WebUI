@@ -2,7 +2,7 @@ const { parseResolveInfo, simplifyParsedResolveInfoFragmentWithType } = require(
 const ExposedError = require('../../../data/exposed-error')
 
 module.exports = async function listNotificationRules (obj, { limit, offset }, { session, state }, info) {
-  if (limit > 50) throw new ExposedError('Limit too large')
+  if (limit > 50) throw new ExposedError('Limit too large', 'LIMIT_TOO_LARGE')
 
   const parsedResolveInfoFragment = parseResolveInfo(info)
   const { fields } = simplifyParsedResolveInfoFragmentWithType(parsedResolveInfoFragment, info.returnType)

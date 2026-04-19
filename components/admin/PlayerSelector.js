@@ -1,10 +1,14 @@
 import { forwardRef, useCallback, useEffect, useMemo, useState } from 'react'
+import { useTranslations } from 'next-intl'
 import Select from '../Select'
 import { useMutateApi } from '../../utils'
 import Avatar from '../Avatar'
 
 // eslint-disable-next-line react/display-name
-const PlayerSelector = forwardRef(({ clearable = false, onChange, multiple = true, value, options: defaultOptions = [], placeholder = 'Select players', limit = 5, ...rest }, ref) => {
+const PlayerSelector = forwardRef(({ clearable = false, onChange, multiple = true, value, options: defaultOptions = [], placeholder, limit = 5, ...rest }, ref) => {
+  const tWidgets = useTranslations('widgets.select')
+  const tForms = useTranslations('forms')
+  const resolvedPlaceholder = placeholder == null ? tForms('playerSelectorPlaceholder') : placeholder
   const [name, setName] = useState('')
   const [options, setOptions] = useState(defaultOptions)
   const [selected, setSelected] = useState(multiple ? [] : value || null)
@@ -47,7 +51,10 @@ const PlayerSelector = forwardRef(({ clearable = false, onChange, multiple = tru
   }, [data])
 
   const filterOption = useCallback(() => true, [])
-  const noOptionsMessage = useMemo(() => (loading ? () => 'Loading…' : () => 'No players found'), [loading])
+  const noOptionsMessage = useMemo(
+    () => (loading ? () => tWidgets('loading') : () => tWidgets('noPlayersFound')),
+    [loading, tWidgets]
+  )
   const handlePlayerChange = (selectedOptions) => {
     if (selectedOptions?.value) return setSelected(selectedOptions.value)
 
@@ -70,7 +77,7 @@ const PlayerSelector = forwardRef(({ clearable = false, onChange, multiple = tru
       filterOption={filterOption}
       noOptionsMessage={noOptionsMessage}
       isClearable={clearable}
-      placeholder={placeholder}
+      placeholder={resolvedPlaceholder}
       isMulti={multiple}
       {...rest}
     />

@@ -4,12 +4,12 @@ const webhook = require('../queries/webhook')
 module.exports = async function updateWebhook (obj, { id, input }, { state }, info) {
   const data = await webhook(obj, { id }, { state }, info)
 
-  if (!data) throw new ExposedError(`Webhook ${id} does not exist`)
+  if (!data) throw new ExposedError(`Webhook ${id} does not exist`, 'WEBHOOK_NOT_FOUND')
 
   if (input.serverId) {
     const server = state.serversPool.get(input.serverId)
 
-    if (!server) throw new ExposedError(`Server ${input.serverId} does not exist`)
+    if (!server) throw new ExposedError(`Server ${input.serverId} does not exist`, 'SERVER_NOT_FOUND')
   }
 
   await state.dbPool('bm_web_webhooks')

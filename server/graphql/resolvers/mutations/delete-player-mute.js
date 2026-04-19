@@ -3,7 +3,7 @@ const ExposedError = require('../../../data/exposed-error')
 const playerMute = require('../queries/player-mute')
 
 module.exports = async function deletePlayerMute (obj, { id, serverId }, { session, state }, info) {
-  if (!state.serversPool.has(serverId)) throw new ExposedError('Server not found')
+  if (!state.serversPool.has(serverId)) throw new ExposedError('Server not found', 'SERVER_NOT_FOUND')
 
   const server = state.serversPool.get(serverId)
   const tables = server.config.tables
@@ -12,13 +12,13 @@ module.exports = async function deletePlayerMute (obj, { id, serverId }, { sessi
     .select('actor_id')
     .where({ id })
 
-  if (!result) throw new ExposedError('Mute not found')
+  if (!result) throw new ExposedError('Mute not found', 'MUTE_NOT_FOUND')
 
   const canDelete = state.acl.hasServerPermission(serverId, 'player.mutes', 'delete.any') ||
     (state.acl.hasServerPermission(serverId, 'player.mutes', 'delete.own') && state.acl.owns(result.actor_id))
 
   if (!canDelete) {
-    throw new ExposedError('You do not have permission to perform this action, please contact your server administrator')
+    throw new ExposedError('You do not have permission to perform this action, please contact your server administrator', 'NO_PERMISSION')
   }
 
   const data = await playerMute(obj, { id, serverId }, { state }, info)

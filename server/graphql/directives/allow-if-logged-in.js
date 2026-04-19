@@ -15,8 +15,7 @@ function allowIfLoggedInDirective () {
           const { session } = args[2]
 
           if (!valid(session)) {
-            throw new ExposedError(
-              'You do not have permission to perform this action, please contact your server administrator')
+            throw new ExposedError('You are not logged in', 'NOT_LOGGED_IN')
           }
 
           return resolve.apply(this, args)

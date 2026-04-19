@@ -1,9 +1,16 @@
 import { forwardRef } from 'react'
 import Datetime from '@nateradebaugh/react-datetime'
+import { useLocale } from 'next-intl'
 import clsx from 'clsx'
+import { LOCALE_CONFIG, DEFAULT_LOCALE } from '../utils/locale'
+import { useDateFnsLocale } from '../utils/format-distance'
 
 // eslint-disable-next-line react/display-name
-const DateTimePicker = forwardRef(({ className = '', inputClassName = '', error = false, disabled = false, icon = null, iconPosition = 'left', ...rest }, ref) => {
+const DateTimePicker = forwardRef(({ className = '', inputClassName = '', error = false, disabled = false, icon = null, iconPosition = 'left', dateFormat, ...rest }, ref) => {
+  const locale = useLocale()
+  const dateFnsLocale = useDateFnsLocale()
+  const localeConfig = LOCALE_CONFIG[locale] || LOCALE_CONFIG[DEFAULT_LOCALE]
+  const resolvedDateFormat = dateFormat || localeConfig.dateFormat
   const inputClass = clsx(`
     flex-1
     appearance-none
@@ -46,7 +53,7 @@ const DateTimePicker = forwardRef(({ className = '', inputClassName = '', error 
         <span className='rounded-l-3xl inline-flex items-center px-3 bg-primary-900 text-gray-400 text-lg'>
           {icon}
         </span>}
-      <Datetime ref={ref} dateFormat='dd/MM/yyyy' className={inputClass} {...rest} />
+      <Datetime ref={ref} dateFormat={resolvedDateFormat} locale={dateFnsLocale || undefined} className={inputClass} {...rest} />
     </div>
   )
 })

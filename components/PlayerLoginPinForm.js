@@ -1,15 +1,18 @@
 import { useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
+import { useTranslations } from 'next-intl'
 import { AiOutlineUser } from 'react-icons/ai'
 import dynamic from 'next/dynamic'
 import Input from './Input'
 import Button from './Button'
 import ServerSelector from './admin/ServerSelector'
 import { MdPin } from 'react-icons/md'
+import { translateRestError } from '../utils/locale'
 
 const ReactCodeInput = dynamic(() => import('@acusti/react-code-input'), { ssr: false })
 
 export default function PlayerLoginPinForm ({ onSuccess, showHint }) {
+  const t = useTranslations()
   const [error, setError] = useState(null)
   const { handleSubmit, formState, register, control } = useForm()
   const { isSubmitting } = formState
@@ -27,7 +30,7 @@ export default function PlayerLoginPinForm ({ onSuccess, showHint }) {
       if (response.status !== 200) {
         const responseData = await response.json()
 
-        throw new Error(responseData.error)
+        throw translateRestError(t, responseData)
       } else {
         const responseData = await response.json()
 
@@ -50,7 +53,7 @@ export default function PlayerLoginPinForm ({ onSuccess, showHint }) {
         />
         <Input
           required
-          label='Minecraft Username'
+          label={t('forms.username')}
           icon={<AiOutlineUser />}
           iconPosition='left'
           error={error?.message}
@@ -60,9 +63,9 @@ export default function PlayerLoginPinForm ({ onSuccess, showHint }) {
           <div className='flex gap-4 text-left mb-6 rounded-3xl border-primary-900 border-2 p-2'>
             <Button disabled className='w-12 h-12'><MdPin /></Button>
             <div>
-              <p className='underline'>Your 6 digit pin, e.g. <code>123456</code></p>
-              <p className='text-sm text-gray-400'>This can be found when you join the Minecraft server, either on the ban screen or by using the <code className='bg-primary-900'>/bmpin</code> command.</p>
-              <p className='text-sm text-gray-400 mt-2'>Note: this pin expires after 5 minutes.</p>
+              <p className='underline'>{t('pages.appeal.pinHelp')}<code>123456</code></p>
+              <p className='text-sm text-gray-400'>{t.rich('pages.appeal.pinDescription', { command: () => <code className='bg-primary-900'>/bmpin</code> })}</p>
+              <p className='text-sm text-gray-400 mt-2'>{t('pages.appeal.pinExpiry')}</p>
             </div>
           </div>)}
         <Controller
@@ -85,7 +88,7 @@ export default function PlayerLoginPinForm ({ onSuccess, showHint }) {
             </div>)}
         />
         <Button data-cy='submit-login-pin' disabled={isSubmitting} loading={isSubmitting}>
-          Login
+          {t('common.login')}
         </Button>
       </div>
     </form>

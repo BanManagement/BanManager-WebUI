@@ -4,19 +4,19 @@ const notificationRule = require('../queries/notification-rule')
 module.exports = async function updateNotificationRule (obj, { id, input: { type, roles, serverId } }, { state }, info) {
   const data = await notificationRule(obj, { id }, { state }, info)
 
-  if (!data) throw new ExposedError(`Notification rule ${id} does not exist`)
+  if (!data) throw new ExposedError(`Notification rule ${id} does not exist`, 'NOTIFICATION_NOT_FOUND')
 
   if (serverId) {
     const server = state.serversPool.get(serverId)
 
-    if (!server) throw new ExposedError(`Server ${serverId} does not exist`)
+    if (!server) throw new ExposedError(`Server ${serverId} does not exist`, 'SERVER_NOT_FOUND')
   }
 
   const roleIds = roles.map(role => role.id)
   const results = await state.dbPool('bm_web_roles').select('role_id').whereIn('role_id', roleIds)
 
   if (results.length !== roleIds.length) {
-    throw new ExposedError('Invalid role')
+    throw new ExposedError('Invalid role', 'INVALID_INPUT')
   }
 
   await state.dbPool.transaction(async trx => {

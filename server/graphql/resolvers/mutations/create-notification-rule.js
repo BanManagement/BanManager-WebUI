@@ -5,14 +5,14 @@ module.exports = async function createNotificationRule (obj, { input: { type, ro
   if (serverId) {
     const server = state.serversPool.get(serverId)
 
-    if (!server) throw new ExposedError(`Server ${serverId} does not exist`)
+    if (!server) throw new ExposedError(`Server ${serverId} does not exist`, 'SERVER_NOT_FOUND')
   }
 
   const roleIds = roles.map(role => role.id)
   const data = await state.dbPool('bm_web_roles').select('role_id').whereIn('role_id', roleIds)
 
   if (data.length !== roleIds.length) {
-    throw new ExposedError('Invalid role')
+    throw new ExposedError('Invalid role', 'INVALID_INPUT')
   }
 
   let id

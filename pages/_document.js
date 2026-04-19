@@ -1,14 +1,27 @@
 import Document, { Html, Head, Main, NextScript } from 'next/document'
 import resolveConfig from 'tailwindcss/resolveConfig'
 import tailwindConfig from '../tailwind.config'
+import { LOCALE_CONFIG, DEFAULT_LOCALE, negotiateLocaleFromRequest } from '../utils/locale'
 
 const fullConfig = resolveConfig(tailwindConfig)
 
 export default class MyDocument extends Document {
+  static async getInitialProps (ctx) {
+    const initialProps = await Document.getInitialProps(ctx)
+    const locale = ctx.req
+      ? negotiateLocaleFromRequest(ctx.req)
+      : DEFAULT_LOCALE
+
+    return { ...initialProps, locale }
+  }
+
   render () {
+    const locale = this.props.locale || DEFAULT_LOCALE
+    const htmlLang = LOCALE_CONFIG[locale]?.htmlLang || LOCALE_CONFIG[DEFAULT_LOCALE].htmlLang
+
     return (
       // Avoid FOUC by setting a background color that matches the theme
-      <Html lang='en' style={{ background: fullConfig.theme.colors.primary['500'] }}>
+      <Html lang={htmlLang} style={{ background: fullConfig.theme.colors.primary['500'] }}>
         <Head>
           <meta charSet='utf-8' />
           <meta name='author' content='BanManager-WebUI' />

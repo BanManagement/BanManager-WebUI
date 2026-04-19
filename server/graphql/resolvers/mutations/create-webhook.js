@@ -5,7 +5,7 @@ module.exports = async function createWebhook (obj, { input }, { state }, info) 
   if (input.serverId) {
     const server = state.serversPool.get(input.serverId)
 
-    if (!server) throw new ExposedError(`Server ${input.serverId} does not exist`)
+    if (!server) throw new ExposedError(`Server ${input.serverId} does not exist`, 'SERVER_NOT_FOUND')
   }
 
   const [id] = await state.dbPool('bm_web_webhooks').insert({

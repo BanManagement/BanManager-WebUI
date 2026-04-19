@@ -395,6 +395,7 @@ type Me {
   id: UUID
   name: String
   email: String
+  locale: String
   hasAccount: Boolean
   session: PlayerSession
   resources: [Resources!]
@@ -920,6 +921,7 @@ type Mutation {
 
   setPassword(currentPassword: String, newPassword: String!): Me! @allowIfLoggedIn
   setEmail(currentPassword: String!, email: String!): Me! @allowIfLoggedIn
+  setLocale(locale: String!): Me! @allowIfLoggedIn
 
   createNotificationRule(input: NotificationRuleInput!): NotificationRule! @allowIf(resource: "servers", permission: "manage")
   updateNotificationRule(id: ID!, input: NotificationRuleInput!): NotificationRule! @allowIf(resource: "servers", permission: "manage")

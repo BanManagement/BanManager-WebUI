@@ -1,5 +1,6 @@
 import { AiOutlinePlus } from 'react-icons/ai'
 import { TiTick } from 'react-icons/ti'
+import { useTranslations } from 'next-intl'
 import { upperFirst } from 'lodash-es'
 import Message from '../../components/Message'
 import AdminLayout from '../../components/AdminLayout'
@@ -45,6 +46,7 @@ const formatCommitMessage = (message) => upperFirst(
 )
 
 function Page ({ latestVersion, version, newFeatures, fixes }) {
+  const t = useTranslations('pages.admin')
   const features = newFeatures?.map(item => (
     <Message.Item key={item.sha}>
       <AiOutlinePlus className='text-xl inline' /> {formatCommitMessage(item.commit.message)}
@@ -57,27 +59,30 @@ function Page ({ latestVersion, version, newFeatures, fixes }) {
   ))
 
   return (
-    <AdminLayout title='Admin'>
+    <AdminLayout title={t('title')}>
       {process.env.IS_DEV === 'true' &&
         <Message warning>
-          <Message.Header>Developer Mode</Message.Header>
+          <Message.Header>{t('developerMode')}</Message.Header>
           <Message.List>
-            <Message.Item>You are currently running in development mode, expect performance degradation</Message.Item>
+            <Message.Item>{t('developerModeMessage')}</Message.Item>
           </Message.List>
         </Message>}
       {version !== latestVersion &&
         <Message info>
-          <Message.Header>Update Available</Message.Header>
+          <Message.Header>{t('updateAvailable')}</Message.Header>
           <Message.List>
-            <Message.Item>Current version: {version.slice(0, 7)}<br />Latest: {latestVersion.slice(0, 7)}</Message.Item>
+            <Message.Item>
+              {t('currentVersion', { current: version.slice(0, 7) })}<br />
+              {t('latestVersion', { latest: latestVersion.slice(0, 7) })}
+            </Message.Item>
             {!!newFeatures?.length &&
               <>
-                <Message.Item className='font-bold text-sm'>New Features</Message.Item>
+                <Message.Item className='font-bold text-sm'>{t('newFeatures')}</Message.Item>
                 {features}
               </>}
             {!!fixes?.length &&
               <>
-                <Message.Item className='font-bold text-sm'>Fixes</Message.Item>
+                <Message.Item className='font-bold text-sm'>{t('fixes')}</Message.Item>
                 {bugFixes}
               </>}
           </Message.List>

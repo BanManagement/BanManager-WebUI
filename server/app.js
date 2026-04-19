@@ -69,8 +69,12 @@ module.exports = async function ({ dbPool, logger, serversPool, disableUI = fals
     } catch (err) {
       ctx.log.error(err)
 
+      const exposed = err.exposed || err.expose
+
       ctx.status = err.status || 500
-      ctx.body = { error: (err.exposed || err.expose) ? err.message : 'Internal Server Error' }
+      ctx.body = exposed
+        ? { error: err.message, code: err.code || 'UNKNOWN', ...(err.meta ? { meta: err.meta } : {}) }
+        : { error: 'Internal Server Error', code: 'INTERNAL' }
       ctx.app.emit('error', err, ctx)
     }
   })
@@ -162,7 +166,7 @@ module.exports = async function ({ dbPool, logger, serversPool, disableUI = fals
   server.use(async (ctx) => {
     if (ctx.status === 404) {
       ctx.status = 404
-      ctx.body = { error: 'Not Found' }
+      ctx.body = { error: 'Not Found', code: 'NOT_FOUND' }
     }
   })
 

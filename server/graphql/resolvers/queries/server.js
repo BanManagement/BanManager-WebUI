@@ -1,7 +1,7 @@
 const ExposedError = require('../../../data/exposed-error')
 
 module.exports = async function server (obj, { id }, { state: { serversPool }, log }) {
-  if (!serversPool.has(id)) throw new ExposedError('Server not found')
+  if (!serversPool.has(id)) throw new ExposedError('Server not found', 'SERVER_NOT_FOUND')
 
   const server = Object.assign({}, serversPool.get(id).config)
 

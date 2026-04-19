@@ -1,16 +1,22 @@
+import { useTranslations } from 'next-intl'
 import { useUser } from '../../utils'
 import NotificationContainer from './NotificationContainer'
 import PlayerAppealBadge from '../appeals/PlayerAppealBadge'
 
 export default function NotificationAppealAssigned ({ id, actor, created, state, appeal }) {
+  const t = useTranslations('notifications')
   const { user } = useUser()
+  const ownAppeal = appeal.actor.id === user?.id
+  const messageKey = ownAppeal ? 'appealAssignedOwn' : 'appealAssignedOther'
 
   return (
     <NotificationContainer id={id} actor={actor} created={created} state={state}>
       <p className='text-sm'>
-        {appeal.actor.id === user?.id
-          ? <>{actor.name} assigned <span className='font-semibold'>{appeal.assignee.name}</span> to review your appeal</>
-          : <><span className='font-semibold'>{actor.name}</span> assigned <span className='font-semibold'>{appeal.assignee.name}</span> to review appeal</>}
+        {t.rich(messageKey, {
+          actor: actor.name,
+          assignee: appeal.assignee.name,
+          b: (chunks) => <span className='font-semibold'>{chunks}</span>
+        })}
       </p>
       <div className='flex items-center gap-3'>
         <PlayerAppealBadge appeal={appeal} className='text-sm'>#{appeal.id}</PlayerAppealBadge>

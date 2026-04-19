@@ -46,12 +46,12 @@ module.exports = (dbPool) => {
 async function handlePasswordLogin (ctx, { limiterSlowBruteByIP, limiterConsecutiveFailsByUsernameAndIP }) {
   const { response, throw: throwError, request, state } = ctx
 
-  if (typeof request.body.email !== 'string') return throwError(400, 'Invalid email type')
-  if (!isEmail(request.body.email)) return throwError(400, 'Invalid email address')
+  if (typeof request.body.email !== 'string') return throwError(400, 'Invalid email type', { code: 'INVALID_EMAIL' })
+  if (!isEmail(request.body.email)) return throwError(400, 'Invalid email address', { code: 'INVALID_EMAIL' })
 
-  if (typeof request.body.password !== 'string') return throwError(400, 'Invalid password type')
+  if (typeof request.body.password !== 'string') return throwError(400, 'Invalid password type', { code: 'INVALID_PASSWORD' })
   if (!isLength(request.body.password, { min: 6, max: 255 })) {
-    return throwError(400, 'Invalid password, minimum length 6 characters')
+    return throwError(400, 'Invalid password, minimum length 6 characters', { code: 'INVALID_PASSWORD' })
   }
 
   const ipAddr = requestIp.getClientIp(ctx.request)
@@ -72,7 +72,7 @@ async function handlePasswordLogin (ctx, { limiterSlowBruteByIP, limiterConsecut
   }
 
   if (retrySecs > 0) {
-    return throwError(429, 'Too many requests')
+    return throwError(429, 'Too many requests', { code: 'RATE_LIMIT' })
   }
 
   const result = await state.dbPool('bm_web_users')
@@ -94,10 +94,10 @@ async function handlePasswordLogin (ctx, { limiterSlowBruteByIP, limiterConsecut
     } catch (e) {
       if (e instanceof Error) throw e
 
-      return throwError(429, 'Too many requests')
+      return throwError(429, 'Too many requests', { code: 'RATE_LIMIT' })
     }
 
-    return throwError(400, 'Incorrect login details')
+    return throwError(400, 'Incorrect login details', { code: 'INCORRECT_LOGIN' })
   }
 
   ctx.session = create(result.player_id, result.updated, 'password')
@@ -114,14 +114,14 @@ async function handlePasswordLogin (ctx, { limiterSlowBruteByIP, limiterConsecut
 async function handlePinLogin (ctx, { limiterSlowBruteByIP, limiterConsecutiveFailsByUsernameAndIP }) {
   const { response, throw: throwError, request, state } = ctx
 
-  if (typeof request.body.name !== 'string' || !isLength(request.body.name, { min: 2, max: 17 })) return throwError(400, 'Invalid name')
+  if (typeof request.body.name !== 'string' || !isLength(request.body.name, { min: 2, max: 17 })) return throwError(400, 'Invalid name', { code: 'INVALID_NAME' })
 
-  if (typeof request.body.pin !== 'string') return throwError(400, 'Invalid pin type')
-  if (!isLength(request.body.pin, { min: 6, max: 6 })) return throwError(400, 'Invalid pin, must be 6 characters')
+  if (typeof request.body.pin !== 'string') return throwError(400, 'Invalid pin type', { code: 'INVALID_PIN' })
+  if (!isLength(request.body.pin, { min: 6, max: 6 })) return throwError(400, 'Invalid pin, must be 6 characters', { code: 'INVALID_PIN' })
 
   const server = state.serversPool.get(request.body.serverId)
 
-  if (!server) return throwError(400, 'Server does not exist')
+  if (!server) return throwError(400, 'Server does not exist', { code: 'SERVER_NOT_FOUND' })
 
   const ipAddr = requestIp.getClientIp(ctx.request)
   const usernameIPkey = getUsernameIPkey(request.body.name, ipAddr)
@@ -141,7 +141,7 @@ async function handlePinLogin (ctx, { limiterSlowBruteByIP, limiterConsecutiveFa
   }
 
   if (retrySecs > 0) {
-    return throwError(429, 'Too many requests')
+    return throwError(429, 'Too many requests', { code: 'RATE_LIMIT' })
   }
 
   const { playerPins, players } = server.config.tables
@@ -170,10 +170,10 @@ async function handlePinLogin (ctx, { limiterSlowBruteByIP, limiterConsecutiveFa
     } catch (e) {
       if (e instanceof Error) throw e
 
-      return throwError(429, 'Too many requests')
+      return throwError(429, 'Too many requests', { code: 'RATE_LIMIT' })
     }
 
-    return throwError(400, 'Incorrect login details')
+    return throwError(400, 'Incorrect login details', { code: 'INCORRECT_LOGIN' })
   }
 
   await server.pool(playerPins)
