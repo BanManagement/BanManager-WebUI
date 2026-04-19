@@ -27,13 +27,22 @@ const tables = JSON.stringify(
   })
 
 module.exports = async function (consoleId, database) {
+  // BM_DB_HOST/PORT/USER override DB_* when the seeding script and the
+  // WebUI process would reach the BM database at different addresses
+  // (e.g. CI's docker compose smoke job: the seed runs on the runner and
+  // uses 127.0.0.1:3306, but the WebUI container reaches MySQL via the
+  // compose service name `mysql`). Local jest/setup_e2e flows leave them
+  // unset and fall through to the existing DB_* behaviour.
+  const portValue = process.env.BM_DB_PORT || process.env.DB_PORT
+  const port = portValue ? Number.parseInt(portValue, 10) : 3306
+
   const server = {
     id: randomBytes(4).toString('hex'),
     name: 'Test' + randomBytes(2).toString('hex'),
-    host: process.env.DB_HOST || '127.0.0.1',
-    port: process.env.DB_PORT ? parseInt(process.env.DB_PORT, 10) : 3306,
+    host: process.env.BM_DB_HOST || process.env.DB_HOST || '127.0.0.1',
+    port,
     database,
-    user: process.env.DB_USER || 'root',
+    user: process.env.BM_DB_USER || process.env.DB_USER || 'root',
     password: '',
     console: consoleId,
     tables

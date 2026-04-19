@@ -290,10 +290,21 @@ jobs:
       # the seed a handful of times to ride out that transition cleanly.
       - name: Seed bm_e2e_tests from the runner (retry through MySQL warm-up)
         env:
+          # Connection details the seed script uses from the runner.
           DB_HOST: 127.0.0.1
           DB_PORT: 3306
           DB_USER: root
           DB_PASSWORD: rootpassword
+          # Connection details the WebUI container will use to reach MySQL.
+          # We have to disambiguate from DB_HOST because the host the seed
+          # script connects to (127.0.0.1, via the compose port mapping) is
+          # not the host the WebUI container reaches MySQL at (the compose
+          # service name `mysql` on the internal network). server fixture
+          # writes these into bm_web_servers so the GraphQL layer hits the
+          # right address at request time.
+          BM_DB_HOST: mysql
+          BM_DB_PORT: 3306
+          BM_DB_USER: root
           ENCRYPTION_KEY: b097b390a68441cc3bb151dd0171f25c3aabc688c50eeb26dc5e13254b333911
           LOG_LEVEL: warn
         run: |
