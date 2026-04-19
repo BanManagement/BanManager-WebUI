@@ -1,36 +1,7 @@
 const { defineConfig } = require('cypress')
-const http = require('http')
 require('dotenv').config()
 
 const port = process.env.SETUP_PORT || 3001
-
-const requestSetupState = () => new Promise((resolve) => {
-  const req = http.request({
-    host: '127.0.0.1',
-    port: Number(port),
-    path: '/api/setup/state',
-    method: 'GET',
-    timeout: 4000
-  }, (res) => {
-    const chunks = []
-    res.on('data', (chunk) => chunks.push(chunk))
-    res.on('end', () => {
-      const raw = Buffer.concat(chunks).toString('utf8')
-      let body = null
-      if (raw) {
-        try {
-          body = JSON.parse(raw)
-        } catch (parseErr) {
-          body = { _parseError: parseErr.message, _raw: raw }
-        }
-      }
-      resolve({ ok: res.statusCode >= 200 && res.statusCode < 300, status: res.statusCode, body })
-    })
-  })
-  req.on('timeout', () => { req.destroy(new Error('timeout')) })
-  req.on('error', (err) => { resolve({ ok: false, status: 0, body: null, error: err.code || err.message }) })
-  req.end()
-})
 
 module.exports = defineConfig({
   retries: {
@@ -86,12 +57,6 @@ module.exports = defineConfig({
         },
         sleep (ms) {
           return new Promise((resolve) => setTimeout(() => resolve(null), ms))
-        },
-        // Polling helper that swallows ECONNREFUSED / connection errors during
-        // the supervisor's setup-mode -> normal-mode child restart so the spec
-        // can wait through the gap instead of failing on cy.request().
-        fetchSetupState () {
-          return requestSetupState()
         }
       })
 

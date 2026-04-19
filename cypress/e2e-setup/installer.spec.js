@@ -1,13 +1,23 @@
 // Walks through the first-run web installer end-to-end against a freshly
 // recreated MySQL pair. The supervisor in cypress/scripts/setup-server.js
 // runs server.js with no .env so it boots in setup mode; after we POST
-// /api/setup/finalize the supervisor restarts the child process which then
-// boots in normal mode (DISABLE_UI=true), letting us verify /setup is
-// inaccessible post-completion.
+// /api/setup/finalize the supervisor exits the setup-mode child and respawns
+// it in normal mode (DISABLE_UI=true).
 //
-// Most coverage of input validation lives in jest tests under server/test/.
-// Here we focus on the bits that actually require a browser, plus the full
-// happy-path so we have an integration-level safety net.
+// Most coverage of input validation — and of the post-finalize lockdown
+// behaviour (`/setup` returns 404 once an admin row + a server row exist) —
+// lives in jest tests under server/test/. Here we focus on the bits that
+// actually require a browser, plus the full happy-path through finalize so we
+// have an integration-level safety net.
+//
+// The happy-path test deliberately does NOT verify the post-restart state for
+// two reasons:
+//   1. The supervisor restart leaves a normal-mode child running, which
+//      would interfere with any Cypress retry of this test (the retry would
+//      see the lingering child and freshly-wiped DB).
+//   2. The lockdown behaviour is covered deterministically by
+//      server/test/setup-lockdown-after-complete.test.js, so we don't lose
+//      coverage by skipping it here.
 
 const dotenvPath = Cypress.env('setup_dotenv_path')
 const webuiDb = Cypress.env('setup_db_name')
@@ -71,27 +81,6 @@ const fillAdminStep = (overrides = {}) => {
   setText('[data-cy=setup-admin-password]', overrides.password || adminPassword, { log: false })
   setText('[data-cy=setup-admin-confirm]', overrides.confirmPassword || overrides.password || adminPassword, { log: false })
   setText('[data-cy=setup-admin-uuid]', overrides.uuid || adminUuid)
-}
-
-const POLL_INTERVAL_MS = 500
-const POLL_MAX_ATTEMPTS = 60
-
-// The supervisor exits the setup-mode child after finalize and respawns it
-// ~500ms later in normal mode, so polling /api/setup/state races against
-// ECONNREFUSED while the new process boots. We poll via the Node-side `fetch`
-// helper to swallow those network errors and just treat them as "not ready
-// yet" instead of failing the spec.
-const fetchSetupState = () => cy.task('fetchSetupState')
-
-const waitForState = (target) => {
-  const attempt = (count) => {
-    if (count > POLL_MAX_ATTEMPTS) throw new Error(`Timed out waiting for setup state to flip to ${target}`)
-    return fetchSetupState().then((result) => {
-      if (result?.ok && result.body?.status === target) return undefined
-      return cy.task('sleep', POLL_INTERVAL_MS).then(() => attempt(count + 1))
-    })
-  }
-  return attempt(0)
 }
 
 describe('web installer', () => {
@@ -192,8 +181,14 @@ describe('web installer', () => {
     })
   })
 
-  describe('happy path', () => {
-    it('completes the installer end-to-end and locks /setup once finalised', () => {
+  // Retries are explicitly disabled for the happy-path: finalize causes the
+  // supervisor to exit the setup-mode child and respawn it in normal mode, so
+  // a retry would (a) wait through that restart and (b) hit a normal-mode
+  // child that's still pointing at the just-wiped database from afterEach.
+  // The post-finalize /setup lockdown is covered by
+  // server/test/setup-lockdown-after-complete.test.js instead.
+  describe('happy path', { retries: 0 }, () => {
+    it('completes the installer end-to-end and persists the .env file', () => {
       cy.task('prepareSetupDb', { createWebui: true }).then(({ bmDb, consoleUuid }) => {
         cy.visit('/setup')
         cy.get('[data-cy=setup-progress-step][data-cy-step=database]').should('exist')
@@ -228,14 +223,6 @@ describe('web installer', () => {
           expect(contents).to.match(/ENCRYPTION_KEY=/)
           expect(contents).to.match(/SESSION_KEY=/)
           expect(contents).to.match(new RegExp(`DB_NAME=${webuiDb}`))
-        })
-
-        waitForState('normal')
-
-        cy.request({ url: '/setup', failOnStatusCode: false }).then((response) => {
-          expect(response.status).to.eq(404)
-          const error = response.body?.error
-          expect(error).to.match(/Setup is already complete/i)
         })
       })
     })
