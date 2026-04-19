@@ -3,11 +3,12 @@ import Loader from '../../../components/Loader'
 import AdminLayout from '../../../components/AdminLayout'
 import ErrorLayout from '../../../components/ErrorLayout'
 import PageHeader from '../../../components/PageHeader'
-import { useApi } from '../../../utils'
+import { useApi, useInvalidateApiCache } from '../../../utils'
 import NotificationRuleForm from '../../../components/admin/notification-rules/NotificationRuleForm'
 
 export default function Page () {
   const router = useRouter()
+  const invalidate = useInvalidateApiCache()
   const { loading, data, errors } = useApi({
     query: `query roles {
       roles {
@@ -42,7 +43,10 @@ export default function Page () {
           roles={roles}
           notificationTypes={notificationTypes}
           parseVariables={(input) => ({ input })}
-          onFinished={() => router.push('/admin/notification-rules')}
+          onFinished={() => {
+            invalidate('listNotificationRules')
+            router.push('/admin/notification-rules')
+          }}
         />
       </div>
     </AdminLayout>

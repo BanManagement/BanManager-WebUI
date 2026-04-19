@@ -13,7 +13,7 @@ import Message from '../../../components/Message'
 
 export default function Page () {
   const { loading, data, errors, mutate } = useApi({
-    query: `query {
+    query: `query rolesAdminPage {
       roles {
         id
         name

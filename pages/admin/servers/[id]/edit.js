@@ -2,11 +2,12 @@ import { useRouter } from 'next/router'
 import AdminLayout from '../../../../components/AdminLayout'
 import ErrorLayout from '../../../../components/ErrorLayout'
 import Loader from '../../../../components/Loader'
-import { useApi } from '../../../../utils'
+import { useApi, useInvalidateApiCache } from '../../../../utils'
 import ServerForm from '../../../../components/admin/ServerForm'
 
 export default function Page () {
   const router = useRouter()
+  const invalidate = useInvalidateApiCache()
   const { id } = router.query
   const { loading, data, errors } = useApi({
     variables: { id },
@@ -69,7 +70,10 @@ export default function Page () {
         query={query}
         serverTables={data.serverTables}
         parseVariables={(input) => ({ id, input })}
-        onFinished={() => router.push(`/admin/servers/${id}`)}
+        onFinished={() => {
+          invalidate('query servers')
+          router.push(`/admin/servers/${id}`)
+        }}
       />
     </AdminLayout>
   )

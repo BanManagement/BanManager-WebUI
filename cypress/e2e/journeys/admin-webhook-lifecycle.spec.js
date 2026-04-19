@@ -11,9 +11,8 @@ describe('Admin webhook lifecycle', () => {
   variants.forEach(({ name, template, initialUrl: baseInitialUrl }) => {
     describe(`${name} webhook`, () => {
       it(`creates, tests, edits and deletes a ${name} webhook`, () => {
-        // Cypress retries reuse the spec context, so we mint per-attempt URLs
-        // using Date.now() to avoid clashing with rows that previous attempts
-        // left behind in the shared test database.
+        // Per-attempt URLs so retries don't collide with rows the previous
+        // attempt left behind in the shared test DB.
         const initialUrl = `${baseInitialUrl}-${Date.now()}`
         const updatedUrl = `${initialUrl}/edited`
 
@@ -47,20 +46,10 @@ describe('Admin webhook lifecycle', () => {
           const id = response?.body?.data?.createWebhook?.id
           expect(errors, `createWebhook errors: ${JSON.stringify(errors)}`).to.equal(undefined)
           expect(String(id || ''), 'createWebhook returned no id').to.match(/^[\w-]+$/)
-          // Capture the new id directly from the mutation response so we
-          // never have to disambiguate via `.last()` on the list page (which
-          // is unreliable: listWebhooks has no ORDER BY, retries can leave
-          // older rows behind, and the mobile/desktop variants render twice).
           cy.wrap(id).as('webhookId')
         })
 
-        // After the mutation we land on /admin/webhooks. The list page reads
-        // listWebhooks via SWR, which keeps the previous response cached past
-        // the navigation back from the add page (no revalidate-on-mount,
-        // defaults dedupe 2s), so the brand-new row may not appear. Force a
-        // reload so the assertions run against fresh data.
         cy.url().should('match', /\/admin\/webhooks\/?$/)
-        cy.reload()
 
         cy.get('@webhookId').then((id) => {
           cy.get(`[data-cy=webhook-item][data-cy-webhook-id="${id}"]`, { timeout: 10000 })
@@ -86,9 +75,8 @@ describe('Admin webhook lifecycle', () => {
         cy.get('@webhookId').then((id) => {
           cy.visit(`/admin/webhooks/${id}`)
           cy.get(`[data-cy=webhook-form][data-cy-template=${template}]`).should('exist')
-          // Wait for the form to fully hydrate the URL field before mutating it.
-          // Without this Cypress will race react-hook-form's defaultValues sync
-          // and may submit the original URL value instead of the typed one.
+          // Wait for react-hook-form to seed the field — otherwise our clear()
+          // + type() races defaultValues sync and submits the unchanged URL.
           cy.get('[data-cy=webhook-url]').should('have.value', initialUrl)
           cy.get('[data-cy=webhook-url]').clear()
           cy.get('[data-cy=webhook-url]').should('have.value', '')
@@ -105,12 +93,6 @@ describe('Admin webhook lifecycle', () => {
         })
 
         cy.url().should('match', /\/admin\/webhooks\/?$/)
-        // The list page reads listWebhooks via SWR which keeps the previous
-        // response cached past the navigation back from the edit page (no
-        // revalidate-on-mount, defaults dedupe 2s), so the row can render with
-        // the pre-edit URL. Force a reload so the assertion runs against fresh
-        // data instead of racing the cache.
-        cy.reload()
         cy.get('@webhookId').then((id) => {
           cy.get(`[data-cy=webhook-item][data-cy-webhook-id="${id}"]`, { timeout: 10000 })
             .find('[data-cy=webhook-url-display]')
