@@ -20,12 +20,8 @@ module.exports = defineConfig({
       const { prepareSetupDb, dropSetupDbs, CONSOLE_UUID } = require('./cypress/scripts/prepare-setup-db')
 
       on('task', {
-        // Write a config.yml or console.yml fixture to disk so the path-mode
-        // installer test can ingest a real file. If `directory` is supplied
-        // the file is written there (existing dir reused); otherwise a fresh
-        // tmp directory is created. Returns the absolute path of the
-        // directory the file was written into so callers can chain multiple
-        // files into the same dir.
+        // Returns the directory the file was written into so callers can chain
+        // multiple files into the same dir by passing it back in `directory`.
         writeBmConfigFixture ({ filename, contents, directory }) {
           const path = require('path')
           const os = require('os')
@@ -35,9 +31,6 @@ module.exports = defineConfig({
           fs.writeFileSync(target, contents, 'utf8')
           return tmp
         },
-        // Wipes any existing throwaway DBs, recreates the BanManager DB with
-        // bm_* tables and a console player row, and (optionally) the WebUI DB.
-        // Always returns { webuiDb, bmDb, consoleUuid }.
         prepareSetupDb (opts = {}) {
           return prepareSetupDb(opts)
         },

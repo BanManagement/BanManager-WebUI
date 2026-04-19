@@ -1,29 +1,17 @@
 #!/usr/bin/env node
 /* eslint-disable no-console */
 
-// Boots the WebUI through server.js for the e2e-setup Cypress run, restarting
-// the child process whenever it exits cleanly so that the suite can exercise
-// the real boot-mode switching: setup-mode -> finalise -> normal-mode.
+// Boots the WebUI through server.js for the e2e-setup Cypress run, respawning
+// the child after each clean exit so the suite can exercise the real boot-mode
+// switch: setup-mode -> finalise -> normal-mode.
 //
-// Required env:
-//   SETUP_PORT=3001                  port the server should listen on
-//   SETUP_DOTENV_PATH=/tmp/...env    where the installer should write .env
-// Optional env:
-//   SETUP_TOKEN=<hex>                pre-populates the token-required flow
-//   HOSTNAME=127.0.0.1               bind address (default 127.0.0.1)
-//   LOG_LEVEL=warn                   pino log level
-//
-// Notes:
-// - We spawn server.js from a sandbox cwd so `dotenv.config()` cannot pick up
-//   the developer's local .env on first boot.
-// - The first boot has no DB / key vars set, so server.js will detect "needs
-//   setup" and serve buildSetupModeApp.
-// - We deliberately leave NODE_ENV=production so that handleFinalize hits the
-//   `inDocker && NODE_ENV !== 'test'` branch and process.exit(0)s the child;
-//   the supervisor below then respawns server.js, which now finds the freshly
-//   written .env at SETUP_DOTENV_PATH and boots in normal mode.
-// - DISABLE_UI=true keeps the second boot from trying to load Next.js (we have
-//   no .next build in CI for this target).
+// Notes on the env this script forces:
+// - Spawn from a sandbox cwd so `dotenv.config()` cannot pick up the
+//   developer's real .env on the first (setup-mode) boot.
+// - NODE_ENV=production keeps handleFinalize on its `inDocker && != 'test'`
+//   branch, which is what triggers the process.exit(0) we rely on for the
+//   supervisor restart.
+// - DISABLE_UI=true: the second boot has no .next build to load.
 
 const { spawn } = require('child_process')
 const fs = require('fs')
@@ -54,9 +42,8 @@ const childEnv = {
   NODE_ENV: process.env.NODE_ENV || 'production',
   DISABLE_UI: process.env.DISABLE_UI || 'true',
   LOG_LEVEL: process.env.LOG_LEVEL || 'warn',
-  // The default in-memory rate limit (10/60s) is fine for real installs but
-  // is easily exhausted by Cypress retrying multiple step submissions in the
-  // same minute, leading to flaky 429s that look like the wizard hanging.
+  // The production default (10/60s) is easily exhausted by Cypress retries
+  // resubmitting steps within the same minute, surfacing as flaky 429s.
   SETUP_RATE_LIMIT_POINTS: process.env.SETUP_RATE_LIMIT_POINTS || '10000',
   SETUP_RATE_LIMIT_DURATION: process.env.SETUP_RATE_LIMIT_DURATION || '60'
 }

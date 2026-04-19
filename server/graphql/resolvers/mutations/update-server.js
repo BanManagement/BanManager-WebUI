@@ -65,12 +65,9 @@ module.exports = async function updateServer (obj, { id, input }, { log, state }
 
   await state.dbPool('bm_web_servers').update(input).where({ id })
 
-  // Refresh the in-memory serversPool entry so subsequent queries (e.g. the
-  // /admin/servers list, scoped resolvers) see the new name and connection
-  // details immediately, instead of waiting for the 3-second background
-  // sync in connections/servers-pool.js. createServer/deleteServer already
-  // mutate serversPool inline; the previous version of this resolver was
-  // the odd one out and let the cache go stale until the interval fired.
+  // Mirror createServer/deleteServer and refresh the in-memory pool here so
+  // subsequent reads see the new config immediately, rather than waiting for
+  // the 3-second background sync in connections/servers-pool.js to catch up.
   const existingEntry = state.serversPool.get(id)
   const oldConfig = existingEntry.config
   const connectionChanged =

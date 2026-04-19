@@ -1,23 +1,9 @@
-// Walks through the first-run web installer end-to-end against a freshly
-// recreated MySQL pair. The supervisor in cypress/scripts/setup-server.js
-// runs server.js with no .env so it boots in setup mode; after we POST
-// /api/setup/finalize the supervisor exits the setup-mode child and respawns
-// it in normal mode (DISABLE_UI=true).
-//
-// Most coverage of input validation — and of the post-finalize lockdown
-// behaviour (`/setup` returns 404 once an admin row + a server row exist) —
-// lives in jest tests under server/test/. Here we focus on the bits that
-// actually require a browser, plus the full happy-path through finalize so we
-// have an integration-level safety net.
-//
-// The happy-path test deliberately does NOT verify the post-restart state for
-// two reasons:
-//   1. The supervisor restart leaves a normal-mode child running, which
-//      would interfere with any Cypress retry of this test (the retry would
-//      see the lingering child and freshly-wiped DB).
-//   2. The lockdown behaviour is covered deterministically by
-//      server/test/setup-lockdown-after-complete.test.js, so we don't lose
-//      coverage by skipping it here.
+// Walks the first-run web installer end-to-end against a freshly recreated
+// MySQL pair. The supervisor in cypress/scripts/setup-server.js boots
+// server.js with no .env (setup mode) and respawns it in normal mode after
+// finalize. Validation paths and the post-finalize /setup lockdown have
+// dedicated jest coverage — we keep this spec focused on the browser-only
+// bits plus a happy-path safety net.
 
 const dotenvPath = Cypress.env('setup_dotenv_path')
 const webuiDb = Cypress.env('setup_db_name')
@@ -181,12 +167,8 @@ describe('web installer', () => {
     })
   })
 
-  // Retries are explicitly disabled for the happy-path: finalize causes the
-  // supervisor to exit the setup-mode child and respawn it in normal mode, so
-  // a retry would (a) wait through that restart and (b) hit a normal-mode
-  // child that's still pointing at the just-wiped database from afterEach.
-  // The post-finalize /setup lockdown is covered by
-  // server/test/setup-lockdown-after-complete.test.js instead.
+  // No retries: finalize triggers the supervisor restart, and a retry would
+  // hit the post-restart normal-mode child against the freshly-wiped DB.
   describe('happy path', { retries: 0 }, () => {
     it('completes the installer end-to-end and persists the .env file', () => {
       cy.task('prepareSetupDb', { createWebui: true }).then(({ bmDb, consoleUuid }) => {

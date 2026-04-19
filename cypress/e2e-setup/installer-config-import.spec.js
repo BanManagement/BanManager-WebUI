@@ -1,12 +1,6 @@
-// Exercises the two non-default ingestion modes of the server step:
-//   * paste mode: operator pastes config.yml + console.yml into textareas
-//   * path mode:  operator provides a filesystem path to the BanManager folder
-//
-// Both end up calling /api/setup/server which delegates to parseBanManagerConfig.
-// We assert that on success the installer auto-advances to the admin step (and
-// the underlying request returned the correctly normalised connection +
-// console UUID), and on failure the appropriate error banner is shown without
-// progressing.
+// Exercises the two non-default ingestion modes of the server step (paste
+// + path). Both delegate to parseBanManagerConfig server-side via
+// /api/setup/server.
 
 const dotenvPath = Cypress.env('setup_dotenv_path')
 

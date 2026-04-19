@@ -122,14 +122,10 @@ module.exports = async function ({ dbPool, logger, serversPool, disableUI = fals
   }, server))
   server.use(acl)
 
-  // Mount the setup router BEFORE the main API router so that /setup and
-  // /api/setup/* requests are intercepted by the post-setup lockdown
-  // middleware (and, while still incomplete, the installer routes) before
-  // the main router's catch-all route below has a chance to swallow them.
-  // Without this, the catch-all matches everything (including /setup) and
-  // either defers to Next.js (when disableUI=false) or sets
-  // ctx.respond=false and never responds (when disableUI=true), which
-  // would prevent the lockdown from ever firing.
+  // Must be mounted before the main router below — the `router.all('(.*)')`
+  // catch-all otherwise swallows /setup and /api/setup/*, preventing the
+  // post-setup lockdown middleware (and the installer routes pre-setup) from
+  // ever running.
   const setupRouter = buildSetupRouter({ basePath, dbPool })
 
   server.use(setupRouter.routes())

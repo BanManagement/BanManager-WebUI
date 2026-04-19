@@ -250,10 +250,8 @@ describe('Mutation update server', () => {
       .set('Accept', 'application/json')
       .send({ query })
 
-    // updateServer rebuilds the server pool when connection details change,
-    // so the original `pool` reference has been destroyed by this point.
-    // Use the admin-credentialed setup pool for cleanup + verification —
-    // it points at the same MySQL server in tests.
+    // updateServer destroys the old server pool when credentials change, so
+    // use setup.dbPool (admin creds, same MySQL server) for cleanup.
     await setup.dbPool.raw('DROP USER IF EXISTS \'foobarupdate\'@\'%\';')
 
     assert.strictEqual(statusCode, 200)
@@ -272,11 +270,9 @@ describe('Mutation update server', () => {
     const cookie = await getAuthPassword(request, 'admin@banmanagement.com')
     const serverId = config.id
     const newName = `Renamed-${Date.now().toString(36).slice(-6)}`
-    // The previous test left the server pointing at the now-deleted
-    // `foobarupdate` MySQL user, so reuse the original setup DB credentials
-    // (admin) for the connection check rather than whatever happens to be in
-    // the cached config — otherwise updateServer's pre-flight createConnection
-    // call would fail before it ever touched the serversPool refresh logic.
+    // Use setup.dbConfig instead of config.user/password — the previous test
+    // pointed the cached config at a now-deleted MySQL user, which would fail
+    // the pre-flight createConnection inside updateServer.
     const input = {
       name: newName,
       host: setup.dbConfig.host,
@@ -307,9 +303,6 @@ describe('Mutation update server', () => {
     assert.strictEqual(body.errors, undefined)
     assert.strictEqual(body.data.updateServer.id, serverId)
 
-    // The serversPool cache must reflect the new name immediately, otherwise
-    // the /admin/servers list (and every per-server scoped resolver) keeps
-    // serving the old name until the 3-second background sync catches up.
     const refreshed = setup.serversPool.get(serverId)
 
     assert(refreshed, 'updateServer must keep the serversPool entry')

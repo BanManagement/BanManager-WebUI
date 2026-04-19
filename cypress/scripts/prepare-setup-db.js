@@ -1,27 +1,12 @@
 // Prepares a fresh pair of databases for the e2e-setup Cypress run.
 //
-//   <SETUP_DB_NAME>                  WebUI database the installer will write to.
-//                                    Dropped if it exists. Whether we re-create
-//                                    it (so the installer's "use existing DB"
-//                                    path is exercised) or leave it absent (so
-//                                    "Create database if missing" is exercised)
-//                                    is controlled by createWebui.
+// - WebUI DB (<SETUP_DB_NAME>): dropped; re-created when createWebui=true so
+//   tests can flip between "use existing DB" and "create database if missing".
+// - BM DB (<SETUP_BM_DB_NAME>): always recreated and seeded with the
+//   bm_players row matching CONSOLE_UUID so verifyConsolePlayer succeeds.
 //
-//   <BM_DB_NAME>                     BanManager database the server step will
-//                                    point at. Always re-created and seeded
-//                                    with the bm_players row matching the
-//                                    consoleUuid below so verifyConsolePlayer
-//                                    succeeds.
-//
-// Usage from cypress/e2e-setup specs:
-//
-//   cy.task('prepareSetupDb', { createWebui: false })
-//
-// The seeded consoleUuid value is returned to the spec so it can paste it
-// into the installer.
-//
-// IMPORTANT: This script reuses the project's migration files but talks to a
-// throwaway DB - it never touches the developer's real WebUI DB.
+// Operates exclusively on the throwaway names above — it never touches the
+// developer's real WebUI DB.
 
 const path = require('path')
 const DBMigrate = require('db-migrate')

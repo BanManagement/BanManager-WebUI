@@ -29,12 +29,11 @@ describe('Appeal lifecycle - submit, admin notify, review, resolve', () => {
 
     cy.url({ timeout: 10000 }).should('include', `/appeal/punishment/${data.serverId}/warning/${data.userWarningId}`)
 
-    // Wait for the appeal form to render before typing - the page issues a
-    // playerWarning query first and the textarea only appears once it resolves.
+    // The textarea only appears after the playerWarning query resolves.
     cy.get('[data-cy=submit-appeal]', { timeout: 10000 }).should('exist')
 
-    // Surface the actual GraphQL response so a server-side rejection (e.g. ACL)
-    // produces an actionable assertion instead of a silent "URL didn't change".
+    // Surface the actual mutation response — without this, a server-side
+    // rejection just looks like a "URL didn't change" timeout downstream.
     cy.intercept('POST', '/graphql', (req) => {
       if (typeof req.body?.query === 'string' && req.body.query.includes('createAppeal')) {
         req.alias = 'createAppeal'

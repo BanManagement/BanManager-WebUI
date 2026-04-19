@@ -15,12 +15,9 @@ describe('Report lifecycle - admin walks an open report through every state', ()
 
     cy.contains(/Report/i).should('exist')
 
-    // Mirror the appeal-lifecycle pattern: just confirm the sidebar widgets
-    // mounted. Asserting the literal "Open" label on initial render is racy in
-    // CI because react-select hydrates its displayed value asynchronously after
-    // the report query resolves, and the later state transitions
-    // (Open -> Assigned -> Resolved -> Closed) implicitly prove the starting
-    // value was correct.
+    // Just confirm the sidebar widgets mounted — react-select hydrates its
+    // displayed "Open" value asynchronously and the later state transitions
+    // (Open -> Assigned -> Resolved -> Closed) prove the starting value.
     cy.get('[data-cy=report-state]').first().should('exist')
     cy.get('[data-cy=report-assignee]').first().should('exist')
 
@@ -29,11 +26,9 @@ describe('Report lifecycle - admin walks an open report through every state', ()
 
     cy.contains(REPORT_COMMENT, { timeout: 10000 }).should('exist')
 
-    // The report sidebar is rendered twice (desktop + mobile); only the desktop
-    // copy is visible at the default Cypress viewport (>=md). We scope all
-    // react-select interactions to the .first() (desktop) wrapper so we don't
-    // accidentally type into the hidden mobile input. Re-queried each time
-    // because PlayerReportSidebar re-renders after each mutation.
+    // The sidebar is rendered twice (desktop + mobile); .first() pins us to
+    // the desktop copy that's actually visible at the default viewport.
+    // Re-queried each time because PlayerReportSidebar re-mounts on mutation.
     cy.get('[data-cy=report-assignee]').first().find('.react_select__control').click()
     cy.get('[data-cy=report-assignee]').first().find('.react_select__input').type('confuser')
     cy.get('.react_select__option', { timeout: 10000 }).contains('confuser').click()

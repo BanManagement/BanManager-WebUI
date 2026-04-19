@@ -7,11 +7,8 @@ describe('Admin server lifecycle', () => {
   })
 
   it('creates a new server, edits it and deletes it', () => {
-    // Cypress retries reuse the spec context, so we mint per-attempt names
-    // using Date.now() to avoid the "server with this name already exists"
-    // error if a previous attempt left rows behind in the shared test
-    // database. Stay well within the 20-char `name: @constraint(maxLength: 20)`
-    // server schema limit so the rename suffix still fits.
+    // Per-attempt names so retries don't collide with rows the previous
+    // attempt left behind. Stay under the 20-char schema limit on `name`.
     const newServerName = `Cy${Date.now()}`
     const renamedServer = `${newServerName}R`
 
@@ -40,11 +37,8 @@ describe('Admin server lifecycle', () => {
       cy.wrap($input).type(tableName)
     })
 
-    // Surface the actual create/updateServer responses so a server-side
-    // rejection (missing tables, console UUID lookup, encryption mismatch,
-    // etc.) produces an actionable assertion instead of a silent "URL didn't
-    // change" timeout. Both mutations share the same form component so they
-    // can fail silently in the same way.
+    // Surface the actual mutation responses — without these, a server-side
+    // rejection just looks like a "URL didn't change" timeout downstream.
     cy.intercept('POST', '/graphql', (req) => {
       if (typeof req.body?.query !== 'string') return
       if (req.body.query.includes('createServer')) {
