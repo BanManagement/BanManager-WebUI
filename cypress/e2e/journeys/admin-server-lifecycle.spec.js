@@ -71,6 +71,17 @@ describe('Admin server lifecycle', () => {
 
     cy.get('[data-cy=server-name]').clear()
     cy.get('[data-cy=server-name]').type(renamedServer)
+    // updateServer always re-validates the BM DB connection (the
+    // resolver in server/graphql/resolvers/mutations/update-server.js
+    // calls createConnection unconditionally), so the password field -
+    // which the edit page intentionally does not pre-fill from the API -
+    // has to be retyped before submit, otherwise the resolver tries to
+    // connect with an empty password and the mutation fails with
+    // DB_CONNECTION_ERROR.
+    if (Cypress.env('DB_PASSWORD')) {
+      cy.get('[data-cy=server-password]').clear()
+      cy.get('[data-cy=server-password]').type(Cypress.env('DB_PASSWORD'))
+    }
     cy.get('[data-cy=submit-server-form]').click()
 
     cy.wait('@updateServer', { timeout: 15000 }).then(({ response }) => {
