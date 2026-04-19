@@ -11,7 +11,10 @@ module.exports = async function ({ request: { body }, throw: throwError, respons
 
   if (typeof body.password !== 'string') return throwError(400, 'Invalid password type', { code: 'INVALID_PASSWORD' })
   if (!isLength(body.password, { min: 6, max: 255 })) {
-    return throwError(400, 'Invalid password, minimum length 6 characters', { code: 'INVALID_PASSWORD' })
+    return throwError(400, 'Invalid password, minimum length 6 characters', {
+      code: 'INVALID_PASSWORD_LENGTH',
+      meta: { minLength: 6 }
+    })
   }
 
   const commonPassword = await pwnedPassword(body.password)

@@ -6,7 +6,7 @@ const Me = require('../queries/me')
 
 module.exports = async function setPassword (obj, { currentPassword, newPassword }, { log, session, state }) {
   if (!isLength(newPassword, { min: 6, max: 255 })) {
-    throw new ExposedError('Invalid password, minimum length 6 characters', 'INVALID_PASSWORD')
+    throw new ExposedError('Invalid password, minimum length 6 characters', 'INVALID_PASSWORD_LENGTH', { minLength: 6 })
   }
 
   const [checkResult] = await state.dbPool('bm_web_users')
@@ -19,7 +19,7 @@ module.exports = async function setPassword (obj, { currentPassword, newPassword
   // as pin is 'forgot password' journey
   if (session.type !== 'pin') {
     if (!currentPassword || !isLength(currentPassword, { min: 6, max: 255 })) {
-      throw new ExposedError('Invalid password, minimum length 6 characters', 'INVALID_PASSWORD')
+      throw new ExposedError('Invalid password, minimum length 6 characters', 'INVALID_PASSWORD_LENGTH', { minLength: 6 })
     }
 
     const match = await verify(checkResult.password, currentPassword)

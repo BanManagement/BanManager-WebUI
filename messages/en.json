@@ -122,6 +122,7 @@
     "INVALID_INPUT": "Invalid input",
     "INVALID_EMAIL": "Email address is invalid",
     "INVALID_PASSWORD": "Password is invalid",
+    "INVALID_PASSWORD_LENGTH": "Invalid password, minimum length {minLength} characters",
     "INVALID_LOCALE": "Locale is not supported",
     "EMAIL_IN_USE": "Email already in use",
     "PASSWORD_BREACHED": "This password isn't safe to use as it's appeared in {count, plural, one {# known data breach} other {# known data breaches}}",

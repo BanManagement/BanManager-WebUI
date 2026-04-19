@@ -5,7 +5,7 @@ const Me = require('../queries/me')
 
 module.exports = async function setEmail (obj, { currentPassword, email }, { session, state }) {
   if (!isLength(currentPassword, { min: 6, max: 255 })) {
-    throw new ExposedError('Invalid password, minimum length 6 characters', 'INVALID_PASSWORD')
+    throw new ExposedError('Invalid password, minimum length 6 characters', 'INVALID_PASSWORD_LENGTH', { minLength: 6 })
   }
 
   if (!isEmail(email)) throw new ExposedError('Invalid email address', 'INVALID_EMAIL')

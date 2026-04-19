@@ -51,7 +51,10 @@ async function handlePasswordLogin (ctx, { limiterSlowBruteByIP, limiterConsecut
 
   if (typeof request.body.password !== 'string') return throwError(400, 'Invalid password type', { code: 'INVALID_PASSWORD' })
   if (!isLength(request.body.password, { min: 6, max: 255 })) {
-    return throwError(400, 'Invalid password, minimum length 6 characters', { code: 'INVALID_PASSWORD' })
+    return throwError(400, 'Invalid password, minimum length 6 characters', {
+      code: 'INVALID_PASSWORD_LENGTH',
+      meta: { minLength: 6 }
+    })
   }
 
   const ipAddr = requestIp.getClientIp(ctx.request)

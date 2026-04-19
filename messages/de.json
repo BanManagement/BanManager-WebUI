@@ -122,6 +122,7 @@
     "INVALID_INPUT": "Ungültige Eingabe",
     "INVALID_EMAIL": "E-Mail-Adresse ist ungültig",
     "INVALID_PASSWORD": "Passwort ist ungültig",
+    "INVALID_PASSWORD_LENGTH": "Ungültiges Passwort, mindestens {minLength} Zeichen",
     "INVALID_LOCALE": "Sprache wird nicht unterstützt",
     "EMAIL_IN_USE": "E-Mail wird bereits verwendet",
     "PASSWORD_BREACHED": "Dieses Passwort ist nicht sicher, da es in {count, plural, one {# bekannten Datenleck} other {# bekannten Datenlecks}} aufgetaucht ist",
