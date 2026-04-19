@@ -2,9 +2,11 @@ import { useState } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { mutate } from 'swr'
+import { useTranslations } from 'next-intl'
 import Dropdown from './Dropdown'
 import Avatar from './Avatar'
 import Button from './Button'
+import LanguageSwitcher from './LanguageSwitcher'
 import NotificationBadge from './NotificationBadge'
 import { MdOutlineNotifications, MdNotifications, MdManageAccounts, MdDashboard, MdOutlineDashboard } from 'react-icons/md'
 import { useUser } from '../utils'
@@ -13,6 +15,9 @@ const buttonClassName = 'bg-primary-900 !rounded-lg p-2 transform transition dur
 
 export default function SessionNavProfile ({ user, unreadNotificationCount }) {
   const router = useRouter()
+  const t = useTranslations('nav')
+  const tCommon = useTranslations('common')
+  const tAccount = useTranslations('pages.account')
   const [loggingOut, setLoggingOut] = useState(false)
   const { hasPermission } = useUser()
 
@@ -43,13 +48,14 @@ export default function SessionNavProfile ({ user, unreadNotificationCount }) {
   return (
     <>
       <div className='hidden md:flex gap-4'>
-        {hasPermission('servers', 'manage') && <Link href='/admin' passHref><Button className={buttonClassName} title='Admin'><MdManageAccounts /></Button></Link>}
+        <LanguageSwitcher buttonClassName={buttonClassName} />
+        {hasPermission('servers', 'manage') && <Link href='/admin' passHref><Button className={buttonClassName} title={t('admin')}><MdManageAccounts /></Button></Link>}
         <Link href='/notifications' passHref>
-          <Button className={buttonClassName} notificationCount={unreadNotificationCount}>
+          <Button className={buttonClassName} notificationCount={unreadNotificationCount} title={t('notifications')}>
             {router.pathname.endsWith('/notifications') ? <MdNotifications /> : <MdOutlineNotifications />}
           </Button>
         </Link>
-        <Link href='/dashboard' passHref><Button className={buttonClassName} title='Dashboard'>{router.pathname.endsWith('/dashboard') ? <MdDashboard /> : <MdOutlineDashboard />}</Button></Link>
+        <Link href='/dashboard' passHref><Button className={buttonClassName} title={t('dashboard')}>{router.pathname.endsWith('/dashboard') ? <MdDashboard /> : <MdOutlineDashboard />}</Button></Link>
         <Dropdown
           trigger={({ onClickToggle }) => (
             <Button
@@ -61,11 +67,11 @@ export default function SessionNavProfile ({ user, unreadNotificationCount }) {
             </Button>
           )}
         >
-          <Dropdown.Item name='Account' href='/account' />
-          {!user.hasAccount && <Dropdown.Item name='Register' href='/account/register' />}
-          <Dropdown.Item name='Profile' href={'/player/' + user.id} />
+          <Dropdown.Item name={t('account')} href='/account' />
+          {!user.hasAccount && <Dropdown.Item name={tAccount('register')} href='/account/register' />}
+          <Dropdown.Item name={t('profile')} href={'/player/' + user.id} />
           <div className='border-primary-400 border-b mx-1' />
-          <Dropdown.Item name='Log out' onClick={handleLogout} disabled={loggingOut} />
+          <Dropdown.Item name={tCommon('logout')} onClick={handleLogout} disabled={loggingOut} />
         </Dropdown>
       </div>
       <div className='md:hidden flex flex-col sm:flex-row sm:justify-around'>
@@ -74,23 +80,23 @@ export default function SessionNavProfile ({ user, unreadNotificationCount }) {
             <Avatar width='48' height='48' uuid={user.id} />
             <div>
               <div className='text-lg font-normal'>{user.name}</div>
-              <div className='text-gray-400 text-sm font-normal'>View profile</div>
+              <div className='text-gray-400 text-sm font-normal'>{t('viewProfile')}</div>
             </div>
           </div>
         </Link>
         <span className='text-5xl mb-2 border-b border-primary-400 leading-none' />
-        <Dropdown.Item name='Account' href='/account' className='px-2 mb-2 m-0' />
-        <Dropdown.Item name='Dashboard' href='/dashboard' className='px-2 mb-2' />
-        <Dropdown.Item name='Notifications' href='/notifications' className='px-2 mb-2'>
+        <Dropdown.Item name={t('account')} href='/account' className='px-2 mb-2 m-0' />
+        <Dropdown.Item name={t('dashboard')} href='/dashboard' className='px-2 mb-2' />
+        <Dropdown.Item name={t('notifications')} href='/notifications' className='px-2 mb-2'>
           {unreadNotificationCount > 0 && <NotificationBadge>{unreadNotificationCount > 9 ? '9+' : unreadNotificationCount}</NotificationBadge>}
         </Dropdown.Item>
-        <Dropdown.Item name='Profile' href={'/player/' + user.id} className='px-2 mb-2' />
+        <Dropdown.Item name={t('profile')} href={'/player/' + user.id} className='px-2 mb-2' />
         <span className='text-5xl mb-2 border-b border-primary-400 leading-none' />
-        <Dropdown.Item name='Log out' onClick={handleLogout} disabled={loggingOut} className='px-2 mb-2' />
+        <Dropdown.Item name={tCommon('logout')} onClick={handleLogout} disabled={loggingOut} className='px-2 mb-2' />
         {hasPermission('servers', 'manage') && (
           <>
             <span className='text-5xl mb-2 border-b border-primary-400 leading-none' />
-            <Dropdown.Item name='Admin' href='/admin' className='px-2' />
+            <Dropdown.Item name={t('admin')} href='/admin' className='px-2' />
           </>)}
       </div>
     </>

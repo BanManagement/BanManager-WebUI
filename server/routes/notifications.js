@@ -4,10 +4,10 @@ module.exports = async function (ctx) {
   const { request: { params }, session, state, throw: throwError } = ctx
 
   if (typeof params.id !== 'string' || params.id.length > 22) {
-    return throwError(400, 'Invalid notification ID')
+    return throwError(400, 'Invalid notification ID', { code: 'INVALID_INPUT' })
   }
 
-  if (!session || !session.playerId) return throwError(400, 'You are not logged in')
+  if (!session || !session.playerId) return throwError(400, 'You are not logged in', { code: 'NOT_LOGGED_IN' })
 
   const notification = await state.dbPool('bm_web_notifications')
     .select('type', 'server_id', 'report_id', 'comment_id', 'appeal_id', 'state_id')

@@ -13,7 +13,7 @@ module.exports = async function createServer (obj, { input }, { log, state }) {
     .first()
 
   if (serverExists) {
-    throw new ExposedError('A server with this name already exists')
+    throw new ExposedError('A server with this name already exists', 'ALREADY_EXISTS')
   }
 
   const id = await generateServerId()
@@ -42,7 +42,7 @@ module.exports = async function createServer (obj, { input }, { log, state }) {
 
   if (tablesMissing.length) {
     await conn.end()
-    throw new ExposedError(`Tables do not exist in the database: ${tablesMissing.join(', ')}`)
+    throw new ExposedError(`Tables do not exist in the database: ${tablesMissing.join(', ')}`, 'MISSING_DATABASE_TABLES')
   }
 
   const [[exists]] = await conn.query(
@@ -52,7 +52,7 @@ module.exports = async function createServer (obj, { input }, { log, state }) {
   await conn.end()
 
   if (!exists) {
-    throw new ExposedError(`Console UUID not found in ${input.tables.players} table`)
+    throw new ExposedError(`Console UUID not found in ${input.tables.players} table`, 'CONSOLE_UUID_NOT_FOUND')
   }
 
   const password = input.password

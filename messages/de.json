@@ -1,0 +1,222 @@
+{
+  "common": {
+    "login": "Anmelden",
+    "logout": "Abmelden",
+    "cancel": "Abbrechen",
+    "save": "Speichern",
+    "submit": "Absenden",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "back": "Zurück",
+    "continue": "Weiter",
+    "loading": "Wird geladen…",
+    "search": "Suchen",
+    "yes": "Ja",
+    "no": "Nein",
+    "ok": "OK",
+    "siteName": "Ban Management",
+    "version": "Version"
+  },
+  "nav": {
+    "login": "Anmelden",
+    "createAppeal": "Einspruch erstellen",
+    "language": "Sprache",
+    "home": "Startseite",
+    "openMenu": "Menü öffnen",
+    "admin": "Administration",
+    "dashboard": "Dashboard",
+    "notifications": "Benachrichtigungen",
+    "account": "Konto",
+    "profile": "Profil",
+    "viewProfile": "Profil anzeigen"
+  },
+  "footer": {
+    "powered": "Bereitgestellt von"
+  },
+  "pages": {
+    "login": {
+      "title": "Anmelden",
+      "subtitle": "Willkommen zurück",
+      "forgotPassword": "Passwort vergessen oder Konto erstellen?"
+    },
+    "register": {
+      "title": "Registrieren",
+      "subtitle": "Erstelle dein Konto"
+    },
+    "forgottenPassword": {
+      "title": "Passwort vergessen",
+      "subtitle": "Wir senden dir einen Reset-Link per E-Mail"
+    },
+    "appeal": {
+      "title": "Einspruch erstellen",
+      "subtitle": "Reiche einen Einspruch gegen eine Strafe ein",
+      "documentTitle": "Einspruch",
+      "stepHeader": {
+        "step1": "PIN-Anmeldung",
+        "selectPunishment": "Strafe auswählen"
+      },
+      "intro": "Zuerst müssen wir wissen, wer du bist.",
+      "pinHelp": "Ich habe einen 6-stelligen PIN, z.B. ",
+      "pinDescription": "Dieser ist verfügbar, wenn du den Minecraft-Server betrittst, entweder im Bann-Bildschirm oder mit dem {command}-Befehl.",
+      "pinExpiry": "Hinweis: Dieser PIN läuft nach 5 Minuten ab.",
+      "or": "ODER",
+      "haveAccount": "Ich habe bereits ein Konto",
+      "haveAccountDescription": "Dies ist spezifisch für diese Website und NICHT deine Microsoft/Mojang-Anmeldedaten."
+    },
+    "account": {
+      "documentTitle": "Konto",
+      "subtitle": "Konto",
+      "register": "Registrieren",
+      "email": "E-Mail",
+      "password": "Passwort"
+    },
+    "notFound": {
+      "title": "Hoppla! Seite nicht gefunden",
+      "subtitle": "Ein Fehler ist aufgetreten",
+      "documentTitle": "Nicht gefunden",
+      "intro": "Sieht aus, als hättest du dich verlaufen! Diese Seite scheint sich versteckt zu haben.",
+      "directions": "Lass uns gemeinsam zurückfinden:",
+      "homepage": "Zur Startseite",
+      "homepageHint": " - starte ein neues Abenteuer!",
+      "search": "Verwende die Suchleiste oben, um zu finden, was du suchst.",
+      "back": "Versuche, zur vorherigen Seite zurückzukehren."
+    },
+    "serverError": {
+      "title": "Serverfehler",
+      "subtitle": "Etwas ist schiefgelaufen",
+      "intro": "Es tut uns leid, bei uns ist etwas schiefgelaufen. Bitte versuche es später erneut.",
+      "documentTitle": "Serverfehler"
+    },
+    "admin": {
+      "title": "Administration",
+      "developerMode": "Entwicklermodus",
+      "developerModeMessage": "Du läufst aktuell im Entwicklungsmodus, erwarte Leistungseinbußen",
+      "updateAvailable": "Update verfügbar",
+      "currentVersion": "Aktuelle Version: {current}",
+      "latestVersion": "Neueste: {latest}",
+      "newFeatures": "Neue Funktionen",
+      "fixes": "Fehlerbehebungen"
+    }
+  },
+  "errors": {
+    "header": "Fehler",
+    "fetchHeader": "Abruffehler",
+    "httpHeader": "HTTP-Fehler: {status}",
+    "invalidJson": "Ungültiges JSON",
+    "INTERNAL": "Interner Serverfehler",
+    "UNKNOWN": "Ein unbekannter Fehler ist aufgetreten",
+    "NO_PERMISSION": "Du hast keine Berechtigung, diese Aktion auszuführen",
+    "NOT_LOGGED_IN": "Du bist nicht angemeldet",
+    "SERVER_NOT_FOUND": "Server nicht gefunden",
+    "PLAYER_NOT_FOUND": "Spieler nicht gefunden",
+    "ROLE_NOT_FOUND": "Rolle nicht gefunden",
+    "REPORT_NOT_FOUND": "Meldung nicht gefunden",
+    "APPEAL_NOT_FOUND": "Einspruch nicht gefunden",
+    "BAN_NOT_FOUND": "Bann nicht gefunden",
+    "MUTE_NOT_FOUND": "Stummschaltung nicht gefunden",
+    "WARNING_NOT_FOUND": "Verwarnung nicht gefunden",
+    "NOTE_NOT_FOUND": "Notiz nicht gefunden",
+    "WEBHOOK_NOT_FOUND": "Webhook nicht gefunden",
+    "RULE_NOT_FOUND": "Regel nicht gefunden",
+    "DOCUMENT_NOT_FOUND": "Dokument nicht gefunden",
+    "INVALID_INPUT": "Ungültige Eingabe",
+    "INVALID_EMAIL": "E-Mail-Adresse ist ungültig",
+    "INVALID_PASSWORD": "Passwort ist ungültig",
+    "INVALID_PASSWORD_LENGTH": "Ungültiges Passwort, mindestens {minLength} Zeichen",
+    "INVALID_LOCALE": "Sprache wird nicht unterstützt",
+    "EMAIL_IN_USE": "E-Mail wird bereits verwendet",
+    "PASSWORD_BREACHED": "Dieses Passwort ist nicht sicher, da es in {count, plural, one {# bekannten Datenleck} other {# bekannten Datenlecks}} aufgetaucht ist",
+    "PASSWORD_COMPROMISED": "Dieses Passwort ist nicht sicher, da es in {count, plural, one {# bekannten Datenleck} other {# bekannten Datenlecks}} aufgetaucht ist",
+    "RATE_LIMIT": "Zu viele Versuche. Bitte versuche es später erneut.",
+    "DUPLICATE_APPEAL": "Du hast bereits einen offenen Einspruch für diese Strafe",
+    "ALREADY_RESOLVED": "Dies wurde bereits bearbeitet",
+    "ALREADY_EXISTS": "Dies existiert bereits",
+    "INVALID_NAME": "Name ist ungültig",
+    "INVALID_PIN": "PIN ist ungültig",
+    "INVALID_TARGET": "Du kannst diese Aktion nicht an dir selbst ausführen",
+    "INVALID_STATE": "Ungültiger Statuswechsel",
+    "INCORRECT_LOGIN": "Falsche Anmeldedaten",
+    "REPORT_COMMENT_NOT_FOUND": "Meldungskommentar nicht gefunden",
+    "APPEAL_COMMENT_NOT_FOUND": "Einspruchskommentar nicht gefunden",
+    "USER_NOT_FOUND": "Benutzer nicht gefunden",
+    "NOTIFICATION_NOT_FOUND": "Benachrichtigung nicht gefunden",
+    "PUNISHMENT_NOT_FOUND": "Strafe nicht gefunden",
+    "PUNISHMENT_NOT_ACTIVE": "Diese Strafe ist nicht mehr aktiv",
+    "REPORT_STATE_NOT_FOUND": "Meldungsstatus nicht gefunden",
+    "APPEAL_STATE_NOT_FOUND": "Einspruchsstatus nicht gefunden",
+    "MUTE_RECORD_NOT_FOUND": "Stummschaltungseintrag nicht gefunden",
+    "BAN_RECORD_NOT_FOUND": "Banneintrag nicht gefunden",
+    "KICK_NOT_FOUND": "Kick nicht gefunden",
+    "INTERVAL_TOO_LARGE": "Der angeforderte Zeitraum ist zu groß",
+    "LIMIT_TOO_LARGE": "Das angeforderte Limit ist zu groß",
+    "OFFSET_OUT_OF_RANGE": "Offset überschreitet die verfügbaren Daten",
+    "DB_CONNECTION_ERROR": "Verbindung zur Datenbank fehlgeschlagen",
+    "MISSING_DATABASE_TABLES": "Erforderliche Datenbanktabellen fehlen",
+    "CONSOLE_UUID_NOT_FOUND": "Konsolen-Spieler nicht gefunden",
+    "EXAMPLE_PAYLOAD_NOT_FOUND": "Beispielpayload nicht gefunden",
+    "CANNOT_DELETE_LAST_SERVER": "Du kannst den letzten Server nicht löschen",
+    "DEFAULT_ROLE_PROTECTED": "Die Standardrolle kann nicht geändert werden",
+    "DEFAULT_ROLE_PARENT_FORBIDDEN": "Die Standardrolle kann kein übergeordnetes Element sein",
+    "NO_ACCOUNT": "Mit dieser E-Mail ist kein Konto verknüpft",
+    "SUBSCRIPTION_EXISTS": "Abonnement existiert bereits",
+    "SERVER_PERMISSION_DENIED": "Du hast keinen Zugriff auf diesen Server"
+  },
+  "forms": {
+    "email": "E-Mail-Adresse",
+    "password": "Passwort",
+    "currentPassword": "Aktuelles Passwort",
+    "newPassword": "Neues Passwort",
+    "confirmPassword": "Passwort bestätigen",
+    "username": "Benutzername",
+    "name": "Name",
+    "reason": "Grund",
+    "message": "Nachricht",
+    "comment": "Schreibe hier deinen Kommentar…",
+    "playerSelectorPlaceholder": "Spieler suchen",
+    "required": "Dieses Feld ist erforderlich",
+    "minLength": "Muss mindestens {n} Zeichen lang sein",
+    "maxLength": "Darf maximal {n} Zeichen lang sein",
+    "passwordMismatch": "Passwörter stimmen nicht überein"
+  },
+  "widgets": {
+    "select": {
+      "noOptions": "Keine Optionen",
+      "noPlayersFound": "Keine Spieler gefunden",
+      "selectPlaceholder": "Auswählen…",
+      "loading": "Wird geladen…"
+    },
+    "languageSwitcher": {
+      "label": "Sprache",
+      "select": "Sprache auswählen"
+    }
+  },
+  "components": {
+    "appealStep": {
+      "progress": "{step} von {total}",
+      "next": "Weiter: {next}"
+    }
+  },
+  "notifications": {
+    "appealCreated": "<b>{name}</b> hat einen Einspruch erstellt",
+    "appealCommentOwn": "<b>{name}</b> hat deinen Einspruch kommentiert",
+    "appealCommentOther": "<b>{name}</b> hat einen Kommentar hinzugefügt",
+    "appealAssignedOwn": "{actor} hat <b>{assignee}</b> mit der Prüfung deines Einspruchs beauftragt",
+    "appealAssignedOther": "<b>{actor}</b> hat <b>{assignee}</b> mit der Prüfung des Einspruchs beauftragt",
+    "appealStateOwn": "{actor} hat deinen Einspruch <b>{state}</b>",
+    "appealStateOther": "{actor} hat Einspruch <b>{state}</b>",
+    "reportCommentOwn": "{name} hat deine Meldung kommentiert",
+    "reportCommentOther": "<b>{name}</b> hat einen Kommentar hinzugefügt",
+    "reportAssignedOwn": "{actor} hat <b>{assignee}</b> mit der Prüfung deiner Meldung gegen {player} beauftragt",
+    "reportAssignedOther": "<b>{actor}</b> hat <b>{assignee}</b> mit der Prüfung der Meldung beauftragt",
+    "reportStateOwn": "{actor} hat deine Meldung <b>{state}</b>",
+    "reportStateOther": "{actor} hat Meldung <b>{state}</b>",
+    "stateLabels": {
+      "open": "geöffnet",
+      "closed": "geschlossen",
+      "approved": "genehmigt",
+      "denied": "abgelehnt",
+      "resolved": "gelöst",
+      "unresolved": "ungelöst"
+    }
+  }
+}

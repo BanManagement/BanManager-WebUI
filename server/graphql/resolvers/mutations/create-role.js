@@ -3,7 +3,7 @@ const ExposedError = require('../../../data/exposed-error')
 const role = require('../queries/role')
 
 module.exports = async function createRole (obj, { input: { name, parent, resources } }, { state }, info) {
-  if (parent < 1 || parent > 3) throw new ExposedError('Invalid parent')
+  if (parent < 1 || parent > 3) throw new ExposedError('Invalid parent', 'INVALID_INPUT')
 
   let id
 

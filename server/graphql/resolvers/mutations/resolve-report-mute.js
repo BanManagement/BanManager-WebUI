@@ -8,7 +8,7 @@ const { subscribeReport, notifyReport } = require('../../../data/notification/re
 module.exports = async function resolveReportMute (obj, { report: reportId, serverId, input }, { session, state }, info) {
   const server = state.serversPool.get(serverId)
 
-  if (!server) throw new ExposedError('Server does not exist')
+  if (!server) throw new ExposedError('Server does not exist', 'SERVER_NOT_FOUND')
 
   const table = server.config.tables.playerReports
   const player = input.player
@@ -16,7 +16,7 @@ module.exports = async function resolveReportMute (obj, { report: reportId, serv
 
   const [data] = await server.pool(table).where({ id: reportId })
 
-  if (!data) throw new ExposedError(`Report ${reportId} does not exist`)
+  if (!data) throw new ExposedError(`Report ${reportId} does not exist`, 'REPORT_NOT_FOUND')
 
   const canUpdate = state.acl.hasServerPermission(serverId, 'player.reports', 'update.state.any') ||
     (state.acl.hasServerPermission(serverId, 'player.reports', 'update.state.own') && state.acl.owns(data.actor_id)) ||
@@ -24,7 +24,7 @@ module.exports = async function resolveReportMute (obj, { report: reportId, serv
     (state.acl.hasServerPermission(serverId, 'player.reports', 'update.state.reported') && state.acl.owns(data.player_id))
 
   if (!canUpdate) {
-    throw new ExposedError('You do not have permission to perform this action, please contact your server administrator')
+    throw new ExposedError('You do not have permission to perform this action, please contact your server administrator', 'NO_PERMISSION')
   }
 
   const { name } = await server.pool(server.config.tables.players).select('name').where({ id: player }).first()
@@ -43,7 +43,7 @@ module.exports = async function resolveReportMute (obj, { report: reportId, serv
       })
     } catch (e) {
       if (e.code === 'ER_DUP_ENTRY') {
-        throw new ExposedError('Player already muted on selected server, please unmute first')
+        throw new ExposedError('Player already muted on selected server, please unmute first', 'ALREADY_EXISTS')
       }
 
       throw e

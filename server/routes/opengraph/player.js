@@ -21,7 +21,7 @@ const ttl = 1 * 60 * 60 * 1000 // 1 hour
 module.exports = async function (ctx) {
   const { request: { params }, throw: throwError, state, log } = ctx
 
-  if (!isUUID(params.id)) return throwError(400, 'Invalid UUID')
+  if (!isUUID(params.id)) return throwError(400, 'Invalid UUID', { code: 'INVALID_INPUT' })
 
   try {
     const file = await stat(path.join(publicDir, `images/opengraph/cache/player-${params.id}.png`))
@@ -37,7 +37,7 @@ module.exports = async function (ctx) {
   const playerId = parse(params.id, Buffer.alloc(16))
   const player = await state.loaders.player.load({ id: playerId, fields: ['name'] })
 
-  if (!player) return throwError(404, 'Player not found')
+  if (!player) return throwError(404, 'Player not found', { code: 'PLAYER_NOT_FOUND' })
 
   const data = await playerStatistics({}, { player: playerId }, { state })
 

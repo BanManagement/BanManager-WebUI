@@ -1,6 +1,8 @@
 import { forwardRef } from 'react'
+import { useTranslations } from 'next-intl'
 import Message from './Message'
 import { uniqBy } from 'lodash-es'
+import { translateGraphqlError } from '../utils/locale'
 
 // eslint-disable-next-line react/display-name
 const ErrorMessages = forwardRef(({
@@ -10,19 +12,21 @@ const ErrorMessages = forwardRef(({
   parseError,
   errors
 }, ref) => {
+  const t = useTranslations()
+
   return (
     <>
       {error && (
         <Message ref={ref} error>
-          <Message.Header>Error</Message.Header>
+          <Message.Header>{t('errors.header')}</Message.Header>
           <Message.List data-cy='errors'>
-            <Message.Item>{error.message}</Message.Item>
+            <Message.Item>{translateGraphqlError(t, error)}</Message.Item>
           </Message.List>
         </Message>
       )}
       {fetchError && (
         <Message ref={ref} error>
-          <Message.Header>Fetch Error</Message.Header>
+          <Message.Header>{t('errors.fetchHeader')}</Message.Header>
           <Message.List>
             <Message.Item>{fetchError}</Message.Item>
           </Message.List>
@@ -30,13 +34,13 @@ const ErrorMessages = forwardRef(({
       )}
       {httpError && (
         <Message ref={ref} error>
-          <Message.Header>HTTP error: {httpError.status}</Message.Header>
+          <Message.Header>{t('errors.httpHeader', { status: httpError.status })}</Message.Header>
           {httpError.statusText && <Message.List><Message.Item>{httpError.statusText}</Message.Item></Message.List>}
         </Message>
       )}
       {parseError && (
         <Message ref={ref} error>
-          <Message.Header>Parse Error</Message.Header>
+          <Message.Header>{t('errors.header')}</Message.Header>
           <Message.List>
             <Message.Item>{parseError}</Message.Item>
           </Message.List>
@@ -44,10 +48,10 @@ const ErrorMessages = forwardRef(({
       )}
       {errors && (
         <Message ref={ref} error>
-          <Message.Header>Error</Message.Header>
+          <Message.Header>{t('errors.header')}</Message.Header>
           <Message.List data-cy='errors'>
-            {uniqBy(errors, 'message').map(({ message }, index) => (
-              <Message.Item key={index}>{message}</Message.Item>
+            {uniqBy(errors, 'message').map((err, index) => (
+              <Message.Item key={index}>{translateGraphqlError(t, err)}</Message.Item>
             ))}
           </Message.List>
         </Message>

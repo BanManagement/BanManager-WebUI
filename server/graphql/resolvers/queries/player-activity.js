@@ -1,10 +1,10 @@
 const ExposedError = require('../../../data/exposed-error')
 
 module.exports = async function playerActivity (obj, { serverId, actor, limit, createdStart, createdEnd, types }, { state: { loaders, serversPool } }, info) {
-  if (!serversPool.has(serverId)) throw new ExposedError('Server does not exist')
-  if (limit > 100) throw new ExposedError('Limit too large')
-  if (createdStart && createdEnd && createdStart > createdEnd) throw new ExposedError('Start must be before end')
-  if (!types.length) throw new ExposedError('Missing types')
+  if (!serversPool.has(serverId)) throw new ExposedError('Server does not exist', 'SERVER_NOT_FOUND')
+  if (limit > 100) throw new ExposedError('Limit too large', 'LIMIT_TOO_LARGE')
+  if (createdStart && createdEnd && createdStart > createdEnd) throw new ExposedError('Start must be before end', 'INVALID_INPUT')
+  if (!types.length) throw new ExposedError('Missing types', 'INVALID_INPUT')
 
   const filter = (query) => {
     if (actor) query.where('actor_id', actor)
@@ -144,7 +144,7 @@ module.exports = async function playerActivity (obj, { serverId, actor, limit, c
         return warningQuery()
     }
 
-    throw new ExposedError(`Unknown type ${type}`)
+    throw new ExposedError(`Unknown type ${type}`, 'INVALID_INPUT')
   }).flat()
 
   const data = await pool

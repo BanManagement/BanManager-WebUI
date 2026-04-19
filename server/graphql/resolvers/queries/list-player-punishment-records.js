@@ -26,8 +26,8 @@ const defaultTypes = {
 }
 
 module.exports = async function listPlayerPunishmentRecords (obj, { serverId, actor, player, type, order }, { state }, info) {
-  if (!state.serversPool.has(serverId)) throw new ExposedError('Server does not exist')
-  if (!defaultTypes[type]) throw new ExposedError('Invalid type')
+  if (!state.serversPool.has(serverId)) throw new ExposedError('Server does not exist', 'SERVER_NOT_FOUND')
+  if (!defaultTypes[type]) throw new ExposedError('Invalid type', 'INVALID_INPUT')
 
   const server = state.serversPool.get(serverId)
   const typeInfo = defaultTypes[type]

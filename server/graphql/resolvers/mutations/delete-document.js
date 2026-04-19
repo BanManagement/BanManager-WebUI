@@ -16,7 +16,7 @@ async function getDocumentContext (dbPool, documentId) {
       .where({ id: appealDoc.appeal_id })
       .select('server_id')
 
-    if (!appeal) throw new ExposedError('Parent appeal not found')
+    if (!appeal) throw new ExposedError('Parent appeal not found', 'APPEAL_NOT_FOUND')
     return { serverId: appeal.server_id, resource: 'player.appeals' }
   }
 
@@ -51,7 +51,7 @@ module.exports = async function deleteDocument (obj, { id }, { log, session, sta
     )
 
   if (!document) {
-    throw new ExposedError(`Document ${id} does not exist`)
+    throw new ExposedError(`Document ${id} does not exist`, 'DOCUMENT_NOT_FOUND')
   }
 
   const playerId = unparse(document.player_id)
@@ -64,12 +64,12 @@ module.exports = async function deleteDocument (obj, { id }, { log, session, sta
     const canDeleteOwn = state.acl.hasServerPermission(serverId, resource, 'attachment.delete.own') && isOwner
 
     if (!canDeleteAny && !canDeleteOwn) {
-      throw new ExposedError('You do not have permission to delete this document')
+      throw new ExposedError('You do not have permission to delete this document', 'NO_PERMISSION')
     }
   } else {
     // Unlinked document - only admins can delete
     if (!state.acl.hasPermission('servers', 'manage')) {
-      throw new ExposedError('You do not have permission to delete this document')
+      throw new ExposedError('You do not have permission to delete this document', 'NO_PERMISSION')
     }
   }
 

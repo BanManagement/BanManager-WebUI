@@ -3,12 +3,15 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { Fragment, useEffect, isValidElement } from 'react'
 import { FaBars } from 'react-icons/fa'
+import { useTranslations } from 'next-intl'
 import PageContainer from './PageContainer'
 import NavigationOverlay from './NavigationOverlay'
 import { useHashRouteToggle } from '../utils'
 
 export default function Nav ({ leftItems, mobileItems, rightItems, unreadNotificationCount }) {
   const router = useRouter()
+  const t = useTranslations('common')
+  const tNav = useTranslations('nav')
   const [drawerOpen, setDrawerOpen] = useHashRouteToggle('#nav')
 
   const renderMenu = (items = []) => items.map(item => {
@@ -52,8 +55,8 @@ export default function Nav ({ leftItems, mobileItems, rightItems, unreadNotific
         <nav className='flex justify-between items-center py-5 md:justify-start md:space-x-10'>
           <div className='flex justify-start lg:w-0 lg:flex-1'>
             <Link href='/' passHref className='transition-opacity hover:opacity-80'>
-              <span className='sr-only'>Home</span>
-              <Image src={(process.env.BASE_PATH || '') + '/images/banmanager-icon.png'} alt='Logo' width='40' height='40' priority />
+              <span className='sr-only'>{tNav('home')}</span>
+              <Image src={(process.env.BASE_PATH || '') + '/images/banmanager-icon.png'} alt={t('siteName')} width='40' height='40' priority />
             </Link>
           </div>
           <div className='flex items-center justify-center flex-1 lg:w-0'>
@@ -64,7 +67,7 @@ export default function Nav ({ leftItems, mobileItems, rightItems, unreadNotific
               type='button'
               className='rounded-xl w-11 h-11 p-2.5 relative inline-flex items-center justify-center text-gray-200 bg-primary-700 border border-primary-800 hover:bg-primary-600 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500/50'
               onClick={() => setDrawerOpen(true)}
-              aria-label='Open menu'
+              aria-label={tNav('openMenu')}
             >
               <FaBars className='w-5 h-5' />
               {unreadNotificationCount > 0 && (

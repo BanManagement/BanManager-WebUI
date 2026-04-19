@@ -15,7 +15,7 @@ module.exports = async function assignRole (obj, { players, role: id }, { state 
   }, fields, 'roles').where('role_id', id)
   const [role] = await query.exec()
 
-  if (!role) throw new ExposedError(`Role ${id} does not exist`)
+  if (!role) throw new ExposedError(`Role ${id} does not exist`, 'ROLE_NOT_FOUND')
 
   // Ensure they exist in bm_web_users
   await state.dbPool('bm_web_users')

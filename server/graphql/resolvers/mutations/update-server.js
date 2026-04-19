@@ -6,7 +6,7 @@ const ExposedError = require('../../../data/exposed-error')
 const { tables } = require('../../../data/tables')
 
 module.exports = async function updateServer (obj, { id, input }, { log, state }) {
-  if (!state.serversPool.has(id)) throw new ExposedError('Server not found')
+  if (!state.serversPool.has(id)) throw new ExposedError('Server not found', 'SERVER_NOT_FOUND')
 
   const serverExists = await state.dbPool('bm_web_servers')
     .select('id')
@@ -14,7 +14,7 @@ module.exports = async function updateServer (obj, { id, input }, { log, state }
     .first()
 
   if (serverExists && serverExists.id !== id) {
-    throw new ExposedError('A server with this name already exists')
+    throw new ExposedError('A server with this name already exists', 'ALREADY_EXISTS')
   }
 
   // @TODO Check if connection details changed to avoid needing password to change server name
@@ -23,7 +23,7 @@ module.exports = async function updateServer (obj, { id, input }, { log, state }
   try {
     conn = await createConnection(pick(input, ['host', 'port', 'database', 'user', 'password']))
   } catch (e) {
-    throw new ExposedError(e.message)
+    throw new ExposedError(e.message, 'DB_CONNECTION_ERROR')
   }
 
   const tableNames = Object.keys(tables)
@@ -39,7 +39,7 @@ module.exports = async function updateServer (obj, { id, input }, { log, state }
 
   if (tablesMissing.length) {
     await conn.end()
-    throw new ExposedError(`Tables do not exist in the database: ${tablesMissing.join(', ')}`)
+    throw new ExposedError(`Tables do not exist in the database: ${tablesMissing.join(', ')}`, 'MISSING_DATABASE_TABLES')
   }
 
   const [[exists]] = await conn.query(
@@ -49,7 +49,7 @@ module.exports = async function updateServer (obj, { id, input }, { log, state }
   await conn.end()
 
   if (!exists) {
-    throw new ExposedError(`Console UUID not found in ${input.tables.players} table`)
+    throw new ExposedError(`Console UUID not found in ${input.tables.players} table`, 'CONSOLE_UUID_NOT_FOUND')
   }
 
   const rawPassword = input.password

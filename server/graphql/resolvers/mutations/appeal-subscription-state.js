@@ -6,13 +6,13 @@ module.exports = async function appealSubscriptionState (obj, { id, subscription
     .where({ id })
     .first()
 
-  if (!data) throw new ExposedError(`Appeal ${id} does not exist`)
+  if (!data) throw new ExposedError(`Appeal ${id} does not exist`, 'APPEAL_NOT_FOUND')
 
   const canView = state.acl.hasServerPermission(data.server_id, 'player.appeals', 'view.any') ||
     (state.acl.hasServerPermission(data.server_id, 'player.appeals', 'view.own') && state.acl.owns(data.actor_id)) ||
     (state.acl.hasServerPermission(data.server_id, 'player.appeals', 'view.assigned') && state.acl.owns(data.assignee_id))
 
-  if (!canView) throw new ExposedError('You do not have permission to perform this action, please contact your server administrator')
+  if (!canView) throw new ExposedError('You do not have permission to perform this action, please contact your server administrator', 'NO_PERMISSION')
 
   if (subscriptionState === 'SUBSCRIBED') {
     await subscribeAppeal(state.dbPool, id, session.playerId)

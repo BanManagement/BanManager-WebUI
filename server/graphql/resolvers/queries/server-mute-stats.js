@@ -2,8 +2,8 @@ const { getUnixTime, eachDayOfInterval, subDays } = require('date-fns')
 const ExposedError = require('../../../data/exposed-error')
 
 module.exports = async function serverMuteStats (obj, { id, intervalDays }, { state: { serversPool }, log }) {
-  if (!serversPool.has(id)) throw new ExposedError('Server not found')
-  if (intervalDays > 90) throw new ExposedError('Maximum 90 intervalDays allowed')
+  if (!serversPool.has(id)) throw new ExposedError('Server not found', 'SERVER_NOT_FOUND')
+  if (intervalDays > 90) throw new ExposedError('Maximum 90 intervalDays allowed', 'INTERVAL_TOO_LARGE')
 
   const start = subDays(new Date(), intervalDays)
   const startUnixTime = getUnixTime(start)

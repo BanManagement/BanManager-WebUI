@@ -3,7 +3,7 @@ const { getSql } = require('../../utils')
 const ExposedError = require('../../../data/exposed-error')
 
 module.exports = async function reportComment (obj, { id, serverId }, { state }, info) {
-  if (!state.serversPool.has(serverId)) throw new ExposedError('Server not found')
+  if (!state.serversPool.has(serverId)) throw new ExposedError('Server not found', 'SERVER_NOT_FOUND')
 
   const server = state.serversPool.get(serverId)
 
@@ -22,7 +22,7 @@ module.exports = async function reportComment (obj, { id, serverId }, { state },
 
   const [data] = await query.exec()
 
-  if (!data) throw new ExposedError('Report comment not found')
+  if (!data) throw new ExposedError('Report comment not found', 'REPORT_COMMENT_NOT_FOUND')
 
   if (!state.acl.hasServerPermission(serverId, 'player.reports', 'view.any')) {
     // We need to perform some permission checks
@@ -30,7 +30,7 @@ module.exports = async function reportComment (obj, { id, serverId }, { state },
       .select('actor_id', 'player_id', 'assignee_id')
       .where({ id: data.report_id })
 
-    if (!aclCheck) throw new ExposedError('Report not found')
+    if (!aclCheck) throw new ExposedError('Report not found', 'REPORT_NOT_FOUND')
 
     const canView = (state.acl.hasServerPermission(serverId, 'player.reports', 'view.own') && state.acl.owns(aclCheck.actor_id)) ||
       (state.acl.hasServerPermission(serverId, 'player.reports', 'view.assigned') && state.acl.owns(aclCheck.assignee_id)) ||
@@ -38,7 +38,7 @@ module.exports = async function reportComment (obj, { id, serverId }, { state },
 
     if (!canView) {
       throw new ExposedError(
-        'You do not have permission to perform this action, please contact your server administrator')
+        'You do not have permission to perform this action, please contact your server administrator', 'NO_PERMISSION')
     }
   }
 

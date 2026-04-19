@@ -4,8 +4,8 @@ const ExposedError = require('../../../data/exposed-error')
 
 // eslint-disable-next-line complexity
 module.exports = async function listPlayerSessionHistory (obj, { serverId, player, limit, offset, order = 'leave_DESC' }, { state }, info) {
-  if (!state.serversPool.has(serverId)) throw new ExposedError('Server does not exist')
-  if (limit > 50) throw new ExposedError('Limit too large')
+  if (!state.serversPool.has(serverId)) throw new ExposedError('Server does not exist', 'SERVER_NOT_FOUND')
+  if (limit > 50) throw new ExposedError('Limit too large', 'LIMIT_TOO_LARGE')
 
   const server = state.serversPool.get(serverId)
   const totalQuery = server.pool(server.config.tables.playerHistory)
@@ -17,7 +17,7 @@ module.exports = async function listPlayerSessionHistory (obj, { serverId, playe
 
   const [{ total }] = await totalQuery
 
-  if (offset > total) throw new ExposedError('Offset greater than total')
+  if (offset > total) throw new ExposedError('Offset greater than total', 'OFFSET_OUT_OF_RANGE')
   if (total === 0) return { total, records: [] }
 
   const [col, type] = order.split('_')

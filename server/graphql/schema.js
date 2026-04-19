@@ -47,14 +47,36 @@ module.exports = ({ logger }) => {
     }),
     formatError (error) {
       const originalError = findOriginalError(error)
+      const code = originalError?.extensions?.code
 
-      if (originalError?.extensions?.code === 'ERR_EXPOSED' || originalError?.extensions?.code === 'BAD_USER_INPUT') {
-        return originalError
+      if (code === 'ERR_EXPOSED') {
+        const meta = originalError.extensions.meta || originalError.meta
+
+        return {
+          message: originalError.message,
+          extensions: {
+            code: 'ERR_EXPOSED',
+            appCode: originalError.extensions.appCode || originalError.code || 'UNKNOWN',
+            ...(meta ? { meta } : {})
+          }
+        }
+      }
+
+      if (code === 'BAD_USER_INPUT') {
+        return {
+          message: originalError.message,
+          extensions: {
+            code: 'BAD_USER_INPUT'
+          }
+        }
       }
 
       logger.error(originalError.stack ? originalError.stack : originalError)
 
-      return { message: 'Internal Server Error' }
+      return {
+        message: 'Internal Server Error',
+        extensions: { code: 'INTERNAL_SERVER_ERROR', appCode: 'INTERNAL' }
+      }
     },
     plugins: [
       createApollo4QueryValidationPlugin(),

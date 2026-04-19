@@ -218,9 +218,22 @@ npm run test
 npm run cypress
 ```
 
+## Localisation
+
+The UI is localised with [`next-intl`](https://next-intl.dev/). Currently shipping languages: **English (`en`)** and **German (`de`)**.
+
+For details on adding a new language, translating new strings, or wiring up server-side error codes, see [`CONTRIBUTING.md`](CONTRIBUTING.md#localisation).
+
+Locale resolution order (highest priority first):
+
+1. Authenticated user's stored preference (`bm_web_users.locale`)
+2. `bm_locale` cookie (set by the in-app language switcher)
+3. `Accept-Language` HTTP header
+4. Fallback to `en`
+
 ## Contributing
 
-If you'd like to contribute, please fork the repository and use a feature branch. Pull requests are warmly welcome.
+If you'd like to contribute, please fork the repository and use a feature branch. Pull requests are warmly welcome. See [`CONTRIBUTING.md`](CONTRIBUTING.md) for guidelines on translations, error codes, and other development conventions.
 
 ## Help / Bug / Feature Request
 

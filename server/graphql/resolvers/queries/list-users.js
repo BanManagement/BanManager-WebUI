@@ -21,7 +21,7 @@ function handleFilters (query, { email, roles, serverRoles, dbPool }) {
 }
 
 module.exports = async function listUsers (obj, { player, email, role, serverRole, limit, offset }, { state: { dbPool } }, info) {
-  if (limit > 50) throw new ExposedError('Limit too large')
+  if (limit > 50) throw new ExposedError('Limit too large', 'LIMIT_TOO_LARGE')
 
   const filtered = !player && (!!email || !!role || !!serverRole)
 
@@ -85,7 +85,7 @@ module.exports = async function listUsers (obj, { player, email, role, serverRol
 
   if (total === 0) return { total, records: [] }
 
-  if (offset > total) throw new ExposedError('Offset greater than total')
+  if (offset > total) throw new ExposedError('Offset greater than total', 'OFFSET_OUT_OF_RANGE')
 
   const results = await query
   const userIds = results.map(row => row.player_id)

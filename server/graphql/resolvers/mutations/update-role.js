@@ -2,7 +2,7 @@ const ExposedError = require('../../../data/exposed-error')
 const role = require('../queries/role')
 
 module.exports = async function updateRole (obj, { id, input: { name, parent, resources } }, { state }, info) {
-  if (id < 4 && parent) throw new ExposedError('Default roles can not have a parent')
+  if (id < 4 && parent) throw new ExposedError('Default roles can not have a parent', 'DEFAULT_ROLE_PARENT_FORBIDDEN')
 
   await state.dbPool('bm_web_roles').update({ name, parent_role_id: parent || null }).where({ role_id: id })
 

@@ -4,11 +4,11 @@ const ExposedError = require('../../../data/exposed-error')
 module.exports = async function updatePlayerNote (obj, { id, serverId, input }, { state }, info) {
   const server = state.serversPool.get(serverId)
 
-  if (!server) throw new ExposedError('Server does not exist')
+  if (!server) throw new ExposedError('Server does not exist', 'SERVER_NOT_FOUND')
 
   let data = await PlayerNote(obj, { id, serverId }, { state }, info)
 
-  if (!data) throw new ExposedError(`Player note ${id} does not exist`)
+  if (!data) throw new ExposedError(`Player note ${id} does not exist`, 'NOTE_NOT_FOUND')
 
   const updateData = { message: input.message }
   const table = server.config.tables.playerNotes

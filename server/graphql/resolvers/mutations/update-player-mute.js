@@ -4,11 +4,11 @@ const ExposedError = require('../../../data/exposed-error')
 module.exports = async function updatePlayerMute (obj, { id, serverId, input }, { state }, info) {
   const server = state.serversPool.get(serverId)
 
-  if (!server) throw new ExposedError('Server does not exist')
+  if (!server) throw new ExposedError('Server does not exist', 'SERVER_NOT_FOUND')
 
   const data = await playerMute(obj, { id, serverId }, { state }, info)
 
-  if (!data) throw new ExposedError(`Player mute ${id} does not exist`)
+  if (!data) throw new ExposedError(`Player mute ${id} does not exist`, 'MUTE_NOT_FOUND')
 
   const table = server.config.tables.playerMutes
 

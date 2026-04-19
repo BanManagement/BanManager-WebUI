@@ -2,7 +2,7 @@ const ExposedError = require('../../../data/exposed-error')
 const playerNote = require('../queries/player-note')
 
 module.exports = async function deletePlayerNote (obj, { id, serverId }, { session, state }, info) {
-  if (!state.serversPool.has(serverId)) throw new ExposedError('Server not found')
+  if (!state.serversPool.has(serverId)) throw new ExposedError('Server not found', 'SERVER_NOT_FOUND')
 
   const server = state.serversPool.get(serverId)
   const tables = server.config.tables
@@ -11,13 +11,13 @@ module.exports = async function deletePlayerNote (obj, { id, serverId }, { sessi
     .select('actor_id')
     .where({ id })
 
-  if (!result) throw new ExposedError('Note not found')
+  if (!result) throw new ExposedError('Note not found', 'NOTE_NOT_FOUND')
 
   const canDelete = state.acl.hasServerPermission(serverId, 'player.notes', 'delete.any') ||
     (state.acl.hasServerPermission(serverId, 'player.notes', 'delete.own') && state.acl.owns(result.actor_id))
 
   if (!canDelete) {
-    throw new ExposedError('You do not have permission to perform this action, please contact your server administrator')
+    throw new ExposedError('You do not have permission to perform this action, please contact your server administrator', 'NO_PERMISSION')
   }
 
   const data = await playerNote(obj, { id, serverId }, { state }, info)

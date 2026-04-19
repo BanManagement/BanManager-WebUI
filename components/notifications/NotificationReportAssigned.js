@@ -1,16 +1,23 @@
+import { useTranslations } from 'next-intl'
 import { useUser } from '../../utils'
 import PlayerAppealBadge from '../appeals/PlayerAppealBadge'
 import NotificationContainer from './NotificationContainer'
 
 export default function NotificationReportAssigned ({ id, actor, created, state, report }) {
+  const t = useTranslations('notifications')
   const { user } = useUser()
+  const ownReport = report.actor.id === user?.id
+  const messageKey = ownReport ? 'reportAssignedOwn' : 'reportAssignedOther'
 
   return (
     <NotificationContainer id={id} actor={actor} created={created} state={state}>
       <p className='text-sm'>
-        {report.actor.id === user?.id
-          ? <>{actor.name} assigned <span className='font-semibold'>{report.assignee.name}</span> to review your report against {report.player.name}</>
-          : <><span className='font-semibold'>{actor.name}</span> assigned <span className='font-semibold'>{report.assignee.name}</span> to review report</>}
+        {t.rich(messageKey, {
+          actor: actor.name,
+          assignee: report.assignee.name,
+          player: report.player.name,
+          b: (chunks) => <span className='font-semibold'>{chunks}</span>
+        })}
       </p>
       <div className='flex items-center gap-3'>
         <PlayerAppealBadge appeal={{}} className='text-sm'>#{report.id}</PlayerAppealBadge>

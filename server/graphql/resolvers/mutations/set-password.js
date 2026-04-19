@@ -6,25 +6,25 @@ const Me = require('../queries/me')
 
 module.exports = async function setPassword (obj, { currentPassword, newPassword }, { log, session, state }) {
   if (!isLength(newPassword, { min: 6, max: 255 })) {
-    throw new ExposedError('Invalid password, minimum length 6 characters')
+    throw new ExposedError('Invalid password, minimum length 6 characters', 'INVALID_PASSWORD_LENGTH', { minLength: 6 })
   }
 
   const [checkResult] = await state.dbPool('bm_web_users')
     .select('player_id', 'password')
     .where('player_id', session.playerId)
 
-  if (!checkResult) throw new ExposedError('You do not have an account, please register')
+  if (!checkResult) throw new ExposedError('You do not have an account, please register', 'NO_ACCOUNT')
 
   // Only expect current password if player did not login via pin
   // as pin is 'forgot password' journey
   if (session.type !== 'pin') {
     if (!currentPassword || !isLength(currentPassword, { min: 6, max: 255 })) {
-      throw new ExposedError('Invalid password, minimum length 6 characters')
+      throw new ExposedError('Invalid password, minimum length 6 characters', 'INVALID_PASSWORD_LENGTH', { minLength: 6 })
     }
 
     const match = await verify(checkResult.password, currentPassword)
 
-    if (!match) throw new ExposedError('Incorrect login details')
+    if (!match) throw new ExposedError('Incorrect login details', 'INCORRECT_LOGIN')
   }
 
   let commonPassword = 0
@@ -36,7 +36,13 @@ module.exports = async function setPassword (obj, { currentPassword, newPassword
   }
 
   if (commonPassword > 5) {
-    throw new ExposedError(`This password isn't safe to use as it's appeared in ${new Intl.NumberFormat().format(commonPassword)} known data breaches`)
+    const formatted = new Intl.NumberFormat().format(commonPassword)
+
+    throw new ExposedError(
+      `This password isn't safe to use as it's appeared in ${formatted} known data breaches`,
+      'PASSWORD_COMPROMISED',
+      { count: commonPassword }
+    )
   }
 
   const encodedHash = await hash(newPassword)

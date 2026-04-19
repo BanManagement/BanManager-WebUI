@@ -1,7 +1,7 @@
 import clsx from 'clsx'
 import Link from 'next/link'
+import { formatDistanceStrict, fromUnixTime } from 'date-fns'
 import Avatar from '../Avatar'
-import { fromNow } from '../../utils'
 import { formatDistanceLocale } from '../../utils/format-distance'
 
 export default function NotificationContainer ({ id, actor, created, children, state }) {
@@ -15,6 +15,18 @@ export default function NotificationContainer ({ id, actor, created, children, s
   {
     'border-accent-600': state === 'unread'
   })
+
+  let label
+
+  try {
+    label = formatDistanceStrict(fromUnixTime(created), new Date(), {
+      addSuffix: false,
+      locale: { formatDistance: formatDistanceLocale }
+    })
+  } catch (e) {
+    label = created
+  }
+
   return (
     <Link
       href={`/api/notifications/${id}`}
@@ -34,7 +46,7 @@ export default function NotificationContainer ({ id, actor, created, children, s
           {children}
         </div>
         <div className='w-6 justify-end'>
-          <p className='text-gray-400 text-xs mr-3'>{fromNow(created, { locale: { formatDistance: formatDistanceLocale } })}</p>
+          <p className='text-gray-400 text-xs mr-3'>{label}</p>
         </div>
       </div>
     </Link>

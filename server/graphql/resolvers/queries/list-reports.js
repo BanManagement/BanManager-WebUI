@@ -9,8 +9,8 @@ const viewPerms = [
 ]
 
 module.exports = async function listPlayerReports (obj, { serverId, actor, assigned, player, state: stateId, limit, offset, order }, { session, state }, info) {
-  if (!state.serversPool.has(serverId)) throw new ExposedError('Server does not exist')
-  if (limit > 50) throw new ExposedError('Limit too large')
+  if (!state.serversPool.has(serverId)) throw new ExposedError('Server does not exist', 'SERVER_NOT_FOUND')
+  if (limit > 50) throw new ExposedError('Limit too large', 'LIMIT_TOO_LARGE')
 
   const data = { server: await getServer(obj, { id: serverId }, { state }, info) }
   const aclFilter = []

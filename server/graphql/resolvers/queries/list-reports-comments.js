@@ -8,7 +8,7 @@ const viewPerms = [
 ]
 
 module.exports = async function listPlayerReportComments (obj, { serverId, report, actor, order }, { session, state }, info) {
-  if (!state.serversPool.has(serverId)) throw new ExposedError('Server does not exist')
+  if (!state.serversPool.has(serverId)) throw new ExposedError('Server does not exist', 'SERVER_NOT_FOUND')
   if (!state.acl.hasServerPermission(serverId, 'player.reports', 'view.any')) {
     if (!session || !session.playerId) return { total: 0, records: [] }
 

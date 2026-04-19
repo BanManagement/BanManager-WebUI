@@ -2,10 +2,12 @@ import { useEffect, useMemo } from 'react'
 import Head from 'next/head'
 import { NextSeo } from 'next-seo'
 import Favicon from 'react-favicon'
+import { useTranslations } from 'next-intl'
 import { MdLogin } from 'react-icons/md'
 import Footer from './Footer'
 import Nav from './Nav'
 import SessionNavProfile from './SessionNavProfile'
+import LanguageSwitcher from './LanguageSwitcher'
 import PlayerSelector from './admin/PlayerSelector'
 import { useApi, useUser } from '../utils'
 import { useRouter, withRouter } from 'next/router'
@@ -17,20 +19,29 @@ const query = `query unreadNotificationCount {
   unreadNotificationCount
 }`
 
-const LoggedOutNav = () => (
-  <div className='hidden md:flex gap-4'>
-    <Link href='/login' passHref>
-      <Button className='text-sm'>
-        <MdLogin className='mr-2' /> Login
-      </Button>
-    </Link>
-  </div>
-)
+const langButtonClassName = 'bg-primary-900 !rounded-lg p-2 transform transition duration-300 hover:scale-110 hover:bg-primary-900 w-12 h-12 items-center'
+
+const LoggedOutNav = () => {
+  const t = useTranslations('nav')
+
+  return (
+    <div className='hidden md:flex gap-4 items-center'>
+      <LanguageSwitcher buttonClassName={langButtonClassName} />
+      <Link href='/login' passHref>
+        <Button className='text-sm'>
+          <MdLogin className='mr-2' /> {t('login')}
+        </Button>
+      </Link>
+    </div>
+  )
+}
 
 function DefaultLayout ({ title = 'Default Title', children, description, loading }) {
   const { user } = useUser()
   const { data } = useApi({ query: user?.id ? query : null }, { refreshInterval: 10000, refreshWhenHidden: true })
   const router = useRouter()
+  const tForms = useTranslations('forms')
+  const tNav = useTranslations('nav')
 
   useEffect(() => {
     if (data) {
@@ -59,11 +70,11 @@ function DefaultLayout ({ title = 'Default Title', children, description, loadin
       <PlayerSelector
         multiple={false}
         onChange={(id) => id ? router.push(`/player/${id}`) : undefined}
-        placeholder='Search player'
+        placeholder={tForms('playerSelectorPlaceholder')}
       />
     </div>]
   const right = useMemo(() => user?.id ? [<SessionNavProfile key='session-nav-profile' user={user} unreadNotificationCount={data?.unreadNotificationCount} />] : [<LoggedOutNav key='nav-logged-out' />], [user, data])
-  const mobileItems = useMemo(() => !user?.id ? [{ name: 'Login', href: '/login' }, { name: 'Create Appeal', href: '/appeal' }] : [], [user])
+  const mobileItems = useMemo(() => !user?.id ? [{ name: tNav('login'), href: '/login' }, { name: tNav('createAppeal'), href: '/appeal' }] : [], [user, tNav])
 
   return (
     <>

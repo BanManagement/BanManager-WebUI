@@ -1,11 +1,14 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { useTranslations } from 'next-intl'
 import { MdLock, MdOutlineEmail } from 'react-icons/md'
 import Link from 'next/link'
 import Input from './Input'
 import Button from './Button'
+import { translateRestError } from '../utils/locale'
 
 export default function PlayerLoginPasswordForm ({ onSuccess, showForgotPassword }) {
+  const t = useTranslations()
   const [error, setError] = useState(null)
   const { handleSubmit, formState, register } = useForm()
   const { isSubmitting } = formState
@@ -23,7 +26,7 @@ export default function PlayerLoginPasswordForm ({ onSuccess, showForgotPassword
       if (response.status !== 204) {
         const responseData = await response.json()
 
-        throw new Error(responseData.error)
+        throw translateRestError(t, responseData)
       } else {
         onSuccess()
       }
@@ -37,7 +40,7 @@ export default function PlayerLoginPasswordForm ({ onSuccess, showForgotPassword
       <div className='flex flex-col relative w-full'>
         <Input
           required
-          label='Email address'
+          label={t('forms.email')}
           type='email'
           icon={<MdOutlineEmail />}
           iconPosition='left'
@@ -46,7 +49,7 @@ export default function PlayerLoginPasswordForm ({ onSuccess, showForgotPassword
         />
         <Input
           required
-          label='Password'
+          label={t('forms.password')}
           type='password'
           icon={<MdLock />}
           iconPosition='left'
@@ -57,11 +60,11 @@ export default function PlayerLoginPasswordForm ({ onSuccess, showForgotPassword
         />
         {showForgotPassword && (
           <Link href='/forgotten-password' passHref className='-mt-3 mb-3 text-gray-300'>
-            Forgot password or create account?
+            {t('pages.login.forgotPassword')}
           </Link>
         )}
         <Button data-cy='submit-login-password' disabled={isSubmitting} loading={isSubmitting}>
-          Login
+          {t('common.login')}
         </Button>
       </div>
     </form>

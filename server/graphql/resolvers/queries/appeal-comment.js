@@ -17,7 +17,7 @@ module.exports = async function appealComment (obj, { id }, { state }, info) {
     .where(`${table}.id`, id)
     .first()
 
-  if (!data) throw new ExposedError('Appeal comment not found')
+  if (!data) throw new ExposedError('Appeal comment not found', 'APPEAL_COMMENT_NOT_FOUND')
 
   if (!state.acl.hasServerPermission(data.server_id, 'player.appeals', 'view.any')) {
     // We need to perform some permission checks
@@ -25,14 +25,14 @@ module.exports = async function appealComment (obj, { id }, { state }, info) {
       .select('actor_id', 'assignee_id')
       .where({ id: data.appeal_id })
 
-    if (!aclCheck) throw new ExposedError('Appeal not found')
+    if (!aclCheck) throw new ExposedError('Appeal not found', 'APPEAL_NOT_FOUND')
 
     const canView = (state.acl.hasServerPermission(data.server_id, 'player.appeals', 'view.own') && state.acl.owns(aclCheck.actor_id)) ||
       (state.acl.hasServerPermission(data.server_id, 'player.appeals', 'view.assigned') && state.acl.owns(aclCheck.assignee_id))
 
     if (!canView) {
       throw new ExposedError(
-        'You do not have permission to perform this action, please contact your server administrator')
+        'You do not have permission to perform this action, please contact your server administrator', 'NO_PERMISSION')
     }
   }
 

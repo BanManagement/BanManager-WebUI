@@ -8,17 +8,17 @@ module.exports = async function resolveAppealUpdateBan (obj, { id, input }, { se
     .where({ id })
     .first()
 
-  if (!data) throw new ExposedError(`Appeal ${id} does not exist`)
+  if (!data) throw new ExposedError(`Appeal ${id} does not exist`, 'APPEAL_NOT_FOUND')
 
   const server = state.serversPool.get(data.server_id)
 
-  if (!server) throw new ExposedError('Server does not exist')
+  if (!server) throw new ExposedError('Server does not exist', 'SERVER_NOT_FOUND')
 
   const punishment = await server.pool(server.config.tables.playerBans)
     .where({ id: data.punishment_id })
     .first()
 
-  if (!punishment) throw new ExposedError('Punishment associated with this appeal no longer exists')
+  if (!punishment) throw new ExposedError('Punishment associated with this appeal no longer exists', 'PUNISHMENT_NOT_FOUND')
 
   const canUpdate = state.acl.hasServerPermission(data.server_id, 'player.appeals', 'update.state.any') ||
     (state.acl.hasServerPermission(data.server_id, 'player.appeals', 'update.state.own') && state.acl.owns(data.actor_id)) ||
@@ -27,7 +27,7 @@ module.exports = async function resolveAppealUpdateBan (obj, { id, input }, { se
     (state.acl.hasServerPermission(data.server_id, 'player.bans', 'update.own') && state.acl.owns(punishment.actor_id))
 
   if (!canUpdate || !canUpdatePunishment) {
-    throw new ExposedError('You do not have permission to perform this action, please contact your server administrator')
+    throw new ExposedError('You do not have permission to perform this action, please contact your server administrator', 'NO_PERMISSION')
   }
 
   let commentId

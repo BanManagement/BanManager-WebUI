@@ -1,5 +1,7 @@
 import Image from 'next/image'
+import { useTranslations } from 'next-intl'
 import { useApi } from '../utils'
+import LanguageSwitcher from './LanguageSwitcher'
 
 const query = `
   query settings {
@@ -10,19 +12,22 @@ const query = `
   }`
 
 export default function Footer () {
+  const t = useTranslations('footer')
+  const tCommon = useTranslations('common')
   const { data } = useApi({ query }, {
     revalidateIfStale: false,
     revalidateOnFocus: false,
     revalidateOnReconnect: false
   })
   const currentYear = new Date().getFullYear()
+  const fallbackName = `${t('powered')} ${tCommon('siteName')}`
 
   return (
     <footer className='text-gray-300 bg-primary-900'>
-      <div className='container px-5 py-8 mx-auto flex items-center sm:flex-row flex-col'>
+      <div className='container px-5 py-8 mx-auto flex items-center sm:flex-row flex-col gap-2'>
         <a className='flex title-font font-medium items-center md:justify-start justify-center'>
-          <Image src={(process.env.BASE_PATH || '') + '/images/banmanager-icon.png'} alt='Logo' width='35' height='35' />
-          <span className='ml-3 text-xl'>{data?.settings?.serverFooterName || 'Powered by BanManager'}</span>
+          <Image src={(process.env.BASE_PATH || '') + '/images/banmanager-icon.png'} alt={tCommon('siteName')} width='35' height='35' />
+          <span className='ml-3 text-xl'>{data?.settings?.serverFooterName || fallbackName}</span>
         </a>
         <p className='text-sm  sm:ml-4 sm:pl-4 sm:border-l-2 sm:border-gray-400 sm:py-2 sm:mt-0 mt-4'>
           &copy; {currentYear}
@@ -30,6 +35,9 @@ export default function Footer () {
         <p className='text-sm sm:pl-4 sm:py-2 sm:mt-0 mt-4'>
           {data?.settings?.additionalFooterText}
         </p>
+        <div className='sm:ml-auto'>
+          <LanguageSwitcher buttonClassName='!bg-primary-800 hover:!bg-primary-700 text-sm px-3 py-2' variant='inline' />
+        </div>
       </div>
     </footer>
   )

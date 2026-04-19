@@ -11,7 +11,7 @@ module.exports = async function listPlayerAppealComments (obj, { id, actor, orde
     .where({ id })
     .first()
 
-  if (!appeal) throw new ExposedError(`Appeal ${id} does not exist`)
+  if (!appeal) throw new ExposedError(`Appeal ${id} does not exist`, 'APPEAL_NOT_FOUND')
 
   if (!state.acl.hasServerPermission(appeal.server_id, 'player.appeals', 'view.any')) {
     if (!session || !session.playerId) return { total: 0, records: [] }
