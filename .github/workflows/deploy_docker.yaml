@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - master
-      # TEMP: validate native-arm runner build before merging to master.
-      # Remove this branch entry before opening the PR for review.
-      - chore/native-arm-publish
 
 jobs:
   # Build each platform on its own native runner. Building linux/arm64 under
@@ -106,12 +103,13 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: banmanagement/webui
-          # Reproduce the previous workflow's tag set:
+          # Reproduce the previous workflow's tag set verbatim:
           #   - `latest` on default branch
-          #   - the full commit SHA
+          #   - the full commit SHA with no `sha-` prefix (the previous
+          #     workflow used `${{ github.sha }}` directly)
           tags: |
             type=raw,value=latest,enable={{is_default_branch}}
-            type=sha,format=long
+            type=sha,format=long,prefix=
 
       - name: Create manifest list and push
         working-directory: /tmp/digests
