@@ -4,17 +4,34 @@ on:
   push:
     branches:
       - master
+      # TEMP: validate native-arm runner build before merging to master.
+      # Remove this branch entry before opening the PR for review.
+      - chore/native-arm-publish
 
 jobs:
-  push_to_registry:
-    name: Push Docker image to Docker Hub
-    runs-on: ubuntu-latest
+  # Build each platform on its own native runner. Building linux/arm64 under
+  # qemu-user on an amd64 runner has been broken since the Node 24 bump
+  # (qemu raises SIGILL on Arm v8.x instructions emitted by V8's JIT, exit
+  # 132). GitHub provides free `ubuntu-24.04-arm` runners for public repos,
+  # so we can build natively on each arch and stitch the results together
+  # into a manifest list in the merge job below. Pattern lifted from the
+  # docker/build-push-action multi-platform docs.
+  build:
+    name: Build ${{ matrix.platform }}
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: linux/amd64
+            runner: ubuntu-latest
+            arch: amd64
+          - platform: linux/arm64
+            runner: ubuntu-24.04-arm
+            arch: arm64
     steps:
       - name: Check out the repo
         uses: actions/checkout@v6
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -25,21 +42,85 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Extract metadata (tags, labels) for Docker
+      - name: Extract metadata (labels) for Docker
         id: meta
         uses: docker/metadata-action@v5
         with:
           images: banmanagement/webui
 
-      - name: Build and push multi-platform Docker image
+      - name: Build and push by digest
+        id: build
         uses: docker/build-push-action@v6
         with:
           context: .
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: |
-            banmanagement/webui:${{ github.sha }}
-            banmanagement/webui:latest
+          platforms: ${{ matrix.platform }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          # push-by-digest avoids touching shared tags from per-arch jobs;
+          # the merge job below produces the actual `:latest` / `:<sha>`
+          # manifest list referencing both digests.
+          outputs: type=image,name=banmanagement/webui,push-by-digest=true,name-canonical=true,push=true
+          # Per-arch cache scope so amd64 and arm64 do not stomp on each
+          # other's layer caches.
+          cache-from: type=gha,scope=${{ matrix.arch }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.arch }}
+
+      - name: Export digest
+        run: |
+          mkdir -p /tmp/digests
+          digest='${{ steps.build.outputs.digest }}'
+          # The digest output is `sha256:<hex>`; the merge job wants just
+          # the hex (and to find the file in /tmp/digests).
+          touch "/tmp/digests/${digest#sha256:}"
+
+      - name: Upload digest artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: digests-${{ matrix.arch }}
+          path: /tmp/digests/*
+          if-no-files-found: error
+          retention-days: 1
+
+  merge:
+    name: Merge into manifest
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download digests
+        uses: actions/download-artifact@v4
+        with:
+          path: /tmp/digests
+          pattern: digests-*
+          merge-multiple: true
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Extract metadata (tags) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: banmanagement/webui
+          # Reproduce the previous workflow's tag set:
+          #   - `latest` on default branch
+          #   - the full commit SHA
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=sha,format=long
+
+      - name: Create manifest list and push
+        working-directory: /tmp/digests
+        run: |
+          docker buildx imagetools create \
+            $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
+            $(printf 'banmanagement/webui@sha256:%s ' *)
+
+      - name: Inspect image
+        run: |
+          docker buildx imagetools inspect \
+            "banmanagement/webui:$(jq -r '.tags[0] | split(":")[1]' <<< "$DOCKER_METADATA_OUTPUT_JSON")"
