@@ -62,7 +62,7 @@ For more depth (BanManager plugin install, advanced topics), see the **[full ins
 
 - MySQL v5+ or MariaDB v10+ (shared with the BanManager plugin)
 - A Minecraft server with [BanManager](https://github.com/BanManagement/BanManager) & [BanManager-WebEnhancer](https://ci.frostcast.net/job/BanManager-WebEnhancer/) configured to [use MySQL or MariaDB](https://banmanagement.com/docs/banmanager/install#setup-shared-database-optional)
-- For non-Docker installs: [Node.js](https://nodejs.org/) LTS (v20 or v22)
+- For non-Docker installs: [Node.js](https://nodejs.org/) LTS (v22 or v24)
 
 ### Path A — Docker Compose (recommended)
 
@@ -142,7 +142,7 @@ Want to contribute or run a local development environment? This section is for y
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) LTS (v20 or v22)
+- [Node.js](https://nodejs.org/) LTS (v22 or v24)
 - [Docker](https://www.docker.com/) (for local MySQL database)
 
 ### Quick Start

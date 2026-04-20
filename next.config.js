@@ -1,21 +1,31 @@
 const {
   PHASE_DEVELOPMENT_SERVER
 } = require('next/constants')
-const withBundleAnalyzer = require('@next/bundle-analyzer')({
-  enabled: process.env.BUNDLE_ANALYZE === 'true'
-})
-const { GitRevisionPlugin } = require('git-revision-webpack-plugin')
+
+let withBundleAnalyzer = (cfg) => cfg
+if (process.env.BUNDLE_ANALYZE === 'true') {
+  withBundleAnalyzer = require('@next/bundle-analyzer')({ enabled: true })
+}
 
 const basePath = process.env.BASE_PATH || ''
-let version = 'unknown'
+let version = process.env.GIT_COMMIT || 'unknown'
 
-try {
-  version = new GitRevisionPlugin().commithash() || 'unknown'
-} catch (e) {}
+if (version === 'unknown') {
+  try {
+    const { GitRevisionPlugin } = require('git-revision-webpack-plugin')
+    version = new GitRevisionPlugin().commithash() || 'unknown'
+  } catch (e) {}
+}
 
 const nextConfig = (phase) => {
   return {
     transpilePackages: ['lodash-es'],
+    modularizeImports: {
+      'react-icons/?(((\\w*)?/?)*)': {
+        transform: 'react-icons/{{ matches.[1] }}/index.js',
+        skipDefaultConversion: true
+      }
+    },
     webpack (config) {
       config.module.rules.push({
         test: /\.(png|svg)$/i,

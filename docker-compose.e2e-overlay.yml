@@ -1,0 +1,34 @@
+# Overlay used by .github/workflows/build.yaml `smoke_docker` job to run the
+# 4 cypress journey specs against the dockerised stack. Layered on top of
+# docker-compose.prod.yml so the same image, volumes, healthcheck, and
+# network wiring are exercised - only the bits cypress needs are changed:
+#
+#   - WebUI is pre-seeded with ENCRYPTION_KEY/SESSION_KEY so it boots
+#     straight into normal mode (no /setup wizard).
+#   - WebUI uses root + the seeded `bm_e2e_tests` database so it can read
+#     the fixtures `node cypress/setup.js` writes (the default `bmwebui`
+#     mysql user only has access to `bm_webui`).
+#   - MySQL exposes port 3306 to the host so `cypress/setup.js` can run
+#     migrations + seed fixtures from the runner before WebUI starts.
+#
+# Usage:
+#   docker compose -f docker-compose.prod.yml -f docker-compose.e2e-overlay.yml up -d
+#
+# Required environment variables (set by the workflow):
+#   MYSQL_ROOT_PASSWORD, MYSQL_PASSWORD - already required by the prod compose
+#   E2E_ENCRYPTION_KEY, E2E_SESSION_KEY - hex keys used by both seed + WebUI
+
+services:
+  webui:
+    environment:
+      DB_USER: root
+      DB_PASSWORD: ${MYSQL_ROOT_PASSWORD:?MYSQL_ROOT_PASSWORD is required}
+      DB_NAME: bm_e2e_tests
+      ENCRYPTION_KEY: ${E2E_ENCRYPTION_KEY:?E2E_ENCRYPTION_KEY is required}
+      SESSION_KEY: ${E2E_SESSION_KEY:?E2E_SESSION_KEY is required}
+      CONTACT_EMAIL: admin@banmanagement.com
+      SERVER_FOOTER_NAME: BanManagement
+
+  mysql:
+    ports:
+      - "3306:3306"

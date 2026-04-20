@@ -14,7 +14,7 @@ jobs:
     name: Node.js ${{ matrix.node-version }}
     strategy:
       matrix:
-        node-version: [20.x, 22.x]
+        node-version: [22.x, 24.x]
 
     env:
       DB_HOST: 127.0.0.1
@@ -70,7 +70,7 @@ jobs:
           NODE_ENV: production
 
       - name: Cypress run
-        uses: cypress-io/github-action@v6
+        uses: cypress-io/github-action@f790eee7a50d9505912f50c2095510be7de06aa7 # v6.10.9
         env:
           DB_PASSWORD:
           DB_NAME: bm_e2e_tests
@@ -112,10 +112,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
-      - name: Set up Node.js 22
+      - name: Set up Node.js 24
         uses: actions/setup-node@v4
         with:
-          node-version: 22.x
+          node-version: 24.x
       - name: Cache Node.js modules
         uses: actions/cache@v5
         with:
@@ -130,7 +130,7 @@ jobs:
           sleep 5 && mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '';" -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
           mysql -e "SET GLOBAL sql_require_primary_key = ON;" -uroot
       - name: Cypress run (setup wizard)
-        uses: cypress-io/github-action@v6
+        uses: cypress-io/github-action@f790eee7a50d9505912f50c2095510be7de06aa7 # v6.10.9
         env:
           DB_HOST: 127.0.0.1
           DB_PORT: 3306
@@ -218,6 +218,166 @@ jobs:
         run: |
           curl -fsS http://127.0.0.1:3000/health | tee /tmp/health.json
           grep -q 'setup_required\|"status":"ok"' /tmp/health.json
+
+      # ---------------------------------------------------------------
+      # Cypress against the dockerised stack
+      #
+      # Catches outputFileTracingIncludes regressions and other
+      # standalone-vs-runtime mismatches that the host-only `test` and
+      # `setup_e2e` jobs (which run against `npm start` / `e2e:setup:server`)
+      # cannot see. We tear down the setup-mode stack, restart MySQL with
+      # port 3306 exposed via docker-compose.e2e-overlay.yml, seed the
+      # bm_e2e_tests database from the runner using cypress/setup.js, then
+      # boot the WebUI container with ENCRYPTION_KEY/SESSION_KEY pre-set
+      # so it skips setup mode entirely. The 4 specs cover:
+      #   - login.spec.js              -> argon2 + sessions
+      #   - registration.spec.js       -> registration + PIN flow
+      #   - admin-server-lifecycle     -> Apollo + knex + mysql2 CRUD
+      #   - admin-webhook-lifecycle    -> webhook flow (also exercises sharp)
+      # ---------------------------------------------------------------
+      - name: Tear down setup-mode stack so we can reseed for cypress
+        env:
+          MYSQL_ROOT_PASSWORD: rootpassword
+          MYSQL_PASSWORD: webuipassword
+        run: docker compose -f docker-compose.prod.yml down -v
+
+      - name: Set up Node.js for cypress + seed script
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.x
+
+      - name: Cache Node.js modules and Cypress binary
+        uses: actions/cache@v5
+        with:
+          path: |
+            ~/.npm
+            ~/.cache/Cypress
+          key: ${{ runner.os }}-cypress-docker-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-cypress-docker-
+
+      - run: npm ci
+
+      - run: npx cypress install
+
+      - name: Start MySQL with host port exposed
+        env:
+          MYSQL_ROOT_PASSWORD: rootpassword
+          MYSQL_PASSWORD: webuipassword
+          E2E_ENCRYPTION_KEY: b097b390a68441cc3bb151dd0171f25c3aabc688c50eeb26dc5e13254b333911
+          E2E_SESSION_KEY: a73545a5f08d2906e39a4438014200303f9269f3ade9227525ffb141294f1b62
+        run: |
+          docker compose -f docker-compose.prod.yml -f docker-compose.e2e-overlay.yml up -d mysql
+
+      - name: Wait for MySQL healthy
+        run: |
+          for attempt in $(seq 1 60); do
+            health=$(docker inspect --format '{{.State.Health.Status}}' banmanager-webui-mysql 2>/dev/null || echo missing)
+            echo "attempt $attempt: mysql=$health"
+            if [ "$health" = "healthy" ]; then exit 0; fi
+            sleep 2
+          done
+          echo "MySQL never reported healthy"
+          docker logs banmanager-webui-mysql --tail 80 || true
+          exit 1
+
+      # MySQL's docker healthcheck (mysqladmin ping) flips the container to
+      # `healthy` while the entrypoint is still running its temporary mysqld
+      # against a unix socket. The real mysqld on TCP 3306 only comes up a few
+      # seconds later, after the temp server is shut down. If the seed script
+      # connects in that window it gets a fresh socket to the temp server and
+      # is killed mid-query with PROTOCOL_CONNECTION_LOST when it stops. Retry
+      # the seed a handful of times to ride out that transition cleanly.
+      - name: Seed bm_e2e_tests from the runner (retry through MySQL warm-up)
+        env:
+          # Connection details the seed script uses from the runner.
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_USER: root
+          DB_PASSWORD: rootpassword
+          # Connection details the WebUI container will use to reach MySQL.
+          # We have to disambiguate from DB_HOST because the host the seed
+          # script connects to (127.0.0.1, via the compose port mapping) is
+          # not the host the WebUI container reaches MySQL at (the compose
+          # service name `mysql` on the internal network). server fixture
+          # writes these into bm_web_servers so the GraphQL layer hits the
+          # right address at request time.
+          BM_DB_HOST: mysql
+          BM_DB_PORT: 3306
+          BM_DB_USER: root
+          ENCRYPTION_KEY: b097b390a68441cc3bb151dd0171f25c3aabc688c50eeb26dc5e13254b333911
+          LOG_LEVEL: warn
+        run: |
+          for attempt in $(seq 1 8); do
+            echo "::group::seed attempt $attempt"
+            if node cypress/setup.js; then
+              echo "::endgroup::"
+              echo "seed succeeded on attempt $attempt"
+              exit 0
+            fi
+            echo "::endgroup::"
+            echo "seed failed on attempt $attempt - waiting 5s before retry"
+            sleep 5
+          done
+          echo "seed never succeeded after 8 attempts"
+          docker logs banmanager-webui-mysql --tail 200 || true
+          exit 1
+
+      - name: Start WebUI container against seeded DB
+        env:
+          MYSQL_ROOT_PASSWORD: rootpassword
+          MYSQL_PASSWORD: webuipassword
+          E2E_ENCRYPTION_KEY: b097b390a68441cc3bb151dd0171f25c3aabc688c50eeb26dc5e13254b333911
+          E2E_SESSION_KEY: a73545a5f08d2906e39a4438014200303f9269f3ade9227525ffb141294f1b62
+        run: |
+          docker compose -f docker-compose.prod.yml -f docker-compose.e2e-overlay.yml up -d webui
+
+      - name: Wait for WebUI /health to report ok
+        run: |
+          for attempt in $(seq 1 90); do
+            body=$(curl -fsS http://127.0.0.1:3000/health 2>/dev/null || true)
+            echo "attempt $attempt: $body"
+            if echo "$body" | grep -q '"status":"ok"'; then exit 0; fi
+            sleep 2
+          done
+          echo "/health never returned ok"
+          docker logs banmanager-webui --tail 200 || true
+          exit 1
+
+      - name: Cypress (against dockerised webui)
+        uses: cypress-io/github-action@f790eee7a50d9505912f50c2095510be7de06aa7 # v6.10.9
+        env:
+          PORT: 3000
+          CONTACT_EMAIL: admin@banmanagement.com
+          ENCRYPTION_KEY: b097b390a68441cc3bb151dd0171f25c3aabc688c50eeb26dc5e13254b333911
+          SESSION_KEY: a73545a5f08d2906e39a4438014200303f9269f3ade9227525ffb141294f1b62
+          # Cypress.env(*) values used by admin-server-lifecycle.spec.js when it
+          # types into the "Add Server" form. Defaults to 127.0.0.1 in the
+          # spec, which inside the WebUI container resolves to the container
+          # itself - so the createServer mutation's connection probe fails
+          # with ECONNREFUSED. Point at the compose service name instead so
+          # the new BM server row the test creates is reachable.
+          CYPRESS_DB_HOST: mysql
+          CYPRESS_DB_PORT: 3306
+          CYPRESS_DB_USER: root
+          CYPRESS_DB_PASSWORD: rootpassword
+        with:
+          install: false
+          spec: |
+            cypress/e2e/pages/login.spec.js
+            cypress/e2e/journeys/registration.spec.js
+            cypress/e2e/journeys/admin-server-lifecycle.spec.js
+            cypress/e2e/journeys/admin-webhook-lifecycle.spec.js
+
+      - name: Dump container logs on failure
+        if: failure()
+        run: |
+          echo "===== docker ps ====="
+          docker ps -a
+          echo "===== webui logs ====="
+          docker logs banmanager-webui --tail 300 || true
+          echo "===== mysql logs ====="
+          docker logs banmanager-webui-mysql --tail 80 || true
 
       - name: Stop docker compose stack
         if: always()
