@@ -17,7 +17,7 @@
     "@confuser/db-migrate-mysql": "2.4.0",
     "@graphql-tools/schema": "10.0.33",
     "@graphql-tools/utils": "10.11.0",
-    "@headlessui/react": "2.2.9",
+    "@headlessui/react": "2.2.10",
     "@koa/cors": "^5.0.0",
     "@koa/multer": "^4.0.0",
     "@koa/router": "13.1.1",
