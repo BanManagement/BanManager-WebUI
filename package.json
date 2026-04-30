@@ -103,7 +103,7 @@
     "@oclif/test": "4.1.18",
     "autoprefixer": "10.5.0",
     "coveralls-next": "4.2.2",
-    "cypress": "15.10.0",
+    "cypress": "15.14.2",
     "eslint-plugin-cypress": "4.3.0",
     "eslint-plugin-react": "7.37.5",
     "faker": "5.5.3",
