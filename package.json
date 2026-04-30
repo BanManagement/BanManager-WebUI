@@ -93,7 +93,7 @@
     "swr": "2.4.1",
     "tailwindcss": "3.4.19",
     "uuid-parse": "1.1.0",
-    "validator": "13.15.26",
+    "validator": "13.15.35",
     "web-push": "3.6.7"
   },
   "devDependencies": {
