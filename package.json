@@ -100,7 +100,7 @@
     "@babel/eslint-parser": "7.29.7",
     "@next/bundle-analyzer": "14.2.35",
     "@next/eslint-plugin-next": "14.2.35",
-    "@oclif/test": "4.1.19",
+    "@oclif/test": "4.1.20",
     "autoprefixer": "10.5.0",
     "coveralls-next": "4.2.2",
     "cypress": "15.17.0",
