@@ -2,8 +2,12 @@ const aclHelper = require('./lib/acl')
 
 exports.up = async function (db) {
   await db.createTable('bm_web_appeal_states', {
-    id: { type: 'int', notNull: true, primaryKey: true, autoIncrement: true },
-    name: { type: 'string', notNull: true }
+    columns: {
+      id: { type: 'int', notNull: true, primaryKey: true, autoIncrement: true },
+      name: { type: 'string', notNull: true }
+    },
+    charset: 'utf8mb4',
+    collate: 'utf8mb4_unicode_ci'
   })
   await db.createTable('bm_web_appeals', {
     columns: {
@@ -48,7 +52,8 @@ exports.up = async function (db) {
       updated: { type: 'int', length: 10, notNull: true },
       reason: { type: 'text', notNull: true }
     },
-    charset: 'utf8'
+    charset: 'utf8mb4',
+    collate: 'utf8mb4_unicode_ci'
   })
 
   await db.addIndex('bm_web_appeals', 'bm_web_appeals_server_idx', ['server_id'])
@@ -104,7 +109,8 @@ exports.up = async function (db) {
       created: { type: 'int', length: 10, notNull: true },
       updated: { type: 'int', length: 10, notNull: true }
     },
-    charset: 'utf8'
+    charset: 'utf8mb4',
+    collate: 'utf8mb4_unicode_ci'
   })
 
   const { addResource, addPermission, attachPermission } = aclHelper(db)
