@@ -56,8 +56,18 @@ module.exports = function uploadRoute (dbPool) {
     }
 
     // Check rate limit (skip for users with bypass permission)
-    const canBypassRateLimit = acl.hasPermission('player.appeals', 'attachment.ratelimit.bypass') ||
-                               acl.hasPermission('player.reports', 'attachment.ratelimit.bypass')
+    let canBypassRateLimit = acl.hasPermission('player.appeals', 'attachment.ratelimit.bypass') ||
+                             acl.hasPermission('player.reports', 'attachment.ratelimit.bypass')
+
+    if (!canBypassRateLimit) {
+      for (const server of ctx.state.serversPool.keys()) {
+        if (acl.hasServerPermission(server, 'player.appeals', 'attachment.ratelimit.bypass') ||
+            acl.hasServerPermission(server, 'player.reports', 'attachment.ratelimit.bypass')) {
+          canBypassRateLimit = true
+          break
+        }
+      }
+    }
 
     if (!canBypassRateLimit) {
       const ipAddr = requestIp.getClientIp(ctx.request)
