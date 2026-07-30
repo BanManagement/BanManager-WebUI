@@ -51,7 +51,7 @@ module.exports = {
           .select('a.id as appeal_id', 'a.server_id', 'ad.comment_id')
 
         for (const link of appealLinks) {
-          if (link.comment_id === 0) {
+          if (Number(link.comment_id) === 0) {
             usages.push({
               type: 'appeal',
               id: String(link.appeal_id),
