@@ -57,7 +57,7 @@ module.exports = function documentsRoute (dbPool) {
       }
 
       // If attached to a comment, also check view.comments permission
-      if (appealDoc.comment_id !== 0) {
+      if (Number(appealDoc.comment_id) !== 0) {
         const canViewComments = acl.hasServerPermission(appeal.server_id, 'player.appeals', 'view.comments')
         if (!canViewComments) {
           ctx.status = 403

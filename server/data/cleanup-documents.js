@@ -36,7 +36,7 @@ async function cleanupOrphanDocuments (dbPool, logger) {
         .where({ content_hash: contentHash })
         .count('* as count')
 
-      if (count === 0) {
+      if (Number(count) === 0) {
         // Content has no more references - delete file and content record
         const [content] = await dbPool('bm_web_document_contents')
           .where({ content_hash: contentHash })
