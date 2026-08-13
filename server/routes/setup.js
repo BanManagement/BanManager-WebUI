@@ -117,8 +117,15 @@ const buildRouter = ({ basePath, dbPool, allowAfterComplete = false } = {}) => {
   router.use(async (ctx, next) => {
     const rel = relativePath(ctx)
     if (!rel.startsWith('/api/setup')) return next()
-    if (!process.env.SETUP_TOKEN) return next()
     if (rel === '/api/setup/token' || rel === '/api/setup/preflight' || rel === '/api/setup/state') return next()
+    if (!process.env.SETUP_TOKEN) {
+      if (!isLoopback(ctx.request.ip)) {
+        ctx.status = 403
+        ctx.body = { error: 'Setup endpoints are only accessible from localhost when SETUP_TOKEN is not configured.' }
+        return
+      }
+      return next()
+    }
     const provided = (ctx.request.body && ctx.request.body.token) || ctx.get('X-Setup-Token')
     if (provided && timingSafeStringEqual(provided, process.env.SETUP_TOKEN)) return next()
     ctx.status = 401
