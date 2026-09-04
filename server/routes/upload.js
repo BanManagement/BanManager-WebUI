@@ -56,8 +56,18 @@ module.exports = function uploadRoute (dbPool) {
     }
 
     // Check rate limit (skip for users with bypass permission)
-    const canBypassRateLimit = acl.hasPermission('player.appeals', 'attachment.ratelimit.bypass') ||
-                               acl.hasPermission('player.reports', 'attachment.ratelimit.bypass')
+    let canBypassRateLimit = acl.hasPermission('player.appeals', 'attachment.ratelimit.bypass') ||
+                             acl.hasPermission('player.reports', 'attachment.ratelimit.bypass')
+
+    if (!canBypassRateLimit) {
+      for (const server of ctx.state.serversPool.keys()) {
+        if (acl.hasServerPermission(server, 'player.appeals', 'attachment.ratelimit.bypass') ||
+            acl.hasServerPermission(server, 'player.reports', 'attachment.ratelimit.bypass')) {
+          canBypassRateLimit = true
+          break
+        }
+      }
+    }
 
     if (!canBypassRateLimit) {
       const ipAddr = requestIp.getClientIp(ctx.request)
@@ -75,8 +85,15 @@ module.exports = function uploadRoute (dbPool) {
     }
 
     // Check if user has attachment.create permission for appeals OR reports
-    const hasAppealsPermission = acl.hasPermission('player.appeals', 'attachment.create')
-    const hasReportsPermission = acl.hasPermission('player.reports', 'attachment.create')
+    let hasAppealsPermission = acl.hasPermission('player.appeals', 'attachment.create')
+    let hasReportsPermission = acl.hasPermission('player.reports', 'attachment.create')
+
+    if (!hasAppealsPermission && !hasReportsPermission) {
+      for (const server of ctx.state.serversPool.keys()) {
+        if (acl.hasServerPermission(server, 'player.appeals', 'attachment.create')) hasAppealsPermission = true
+        if (acl.hasServerPermission(server, 'player.reports', 'attachment.create')) hasReportsPermission = true
+      }
+    }
 
     if (!hasAppealsPermission && !hasReportsPermission) {
       ctx.status = 403
