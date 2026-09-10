@@ -11,7 +11,7 @@ CREATE TABLE `bm_ip_ban_records` (
   `silent` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `bm_ip_ban_records_created_idx` (`created`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `bm_ip_bans` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -26,7 +26,7 @@ CREATE TABLE `bm_ip_bans` (
   KEY `bm_ip_bans_created_idx` (`created`),
   KEY `bm_ip_bans_expires_idx` (`expires`),
   KEY `bm_ip_bans_updated_idx` (`updated`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `bm_ip_mute_records` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -43,7 +43,7 @@ CREATE TABLE `bm_ip_mute_records` (
   PRIMARY KEY (`id`),
   KEY `bm_ip_mute_records_created_idx` (`created`),
   KEY `bm_ip_mute_records_soft_idx` (`soft`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `bm_ip_mutes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -60,7 +60,7 @@ CREATE TABLE `bm_ip_mutes` (
   KEY `bm_ip_mutes_soft_idx` (`soft`),
   KEY `bm_ip_mutes_created_idx` (`created`),
   KEY `bm_ip_mutes_expires_idx` (`expires`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `bm_ip_range_ban_records` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -78,7 +78,7 @@ CREATE TABLE `bm_ip_range_ban_records` (
   KEY `bm_ip_range_ban_records_created_idx` (`created`),
   KEY `bm_ip_range_ban_records_toIp_idx` (`toIp`),
   KEY `bm_ip_range_ban_records_fromIp_idx` (`fromIp`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `bm_ip_range_bans` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -94,7 +94,7 @@ CREATE TABLE `bm_ip_range_bans` (
   KEY `bm_ip_range_bans_expires_idx` (`expires`),
   KEY `bm_ip_range_bans_created_idx` (`created`),
   KEY `bm_ip_range_bans_updated_idx` (`updated`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `bm_name_ban_records` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -109,7 +109,7 @@ CREATE TABLE `bm_name_ban_records` (
   `silent` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `bm_name_ban_records_created_idx` (`created`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `bm_name_bans` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -124,7 +124,7 @@ CREATE TABLE `bm_name_bans` (
   KEY `bm_name_bans_updated_idx` (`updated`),
   KEY `bm_name_bans_created_idx` (`created`),
   KEY `bm_name_bans_expires_idx` (`expires`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `bm_player_ban_records` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -139,7 +139,7 @@ CREATE TABLE `bm_player_ban_records` (
   `silent` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `bm_player_ban_records_created_idx` (`created`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `bm_player_bans` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -155,7 +155,7 @@ CREATE TABLE `bm_player_bans` (
   KEY `bm_player_bans_created_idx` (`created`),
   KEY `bm_player_bans_expires_idx` (`expires`),
   KEY `bm_player_bans_updated_idx` (`updated`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `bm_player_history` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -167,7 +167,7 @@ CREATE TABLE `bm_player_history` (
   KEY `bm_player_history_ip_idx` (`ip`),
   KEY `bm_player_history_leave_idx` (`leave`),
   KEY `bm_player_history_join_idx` (`join`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `bm_player_kicks` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -177,7 +177,7 @@ CREATE TABLE `bm_player_kicks` (
   `created` int(10) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `bm_player_kicks_created_idx` (`created`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `bm_player_mute_records` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -194,7 +194,7 @@ CREATE TABLE `bm_player_mute_records` (
   PRIMARY KEY (`id`),
   KEY `bm_player_mute_records_soft_idx` (`soft`),
   KEY `bm_player_mute_records_created_idx` (`created`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `bm_player_mutes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -212,7 +212,7 @@ CREATE TABLE `bm_player_mutes` (
   KEY `bm_player_mutes_soft_idx` (`soft`),
   KEY `bm_player_mutes_updated_idx` (`updated`),
   KEY `bm_player_mutes_created_idx` (`created`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `bm_player_notes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -224,7 +224,7 @@ CREATE TABLE `bm_player_notes` (
   KEY `bm_player_notes_created_idx` (`created`),
   KEY `bm_player_notes_actor_idx` (`actor_id`),
   KEY `bm_player_notes_player_idx` (`player_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `bm_player_pins` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -235,7 +235,7 @@ CREATE TABLE `bm_player_pins` (
   KEY `bm_player_pins_player_idx` (`player_id`),
   KEY `bm_player_pins_pin_idx` (`player_id`,`pin`),
   KEY `bm_player_pins_expires_idx` (`expires`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `bm_player_report_commands` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -251,7 +251,7 @@ CREATE TABLE `bm_player_report_commands` (
   KEY `bm_player_report_commands_command_idx` (`command`),
   KEY `bm_player_report_commands_report_idx` (`report_id`),
   KEY `bm_player_report_commands_created_idx` (`created`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `bm_player_report_comments` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -265,7 +265,7 @@ CREATE TABLE `bm_player_report_comments` (
   KEY `bm_player_report_comments_report_idx` (`report_id`),
   KEY `bm_player_report_comments_actor_idx` (`actor_id`),
   KEY `bm_player_report_comments_created_idx` (`created`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `bm_player_report_locations` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -281,13 +281,13 @@ CREATE TABLE `bm_player_report_locations` (
   KEY `bm_player_report_locations_player_idx` (`player_id`),
   KEY `bm_player_report_locations_world_idx` (`world`),
   KEY `bm_player_report_locations_report_idx` (`report_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `bm_player_report_states` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `bm_player_report_states` (`id`, `name`) VALUES
   (1, 'Open'),
@@ -311,7 +311,7 @@ CREATE TABLE `bm_player_reports` (
   KEY `bm_player_reports_assignee_idx` (`assignee_id`),
   KEY `bm_player_reports_created_idx` (`created`),
   KEY `bm_player_reports_updated_idx` (`updated`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `bm_player_warnings` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -328,7 +328,7 @@ CREATE TABLE `bm_player_warnings` (
   KEY `bm_player_warnings_points_idx` (`points`),
   KEY `bm_player_warnings_created_idx` (`created`),
   KEY `bm_player_warnings_player_idx` (`player_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `bm_players` (
   `id` binary(16) NOT NULL,
@@ -338,7 +338,7 @@ CREATE TABLE `bm_players` (
   PRIMARY KEY (`id`),
   KEY `bm_players_ip_idx` (`ip`),
   KEY `bm_players_name_idx` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `bm_report_logs` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -347,7 +347,7 @@ CREATE TABLE `bm_report_logs` (
   PRIMARY KEY (`id`),
   KEY `bm_report_logs_log_idx` (`log_id`),
   KEY `bm_report_logs_report_idx` (`report_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `bm_rollbacks` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -359,7 +359,7 @@ CREATE TABLE `bm_rollbacks` (
   PRIMARY KEY (`id`),
   KEY `bm_rollbacks_created_idx` (`created`),
   KEY `bm_rollbacks_expires_idx` (`expires`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `bm_server_logs` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -367,4 +367,4 @@ CREATE TABLE `bm_server_logs` (
   `created` int(10) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `bm_server_logs_created_idx` (`created`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
