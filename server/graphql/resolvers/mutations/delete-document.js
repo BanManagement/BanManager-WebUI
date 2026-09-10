@@ -83,7 +83,7 @@ module.exports = async function deleteDocument (obj, { id }, { log, session, sta
     .where({ content_hash: contentHash })
     .count('* as count')
 
-  if (count === 0) {
+  if (Number(count) === 0) {
     // No more references - delete content record and file
     const relativePath = document.path.replace('uploads/documents/', '').split('/').join(path.sep)
     const fullPath = path.join(UPLOAD_PATH, relativePath)

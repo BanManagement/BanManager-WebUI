@@ -84,7 +84,7 @@ async function handlePasswordLogin (ctx, { limiterSlowBruteByIP, limiterConsecut
     .first()
   let successful = false
 
-  if (result) {
+  if (result && result.password) {
     const match = await verify(result.password, request.body.password)
 
     if (match) successful = true
